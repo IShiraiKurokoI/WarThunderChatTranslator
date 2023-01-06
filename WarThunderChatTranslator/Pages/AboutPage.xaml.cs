@@ -17,6 +17,9 @@ public sealed partial class AboutPage : Page
 
     private void HyperlinkButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        Clipboard.SetContent("");
+        DataPackage dataPackage = new DataPackage();
+        dataPackage.RequestedOperation = DataPackageOperation.Copy;
+        dataPackage.SetText("https://github.com/IShiraiKurokoI/WarThunderChatTranslator");
+        Clipboard.SetContent(dataPackage);
     }
 }
