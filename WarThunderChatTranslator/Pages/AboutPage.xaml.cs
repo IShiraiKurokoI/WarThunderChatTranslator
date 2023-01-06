@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -21,5 +22,6 @@ public sealed partial class AboutPage : Page
         dataPackage.RequestedOperation = DataPackageOperation.Copy;
         dataPackage.SetText("https://github.com/IShiraiKurokoI/WarThunderChatTranslator");
         Clipboard.SetContent(dataPackage);
+        CopyTip.IsOpen = true;
     }
 }

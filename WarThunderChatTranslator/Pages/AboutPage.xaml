@@ -30,7 +30,16 @@
             <HyperlinkButton Content="WinUICommunity/Common" NavigateUri="https://github.com/WinUICommunity/Common" />
             <HyperlinkButton Content="WinUICommunity/SettingsUI" NavigateUri="https://github.com/WinUICommunity/SettingsUI" />
             
-            <HyperlinkButton Content="点此复制项目链接分享给好友" Click="HyperlinkButton_Click" />
+            <HyperlinkButton x:Name="CopyLink" Content="点此复制项目链接分享给好友" Click="HyperlinkButton_Click" Margin="0,20,0,0"/>
+            
+            <TeachingTip x:Name="CopyTip"
+                Target="{x:Bind CopyLink}"
+                Title="复制成功！"
+                Subtitle="快将Github链接分享给好友吧">
+                <TeachingTip.IconSource>
+                    <SymbolIconSource Symbol="Accept" />
+                </TeachingTip.IconSource>
+            </TeachingTip>
         </StackPanel>
     </Grid>
 </Page>
