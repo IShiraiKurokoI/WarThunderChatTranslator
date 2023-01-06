@@ -1,0 +1,36 @@
+﻿<Page
+    x:Class="WarThunderChatTranslator.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel Padding="20,24,0,0">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="ms-appx:///Assets/favicon.png" Width="40" Height="40"/>
+                    <TextBlock Text="战争雷霆聊天自动翻译器" FontSize="30" VerticalAlignment="Center"/>
+                    <TextBlock Text="{x:Bind Version}" FontSize="18" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Text="作者" FontSize="20" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                <PersonPicture ProfilePicture="ms-appx:///Assets/Author.png" DisplayName="IShirai_KurokoI" HorizontalAlignment="Left"/>
+                <StackPanel Margin="10,0,0,0">
+                    <TextBlock Text="IShirai_KurokoI" FontSize="18" FontWeight="Bold" Margin="5,0,0,0"/>
+                    <HyperlinkButton Content="Github主页" NavigateUri="https://github.com/IShiraiKurokoI" />
+                    <HyperlinkButton Content="BiliBili主页" NavigateUri="https://space.bilibili.com/310144483" />
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Text="感谢以下本应用中使用的开源项目" FontSize="20" Margin="0,10,0,0"/>
+            <HyperlinkButton Content="Microsoft.Windows.SDK.BuildTools" NavigateUri="https://aka.ms/WinSDKProjectURL" />
+            <HyperlinkButton Content="Microsoft/WindowsAppSDK" NavigateUri="https://github.com/microsoft/windowsappsdk" />
+            <HyperlinkButton Content="WinUICommunity/Common" NavigateUri="https://github.com/WinUICommunity/Common" />
+            <HyperlinkButton Content="WinUICommunity/SettingsUI" NavigateUri="https://github.com/WinUICommunity/SettingsUI" />
+            
+            <HyperlinkButton Content="点此复制项目链接分享给好友" Click="HyperlinkButton_Click" />
+        </StackPanel>
+    </Grid>
+</Page>

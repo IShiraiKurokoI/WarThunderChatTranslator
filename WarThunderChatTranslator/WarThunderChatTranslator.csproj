@@ -1,0 +1,179 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>WarThunderChatTranslator</RootNamespace>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <SignAssembly>False</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Users\Shirai_Kuroko\source\repos\DLUTToolBoxV2\DLUTToolBoxV2\DLUTToolBox V2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <Title>战争雷霆聊天翻译器</Title>
+    <Authors>Shirai_Kuroko</Authors>
+    <PackageIcon></PackageIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <UseWPF>False</UseWPF>
+    <PackageCertificateThumbprint>66666D9D14B32D42A2C4FB64F5FE087B43DF2480</PackageCertificateThumbprint>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="Assets\LockScreenLogo.scale-200.png" />
+    <Content Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Remove="Assets\StoreLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\Author.png" />
+    <None Remove="Assets\favicon.ico" />
+    <None Remove="Assets\FluentIcons\About.ico" />
+    <None Remove="Assets\FluentIcons\API.ico" />
+    <None Remove="Assets\FluentIcons\Font.ico" />
+    <None Remove="Assets\FluentIcons\Interact.ico" />
+    <None Remove="Assets\FluentIcons\Network.ico" />
+    <None Remove="Assets\FluentIcons\Settings.ico" />
+    <None Remove="Assets\FluentIcons\Size.ico" />
+    <None Remove="Assets\FluentIcons\Theme.ico" />
+    <None Remove="Assets\FluentIcons\Update.ico" />
+    <None Remove="Assets\FluentIcons\Windows.ico" />
+    <None Remove="Assets\LargeTile.scale-100.png" />
+    <None Remove="Assets\LargeTile.scale-125.png" />
+    <None Remove="Assets\LargeTile.scale-150.png" />
+    <None Remove="Assets\LargeTile.scale-200.png" />
+    <None Remove="Assets\LargeTile.scale-400.png" />
+    <None Remove="Assets\LockScreenLogo.scale-200.png" />
+    <None Remove="Assets\SmallTile.scale-100.png" />
+    <None Remove="Assets\SmallTile.scale-125.png" />
+    <None Remove="Assets\SmallTile.scale-150.png" />
+    <None Remove="Assets\SmallTile.scale-200.png" />
+    <None Remove="Assets\SmallTile.scale-400.png" />
+    <None Remove="Assets\SplashScreen.scale-100.png" />
+    <None Remove="Assets\SplashScreen.scale-125.png" />
+    <None Remove="Assets\SplashScreen.scale-150.png" />
+    <None Remove="Assets\SplashScreen.scale-200.png" />
+    <None Remove="Assets\SplashScreen.scale-400.png" />
+    <None Remove="Assets\Square150x150Logo.scale-100.png" />
+    <None Remove="Assets\Square150x150Logo.scale-125.png" />
+    <None Remove="Assets\Square150x150Logo.scale-150.png" />
+    <None Remove="Assets\Square150x150Logo.scale-200.png" />
+    <None Remove="Assets\Square150x150Logo.scale-400.png" />
+    <None Remove="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <None Remove="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <None Remove="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <None Remove="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <None Remove="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+    <None Remove="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <None Remove="Assets\Square44x44Logo.altform-unplated_targetsize-24.png" />
+    <None Remove="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <None Remove="Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <None Remove="Assets\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <None Remove="Assets\Square44x44Logo.scale-100.png" />
+    <None Remove="Assets\Square44x44Logo.scale-125.png" />
+    <None Remove="Assets\Square44x44Logo.scale-150.png" />
+    <None Remove="Assets\Square44x44Logo.scale-200.png" />
+    <None Remove="Assets\Square44x44Logo.scale-400.png" />
+    <None Remove="Assets\Square44x44Logo.targetsize-16.png" />
+    <None Remove="Assets\Square44x44Logo.targetsize-24.png" />
+    <None Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <None Remove="Assets\Square44x44Logo.targetsize-256.png" />
+    <None Remove="Assets\Square44x44Logo.targetsize-32.png" />
+    <None Remove="Assets\Square44x44Logo.targetsize-48.png" />
+    <None Remove="Assets\StoreLogo.png" />
+    <None Remove="Assets\StoreLogo.scale-100.png" />
+    <None Remove="Assets\StoreLogo.scale-125.png" />
+    <None Remove="Assets\StoreLogo.scale-150.png" />
+    <None Remove="Assets\StoreLogo.scale-200.png" />
+    <None Remove="Assets\StoreLogo.scale-400.png" />
+    <None Remove="Assets\Wide310x150Logo.scale-100.png" />
+    <None Remove="Assets\Wide310x150Logo.scale-125.png" />
+    <None Remove="Assets\Wide310x150Logo.scale-150.png" />
+    <None Remove="Assets\Wide310x150Logo.scale-200.png" />
+    <None Remove="Assets\Wide310x150Logo.scale-400.png" />
+    <None Remove="Pages\AboutPage.xaml" />
+    <None Remove="Pages\APIPage.xaml" />
+    <None Remove="Pages\FontPage.xaml" />
+    <None Remove="Pages\InteractPage.xaml" />
+    <None Remove="Pages\LocationPage.xaml" />
+    <None Remove="Pages\NetworkPage.xaml" />
+    <None Remove="Pages\ThemePage.xaml" />
+    <None Remove="Pages\UpdatePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\favicon.ico" />
+    <Content Include="Assets\FluentIcons\About.ico" />
+    <Content Include="Assets\FluentIcons\Settings.ico" />
+    <Content Include="Assets\FluentIcons\Size.ico" />
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="WinUICommunity.Common" Version="3.0.0" />
+    <PackageReference Include="WinUICommunity.SettingsUI" Version="3.0.0" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <!-- 
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="ShellPage.xaml.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\NetworkPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\LocationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\FontPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\InteractPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\ThemePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\APIPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\UpdatePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <None Update="ShellPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\AboutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="ShellPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <!-- 
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if 
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WarThunderChatTranslator (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WarThunderChatTranslator (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

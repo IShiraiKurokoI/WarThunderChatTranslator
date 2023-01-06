@@ -1,0 +1,119 @@
+﻿<Page
+    x:Class="WarThunderChatTranslator.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:helpers="using:WinUICommunity.Common.Helpers"
+    xmlns:views="using:WarThunderChatTranslator.Pages"
+    Loaded="UserControl_Loaded">
+    <Grid>
+        <NavigationView
+            x:Name="navigationView"
+            IsSettingsVisible="False"
+            IsTitleBarAutoPaddingEnabled="False"
+            ItemInvoked="navigationView_ItemInvoked"
+            IsBackButtonVisible="Collapsed"
+            OpenPaneLength="240"
+            CompactPaneLength="65"
+            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}">
+
+            <NavigationView.Resources>
+                <x:Double x:Key="NavigationViewItemOnLeftIconBoxHeight">24</x:Double>
+            </NavigationView.Resources>
+
+            <NavigationView.AutoSuggestBox>
+                <AutoSuggestBox Name="autoSuggestBox" QueryIcon="Find" PlaceholderText="搜索" TextChanged="OnControlsSearchBoxTextChanged" QuerySubmitted="OnControlsSearchBoxQuerySubmitted"/>
+            </NavigationView.AutoSuggestBox>
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="网络"
+                    IsSelected="True"
+                    helpers:NavHelper.NavigateTo="views:NetworkPage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Network.png" MinHeight="60" MinWidth="60"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="窗体">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Windows.ico"/>
+                    </NavigationViewItem.Icon>
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem
+                            Margin="0,0,12,0"
+                            Content="位置和布局"
+                            helpers:NavHelper.NavigateTo="views:LocationPage">
+                            <NavigationViewItem.Icon>
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Size.ico"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+
+                        <NavigationViewItem
+                            Margin="0,0,12,0"
+                            Content="字体"
+                            helpers:NavHelper.NavigateTo="views:FontPage">
+                            <NavigationViewItem.Icon>
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+
+                        <NavigationViewItem
+                            Margin="0,0,12,0"
+                            Content="主题和背景"
+                            helpers:NavHelper.NavigateTo="views:ThemePage">
+                            <NavigationViewItem.Icon>
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Theme.ico"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+
+                        <NavigationViewItem
+                            Margin="0,0,12,0"
+                            Content="互动和操作"
+                            helpers:NavHelper.NavigateTo="views:InteractPage">
+                            <NavigationViewItem.Icon>
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="翻译API"
+                    helpers:NavHelper.NavigateTo="views:APIPage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/API.ico"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="翻译器更新"
+                    helpers:NavHelper.NavigateTo="views:UpdatePage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Update.png"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem 
+                    Content="关于"
+                    helpers:NavHelper.NavigateTo="views:AboutPage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/About.ico"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+
+            <Frame x:Name="shellFrame" Background="Transparent"/>
+        </NavigationView>
+    </Grid>
+</Page>

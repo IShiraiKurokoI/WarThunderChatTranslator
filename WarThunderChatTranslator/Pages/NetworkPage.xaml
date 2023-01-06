@@ -1,0 +1,87 @@
+﻿<!-- Copyright (c) Microsoft Corporation and Contributors. -->
+<!-- Licensed under the MIT License. -->
+
+<Page
+    x:Class="WarThunderChatTranslator.Pages.NetworkPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WarThunderChatTranslator.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:WinUICommunity.SettingsUI.Controls"
+    xmlns:converters="using:WarThunderChatTranslator.Converters"
+    Background="Transparent"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded">
+    <Page.Resources>
+        <converters:NullBoolConverter x:Key="NullBoolConverter"/>
+    </Page.Resources>
+    <Grid
+        Padding="20,0,0,0"
+        RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            x:Name="Header"
+            Margin="0,44,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="网络设置" />
+
+        <ScrollViewer Grid.Row="1">
+            <Grid
+                Padding="0,0,20,48"
+                RowSpacing="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Top panel  -->
+                <Grid
+                    ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel >
+                        <TextBlock
+                            x:Name="AboutDescription"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="设置翻译器使用的网络代理（默认不使用）"
+                            TextWrapping="Wrap" 
+                            VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+                <!--  Content panel  -->
+                <ContentPresenter
+                    x:Name="ModuleContentPresenter"
+                    Grid.Row="1"
+                    Margin="0,8,0,0">
+                    <ContentPresenter.Content>
+                        <StackPanel>
+                            <TextBlock Text="网络代理模式" FontSize="20"/>
+                            <StackPanel x:Name="ProxyPanel" Margin="0,10,0,10">
+                                <RadioButton Tag="Default" Content="不使用代理" Checked="RadioButton_Checked"/>
+                                <RadioButton Tag="System" Content="使用系统代理" Checked="RadioButton_Checked"/>
+                                <RadioButton x:Name="CustomProxy" Tag="Custom" Content="自定义" Checked="RadioButton_Checked"/>
+                            </StackPanel>
+                            <TextBlock Text="自定义代理设置" FontSize="20"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <TextBox Header="代理IP地址" PlaceholderText="例：127.0.0.1" Width="180" IsEnabled="{x:Bind CustomProxy.IsChecked,Mode=OneWay, Converter={StaticResource NullBoolConverter}}" x:Name="ProxyAddress" TextChanged="ProxyAddress_TextChanged"/>
+                                <TextBox Header="端口" PlaceholderText="例：10080" Margin="20,0,0,0" IsEnabled="{x:Bind CustomProxy.IsChecked,Mode=OneWay, Converter={StaticResource NullBoolConverter}}" x:Name="ProxyPort" TextChanged="ProxyPort_TextChanged"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ContentPresenter.Content>
+                </ContentPresenter>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>
