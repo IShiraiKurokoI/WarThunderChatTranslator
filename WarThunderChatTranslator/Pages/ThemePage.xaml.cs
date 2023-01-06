@@ -65,5 +65,10 @@ namespace WarThunderChatTranslator.Pages
         {
             ApplicationConfig.SaveSettings("BackgroundLuminosityOpacity", TintLuminosityOpacitySlider.Value.ToString());
         }
+
+        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:colors"));
+        }
     }
 }

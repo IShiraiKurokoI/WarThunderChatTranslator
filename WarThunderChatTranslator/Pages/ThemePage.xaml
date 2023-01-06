@@ -9,9 +9,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:WinUICommunity.SettingsUI.Controls"
+    xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     mc:Ignorable="d"
     x:Name="Page">
+    <Page.Resources>
+        <converters:VisibilityBoolenConverter x:Key="VisibilityBoolenConverter"/>
+    </Page.Resources>
     <Grid
         Padding="20,0,0,0"
         RowSpacing="24"
@@ -66,12 +70,13 @@
                     <ContentPresenter.Content>
                         <StackPanel>
                             <TextBlock Text="全局主题" FontSize="20"/>
-                            <StackPanel x:Name="ThemePanel" Margin="10">
+                            <StackPanel x:Name="ThemePanel" Margin="10,10,10,0">
                                 <RadioButton Tag="Light" Checked="OnThemeRadioButtonChecked" Content="浅色"/>
                                 <RadioButton Tag="Dark" Checked="OnThemeRadioButtonChecked" Content="深色" />
-                                <RadioButton Tag="Default" Checked="OnThemeRadioButtonChecked" Content="跟随系统" />
+                                <RadioButton Tag="Default" Checked="OnThemeRadioButtonChecked" Content="跟随系统" x:Name="Default"/>
                             </StackPanel>
-                            <TextBlock Text="聊天界面背景样式" FontSize="20"/>
+                            <HyperlinkButton Content="点此打开系统主题设置" Click="HyperlinkButton_Click" Visibility="{x:Bind Default.IsChecked,Mode=OneWay, Converter={StaticResource VisibilityBoolenConverter}}"/>
+                            <TextBlock Text="聊天界面背景样式" FontSize="20" Margin="0,10,0,0"/>
                             <StackPanel x:Name="BackGroundPanel" Margin="10">
                                 <RadioButton Tag="MicaAlt" Checked="OnBackgroundRadioButtonChecked" Content="云母（Mica Alt）"/>
                                 <RadioButton Tag="Acrylic" Checked="OnBackgroundRadioButtonChecked" Content="亚克力" />
