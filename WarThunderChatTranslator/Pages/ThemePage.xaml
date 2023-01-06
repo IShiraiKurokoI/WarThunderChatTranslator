@@ -81,7 +81,7 @@
                                 <RadioButton Tag="MicaAlt" Checked="OnBackgroundRadioButtonChecked" Content="云母（Mica Alt）"/>
                                 <RadioButton Tag="Acrylic" Checked="OnBackgroundRadioButtonChecked" Content="亚克力" />
                             </StackPanel>
-                            <TextBlock Text="聊天界面背景" FontSize="20"/>
+                            <TextBlock Text="聊天界面背景（以下设置仅在亚克力模式下生效）" FontSize="20"/>
                             <StackPanel>
                                 <TextBlock Text="背景不透明度:" Margin="0,0,0,12"/>
                                 <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Width="300" SmallChange="0.001" StepFrequency="0.001" HorizontalAlignment="Left" IsFocusEngagementEnabled="False" AutomationProperties.Name="背景不透明度" ValueChanged="OpacitySlider_ValueChanged"/>
