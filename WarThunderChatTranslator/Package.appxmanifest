@@ -12,7 +12,7 @@
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>战争雷霆聊天翻译器</DisplayName>
+    <DisplayName>WarThunderChatTranslator</DisplayName>
     <PublisherDisplayName>Shirai_Kuroko</PublisherDisplayName>
     <Logo>Assets\ApplicationIcons\StoreLogo.png</Logo>
   </Properties>
@@ -31,7 +31,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="战争雷霆聊天翻译器"
+        DisplayName="WarThunderChatTranslator"
         Description="WarThunderChatTranslator，提供游戏内聊天实时翻译"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\ApplicationIcons\Square150x150Logo.png"

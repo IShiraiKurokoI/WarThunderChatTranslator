@@ -8,10 +8,21 @@
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:labs="using:WinUICommunity.SettingsUI.SettingsControls"
     mc:Ignorable="d"
     Background="Transparent">
 
     <Grid>
-
+        <labs:SettingsCard Description="This is a default card, with the Header, HeaderIcon, Description and Content set."
+                               Header="This is the Header">
+            <labs:SettingsCard.HeaderIcon>
+                <FontIcon Glyph="&#xE799;" />
+            </labs:SettingsCard.HeaderIcon>
+            <ComboBox SelectedIndex="0">
+                <ComboBoxItem>Option 1</ComboBoxItem>
+                <ComboBoxItem>Option 2</ComboBoxItem>
+                <ComboBoxItem>Option 3</ComboBoxItem>
+            </ComboBox>
+        </labs:SettingsCard>
     </Grid>
 </Page>
