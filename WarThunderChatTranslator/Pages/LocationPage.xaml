@@ -1,4 +1,4 @@
-<!-- Copyright (c) Microsoft Corporation and Contributors. -->
+﻿<!-- Copyright (c) Microsoft Corporation and Contributors. -->
 <!-- Licensed under the MIT License. -->
 
 <Page
@@ -9,9 +9,73 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="Transparent"
+    Loaded="Page_Loaded">
+    <Grid
+        Padding="20,0,0,0"
+        RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-    <Grid>
+        <TextBlock
+            x:Name="Header"
+            Margin="0,44,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="位置和布局" />
 
+        <ScrollViewer Grid.Row="1">
+            <Grid
+                Padding="0,0,20,48"
+                RowSpacing="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Top panel  -->
+                <Grid
+                    ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel >
+                        <TextBlock
+                            x:Name="AboutDescription"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="设置聊天框的窗体大小和起始位置"
+                            TextWrapping="Wrap" 
+                            VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+                <!--  Content panel  -->
+                <ContentPresenter
+                    x:Name="ModuleContentPresenter"
+                    Grid.Row="1"
+                    Margin="0,8,0,0">
+                    <ContentPresenter.Content>
+                        <StackPanel>
+                            <TextBlock Text="聊天框窗口大小" FontSize="20"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <TextBox Header="宽度" PlaceholderText="500" Width="100" x:Name="ChatWidth" TextChanged="ChatWidth_TextChanged" InputScope="Number"/>
+                                <TextBox Header="高度" PlaceholderText="300" Width="100" Margin="20,0,0,0" x:Name="ChatHeight" TextChanged="ChatHeight_TextChanged" InputScope="Number"/>
+                            </StackPanel>
+                            <TextBlock Text="聊天框起始位置" FontSize="20" Margin="0,10,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <TextBox Header="X" PlaceholderText="30" Width="100" x:Name="ChatStartUpLoactionX" TextChanged="ChatStartUpLoactionX_TextChanged" InputScope="Number"/>
+                                <TextBox Header="Y" PlaceholderText="350" Width="100" Margin="20,0,0,0" x:Name="ChatStartUpLoactionY" TextChanged="ChatStartUpLoactionY_TextChanged" InputScope="Number"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ContentPresenter.Content>
+                </ContentPresenter>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>

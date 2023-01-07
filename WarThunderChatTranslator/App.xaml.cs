@@ -77,6 +77,22 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("ProxyPort", "");
             }
+            if (ApplicationConfig.GetSettings("ChatWidth") == null)
+            {
+                ApplicationConfig.SaveSettings("ChatWidth", "500");
+            }
+            if (ApplicationConfig.GetSettings("ChatHeight") == null)
+            {
+                ApplicationConfig.SaveSettings("ChatHeight", "300");
+            }
+            if (ApplicationConfig.GetSettings("ChatStartUpLoactionX") == null)
+            {
+                ApplicationConfig.SaveSettings("ChatStartUpLoactionX", "30");
+            }
+            if (ApplicationConfig.GetSettings("ChatStartUpLoactionY") == null)
+            {
+                ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "350");
+            }
             m_window.Activate();
         }
 

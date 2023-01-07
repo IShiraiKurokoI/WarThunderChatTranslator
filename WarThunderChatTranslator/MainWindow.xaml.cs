@@ -39,6 +39,7 @@ namespace WarThunderChatTranslator
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.SetIcon("Assets/favicon.ico");
+            appWindow.Resize(new Windows.Graphics.SizeInt32(1500, 900));
         }
     }
 }

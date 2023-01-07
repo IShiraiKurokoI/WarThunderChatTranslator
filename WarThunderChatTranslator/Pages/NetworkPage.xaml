@@ -76,7 +76,7 @@
                             <TextBlock Text="自定义代理设置" FontSize="20"/>
                             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                 <TextBox Header="代理IP地址" PlaceholderText="例：127.0.0.1" Width="180" IsEnabled="{x:Bind CustomProxy.IsChecked,Mode=OneWay, Converter={StaticResource NullBoolConverter}}" x:Name="ProxyAddress" TextChanged="ProxyAddress_TextChanged"/>
-                                <TextBox Header="端口" PlaceholderText="例：10080" Margin="20,0,0,0" IsEnabled="{x:Bind CustomProxy.IsChecked,Mode=OneWay, Converter={StaticResource NullBoolConverter}}" x:Name="ProxyPort" TextChanged="ProxyPort_TextChanged"/>
+                                <TextBox Header="端口" PlaceholderText="例：10080" Margin="20,0,0,0" IsEnabled="{x:Bind CustomProxy.IsChecked,Mode=OneWay, Converter={StaticResource NullBoolConverter}}" x:Name="ProxyPort" TextChanged="ProxyPort_TextChanged" InputScope="Number"/>
                             </StackPanel>
                         </StackPanel>
                     </ContentPresenter.Content>
