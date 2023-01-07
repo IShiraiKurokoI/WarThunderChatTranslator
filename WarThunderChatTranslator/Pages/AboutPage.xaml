@@ -17,7 +17,6 @@
                     <TextBlock Text="{x:Bind Version}" FontSize="18" Margin="20,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
-            
             <TextBlock Text="作者" FontSize="20" Margin="0,10,0,10"/>
             <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
                 <PersonPicture ProfilePicture="ms-appx:///Assets/Author.png" DisplayName="IShirai_KurokoI" HorizontalAlignment="Left"/>
@@ -27,11 +26,11 @@
                     <HyperlinkButton Content="BiliBili主页" NavigateUri="https://space.bilibili.com/310144483" />
                 </StackPanel>
             </StackPanel>
-            
+
             <controls:Setting 
-                Header="点此复制项目链接分享给好友"
-                Icon="&#xe72d;"
-                Margin="0,20,0,0">
+                    Header="点此复制项目链接分享给好友"
+                    Icon="&#xe72d;"
+                    Margin="0,20,0,0">
                 <controls:Setting.ActionContent>
                     <Button 
                         x:Name="CopyLink"
@@ -45,7 +44,8 @@
                                Description="你可以点此打开本翻译器项目页面"
                                Header="项目页面"
                                IsClickEnabled="True"
-                               Click="SettingsCard_Click">
+                               Click="SettingsCard_Click"
+                                       MaxWidth="2000">
                 <labs:SettingsCard.HeaderIcon>
                     <FontIcon Glyph="&#xE12B;" />
                 </labs:SettingsCard.HeaderIcon>
@@ -64,15 +64,25 @@
                 </TeachingTip.IconSource>
             </TeachingTip>
 
-            <labs:SettingsExpander Header="感谢以下本应用中使用的开源项目">
+            <labs:SettingsExpander Header="感谢以下本应用中使用的开源项目"
+                                       MaxWidth="2000">
                 <labs:SettingsExpander.HeaderIcon>
                     <FontIcon Glyph="&#xe734;" />
                 </labs:SettingsExpander.HeaderIcon>
                 <labs:SettingsExpander.Items>
-                    <HyperlinkButton Content="Microsoft.Windows.SDK.BuildTools" NavigateUri="https://aka.ms/WinSDKProjectURL" />
-                    <HyperlinkButton Content="Microsoft/WindowsAppSDK" NavigateUri="https://github.com/microsoft/windowsappsdk" />
-                    <HyperlinkButton Content="WinUICommunity/Common" NavigateUri="https://github.com/WinUICommunity/Common" />
-                    <HyperlinkButton Content="WinUICommunity/SettingsUI" NavigateUri="https://github.com/WinUICommunity/SettingsUI" />
+                    <labs:SettingsCard
+                                       MaxWidth="2000">
+                        <labs:SettingsCard.Description>
+                            <ScrollViewer>
+                                <StackPanel>
+                                    <HyperlinkButton Content="Microsoft.Windows.SDK.BuildTools" NavigateUri="https://aka.ms/WinSDKProjectURL" Margin="5" FontSize="18"/>
+                                    <HyperlinkButton Content="Microsoft/WindowsAppSDK" NavigateUri="https://github.com/microsoft/windowsappsdk"  Margin="5" FontSize="18"/>
+                                    <HyperlinkButton Content="WinUICommunity/Common" NavigateUri="https://github.com/WinUICommunity/Common"  Margin="5" FontSize="18"/>
+                                    <HyperlinkButton Content="WinUICommunity/SettingsUI" NavigateUri="https://github.com/WinUICommunity/SettingsUI"  Margin="5" FontSize="18"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </labs:SettingsCard.Description>
+                    </labs:SettingsCard>
                 </labs:SettingsExpander.Items>
             </labs:SettingsExpander>
         </StackPanel>
