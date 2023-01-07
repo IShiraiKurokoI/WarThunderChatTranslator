@@ -4,10 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:WinUICommunity.SettingsUI.Controls"
+    xmlns:labs="using:WinUICommunity.SettingsUI.SettingsControls"
     mc:Ignorable="d">
 
     <Grid>
-        <StackPanel Padding="20,24,0,0">
+        <StackPanel Padding="20,24,20,0">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Image Source="ms-appx:///Assets/favicon.png" Width="40" Height="40"/>
@@ -15,7 +17,8 @@
                     <TextBlock Text="{x:Bind Version}" FontSize="18" Margin="20,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
-            <TextBlock Text="作者" FontSize="20" Margin="0,10,0,0"/>
+            
+            <TextBlock Text="作者" FontSize="20" Margin="0,10,0,10"/>
             <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
                 <PersonPicture ProfilePicture="ms-appx:///Assets/Author.png" DisplayName="IShirai_KurokoI" HorizontalAlignment="Left"/>
                 <StackPanel Margin="10,0,0,0">
@@ -24,14 +27,34 @@
                     <HyperlinkButton Content="BiliBili主页" NavigateUri="https://space.bilibili.com/310144483" />
                 </StackPanel>
             </StackPanel>
-            <TextBlock Text="感谢以下本应用中使用的开源项目" FontSize="20" Margin="0,10,0,0"/>
-            <HyperlinkButton Content="Microsoft.Windows.SDK.BuildTools" NavigateUri="https://aka.ms/WinSDKProjectURL" />
-            <HyperlinkButton Content="Microsoft/WindowsAppSDK" NavigateUri="https://github.com/microsoft/windowsappsdk" />
-            <HyperlinkButton Content="WinUICommunity/Common" NavigateUri="https://github.com/WinUICommunity/Common" />
-            <HyperlinkButton Content="WinUICommunity/SettingsUI" NavigateUri="https://github.com/WinUICommunity/SettingsUI" />
             
-            <HyperlinkButton x:Name="CopyLink" Content="点此复制项目链接分享给好友" Click="HyperlinkButton_Click" Margin="0,20,0,0"/>
-            
+            <controls:Setting 
+                Header="点此复制项目链接分享给好友"
+                Icon="&#xe72d;"
+                Margin="0,20,0,0">
+                <controls:Setting.ActionContent>
+                    <Button 
+                        x:Name="CopyLink"
+                        HorizontalAlignment="Right"
+                        Content="复制链接" 
+                        Click="HyperlinkButton_Click"/>
+                </controls:Setting.ActionContent>
+            </controls:Setting>
+
+            <labs:SettingsCard ActionIconToolTip="打开项目页面"
+                               Description="你可以点此打开本翻译器项目页面"
+                               Header="项目页面"
+                               IsClickEnabled="True"
+                               Click="SettingsCard_Click">
+                <labs:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE12B;" />
+                </labs:SettingsCard.HeaderIcon>
+                <labs:SettingsCard.ActionIcon>
+                    <FontIcon FontSize="12"
+                              Glyph="&#xE8A7;" />
+                </labs:SettingsCard.ActionIcon>
+            </labs:SettingsCard>
+
             <TeachingTip x:Name="CopyTip"
                 Target="{x:Bind CopyLink}"
                 Title="复制成功！"
@@ -40,6 +63,18 @@
                     <SymbolIconSource Symbol="Accept" />
                 </TeachingTip.IconSource>
             </TeachingTip>
+
+            <labs:SettingsExpander Header="感谢以下本应用中使用的开源项目">
+                <labs:SettingsExpander.HeaderIcon>
+                    <FontIcon Glyph="&#xe734;" />
+                </labs:SettingsExpander.HeaderIcon>
+                <labs:SettingsExpander.Items>
+                    <HyperlinkButton Content="Microsoft.Windows.SDK.BuildTools" NavigateUri="https://aka.ms/WinSDKProjectURL" />
+                    <HyperlinkButton Content="Microsoft/WindowsAppSDK" NavigateUri="https://github.com/microsoft/windowsappsdk" />
+                    <HyperlinkButton Content="WinUICommunity/Common" NavigateUri="https://github.com/WinUICommunity/Common" />
+                    <HyperlinkButton Content="WinUICommunity/SettingsUI" NavigateUri="https://github.com/WinUICommunity/SettingsUI" />
+                </labs:SettingsExpander.Items>
+            </labs:SettingsExpander>
         </StackPanel>
     </Grid>
 </Page>

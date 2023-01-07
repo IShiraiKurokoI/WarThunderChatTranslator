@@ -93,6 +93,10 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "350");
             }
+            if (ApplicationConfig.GetSettings("LastUpdateCheckDate") == null)
+            {
+                ApplicationConfig.SaveSettings("LastUpdateCheckDate", "从未");
+            }
             m_window.Activate();
         }
 

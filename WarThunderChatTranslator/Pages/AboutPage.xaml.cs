@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
@@ -23,5 +24,10 @@ public sealed partial class AboutPage : Page
         dataPackage.SetText("https://github.com/IShiraiKurokoI/WarThunderChatTranslator");
         Clipboard.SetContent(dataPackage);
         CopyTip.IsOpen = true;
+    }
+
+    private void SettingsCard_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        Windows.System.Launcher.LaunchUriAsync(new System.Uri("https://github.com/IShiraiKurokoI/WarThunderChatTranslator"));
     }
 }
