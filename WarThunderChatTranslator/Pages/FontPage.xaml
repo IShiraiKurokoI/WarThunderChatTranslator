@@ -70,7 +70,7 @@
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                     Header="消息文本颜色"
-                                MaxWidth="2000">
+                                MaxWidth="2000" >
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8d3;" />
                                 </labs:SettingsCard.HeaderIcon>
