@@ -1,4 +1,4 @@
-<!-- Copyright (c) Microsoft Corporation and Contributors. -->
+﻿<!-- Copyright (c) Microsoft Corporation and Contributors. -->
 <!-- Licensed under the MIT License. -->
 
 <Page
@@ -9,20 +9,53 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:labs="using:WinUICommunity.SettingsUI.SettingsControls"
+    xmlns:controls="using:WinUICommunity.SettingsUI.Controls"
     mc:Ignorable="d"
-    Background="Transparent">
+    Background="Transparent"
+    Loaded="Page_Loaded">
+    <Grid
+        Padding="20,0,0,0"
+        RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-    <Grid>
-        <labs:SettingsCard Description="This is a default card, with the Header, HeaderIcon, Description and Content set."
-                               Header="This is the Header">
-            <labs:SettingsCard.HeaderIcon>
-                <FontIcon Glyph="&#xE799;" />
-            </labs:SettingsCard.HeaderIcon>
-            <ComboBox SelectedIndex="0">
-                <ComboBoxItem>Option 1</ComboBoxItem>
-                <ComboBoxItem>Option 2</ComboBoxItem>
-                <ComboBoxItem>Option 3</ComboBoxItem>
-            </ComboBox>
-        </labs:SettingsCard>
+        <TextBlock
+            x:Name="Header"
+            Margin="0,44,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="翻译器API" />
+
+        <ScrollViewer Grid.Row="1">
+            <Grid
+                Padding="0,0,20,0"
+                RowSpacing="0">
+                <ContentPresenter
+                    x:Name="ModuleContentPresenter"
+                    Grid.Row="1"
+                    Margin="0,0,0,0">
+                    <ContentPresenter.Content>
+                        <StackPanel>
+                            <labs:SettingsCard Description="选择翻译器使用的翻译提供方"
+                                    Header="翻译器API"
+                                MaxWidth="2000">
+                                <labs:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE799;" />
+                                </labs:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="APIPanel" SelectionChanged="APIPanel_SelectionChanged">
+                                    <ComboBoxItem Tag="Bing">Bing</ComboBoxItem>
+                                    <ComboBoxItem Tag="Baidu">Baidu</ComboBoxItem>
+                                    <ComboBoxItem Tag="Youdao">有道</ComboBoxItem>
+                                </ComboBox>
+                            </labs:SettingsCard>
+                        </StackPanel>
+                    </ContentPresenter.Content>
+                </ContentPresenter>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>

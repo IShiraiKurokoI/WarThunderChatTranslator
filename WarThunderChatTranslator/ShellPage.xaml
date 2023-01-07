@@ -65,19 +65,19 @@
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="互动和操作"
-                            helpers:NavHelper.NavigateTo="views:InteractPage">
+                            Content="字体和样式"
+                            helpers:NavHelper.NavigateTo="views:FontPage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico"/>
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico"/>
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="字体"
-                            helpers:NavHelper.NavigateTo="views:FontPage">
+                            Content="互动和操作"
+                            helpers:NavHelper.NavigateTo="views:InteractPage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico"/>
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico"/>
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                     </NavigationViewItem.MenuItems>

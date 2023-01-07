@@ -97,6 +97,22 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("LastUpdateCheckDate", "从未");
             }
+            if (ApplicationConfig.GetSettings("TranslateAPI") == null)
+            {
+                ApplicationConfig.SaveSettings("TranslateAPI", "Bing");
+            }
+            //if (ApplicationConfig.GetSettings("FontFamily") == null)
+            //{
+            //    ApplicationConfig.SaveSettings("FontFamily", "Bing");
+            //}
+            if (ApplicationConfig.GetSettings("FontSize") == null)
+            {
+                ApplicationConfig.SaveSettings("FontSize", "14");
+            }
+            if (ApplicationConfig.GetSettings("FontStyle") == null)
+            {
+                ApplicationConfig.SaveSettings("FontStyle", "Normal");
+            }
             m_window.Activate();
         }
 

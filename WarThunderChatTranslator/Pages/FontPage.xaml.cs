@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using WarThunderChatTranslator.Configurations;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,6 +30,41 @@ namespace WarThunderChatTranslator.Pages
         public FontPage()
         {
             this.InitializeComponent();
+        }
+
+        private void FontStylePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplicationConfig.SaveSettings("FontStyle", ((ComboBoxItem)FontStylePanel.SelectedItem).Tag.ToString());
+        }
+
+        private void FontSizePanel_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(FontSizePanel.Text =="")
+            {
+                ApplicationConfig.SaveSettings("FontSize", "14");
+            }
+            else
+            {
+                ApplicationConfig.SaveSettings("FontSize", FontSizePanel.Text);
+            }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            FontSizePanel.Text = ApplicationConfig.GetSettings("FontSize");
+            switch (ApplicationConfig.GetSettings("FontStyle"))
+            {
+                case "Normal":
+                    {
+                        FontStylePanel.SelectedIndex = 0;
+                        break;
+                    }
+                case "Bold":
+                    {
+                        FontStylePanel.SelectedIndex = 1;
+                        break;
+                    }
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-<!-- Copyright (c) Microsoft Corporation and Contributors. -->
+﻿<!-- Copyright (c) Microsoft Corporation and Contributors. -->
 <!-- Licensed under the MIT License. -->
 
 <Page
@@ -10,5 +10,38 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="Transparent">
-    
+    <Grid
+        Padding="20,0,0,0"
+        RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            x:Name="Header"
+            Margin="0,44,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="交互设置" />
+
+        <ScrollViewer Grid.Row="1">
+            <Grid
+                Padding="0,0,20,0"
+                RowSpacing="0">
+                <ContentPresenter
+                    x:Name="ModuleContentPresenter"
+                    Grid.Row="1"
+                    Margin="0,0,0,0">
+                    <ContentPresenter.Content>
+                        <StackPanel>
+                            
+                        </StackPanel>
+                    </ContentPresenter.Content>
+                </ContentPresenter>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </Page>

@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using WarThunderChatTranslator.Configurations;
+using WinUICommunity.Common.Extensions;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,6 +31,33 @@ namespace WarThunderChatTranslator.Pages
         public APIPage()
         {
             this.InitializeComponent();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            switch(ApplicationConfig.GetSettings("TranslateAPI"))
+            {
+                case "Bing":
+                    {
+                        APIPanel.SelectedIndex = 0;
+                        break;
+                    }
+                case "Baidu":
+                    {
+                        APIPanel.SelectedIndex = 1;
+                        break;
+                    }
+                case "Youdao":
+                    {
+                        APIPanel.SelectedIndex = 2;
+                        break;
+                    }
+            }
+        }
+
+        private void APIPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplicationConfig.SaveSettings("TranslateAPI", ((ComboBoxItem)APIPanel.SelectedItem).Tag.ToString());
         }
     }
 }
