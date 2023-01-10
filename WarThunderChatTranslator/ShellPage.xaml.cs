@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using WarThunderChatTranslator.Pages;
+using WinUICommunity.Common.Helpers;
 using WinUICommunity.Common.ViewModel;
 
 namespace WarThunderChatTranslator;

@@ -27,7 +27,7 @@
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <ItemGroup>
@@ -122,8 +122,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
-    <PackageReference Include="WinUICommunity.Common" Version="3.0.0" />
-    <PackageReference Include="WinUICommunity.SettingsUI" Version="3.0.0" />
+    <PackageReference Include="WinUICommunity.Common" Version="3.0.1" />
+    <PackageReference Include="WinUICommunity.SettingsUI" Version="3.0.1" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -136,9 +136,20 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Update="ShellPage.xaml.cs">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\NetworkPage.xaml">

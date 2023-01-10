@@ -40,7 +40,7 @@ namespace WarThunderChatTranslator.Pages
         private void OnThemeRadioButtonChecked(object sender, RoutedEventArgs e)
         {
             ApplicationConfig.SaveSettings("Theme",((RadioButton)sender).Tag.ToString());
-            ThemeHelper.OnThemeRadioButtonChecked(sender);
+            ThemeHelper.OnRadioButtonChecked(sender);
         }
 
         private void OnBackgroundRadioButtonChecked(object sender, RoutedEventArgs e)
@@ -50,7 +50,7 @@ namespace WarThunderChatTranslator.Pages
 
         private void SettingsPageControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ThemeHelper.SetThemeRadioButtonChecked(ThemePanel);
+            ThemeHelper.SetRadioButtonDefaultItem(ThemePanel);
             BackGroundPanel.Children.Cast<RadioButton>().FirstOrDefault((RadioButton c) => c?.Tag?.ToString() == ApplicationConfig.GetSettings("BackgroundBrush"))!.IsChecked = true;
             OpacitySlider.Value = double.Parse(ApplicationConfig.GetSettings("BackgroundOpacity"));
             TintLuminosityOpacitySlider.Value = double.Parse(ApplicationConfig.GetSettings("BackgroundLuminosityOpacity"));
