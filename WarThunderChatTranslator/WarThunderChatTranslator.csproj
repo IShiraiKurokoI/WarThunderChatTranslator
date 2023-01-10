@@ -101,6 +101,7 @@
     <None Remove="Assets\Wide310x150Logo.scale-150.png" />
     <None Remove="Assets\Wide310x150Logo.scale-200.png" />
     <None Remove="Assets\Wide310x150Logo.scale-400.png" />
+    <None Remove="Dialogs\ColorPickerDialog.xaml" />
     <None Remove="Pages\AboutPage.xaml" />
     <None Remove="Pages\APIPage.xaml" />
     <None Remove="Pages\FontPage.xaml" />
@@ -122,6 +123,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="WinUICommunity.Common" Version="3.0.1" />
     <PackageReference Include="WinUICommunity.SettingsUI" Version="3.0.1" />
     <Manifest Include="$(ApplicationManifest)" />
@@ -171,6 +173,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\UpdatePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Dialogs\ColorPickerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="ShellPage.xaml">

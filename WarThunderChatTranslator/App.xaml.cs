@@ -21,6 +21,9 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUICommunity.Common.Helpers;
 using static System.Net.Mime.MediaTypeNames;
+using Newtonsoft.Json;
+using Windows.UI;
+using WarThunderChatTranslator.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -112,6 +115,14 @@ namespace WarThunderChatTranslator
             if (ApplicationConfig.GetSettings("FontStyle") == null)
             {
                 ApplicationConfig.SaveSettings("FontStyle", "Normal");
+            }
+            if (ApplicationConfig.GetSettings("FontColor") == null)
+            {
+                ApplicationConfig.SaveSettings("FontColor", "#FF000000");
+            }
+            if (ApplicationConfig.GetSettings("BackGroundColor") == null)
+            {
+                ApplicationConfig.SaveSettings("BackGroundColor", "#FFFFFFFF");
             }
             m_window.Activate();
         }
