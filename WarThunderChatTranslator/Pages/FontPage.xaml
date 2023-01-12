@@ -46,8 +46,7 @@
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8d2;" />
                                 </labs:SettingsCard.HeaderIcon>
-                                <ComboBox x:Name="FontFamilyPanel">
-                                </ComboBox>
+                                <ComboBox x:Name="FontFamilyPanel" ItemsSource="{x:Bind Fonts}" DisplayMemberPath="Item1" SelectedValuePath="Item2" SelectionChanged="FontFamilyPanel_SelectionChanged"/>
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                     Header="文字大小"
@@ -55,7 +54,7 @@
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8e9;" />
                                 </labs:SettingsCard.HeaderIcon>
-                                <TextBox x:Name="FontSizePanel" InputScope="Number" TextChanged="FontSizePanel_TextChanged"/>
+                                <NumberBox x:Name="FontSizePanel" SpinButtonPlacementMode="Compact" Minimum="1" SmallChange="2" LargeChange="10" ValueChanged="FontSizePanel_TextChanged"/>
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                     Header="文字样式"

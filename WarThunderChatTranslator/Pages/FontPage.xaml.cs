@@ -20,6 +20,8 @@ using WarThunderChatTranslator.Dialogs;
 using System.Diagnostics;
 using Windows.UI;
 using System.Text.RegularExpressions;
+using WarThunderChatTranslator.Helpers;
+using Windows.Globalization.NumberFormatting;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -34,34 +36,51 @@ namespace WarThunderChatTranslator.Pages
         public Color FontColor;
         public Brush PreviewBrush;
 
+        public List<Tuple<string, FontFamily>> Fonts { get; set; } 
+
+
         public FontPage()
         {
             string ColorString = ApplicationConfig.GetSettings("FontColor");
             FontColor = ToColor(ColorString);
             PreviewBrush = new SolidColorBrush(FontColor);
             this.InitializeComponent();
+            LoadFontFamilies();
         }
+
+        public async void LoadFontFamilies()
+        {
+            Fonts = new List<Tuple<string, FontFamily>>();
+            foreach(FontFamily fontFamily in FontHelper.GetFontFamilies())
+            {
+                Fonts.Add(new Tuple<string, FontFamily>(fontFamily.Source, fontFamily));
+            }
+            if (ApplicationConfig.GetSettings("FontFamily") != null)
+            {
+                FontFamilyPanel.SelectedIndex = Fonts.FindIndex( FontFamilyEqual);
+            }
+        }
+
+        private bool FontFamilyEqual(Tuple<string, FontFamily> obj)
+        {
+            return string.Equals(obj.Item1, ApplicationConfig.GetSettings("FontFamily"));
+        }
+
 
         private void FontStylePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplicationConfig.SaveSettings("FontStyle", ((ComboBoxItem)FontStylePanel.SelectedItem).Tag.ToString());
         }
 
-        private void FontSizePanel_TextChanged(object sender, TextChangedEventArgs e)
+        private void FontSizePanel_TextChanged(object sender, NumberBoxValueChangedEventArgs e)
         {
-            if(FontSizePanel.Text =="")
-            {
-                ApplicationConfig.SaveSettings("FontSize", "14");
-            }
-            else
-            {
-                ApplicationConfig.SaveSettings("FontSize", FontSizePanel.Text);
-            }
+            Debug.WriteLine(FontSizePanel.Value);
+            ApplicationConfig.SaveSettings("FontSize", FontSizePanel.Value.ToString());
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            FontSizePanel.Text = ApplicationConfig.GetSettings("FontSize");
+            FontSizePanel.Value = double.Parse(ApplicationConfig.GetSettings("FontSize"));
             switch (ApplicationConfig.GetSettings("FontStyle"))
             {
                 case "Normal":
@@ -104,6 +123,11 @@ namespace WarThunderChatTranslator.Pages
                 PreviewBrush = new SolidColorBrush(FontColor);
                 ColorPreview.Fill = PreviewBrush;
             }
+        }
+
+        private void FontFamilyPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplicationConfig.SaveSettings("FontFamily", ((FontFamily)FontFamilyPanel.SelectedValue).Source);
         }
     }
 }
