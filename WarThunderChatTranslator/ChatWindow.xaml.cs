@@ -24,6 +24,7 @@ using WarThunderChatTranslator.Helpers;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
+using NLog;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,16 +36,29 @@ namespace WarThunderChatTranslator
     /// </summary>
     public sealed partial class ChatWindow : Window
     {
+        public NLog.Logger logger;
         private OverlappedPresenter _presenter;
         public static ThemeManager themeManager { get; private set; }
         public ChatWindow()
         {
+            logger = NLog.LogManager.GetCurrentClassLogger();
             this.InitializeComponent();
             this.Title = "实时聊天界面";
             TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
             SetStyle(null, null);
             ConfigurationUpdateHelper.CallChatUpdate += SetStyle;
+            this.AppWindow.Changed += AppWindow_Changed;
         }
+
+        private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
+        {
+            ApplicationConfig.SaveSettings("ChatWidth", this.AppWindow.Size.Width.ToString());
+            ApplicationConfig.SaveSettings("ChatHeight", this.AppWindow.Size.Height.ToString());
+            ApplicationConfig.SaveSettings("ChatStartUpLoactionX", this.AppWindow.Position.X.ToString());
+            ApplicationConfig.SaveSettings("ChatStartUpLoactionY", this.AppWindow.Position.Y.ToString());
+            ConfigurationUpdateHelper.CallLocationUpdate(this,null);
+        }
+
         private TEnum GetEnum<TEnum>(string text) where TEnum : struct
         {
             if (!typeof(TEnum).GetTypeInfo().IsEnum)
@@ -65,7 +79,12 @@ namespace WarThunderChatTranslator
                 return;
             }
             appWindow.SetIcon("Assets/favicon.ico");
-            appWindow.Resize(new Windows.Graphics.SizeInt32(int.Parse(ApplicationConfig.GetSettings("ChatWidth")), int.Parse(ApplicationConfig.GetSettings("ChatHeight"))));
+            try{
+                appWindow.Resize(new Windows.Graphics.SizeInt32(int.Parse(ApplicationConfig.GetSettings("ChatWidth")), int.Parse(ApplicationConfig.GetSettings("ChatHeight"))));
+            }catch(Exception ex)
+            {
+                logger.Error(ex);
+            }
             _presenter = appWindow.Presenter as OverlappedPresenter;
             _presenter.IsMinimizable = false;
             _presenter.IsMaximizable = false;
@@ -74,10 +93,17 @@ namespace WarThunderChatTranslator
             Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
             if (displayArea is not null)
             {
-                var CenteredPosition = appWindow.Position;
-                CenteredPosition.X = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionX")));
-                CenteredPosition.Y = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionY")));
-                appWindow.Move(CenteredPosition);
+                try
+                {
+                    var CenteredPosition = appWindow.Position;
+                    CenteredPosition.X = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionX")));
+                    CenteredPosition.Y = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionY")));
+                    appWindow.Move(CenteredPosition);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex);
+                }
             }
         }
 

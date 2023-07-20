@@ -10,6 +10,7 @@ namespace WarThunderChatTranslator.Helpers
     public static class ConfigurationUpdateHelper
     {
         public static event RoutedEventHandler CallChatUpdate;
+        public static event RoutedEventHandler CallLocationSettingUpdate;
 
         public static MainWindow MainWindow { get;  set; }
 
@@ -20,6 +21,15 @@ namespace WarThunderChatTranslator.Helpers
                 CallChatUpdate(sender, e);
             }
         }
+
+        internal static void CallLocationUpdate(object sender, RoutedEventArgs e)
+        {
+            if (CallLocationSettingUpdate != null)
+            {
+                CallLocationSettingUpdate(sender, e);
+            }
+        }
+
         public static void CallClose(object sender, RoutedEventArgs e)
         {
             if (MainWindow != null)

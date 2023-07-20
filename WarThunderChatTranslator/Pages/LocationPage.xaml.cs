@@ -28,14 +28,30 @@ namespace WarThunderChatTranslator.Pages
     /// </summary>
     public sealed partial class LocationPage : Page
     {
-        bool SettingsInitialized = false;
+        public bool SettingsInitialized = false;
+        public bool modifying = false;
         public LocationPage()
         {
             this.InitializeComponent();
+            ConfigurationUpdateHelper.CallLocationSettingUpdate += ConfigurationUpdateHelper_CallLocationSettingUpdate;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private void ConfigurationUpdateHelper_CallLocationSettingUpdate(object sender, RoutedEventArgs e)
         {
+            if(ChatWidth == null)
+            {
+                return;
+            }
+            if(modifying)
+            {
+                return;
+            }
+            setvalue();
+        }
+
+        public void setvalue()
+        {
+            SettingsInitialized = false;
             ChatWidth.Text = ApplicationConfig.GetSettings("ChatWidth");
             ChatHeight.Text = ApplicationConfig.GetSettings("ChatHeight");
             ChatStartUpLoactionX.Text = ApplicationConfig.GetSettings("ChatStartUpLoactionX");
@@ -43,10 +59,16 @@ namespace WarThunderChatTranslator.Pages
             SettingsInitialized = true;
         }
 
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            setvalue();
+        }
+
         private void ChatWidth_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SettingsInitialized)
             {
+                modifying = true;
                 if (((TextBox)sender).Text == "")
                 {
                     ApplicationConfig.SaveSettings("ChatWidth", "500");
@@ -54,6 +76,7 @@ namespace WarThunderChatTranslator.Pages
                 }
                 ApplicationConfig.SaveSettings("ChatWidth", ((TextBox)sender).Text);
                 ConfigurationUpdateHelper.CallUpdate(null,null);
+                modifying = false;
             }
         }
 
@@ -62,6 +85,7 @@ namespace WarThunderChatTranslator.Pages
 
             if (SettingsInitialized)
             {
+                modifying = true;
                 if (((TextBox)sender).Text == "")
                 {
                     ApplicationConfig.SaveSettings("ChatHeight", "300");
@@ -69,6 +93,7 @@ namespace WarThunderChatTranslator.Pages
                 }
                 ApplicationConfig.SaveSettings("ChatHeight", ((TextBox)sender).Text);
                 ConfigurationUpdateHelper.CallUpdate(null, null);
+                modifying = false;
             }
         }
 
@@ -76,6 +101,7 @@ namespace WarThunderChatTranslator.Pages
         {
             if (SettingsInitialized)
             {
+                modifying = true;
                 if (((TextBox)sender).Text == "")
                 {
                     ApplicationConfig.SaveSettings("ChatStartUpLoactionX", "30");
@@ -83,6 +109,7 @@ namespace WarThunderChatTranslator.Pages
                 }
                 ApplicationConfig.SaveSettings("ChatStartUpLoactionX", ((TextBox)sender).Text);
                 ConfigurationUpdateHelper.CallUpdate(null, null);
+                modifying = false;
             }
         }
 
@@ -90,6 +117,7 @@ namespace WarThunderChatTranslator.Pages
         {
             if (SettingsInitialized)
             {
+                modifying = true;
                 if (((TextBox)sender).Text == "")
                 {
                     ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "350");
@@ -97,6 +125,7 @@ namespace WarThunderChatTranslator.Pages
                 }
                 ApplicationConfig.SaveSettings("ChatStartUpLoactionY", ((TextBox)sender).Text);
                 ConfigurationUpdateHelper.CallUpdate(null, null);
+                modifying = false;
             }
         }
     }
