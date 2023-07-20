@@ -16,7 +16,14 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using WarThunderChatTranslator.Configurations;
-using WinUICommunity.Common.Extensions;
+using WinUICommunity;
+using GTranslate.Translators;
+using static System.Net.Mime.MediaTypeNames;
+using System.Diagnostics;
+using WarThunderChatTranslator.Dialogs;
+using Microsoft.Windows.AppNotifications.Builder;
+using Microsoft.Windows.AppNotifications;
+using GTranslate.Results;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -28,6 +35,7 @@ namespace WarThunderChatTranslator.Pages
     /// </summary>
     public sealed partial class APIPage : Page
     {
+        AggregateTranslator translator = new AggregateTranslator();
         public APIPage()
         {
             this.InitializeComponent();
@@ -42,14 +50,19 @@ namespace WarThunderChatTranslator.Pages
                         APIPanel.SelectedIndex = 0;
                         break;
                     }
-                case "Baidu":
+                case "Google":
                     {
                         APIPanel.SelectedIndex = 1;
                         break;
                     }
-                case "Youdao":
+                case "Microsoft Azure":
                     {
                         APIPanel.SelectedIndex = 2;
+                        break;
+                    }
+                case "Yandex":
+                    {
+                        APIPanel.SelectedIndex = 3;
                         break;
                     }
             }
@@ -58,6 +71,38 @@ namespace WarThunderChatTranslator.Pages
         private void APIPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplicationConfig.SaveSettings("TranslateAPI", ((ComboBoxItem)APIPanel.SelectedItem).Tag.ToString());
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            InputDialog inputDialog = new InputDialog();
+            inputDialog.XamlRoot = this.XamlRoot;
+            inputDialog.Style = Microsoft.UI.Xaml.Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            var result = await inputDialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                Checking.Visibility = Visibility.Visible;
+                try
+                {
+                    var translationResult = await translator.TranslateAsync(inputDialog.text, "zh-CN");
+                    var builder = new AppNotificationBuilder()
+                        .AddText("∑≠“Î≥…π¶£°")
+                        .AddText("∑≠“ÎΩ·π˚£∫"+translationResult.Translation)
+                        .AddText("µ˜”√∑≠“Î∆˜£∫"+translationResult.Service);
+                    var notificationManager = AppNotificationManager.Default;
+                    notificationManager.Show(builder.BuildNotification());
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    var builder = new AppNotificationBuilder()
+                        .AddText("∑≠“Î ß∞‹£°")
+                        .AddText(ex.Message);
+                    var notificationManager = AppNotificationManager.Default;
+                    notificationManager.Show(builder.BuildNotification());
+                }
+                Checking.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

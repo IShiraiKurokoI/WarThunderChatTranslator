@@ -2,19 +2,21 @@
 <!-- Licensed under the MIT License. -->
 
 <Window
-    x:Class="WarThunderChatTranslator.MainWindow"
+    x:Class="WarThunderChatTranslator.ChatWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WarThunderChatTranslator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Grid Name="Root">
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    mc:Ignorable="d"
+    Closed="Window_Closed">
+    <Grid Name="Root" Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition />
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="AppTitleBar" Height="48">
+        <Grid x:Name="AppTitleBar" Height="48" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
                 <ColumnDefinition x:Name="IconColumn" Width="Auto"/>
@@ -24,18 +26,22 @@
                 <ColumnDefinition x:Name="RightDragColumn" Width="*"/>
                 <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
             </Grid.ColumnDefinitions>
-            <Image x:Name="TitleBarIcon" Source="/Assets/favicon.ico"
-                Grid.Column="1"
-                Width="24" Height="24"
-                Margin="8,0,0,0"/>
             <TextBlock x:Name="TitleTextBlock" 
-               Text="战争雷霆聊天翻译器设置界面" 
+               Text="实时聊天" 
                Style="{StaticResource CaptionTextBlockStyle}"
                FontSize="16"
                Grid.Column="2"
-               VerticalAlignment="Center"
-               Margin="4,0,0,0"/>
+               Margin="12,6,0,0"/>
+            <Button 
+                Grid.Column="5"
+                HorizontalAlignment="Right"
+                HorizontalContentAlignment="Center"
+                VerticalAlignment="Top"
+                BorderThickness="0"
+                Background="Transparent"
+                Click="Button_Click">
+                <FontIcon Glyph="&#xe713;"/>
+            </Button>
         </Grid>
-        <local:ShellPage Grid.Row="2"/>
     </Grid>
 </Window>

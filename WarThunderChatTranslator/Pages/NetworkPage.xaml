@@ -8,7 +8,7 @@
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:WinUICommunity.SettingsUI.Controls"
+    xmlns:controls="using:WinUICommunity"
     xmlns:converters="using:WarThunderChatTranslator.Converters"
     Background="Transparent"
     mc:Ignorable="d"
@@ -69,9 +69,9 @@
                         <StackPanel>
                             <TextBlock Text="网络代理模式" FontSize="20"/>
                             <StackPanel x:Name="ProxyPanel" Margin="0,10,0,10">
-                                <RadioButton Tag="Default" Content="不使用代理" Checked="RadioButton_Checked"/>
-                                <RadioButton Tag="System" Content="使用系统代理" Checked="RadioButton_Checked"/>
-                                <RadioButton x:Name="CustomProxy" Tag="Custom" Content="自定义" Checked="RadioButton_Checked"/>
+                                <RadioButton Tag="Default" Content="不使用代理" Checked="RadioButton_Checked" />
+                                <RadioButton Tag="System" Content="使用系统代理" Checked="RadioButton_Checked" IsEnabled="False"/>
+                                <RadioButton x:Name="CustomProxy" Tag="Custom" Content="自定义" Checked="RadioButton_Checked" IsEnabled="False"/>
                             </StackPanel>
                             <TextBlock Text="自定义代理设置" FontSize="20"/>
                             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">

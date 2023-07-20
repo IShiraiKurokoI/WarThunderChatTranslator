@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using WarThunderChatTranslator.Configurations;
+using WarThunderChatTranslator.Helpers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,6 +28,7 @@ namespace WarThunderChatTranslator.Pages
     /// </summary>
     public sealed partial class LocationPage : Page
     {
+        bool SettingsInitialized = false;
         public LocationPage()
         {
             this.InitializeComponent();
@@ -38,46 +40,64 @@ namespace WarThunderChatTranslator.Pages
             ChatHeight.Text = ApplicationConfig.GetSettings("ChatHeight");
             ChatStartUpLoactionX.Text = ApplicationConfig.GetSettings("ChatStartUpLoactionX");
             ChatStartUpLoactionY.Text = ApplicationConfig.GetSettings("ChatStartUpLoactionY");
+            SettingsInitialized = true;
         }
 
         private void ChatWidth_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (((TextBox)sender).Text == "")
+            if (SettingsInitialized)
             {
-                ApplicationConfig.SaveSettings("ChatWidth", "500");
-                return;
+                if (((TextBox)sender).Text == "")
+                {
+                    ApplicationConfig.SaveSettings("ChatWidth", "500");
+                    return;
+                }
+                ApplicationConfig.SaveSettings("ChatWidth", ((TextBox)sender).Text);
+                ConfigurationUpdateHelper.CallUpdate(null,null);
             }
-            ApplicationConfig.SaveSettings("ChatWidth", ((TextBox)sender).Text);
         }
 
         private void ChatHeight_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (((TextBox)sender).Text == "")
+
+            if (SettingsInitialized)
             {
-                ApplicationConfig.SaveSettings("ChatHeight", "300");
-                return;
+                if (((TextBox)sender).Text == "")
+                {
+                    ApplicationConfig.SaveSettings("ChatHeight", "300");
+                    return;
+                }
+                ApplicationConfig.SaveSettings("ChatHeight", ((TextBox)sender).Text);
+                ConfigurationUpdateHelper.CallUpdate(null, null);
             }
-            ApplicationConfig.SaveSettings("ChatHeight", ((TextBox)sender).Text);
         }
 
         private void ChatStartUpLoactionX_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (((TextBox)sender).Text == "")
+            if (SettingsInitialized)
             {
-                ApplicationConfig.SaveSettings("ChatStartUpLoactionX", "30");
-                return;
+                if (((TextBox)sender).Text == "")
+                {
+                    ApplicationConfig.SaveSettings("ChatStartUpLoactionX", "30");
+                    return;
+                }
+                ApplicationConfig.SaveSettings("ChatStartUpLoactionX", ((TextBox)sender).Text);
+                ConfigurationUpdateHelper.CallUpdate(null, null);
             }
-            ApplicationConfig.SaveSettings("ChatStartUpLoactionX", ((TextBox)sender).Text);
         }
 
         private void ChatStartUpLoactionY_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (((TextBox)sender).Text == "")
+            if (SettingsInitialized)
             {
-                ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "350");
-                return;
+                if (((TextBox)sender).Text == "")
+                {
+                    ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "350");
+                    return;
+                }
+                ApplicationConfig.SaveSettings("ChatStartUpLoactionY", ((TextBox)sender).Text);
+                ConfigurationUpdateHelper.CallUpdate(null, null);
             }
-            ApplicationConfig.SaveSettings("ChatStartUpLoactionY", ((TextBox)sender).Text);
         }
     }
 }

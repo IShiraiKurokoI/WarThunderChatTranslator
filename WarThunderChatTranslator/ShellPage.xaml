@@ -5,26 +5,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:helpers="using:WinUICommunity.Common.Helpers"
-    xmlns:views="using:WarThunderChatTranslator.Pages"
-    Loaded="UserControl_Loaded">
+    xmlns:helpers="using:WinUICommunity"
+    xmlns:views="using:WarThunderChatTranslator.Pages">
     <Grid>
         <NavigationView
             x:Name="navigationView"
             IsSettingsVisible="False"
             IsTitleBarAutoPaddingEnabled="False"
-            ItemInvoked="navigationView_ItemInvoked"
             IsBackButtonVisible="Collapsed"
             OpenPaneLength="240"
-            CompactPaneLength="65"
-            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}">
+            CompactPaneLength="65">
 
             <NavigationView.Resources>
                 <x:Double x:Key="NavigationViewItemOnLeftIconBoxHeight">24</x:Double>
             </NavigationView.Resources>
 
             <NavigationView.AutoSuggestBox>
-                <AutoSuggestBox Name="autoSuggestBox" QueryIcon="Find" PlaceholderText="搜索" TextChanged="OnControlsSearchBoxTextChanged" QuerySubmitted="OnControlsSearchBoxQuerySubmitted"/>
+                <AutoSuggestBox Name="autoSuggestBox" QueryIcon="Find" PlaceholderText="搜索"/>
             </NavigationView.AutoSuggestBox>
 
             <NavigationView.MenuItems>

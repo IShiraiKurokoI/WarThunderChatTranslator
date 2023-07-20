@@ -8,7 +8,7 @@
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:labs="using:WinUICommunity.SettingsUI.SettingsControls"
+    xmlns:labs="using:WinUICommunity"
     mc:Ignorable="d"
     Background="Transparent"
     Loaded="Page_Loaded">

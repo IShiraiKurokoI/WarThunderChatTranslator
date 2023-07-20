@@ -19,11 +19,18 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using WinUICommunity.Common.Helpers;
+using WinUICommunity;
 using static System.Net.Mime.MediaTypeNames;
 using Newtonsoft.Json;
 using Windows.UI;
 using WarThunderChatTranslator.Pages;
+using System.Diagnostics;
+using NLog;
+using Path = System.IO.Path;
+using Microsoft.Windows.AppNotifications.Builder;
+using Microsoft.Windows.AppNotifications;
+using System.Threading.Tasks;
+using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,30 +51,54 @@ namespace WarThunderChatTranslator
             this.InitializeComponent();
         }
 
+        public NLog.Logger logger;
+        public static ThemeManager themeManager { get; set; }
+
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow();
-            ThemeHelper.Initialize(m_window, BackdropType.MicaAlt);
+            //初始化日志记录
+            logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Info("--------程序启动--------");
+            logger.Info("日志记录初始化成功");
+            DeleteLog();
+            //注册全局异常捕获
+            System.Threading.Tasks.TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            App.Current.UnhandledException += App_UnhandledException;
+            Application.Current.UnhandledException += App_UnhandledException;
+            //初始化主题设置
+            ElementTheme SettingsTheme = ElementTheme.Default;
             if (ApplicationConfig.GetSettings("Theme") != null)
             {
-                ThemeHelper.ChangeTheme(GeneralHelper.GetEnum<ElementTheme>(ApplicationConfig.GetSettings("Theme")));
+                if (ApplicationConfig.GetSettings("Theme") == "Light")
+                {
+                    SettingsTheme = ElementTheme.Light;
+                }
+                if (ApplicationConfig.GetSettings("Theme") == "Dark")
+                {
+                    SettingsTheme = ElementTheme.Dark;
+                }
             }
-            if (ApplicationConfig.GetSettings("BackgroundBrush") == null)
+            else
             {
-                ApplicationConfig.SaveSettings("BackgroundBrush", "MicaAlt");
+                ApplicationConfig.SaveSettings("Theme", "Default");
             }
-            if (ApplicationConfig.GetSettings("BackgroundOpacity") == null)
+
+            m_window = new ChatWindow();
+
+            themeManager = ThemeManager.Initialize(m_window, new ThemeOptions
             {
-                ApplicationConfig.SaveSettings("BackgroundOpacity", "0.5");
-            }
-            if (ApplicationConfig.GetSettings("BackgroundLuminosityOpacity") == null)
-            {
-                ApplicationConfig.SaveSettings("BackgroundLuminosityOpacity", "0.5");
-            }
+                BackdropType = BackdropType.DesktopAcrylic,
+                ElementTheme = SettingsTheme,
+                TitleBarCustomization = new TitleBarCustomization
+                {
+                    TitleBarType = TitleBarType.AppWindow
+                }
+            });
             if (ApplicationConfig.GetSettings("NetworkProxyMode") == null)
             {
                 ApplicationConfig.SaveSettings("NetworkProxyMode", "Default");
@@ -104,10 +135,6 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("TranslateAPI", "Bing");
             }
-            //if (ApplicationConfig.GetSettings("FontFamily") == null)
-            //{
-            //    ApplicationConfig.SaveSettings("FontFamily", "Bing");
-            //}
             if (ApplicationConfig.GetSettings("FontSize") == null)
             {
                 ApplicationConfig.SaveSettings("FontSize", "14");
@@ -120,13 +147,108 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("FontColor", "#FF000000");
             }
-            if (ApplicationConfig.GetSettings("BackGroundColor") == null)
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(m_window);
+            Microsoft.UI.WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+            Microsoft.UI.Windowing.AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+            if (appWindow is not null)
             {
-                ApplicationConfig.SaveSettings("BackGroundColor", "#FFFFFFFF");
+                Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
+                if (displayArea is not null)
+                {
+                    var CenteredPosition = appWindow.Position;
+                    CenteredPosition.X = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionX")));
+                    CenteredPosition.Y = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionY")));
+                    appWindow.Move(CenteredPosition);
+                }
             }
             m_window.Activate();
         }
 
         private Window m_window;
+        public void DeleteLog()
+        {
+            try
+            {
+                string logDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\WTChatTranslator\\Log";
+                string logFilePrefix = "Log-WTChatTranslator-";
+                int daysThreshold = 3;
+                DateTime deletionDate = DateTime.Now.AddDays(-daysThreshold);
+                string[] logFiles = Directory.GetFiles(logDirectory, logFilePrefix + "*.log");
+
+                foreach (string logFile in logFiles)
+                {
+                    string fileName = Path.GetFileName(logFile);
+                    string dateString = fileName.Substring(logFilePrefix.Length, 10);
+                    DateTime logDate;
+
+                    if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out logDate))
+                    {
+                        if (logDate <= deletionDate)
+                        {
+                            File.Delete(logFile);
+                            logger.Info("删除过期日志: " + fileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+            }
+        }
+
+        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            // 处理未处理的异常
+            HandleException(e.Exception);
+            // 将事件标记为已处理，以防止应用程序崩溃
+            e.Handled = true;
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            try
+            {
+                if (e.Exception is Exception exception)
+                {
+                    HandleException(exception);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+            finally
+            {
+                e.SetObserved();
+            }
+        }
+
+        //非UI线程未捕获异常处理事件(例如自己创建的一个子线程)
+        private void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                if (e.ExceptionObject is Exception exception)
+                {
+                    HandleException(exception);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        //日志记录
+        private void HandleException(Exception ex)
+        {
+            var builder = new AppNotificationBuilder()
+                .AddText(ex.Message + ex.StackTrace);
+            var notificationManager = AppNotificationManager.Default;
+            notificationManager.Show(builder.BuildNotification());
+            //记录日志
+            logger.Error(ex.ToString());
+        }
     }
 }

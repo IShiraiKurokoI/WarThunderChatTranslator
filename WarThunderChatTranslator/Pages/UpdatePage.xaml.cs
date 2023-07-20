@@ -16,12 +16,15 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.ApplicationModel;
-using WinUICommunity.Common.Helpers;
+using WinUICommunity;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Helpers;
 using System.Diagnostics;
 using WarThunderChatTranslator.Configurations;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.Windows.AppNotifications.Builder;
+using Microsoft.Windows.AppNotifications;
+using NLog;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,6 +36,7 @@ namespace WarThunderChatTranslator.Pages
     /// </summary>
     public sealed partial class UpdatePage : Page
     {
+        public NLog.Logger logger;
         public string Version = string.Format("V{0}.{1}.{2}.{3}",
                         Package.Current.Id.Version.Major,
                         Package.Current.Id.Version.Minor,
@@ -40,53 +44,74 @@ namespace WarThunderChatTranslator.Pages
                         Package.Current.Id.Version.Revision);
         public UpdatePage()
         {
+            logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Info("打开参数配置页面");
             this.InitializeComponent();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            await CheckUpdate();
+            CheckUpdate();
         }
 
-        private async Task CheckUpdate()
+        private void CheckUpdate()
         {
-            try
-            {
-                Checking.Visibility = Visibility.Visible;
-                var ver = await WarThunderChatTranslator.Helpers.UpdateHelper.CheckUpdateAsync("IShiraiKurokoI", "WarThunderChatTranslator");
-
-                string SizeString = "";
-                var dic = ByteConversionGBMBKB(ver.Assets[0].Size);
-                foreach (KeyValuePair<string, double> key in dic)
+            var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+            Task.Run(async () => {
+                try
                 {
-                    var filetype = key.Key;
-                    var filesize = key.Value;
-                    SizeString = filesize + filetype;
-                }
+                    var ver = await WarThunderChatTranslator.Helpers.UpdateHelper.CheckUpdateAsync("IShiraiKurokoI", "WarThunderChatTranslator");
+                    string SizeString = "";
+                    var dic = ByteConversionGBMBKB(ver.Assets[0].Size);
+                    foreach (KeyValuePair<string, double> key in dic)
+                    {
+                        var filetype = key.Key;
+                        var filesize = key.Value;
+                        SizeString = filesize + filetype;
+                    }
 
-                if (ver.IsExistNewVersion)
-                {
-                    InfoBar.Title = $"检测到新版本：V{ver.TagName}  发布于{ver.PublishedAt}  大小{SizeString}";
-                    InfoBar.Severity = InfoBarSeverity.Informational;
-                    Windows.System.Launcher.LaunchUriAsync(new Uri(ver.Assets[0].Url));
-                    VersionPage.NavigateUri = new Uri(ver.HtmlUrl.ToString());
-                    VersionPage.Visibility= Visibility.Visible;
+                    if (ver.IsExistNewVersion)
+                    {
+                        dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, async () =>
+                        {
+                            logger.Info($"发现新版本{ver.TagName}");
+                            ContentDialog dialog = new ContentDialog();
+                            dialog.XamlRoot = this.XamlRoot;
+                            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                            dialog.Title = "发现新版本！";
+                            dialog.PrimaryButtonText = "前往更新";
+                            dialog.CloseButtonText = "暂不更新";
+                            dialog.DefaultButton = ContentDialogButton.Primary;
+                            dialog.Content = $"检测到新版本：V{ver.TagName}\n发布时间：{ver.PublishedAt}\n大小：{SizeString}";
+                            var result = await dialog.ShowAsync();
+                            if (result == ContentDialogResult.Primary)
+                            {
+                                await Windows.System.Launcher.LaunchUriAsync(new Uri(ver.HtmlUrl.ToString()));
+                            }
+                        });
+                    }
+                    else
+                    {
+                        var builder = new AppNotificationBuilder()
+                            .AddText($"您当前使用的是最新版本！");
+                        var notificationManager = AppNotificationManager.Default;
+                        notificationManager.Show(builder.BuildNotification());
+                    }
+                    dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
+                    {
+                        LastUpdateCheckDate.Text = DateTime.Now.ToString();
+                        ApplicationConfig.SaveSettings("LastUpdateCheckDate", LastUpdateCheckDate.Text);
+                    });
                 }
-                else
+                catch (Exception e)
                 {
-                    VersionPage.Visibility = Visibility.Collapsed;
+                    logger.Error(e);
+                    var builder = new AppNotificationBuilder()
+                        .AddText($"检查更新失败：{e.Message}");
+                    var notificationManager = AppNotificationManager.Default;
+                    notificationManager.Show(builder.BuildNotification());
                 }
-
-                Checking.Visibility = Visibility.Collapsed;
-                LastUpdateCheckDate.Text = DateTime.Now.ToString();
-                ApplicationConfig.SaveSettings("LastUpdateCheckDate", LastUpdateCheckDate.Text);
-            }
-            catch (Exception e)
-            {
-                InfoBar.Title = $"检查更新失败：{e.Message}";
-                InfoBar.Severity = InfoBarSeverity.Error;
-                Checking.Visibility = Visibility.Collapsed;
-            }
+            });
         }
 
         public Dictionary<string, double> ByteConversionGBMBKB(int KSize)

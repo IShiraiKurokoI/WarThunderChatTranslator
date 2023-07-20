@@ -8,10 +8,9 @@
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:WinUICommunity.SettingsUI.Controls"
+    xmlns:controls="using:WinUICommunity"
     xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
-    xmlns:labs="using:WinUICommunity.SettingsUI.SettingsControls"
     mc:Ignorable="d"
     x:Name="Page">
     <Page.Resources>
@@ -74,97 +73,21 @@
                             <controls:SettingsGroup
                                 Margin="0,-30,0,0"
                                 Header="全局主题">
-                                <labs:SettingsCard
+                                <controls:SettingsCard
                                     Header="全局主题模式"
                                 MaxWidth="2000">
-                                    <labs:SettingsCard.HeaderIcon>
+                                    <controls:SettingsCard.HeaderIcon>
                                         <FontIcon Glyph="&#xe771;" />
-                                    </labs:SettingsCard.HeaderIcon>
+                                    </controls:SettingsCard.HeaderIcon>
                                     <ComboBox x:Name="ThemePanel" SelectionChanged="ThemePanel_SelectionChanged">
                                         <ComboBoxItem Tag="Light" Content="浅色"/>
                                         <ComboBoxItem Tag="Dark" Content="深色" />
                                         <ComboBoxItem Tag="Default" Content="跟随系统" x:Name="Default"/>
                                     </ComboBox>
-                                    <labs:SettingsCard.Description>
+                                    <controls:SettingsCard.Description>
                                         <HyperlinkButton Content="点此打开系统主题设置" Click="HyperlinkButton_Click" Visibility="{x:Bind Default.IsSelected,Mode=OneWay, Converter={StaticResource VisibilityBoolenConverter}}"/>
-                                    </labs:SettingsCard.Description>
-                                </labs:SettingsCard>
-                            </controls:SettingsGroup>
-                            <controls:SettingsGroup
-                                Margin="0,-20,0,0"
-                                Header="聊天界面背景">
-                                <labs:SettingsCard
-                                    Header="背景样式"
-                                MaxWidth="2000">
-                                    <labs:SettingsCard.HeaderIcon>
-                                        <FontIcon Glyph="&#xef1f;" />
-                                    </labs:SettingsCard.HeaderIcon>
-                                    <ComboBox x:Name="BackGroundPanel" SelectionChanged="BackGroundPanel_SelectionChanged">
-                                        <ComboBoxItem Tag="MicaAlt" x:Name="MicaAlt" Content="云母（Mica Alt）"/>
-                                        <ComboBoxItem Tag="Acrylic" x:Name="Acrylic" Content="亚克力" />
-                                    </ComboBox>
-                                </labs:SettingsCard>
-                                <labs:SettingsCard
-                                    Header="背景颜色"
-                                    MaxWidth="2000">
-                                    <labs:SettingsCard.HeaderIcon>
-                                        <FontIcon Glyph="&#xe790;" />
-                                    </labs:SettingsCard.HeaderIcon>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Rectangle Fill="{x:Bind PreviewBrush,Mode=TwoWay}" Height="30" Width="30" Margin="0,0,10,0" x:Name="ColorPreview"/>
-                                        <Button Content="选择颜色" Click="Button_Click"/>
-                                    </StackPanel>
-                                </labs:SettingsCard>
-                                <labs:SettingsCard
-                                    Header="背景不透明度"
-                                    MaxWidth="2000"
-                                    IsEnabled="{x:Bind Acrylic.IsSelected,Mode=OneWay}">
-                                    <labs:SettingsCard.HeaderIcon>
-                                        <FontIcon Glyph="&#xe7fb;" />
-                                    </labs:SettingsCard.HeaderIcon>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{x:Bind OpacitySlider.Value,Mode=OneWay,Converter={StaticResource DoubleConverter}}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Width="300" SmallChange="0.001" StepFrequency="0.001" HorizontalAlignment="Left" IsFocusEngagementEnabled="False" AutomationProperties.Name="背景不透明度" ValueChanged="OpacitySlider_ValueChanged"/>
-                                    </StackPanel>
-                                </labs:SettingsCard>
-                                <labs:SettingsCard
-                                    x:Name="LuminosityCard"
-                                    Header="背景光度不透明度"
-                                    MaxWidth="2000"
-                                    IsEnabled="{x:Bind Acrylic.IsSelected,Mode=OneWay}"                                    >
-                                    <labs:SettingsCard.HeaderIcon>
-                                        <FontIcon Glyph="&#xe7f9;" />
-                                    </labs:SettingsCard.HeaderIcon>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{x:Bind TintLuminosityOpacitySlider.Value,Mode=OneWay,Converter={StaticResource DoubleConverter}}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <Slider x:Name="TintLuminosityOpacitySlider" Minimum="0" Maximum="1" Width="300" SmallChange="0.001" StepFrequency="0.001" HorizontalAlignment="Left" IsFocusEngagementEnabled="False" AutomationProperties.Name="背景光度不透明度" ValueChanged="TintLuminosityOpacitySlider_ValueChanged"/>
-                                    </StackPanel>
-                                </labs:SettingsCard>
-                            </controls:SettingsGroup>
-                            <controls:SettingsGroup
-                                Margin="0,-20,0,0"
-                                Header="亚克力效果预览"
-                                    IsEnabled="{x:Bind Acrylic.IsSelected,Mode=OneWay}" >
-                                <StackPanel
-                                    HorizontalAlignment="Left"
-                                    Visibility="{x:Bind Acrylic.IsSelected,Mode=OneWay, Converter={StaticResource VisibilityBoolenConverter}}">
-                                    <Grid MinWidth="800" MinHeight="200">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="252"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid>
-                                            <Rectangle Fill="Aqua" Height="200" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <Ellipse Fill="Magenta" Height="152" Width="152" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            <Rectangle Fill="Yellow" Height="100" Width="80" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                                        </Grid>
-                                        <Rectangle Margin="12" RadiusX="10" RadiusY="10">
-                                            <Rectangle.Fill>
-                                                <media:AcrylicBrush TintOpacity="{x:Bind OpacitySlider.Value, Mode=OneWay}" TintLuminosityOpacity="{x:Bind TintLuminosityOpacitySlider.Value, Mode=OneWay}" TintColor="{x:Bind BackGroundColor,Mode=TwoWay}" FallbackColor="#FF008000" x:Name="AcrylicPreview"/>
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                    </Grid>
-                                </StackPanel>
+                                    </controls:SettingsCard.Description>
+                                </controls:SettingsCard>
                             </controls:SettingsGroup>
                         </StackPanel>
                     </ContentPresenter.Content>

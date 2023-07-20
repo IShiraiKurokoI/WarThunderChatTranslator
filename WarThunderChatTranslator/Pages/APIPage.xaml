@@ -8,8 +8,7 @@
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:labs="using:WinUICommunity.SettingsUI.SettingsControls"
-    xmlns:controls="using:WinUICommunity.SettingsUI.Controls"
+    xmlns:labs="using:WinUICommunity"
     mc:Ignorable="d"
     Background="Transparent"
     Loaded="Page_Loaded">
@@ -42,15 +41,34 @@
                         <StackPanel>
                             <labs:SettingsCard Description="选择翻译器使用的翻译提供方"
                                     Header="翻译器API"
+                                               IsEnabled="False"
                                 MaxWidth="2000">
                                 <labs:SettingsCard.HeaderIcon>
-                                    <FontIcon Glyph="&#xE799;" />
+                                    <FontIcon Glyph="&#xe8c1;" />
                                 </labs:SettingsCard.HeaderIcon>
                                 <ComboBox x:Name="APIPanel" SelectionChanged="APIPanel_SelectionChanged">
                                     <ComboBoxItem Tag="Bing">Bing</ComboBoxItem>
-                                    <ComboBoxItem Tag="Baidu">Baidu</ComboBoxItem>
-                                    <ComboBoxItem Tag="Youdao">有道</ComboBoxItem>
+                                    <ComboBoxItem Tag="Google">Google</ComboBoxItem>
+                                    <ComboBoxItem Tag="Microsoft Azure">Microsoft Azure</ComboBoxItem>
+                                    <ComboBoxItem Tag="Yandex">Yandex</ComboBoxItem>
                                 </ComboBox>
+                            </labs:SettingsCard>
+                            <labs:SettingsCard Description="测试翻译功能"
+                                    Header="测试"
+                                MaxWidth="2000">
+                                <labs:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xf87b;" />
+                                </labs:SettingsCard.HeaderIcon>
+                                <StackPanel
+                                                Orientation="Horizontal"
+                                                Spacing="18">
+                                    <ProgressRing 
+                                                    Width="24"
+                                                    Height="24" 
+                                                Visibility="Collapsed"
+                                                x:Name="Checking"/>
+                                    <Button Content="测试翻译功能" Click="Button_Click"/>
+                                </StackPanel>
                             </labs:SettingsCard>
                         </StackPanel>
                     </ContentPresenter.Content>
