@@ -190,6 +190,9 @@
     <Page Update="ChatWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ShellPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
