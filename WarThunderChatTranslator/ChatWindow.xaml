@@ -24,6 +24,7 @@
                 <ColumnDefinition x:Name="LeftDragColumn" Width="*"/>
                 <ColumnDefinition x:Name="SearchColumn" Width="Auto"/>
                 <ColumnDefinition x:Name="RightDragColumn" Width="*"/>
+                <ColumnDefinition x:Name="RightButton" Width="42"/>
                 <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="TitleTextBlock" 
@@ -33,7 +34,7 @@
                Grid.Column="2"
                Margin="12,6,0,0"/>
             <Button 
-                Grid.Column="5"
+                Grid.Column="6"
                 HorizontalAlignment="Right"
                 HorizontalContentAlignment="Center"
                 VerticalAlignment="Top"

@@ -44,7 +44,6 @@ namespace WarThunderChatTranslator
             logger = NLog.LogManager.GetCurrentClassLogger();
             this.InitializeComponent();
             this.Title = "实时聊天界面";
-            TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
             SetStyle(null, null);
             ConfigurationUpdateHelper.CallChatUpdate += SetStyle;
             this.AppWindow.Changed += AppWindow_Changed;
@@ -57,6 +56,14 @@ namespace WarThunderChatTranslator
             ApplicationConfig.SaveSettings("ChatStartUpLoactionX", this.AppWindow.Position.X.ToString());
             ApplicationConfig.SaveSettings("ChatStartUpLoactionY", this.AppWindow.Position.Y.ToString());
             ConfigurationUpdateHelper.CallLocationUpdate(this,null);
+            try
+            {
+                TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
+            }
+            catch
+            {
+
+            }
         }
 
         private TEnum GetEnum<TEnum>(string text) where TEnum : struct
@@ -105,6 +112,8 @@ namespace WarThunderChatTranslator
                     logger.Error(ex);
                 }
             }
+
+            TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
         }
 
         private MainWindow m_window;
