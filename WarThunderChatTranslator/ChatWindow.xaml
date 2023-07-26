@@ -29,12 +29,14 @@
                 <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="TitleTextBlock" 
+               IsTabStop="False"
                Text="实时聊天" 
                Style="{StaticResource CaptionTextBlockStyle}"
                FontSize="16"
                Grid.Column="2"
                Margin="12,6,0,0"/>
             <Button 
+                IsTabStop="False"
                 Grid.Column="6"
                 Margin="0,3,0,0"
                 HorizontalAlignment="Right"
@@ -48,12 +50,12 @@
         </Grid>
         <ListView
                     x:Name="MessageList"
+                    IsTabStop="False"
                     BorderThickness="1"
                     Grid.Row="1" 
                     VerticalAlignment="Stretch"
                     Background="Transparent"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
-                    ScrollViewer.IsDeferredScrollingEnabled="True"
                     ItemsSource="{x:Bind chatMessageslist,Mode=TwoWay}"
                     SelectionMode="None"
                     Loaded="MessageList_Loaded">
@@ -62,9 +64,9 @@
             </ListView.Resources>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="msg:ChatMessage">
-                    <Grid Height="Auto" Padding="0" Margin="0,0,0,0" HorizontalAlignment="Stretch">
-                        <StackPanel Padding="2,0,0,2" Margin="0" CornerRadius="{StaticResource ControlCornerRadius}">
-                            <TextBlock Text="{x:Bind Path=PrettyMessage, Mode=TwoWay}"  Padding="0" FontSize="14" TextWrapping="Wrap"/>
+                    <Grid Height="Auto" Padding="0" Margin="0,0,0,0" HorizontalAlignment="Stretch" IsTabStop="False">
+                        <StackPanel Padding="2,0,0,2" Margin="0" IsTabStop="False" CornerRadius="{StaticResource ControlCornerRadius}">
+                            <TextBlock Text="{x:Bind Path=PrettyMessage, Mode=TwoWay}"  Padding="0" FontSize="14" IsTabStop="False" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
@@ -73,6 +75,7 @@
                 <ItemsPanelTemplate>
                     <ItemsStackPanel 
                                 ItemsUpdatingScrollMode="KeepLastItemInView" 
+                                IsTabStop="False"
                                 VerticalAlignment="Bottom"
                                 GroupPadding="0"
                                 FocusVisualMargin="0"

@@ -32,6 +32,8 @@ using WarThunderChatTranslator.Entities;
 using Microsoft.WindowsAppSDK.Runtime;
 using static WinUICommunity.LanguageDictionary;
 using System.Collections.ObjectModel;
+using GTranslate.Translators;
+using WarThunderChatTranslator.Dialogs;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -215,6 +217,8 @@ namespace WarThunderChatTranslator
             });
         }
 
+        AggregateTranslator translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
+
         async Task GetMsg(Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue)
         {
             while (true)
@@ -269,7 +273,9 @@ namespace WarThunderChatTranslator
                                     }
                                     PrettyMessage += message.Sender;
                                     PrettyMessage += ": ";
-                                    PrettyMessage += message.Msg.Replace("\t", "");
+                                    var translationResult = await translator.TranslateAsync(message.Msg.Replace("\t", ""), "zh-CN");
+                                    message.TranslatedMessage = translationResult.Translation;
+                                    PrettyMessage += message.TranslatedMessage;
                                     dispatcherQueue.TryEnqueue(() =>
                                     {
                                         message.PrettyMessage = PrettyMessage;
