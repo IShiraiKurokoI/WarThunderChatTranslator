@@ -31,6 +31,7 @@ namespace WarThunderChatTranslator
         public MainWindow()
         {
             this.InitializeComponent();
+            this.Title = "∑≠“Î∆˜…Ë÷√ΩÁ√Ê";
             Instance = this;
             TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
 

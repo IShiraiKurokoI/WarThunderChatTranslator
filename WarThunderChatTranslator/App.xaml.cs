@@ -113,19 +113,19 @@ namespace WarThunderChatTranslator
             }
             if (ApplicationConfig.GetSettings("ChatWidth") == null)
             {
-                ApplicationConfig.SaveSettings("ChatWidth", "500");
+                ApplicationConfig.SaveSettings("ChatWidth", "575");
             }
             if (ApplicationConfig.GetSettings("ChatHeight") == null)
             {
-                ApplicationConfig.SaveSettings("ChatHeight", "300");
+                ApplicationConfig.SaveSettings("ChatHeight", "200");
             }
             if (ApplicationConfig.GetSettings("ChatStartUpLoactionX") == null)
             {
-                ApplicationConfig.SaveSettings("ChatStartUpLoactionX", "30");
+                ApplicationConfig.SaveSettings("ChatStartUpLoactionX", "5");
             }
             if (ApplicationConfig.GetSettings("ChatStartUpLoactionY") == null)
             {
-                ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "350");
+                ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "340");
             }
             if (ApplicationConfig.GetSettings("LastUpdateCheckDate") == null)
             {
@@ -133,7 +133,7 @@ namespace WarThunderChatTranslator
             }
             if (ApplicationConfig.GetSettings("TranslateAPI") == null)
             {
-                ApplicationConfig.SaveSettings("TranslateAPI", "Bing");
+                ApplicationConfig.SaveSettings("TranslateAPI", "Yandex");
             }
             if (ApplicationConfig.GetSettings("FontSize") == null)
             {

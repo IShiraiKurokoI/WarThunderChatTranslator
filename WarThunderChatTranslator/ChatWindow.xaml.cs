@@ -25,6 +25,13 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using NLog;
+using System.Runtime.CompilerServices;
+using System.Net.Http;
+using System.Threading.Tasks;
+using WarThunderChatTranslator.Entities;
+using Microsoft.WindowsAppSDK.Runtime;
+using static WinUICommunity.LanguageDictionary;
+using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -39,6 +46,8 @@ namespace WarThunderChatTranslator
         public NLog.Logger logger;
         private OverlappedPresenter _presenter;
         public static ThemeManager themeManager { get; private set; }
+        public static ListView listBox;
+
         public ChatWindow()
         {
             logger = NLog.LogManager.GetCurrentClassLogger();
@@ -47,23 +56,12 @@ namespace WarThunderChatTranslator
             SetStyle(null, null);
             ConfigurationUpdateHelper.CallChatUpdate += SetStyle;
             this.AppWindow.Changed += AppWindow_Changed;
+            listBox = MessageList;
         }
 
-        private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
+        public static ListView getList()
         {
-            ApplicationConfig.SaveSettings("ChatWidth", this.AppWindow.Size.Width.ToString());
-            ApplicationConfig.SaveSettings("ChatHeight", this.AppWindow.Size.Height.ToString());
-            ApplicationConfig.SaveSettings("ChatStartUpLoactionX", this.AppWindow.Position.X.ToString());
-            ApplicationConfig.SaveSettings("ChatStartUpLoactionY", this.AppWindow.Position.Y.ToString());
-            ConfigurationUpdateHelper.CallLocationUpdate(this,null);
-            try
-            {
-                TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
-            }
-            catch
-            {
-
-            }
+            return listBox;
         }
 
         private TEnum GetEnum<TEnum>(string text) where TEnum : struct
@@ -86,9 +84,11 @@ namespace WarThunderChatTranslator
                 return;
             }
             appWindow.SetIcon("Assets/favicon.ico");
-            try{
+            try
+            {
                 appWindow.Resize(new Windows.Graphics.SizeInt32(int.Parse(ApplicationConfig.GetSettings("ChatWidth")), int.Parse(ApplicationConfig.GetSettings("ChatHeight"))));
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 logger.Error(ex);
             }
@@ -120,10 +120,11 @@ namespace WarThunderChatTranslator
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(ConfigurationUpdateHelper.MainWindow==null)
+            if (ConfigurationUpdateHelper.MainWindow == null)
             {
                 CreateSettingWindow();
-            }else
+            }
+            else
             {
                 if (ConfigurationUpdateHelper.MainWindow.AppWindow != null)
                 {
@@ -134,7 +135,7 @@ namespace WarThunderChatTranslator
                     CreateSettingWindow();
                 }
             }
-            
+
         }
 
         public void CreateSettingWindow()
@@ -180,7 +181,148 @@ namespace WarThunderChatTranslator
 
         private void Window_Closed(object sender, WindowEventArgs args)
         {
-            ConfigurationUpdateHelper.CallClose(null,null);
+            ConfigurationUpdateHelper.CallClose(null, null);
+        }
+
+        public class ChatMessageEqualityComparer : IEqualityComparer<ChatMessage>
+        {
+            public bool Equals(ChatMessage x, ChatMessage y)
+            {
+                if (x == null && y == null)
+                    return true;
+                if (x == null || y == null)
+                    return false;
+
+                return x.Id == y.Id;
+            }
+
+            public int GetHashCode(ChatMessage obj)
+            {
+                return obj.Id.GetHashCode();
+            }
+        }
+
+        public HashSet<ChatMessage> chatMessages { get; set; } = new HashSet<ChatMessage>(new ChatMessageEqualityComparer());
+        public ObservableCollection<ChatMessage> chatMessageslist { get; set; } = new ObservableCollection<ChatMessage>(); 
+
+        private void MessageList_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+            var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+            Task.Run(async () =>
+            {
+                GetMsg(dispatcherQueue);
+            });
+        }
+
+        async Task GetMsg(Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue)
+        {
+            while (true)
+            {
+                try
+                {
+                    int lastid = 0;
+                    if (chatMessages.Count > 0)
+                    {
+                        lastid = chatMessages.Last().Id;
+                    }
+                    string apiUrl = "http://127.0.0.1:8111/gamechat?lastId=" + lastid;
+                    using (var httpClient = new HttpClient())
+                    {
+                        HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string json = await response.Content.ReadAsStringAsync();
+                            dynamic data = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+
+                            foreach (var item in data)
+                            {
+                                ChatMessage message = new ChatMessage
+                                {
+                                    Id = item.id,
+                                    Sender = item.sender,
+                                    Mode = item.mode,
+                                    Msg = item.msg,
+                                    Enemy = item.enemy,
+                                    Time = item.time
+                                };
+                                if (!string.IsNullOrEmpty(message.Sender))
+                                {
+                                    dispatcherQueue.TryEnqueue(() =>
+                                    {
+                                        chatMessages.Add(message);
+                                    });
+                                }
+                            }
+                            foreach (var message in chatMessages)
+                            {
+                                if (string.IsNullOrEmpty(message.PrettyMessage))
+                                {
+                                    string PrettyMessage = FormatTimeToMinutesSeconds(message.Time);
+                                    if (message.Enemy)
+                                    {
+                                        PrettyMessage += " [所有人] ";
+                                    }
+                                    else
+                                    {
+                                        PrettyMessage += " [友军] ";
+                                    }
+                                    PrettyMessage += message.Sender;
+                                    PrettyMessage += ": ";
+                                    PrettyMessage += message.Msg.Replace("\t", "");
+                                    dispatcherQueue.TryEnqueue(() =>
+                                    {
+                                        message.PrettyMessage = PrettyMessage;
+                                    });
+                                }
+                            }
+                            List<ChatMessage> list = chatMessages.ToList();
+                            if ((list.Count > chatMessageslist.Count)&& (list.Count>0))
+                            {
+                                ObservableCollection<ChatMessage> collection = chatMessageslist.Clone();
+                                for(int i = chatMessageslist.Count;i< list.Count; i++)
+                                {
+                                    collection.Add(list[i]);
+                                }
+                                dispatcherQueue.TryEnqueue(() =>
+                                {
+                                    chatMessageslist = collection;
+                                    MessageList.ItemsSource = chatMessageslist;
+                                });
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+
+                await Task.Delay(500);
+            }
+        }
+
+        static string FormatTimeToMinutesSeconds(int timeInSeconds)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
+            return $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+        }
+
+        private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
+        {
+            ApplicationConfig.SaveSettings("ChatWidth", this.AppWindow.Size.Width.ToString());
+            ApplicationConfig.SaveSettings("ChatHeight", this.AppWindow.Size.Height.ToString());
+            ApplicationConfig.SaveSettings("ChatStartUpLoactionX", this.AppWindow.Position.X.ToString());
+            ApplicationConfig.SaveSettings("ChatStartUpLoactionY", this.AppWindow.Position.Y.ToString());
+            ConfigurationUpdateHelper.CallLocationUpdate(this, null);
+            try
+            {
+                TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
+            }
+            catch
+            {
+
+            }
         }
     }
 }

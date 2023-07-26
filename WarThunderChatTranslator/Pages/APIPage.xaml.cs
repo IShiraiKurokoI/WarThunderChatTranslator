@@ -24,6 +24,7 @@ using WarThunderChatTranslator.Dialogs;
 using Microsoft.Windows.AppNotifications.Builder;
 using Microsoft.Windows.AppNotifications;
 using GTranslate.Results;
+using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,7 +36,7 @@ namespace WarThunderChatTranslator.Pages
     /// </summary>
     public sealed partial class APIPage : Page
     {
-        AggregateTranslator translator = new AggregateTranslator();
+        AggregateTranslator translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
         public APIPage()
         {
             this.InitializeComponent();
@@ -45,22 +46,22 @@ namespace WarThunderChatTranslator.Pages
         {
             switch(ApplicationConfig.GetSettings("TranslateAPI"))
             {
-                case "Bing":
+                case "Yandex":
                     {
                         APIPanel.SelectedIndex = 0;
                         break;
                     }
-                case "Google":
+                case "Bing":
                     {
                         APIPanel.SelectedIndex = 1;
                         break;
                     }
-                case "Microsoft Azure":
+                case "Google":
                     {
                         APIPanel.SelectedIndex = 2;
                         break;
                     }
-                case "Yandex":
+                case "Microsoft":
                     {
                         APIPanel.SelectedIndex = 3;
                         break;
@@ -91,6 +92,7 @@ namespace WarThunderChatTranslator.Pages
                         .AddText("µ÷ÓÃ·­ÒëÆ÷£º"+translationResult.Service);
                     var notificationManager = AppNotificationManager.Default;
                     notificationManager.Show(builder.BuildNotification());
+                    ChatWindow.getList().Items.Add(translationResult.Translation);
                 }
                 catch (Exception ex)
                 {

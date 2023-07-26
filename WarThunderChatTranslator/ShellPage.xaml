@@ -20,10 +20,6 @@
                 <x:Double x:Key="NavigationViewItemOnLeftIconBoxHeight">24</x:Double>
             </NavigationView.Resources>
 
-            <NavigationView.AutoSuggestBox>
-                <AutoSuggestBox Name="autoSuggestBox" QueryIcon="Find" PlaceholderText="搜索"/>
-            </NavigationView.AutoSuggestBox>
-
             <NavigationView.MenuItems>
                 <NavigationViewItem
                     Margin="0,0,12,0"
