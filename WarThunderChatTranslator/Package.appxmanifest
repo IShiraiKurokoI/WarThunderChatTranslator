@@ -9,7 +9,7 @@
   IgnorableNamespaces="uap rescap com desktop">
 
   <Identity
-    Name="fae40801-552a-4afc-8a9e-423048be63b5"
+    Name="WarThunderChatTranslator"
     Publisher="CN=Shirai_Kuroko"
     Version="1.0.0.0" />
 

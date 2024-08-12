@@ -3,28 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using Windows.ApplicationModel;
-using WinUICommunity;
 using System.Threading.Tasks;
-using WarThunderChatTranslator.Helpers;
-using System.Diagnostics;
 using WarThunderChatTranslator.Configurations;
-using System.Runtime.ConstrainedExecution;
-using Microsoft.Windows.AppNotifications.Builder;
-using Microsoft.Windows.AppNotifications;
-using NLog;
+using Windows.UI.Notifications;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -92,10 +76,11 @@ namespace WarThunderChatTranslator.Pages
                     }
                     else
                     {
-                        var builder = new AppNotificationBuilder()
-                            .AddText($"您当前使用的是最新版本！");
-                        var notificationManager = AppNotificationManager.Default;
-                        notificationManager.Show(builder.BuildNotification());
+                        var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+                        var stringElements = toastXml.GetElementsByTagName("text");
+                        stringElements[0].AppendChild(toastXml.CreateTextNode($"您当前使用的是最新版本！"));
+                        var toast = new ToastNotification(toastXml);
+                        ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
                     }
                     dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
                     {
@@ -106,10 +91,11 @@ namespace WarThunderChatTranslator.Pages
                 catch (Exception e)
                 {
                     logger.Error(e);
-                    var builder = new AppNotificationBuilder()
-                        .AddText($"检查更新失败：{e.Message}");
-                    var notificationManager = AppNotificationManager.Default;
-                    notificationManager.Show(builder.BuildNotification());
+                    var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+                    var stringElements = toastXml.GetElementsByTagName("text");
+                    stringElements[0].AppendChild(toastXml.CreateTextNode($"检查更新失败：{e.Message}"));
+                    var toast = new ToastNotification(toastXml);
+                    ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
                 }
             });
         }

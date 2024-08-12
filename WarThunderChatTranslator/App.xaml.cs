@@ -5,9 +5,6 @@ using Microsoft.UI.Xaml;
 using System;
 using System.IO;
 using WarThunderChatTranslator.Configurations;
-using WinUICommunity.Components;
-using Microsoft.Windows.AppNotifications.Builder;
-using Microsoft.Windows.AppNotifications;
 using System.Threading.Tasks;
 using Path = System.IO.Path;
 using Application = Microsoft.UI.Xaml.Application;
@@ -24,6 +21,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Security.Principal;
+using Windows.UI.Notifications;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -284,12 +282,13 @@ namespace WarThunderChatTranslator
         //日志记录
         private void HandleException(Exception ex)
         {
-            var builder = new AppNotificationBuilder()
-                .AddText(ex.Message + ex.StackTrace);
-            var notificationManager = AppNotificationManager.Default;
-            notificationManager.Show(builder.BuildNotification());
-            //记录日志
             logger.Error(ex.ToString());
+
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+            var stringElements = toastXml.GetElementsByTagName("text");
+            stringElements[0].AppendChild(toastXml.CreateTextNode(ex.Message + ex.StackTrace));
+            var toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
         }
 
         private HttpListener _httpListener;
