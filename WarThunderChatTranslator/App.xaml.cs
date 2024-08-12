@@ -288,10 +288,10 @@ namespace WarThunderChatTranslator
             _httpListener = new HttpListener();
 
             // 监听特定端口和路由
-            _httpListener.Prefixes.Add("http://localhost:8080/");
+            _httpListener.Prefixes.Add("http://localhost:8100/");
 
             _httpListener.Start();
-            logger.Info("HTTP服务器已启动，正在监听 http://localhost:8080/");
+            logger.Info("HTTP服务器已启动，正在监听 http://localhost:8100/");
 
             // 异步处理HTTP请求
             await Task.Run(() => HandleRequests());
@@ -307,7 +307,6 @@ namespace WarThunderChatTranslator
 
                 try
                 {
-                    Debug.WriteLine(request.Url.AbsolutePath);
                     if (request.Url.AbsolutePath == "/gamechat")
                     {
                         // 获取请求参数lastId
@@ -373,6 +372,16 @@ namespace WarThunderChatTranslator
 
                         // 将返回数据发送给客户端
                         byte[] buffer = Encoding.UTF8.GetBytes(processedData);
+                        response.ContentLength64 = buffer.Length;
+                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    }
+                    else if (request.Url.AbsolutePath == "/dashboard")
+                    {
+                        // 返回 dashboard HTML 文件
+                        string html = Properties.Resources.dashboard;
+                        response.ContentEncoding = Encoding.UTF8;
+                        response.ContentType = "text/html; charset=utf-8";
+                        byte[] buffer = Encoding.UTF8.GetBytes(html);
                         response.ContentLength64 = buffer.Length;
                         await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
                     }

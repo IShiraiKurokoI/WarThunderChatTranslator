@@ -31,6 +31,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\dashboard.html" />
     <Content Remove="Assets\LockScreenLogo.scale-200.png" />
     <Content Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Remove="Assets\StoreLogo.png" />

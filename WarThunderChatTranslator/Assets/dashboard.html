@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天界面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            height: 70vh; /* 高度设置为视图窗口的70% */
+            overflow-y: auto; /* 添加垂直滚动条 */
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+            .chat-message.enemy {
+                background-color: #ffe5e5;
+                color: #d9534f;
+            }
+
+            .chat-message.ally {
+                background-color: #e5f7ff;
+                color: #5bc0de;
+            }
+
+            .chat-message.system {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+    </style>
+</head>
+<body>
+    <h1>聊天消息列表</h1>
+    <div id="chat-container"></div>
+
+    <script>
+        async function fetchChatData() {
+            try {
+                const response = await fetch('/gamechat');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const chatMessages = await response.json();
+                renderChatMessages(chatMessages);
+            } catch (error) {
+                console.error('Failed to fetch chat messages:', error);
+            }
+        }
+
+        function renderChatMessages(chatMessages) {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML = '';
+
+            chatMessages.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chat-message');
+
+                if (!message.Sender && message.Enemy) {
+                    // 系统消息
+                    messageDiv.classList.add('system');
+                } else if (message.Enemy) {
+                    // 敌方消息
+                    messageDiv.classList.add('enemy');
+                } else {
+                    // 友方消息
+                    messageDiv.classList.add('ally');
+                }
+
+                messageDiv.textContent = `[${message.Mode}] ${message.Sender || '系统'}: ${message.TranslatedMessage}`;
+                chatContainer.appendChild(messageDiv);
+            });
+
+            // 自动滚动到最底部
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        setInterval(fetchChatData, 4000); // 每4秒刷新一次数据
+        fetchChatData(); // 初次加载时调用
+    </script>
+</body>
+</html>
