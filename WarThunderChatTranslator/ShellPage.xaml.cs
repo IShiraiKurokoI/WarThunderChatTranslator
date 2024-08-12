@@ -7,14 +7,18 @@ namespace WarThunderChatTranslator;
 public sealed partial class ShellPage : Page
 {
     public static ShellPage Instance { get; private set; }
-    public NavigationManager navigationManager { get; set; }
+    public ShellPageService shellPageService { get; set; }
 
     public ShellPage()
     {
         this.InitializeComponent();
-        navigationManager = new NavigationManager(navigationView, new NavigationViewOptions
-        {
-            DefaultPage = typeof(NetworkPage)
-        }, shellFrame);
+        shellPageService = new ShellPageService();
+        shellPageService.SetDefaultPage(typeof(NetworkPage));
+        INavigationViewServiceEx navigationViewService;
+        INavigationServiceEx navigationService;
+        navigationService = new NavigationServiceEx(shellPageService);
+        navigationService.Frame = shellFrame;
+        navigationViewService = new NavigationViewServiceEx(navigationService, shellPageService);
+        navigationViewService.Initialize(navigationView);
     }
 }

@@ -25,7 +25,6 @@ namespace WarThunderChatTranslator
     public sealed partial class MainWindow : Window
     {
         public string TitleText = "’Ω’˘¿◊ˆ™¡ƒÃÏ∑≠“Î∆˜";
-        public Grid ApplicationTitleBar => AppTitleBar;
         internal static MainWindow Instance { get; private set; }
         private OverlappedPresenter _presenter;
         public MainWindow()
@@ -33,7 +32,6 @@ namespace WarThunderChatTranslator
             this.InitializeComponent();
             this.Title = "∑≠“Î∆˜…Ë÷√ΩÁ√Ê";
             Instance = this;
-            TitleBarHelper.Initialize(this, TitleTextBlock, AppTitleBar, LeftPaddingColumn, IconColumn, TitleColumn, LeftDragColumn, SearchColumn, RightDragColumn, RightPaddingColumn);
 
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
@@ -42,6 +40,8 @@ namespace WarThunderChatTranslator
             appWindow.Resize(new Windows.Graphics.SizeInt32(1400, 800));
             _presenter = appWindow.Presenter as OverlappedPresenter;
             _presenter.IsAlwaysOnTop = true;
+
+            appTitleBar.Window = this;
         }
     }
 }

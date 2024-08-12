@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml;
 using System;
 using System.IO;
 using WarThunderChatTranslator.Configurations;
-using WinUICommunity;
+using WinUICommunity.Components;
 using Microsoft.Windows.AppNotifications.Builder;
 using Microsoft.Windows.AppNotifications;
 using System.Threading.Tasks;
@@ -13,6 +13,8 @@ using Path = System.IO.Path;
 using Application = Microsoft.UI.Xaml.Application;
 using Microsoft.UI.Xaml.Input;
 using H.NotifyIcon;
+using WinUICommunity;
+using Microsoft.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,7 +27,7 @@ namespace WarThunderChatTranslator
     public partial class App : Microsoft.UI.Xaml.Application
     {
         public NLog.Logger logger;
-        public static ThemeManager themeManager { get; set; }
+        public static IThemeService themeService { get; set; }
 
         public App()
         {
@@ -115,13 +117,20 @@ namespace WarThunderChatTranslator
                 {
                     ApplicationConfig.SaveSettings("Theme", "Default");
                 }
-                themeManager = ThemeManager.Initialize(m_window, new ThemeOptions
+                themeService = new ThemeService();
+                themeService.Initialize(m_window);
+                themeService.ConfigBackdrop(BackdropType.AcrylicThin);
+                themeService.ConfigElementTheme(SettingsTheme);
+                themeService.ConfigTitleBar(new TitleBarCustomization
                 {
-                    BackdropType = BackdropType.DesktopAcrylic,
-                    ElementTheme = SettingsTheme,
-                    TitleBarCustomization = new TitleBarCustomization
+                    TitleBarWindowType = TitleBarWindowType.AppWindow,
+                    LightTitleBarButtons = new TitleBarButtons
                     {
-                        TitleBarType = TitleBarType.AppWindow
+                        ButtonBackgroundColor = Colors.Transparent
+                    },
+                    DarkTitleBarButtons = new TitleBarButtons
+                    {
+                        ButtonBackgroundColor = Colors.Transparent
                     }
                 });
                 var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(m_window);

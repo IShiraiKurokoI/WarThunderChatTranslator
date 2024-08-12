@@ -2,7 +2,7 @@
   "profiles": {
     "WarThunderChatTranslator (Package)": {
       "commandName": "MsixPackage",
-      "nativeDebugging": true
+      "nativeDebugging": false
     },
     "WarThunderChatTranslator (Unpackaged)": {
       "commandName": "Project",
