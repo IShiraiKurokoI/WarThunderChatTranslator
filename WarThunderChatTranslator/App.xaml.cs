@@ -142,8 +142,8 @@ namespace WarThunderChatTranslator
                     if (displayArea is not null)
                     {
                         var CenteredPosition = appWindow.Position;
-                        CenteredPosition.X = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionX")));
-                        CenteredPosition.Y = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionY")));
+                        CenteredPosition.X = ((displayArea.WorkArea.Width - appWindow.Size.Width) / 2);
+                        CenteredPosition.Y = ((displayArea.WorkArea.Height - appWindow.Size.Height) / 2);
                         appWindow.Move(CenteredPosition);
                     }
                 }
