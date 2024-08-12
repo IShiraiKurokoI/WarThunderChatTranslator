@@ -23,6 +23,7 @@ using System.Linq;
 using System.Security.Principal;
 using Windows.UI.Notifications;
 using Windows.ApplicationModel.Core;
+using NLog;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -346,7 +347,7 @@ namespace WarThunderChatTranslator
             await Task.Run(() => HandleRequests());
         }
 
-        static bool IsPortAllowedInFirewall(int port)
+        private bool IsPortAllowedInFirewall(int port)
         {
             // 通过调用 netsh 查询是否已有该端口的规则
             Process process = new Process();
@@ -356,6 +357,8 @@ namespace WarThunderChatTranslator
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+            process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
             process.Start();
             string output = process.StandardOutput.ReadToEnd();
@@ -509,7 +512,14 @@ namespace WarThunderChatTranslator
                 }
                 finally
                 {
-                    response.OutputStream.Close();
+                    try
+                    {
+                        response.OutputStream.Close();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
             }
         }
