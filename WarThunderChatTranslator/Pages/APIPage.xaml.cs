@@ -38,24 +38,28 @@ namespace WarThunderChatTranslator.Pages
                     {
                         APIPanel.SelectedIndex = 0;
                         translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new MicrosoftTranslator() });
+                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new MicrosoftTranslator() });
                         break;
                     }
                 case "Yandex":
                     {
                         APIPanel.SelectedIndex = 1;
                         translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator()});
+                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
                         break;
                     }
                 case "Bing":
                     {
                         APIPanel.SelectedIndex = 2;
                         translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new BingTranslator() });
+                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new BingTranslator() });
                         break;
                     }
                 case "Google":
                     {
                         APIPanel.SelectedIndex = 3;
                         translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new GoogleTranslator2() });
+                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new GoogleTranslator2() });
                         break;
                     }
             }

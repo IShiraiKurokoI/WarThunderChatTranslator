@@ -24,6 +24,8 @@ using System.Security.Principal;
 using Windows.UI.Notifications;
 using Windows.ApplicationModel.Core;
 using NLog;
+using System.Text.RegularExpressions;
+using WarThunderChatTranslator.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -135,6 +137,8 @@ namespace WarThunderChatTranslator
         }
         public bool HandleClosedEvents { get; set; } = true;
 
+        public static AggregateTranslator translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new MicrosoftTranslator() });
+
         private void ShowHideWindowCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
         {
             if (m_window == null)
@@ -198,6 +202,31 @@ namespace WarThunderChatTranslator
                 };
                 m_window.Show();
                 return;
+            }
+
+
+            switch (ApplicationConfig.GetSettings("TranslateAPI"))
+            {
+                case "Microsoft":
+                    {
+                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new MicrosoftTranslator() });
+                        break;
+                    }
+                case "Yandex":
+                    {
+                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
+                        break;
+                    }
+                case "Bing":
+                    {
+                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new BingTranslator() });
+                        break;
+                    }
+                case "Google":
+                    {
+                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new GoogleTranslator2() });
+                        break;
+                    }
             }
 
             if (m_window.Visible)
@@ -317,8 +346,6 @@ namespace WarThunderChatTranslator
         private HttpListener _httpListener;
         private Dictionary<int, string> translationCache = new Dictionary<int, string>();
 
-        AggregateTranslator translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
-
         private async void StartHttpServer()
         {
             int port = 8100;
@@ -393,6 +420,8 @@ namespace WarThunderChatTranslator
             }
         }
 
+        static string COLOR_PATTERN = @"<color(.*?)>(.*?)<\/color>";
+
         private async Task HandleRequests()
         {
             while (_httpListener.IsListening)
@@ -432,7 +461,8 @@ namespace WarThunderChatTranslator
                             {
                                 try
                                 {
-                                    // 使用翻译器翻译 Msg
+                                    message.Msg = Regex.Replace(message.Msg, COLOR_PATTERN, match => match.Groups[2].Value);
+                                    
                                     var translationResult = await translator.TranslateAsync(message.Msg, "zh-CN");
                                     var translatedMsg = translationResult.Translation;
 
