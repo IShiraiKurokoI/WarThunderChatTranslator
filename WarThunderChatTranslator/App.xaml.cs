@@ -2,35 +2,17 @@
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using WarThunderChatTranslator.Configurations;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using WinUICommunity;
-using static System.Net.Mime.MediaTypeNames;
-using Newtonsoft.Json;
-using Windows.UI;
-using WarThunderChatTranslator.Pages;
-using System.Diagnostics;
-using NLog;
-using Path = System.IO.Path;
 using Microsoft.Windows.AppNotifications.Builder;
 using Microsoft.Windows.AppNotifications;
 using System.Threading.Tasks;
+using Path = System.IO.Path;
 using Application = Microsoft.UI.Xaml.Application;
+using Microsoft.UI.Xaml.Input;
+using H.NotifyIcon;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -42,22 +24,17 @@ namespace WarThunderChatTranslator
     /// </summary>
     public partial class App : Microsoft.UI.Xaml.Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
+        public NLog.Logger logger;
+        public static ThemeManager themeManager { get; set; }
+
         public App()
         {
             this.InitializeComponent();
         }
 
-        public NLog.Logger logger;
-        public static ThemeManager themeManager { get; set; }
+        private Window m_window;
+        public TaskbarIcon TrayIcon { get; private set; }
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             //初始化日志记录
@@ -70,35 +47,7 @@ namespace WarThunderChatTranslator
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             App.Current.UnhandledException += App_UnhandledException;
             Application.Current.UnhandledException += App_UnhandledException;
-            //初始化主题设置
-            ElementTheme SettingsTheme = ElementTheme.Default;
-            if (ApplicationConfig.GetSettings("Theme") != null)
-            {
-                if (ApplicationConfig.GetSettings("Theme") == "Light")
-                {
-                    SettingsTheme = ElementTheme.Light;
-                }
-                if (ApplicationConfig.GetSettings("Theme") == "Dark")
-                {
-                    SettingsTheme = ElementTheme.Dark;
-                }
-            }
-            else
-            {
-                ApplicationConfig.SaveSettings("Theme", "Default");
-            }
-
-            m_window = new ChatWindow();
-
-            themeManager = ThemeManager.Initialize(m_window, new ThemeOptions
-            {
-                BackdropType = BackdropType.DesktopAcrylic,
-                ElementTheme = SettingsTheme,
-                TitleBarCustomization = new TitleBarCustomization
-                {
-                    TitleBarType = TitleBarType.AppWindow
-                }
-            });
+            //初始化应用设置
             if (ApplicationConfig.GetSettings("NetworkProxyMode") == null)
             {
                 ApplicationConfig.SaveSettings("NetworkProxyMode", "Default");
@@ -110,22 +59,6 @@ namespace WarThunderChatTranslator
             if (ApplicationConfig.GetSettings("ProxyPort") == null)
             {
                 ApplicationConfig.SaveSettings("ProxyPort", "");
-            }
-            if (ApplicationConfig.GetSettings("ChatWidth") == null)
-            {
-                ApplicationConfig.SaveSettings("ChatWidth", "575");
-            }
-            if (ApplicationConfig.GetSettings("ChatHeight") == null)
-            {
-                ApplicationConfig.SaveSettings("ChatHeight", "200");
-            }
-            if (ApplicationConfig.GetSettings("ChatStartUpLoactionX") == null)
-            {
-                ApplicationConfig.SaveSettings("ChatStartUpLoactionX", "5");
-            }
-            if (ApplicationConfig.GetSettings("ChatStartUpLoactionY") == null)
-            {
-                ApplicationConfig.SaveSettings("ChatStartUpLoactionY", "340");
             }
             if (ApplicationConfig.GetSettings("LastUpdateCheckDate") == null)
             {
@@ -147,24 +80,99 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("FontColor", "#FF000000");
             }
-            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(m_window);
-            Microsoft.UI.WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
-            Microsoft.UI.Windowing.AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-            if (appWindow is not null)
+            //
+            var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
+            showHideWindowCommand.ExecuteRequested += ShowHideWindowCommand_ExecuteRequested;
+
+            var exitApplicationCommand = (XamlUICommand)Resources["ExitApplicationCommand"];
+            exitApplicationCommand.ExecuteRequested += ExitApplicationCommand_ExecuteRequested;
+
+            TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
+            TrayIcon.ForceCreate();
+        }
+        public bool HandleClosedEvents { get; set; } = true;
+
+        private void ShowHideWindowCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        {
+            if (m_window == null)
             {
-                Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
-                if (displayArea is not null)
+                //初始化设置窗口
+                m_window = new MainWindow();
+                //初始化主题设置
+                ElementTheme SettingsTheme = ElementTheme.Default;
+                if (ApplicationConfig.GetSettings("Theme") != null)
                 {
-                    var CenteredPosition = appWindow.Position;
-                    CenteredPosition.X = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionX")));
-                    CenteredPosition.Y = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionY")));
-                    appWindow.Move(CenteredPosition);
+                    if (ApplicationConfig.GetSettings("Theme") == "Light")
+                    {
+                        SettingsTheme = ElementTheme.Light;
+                    }
+                    if (ApplicationConfig.GetSettings("Theme") == "Dark")
+                    {
+                        SettingsTheme = ElementTheme.Dark;
+                    }
                 }
+                else
+                {
+                    ApplicationConfig.SaveSettings("Theme", "Default");
+                }
+                themeManager = ThemeManager.Initialize(m_window, new ThemeOptions
+                {
+                    BackdropType = BackdropType.DesktopAcrylic,
+                    ElementTheme = SettingsTheme,
+                    TitleBarCustomization = new TitleBarCustomization
+                    {
+                        TitleBarType = TitleBarType.AppWindow
+                    }
+                });
+                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(m_window);
+                Microsoft.UI.WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+                Microsoft.UI.Windowing.AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+                if (appWindow is not null)
+                {
+                    Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
+                    if (displayArea is not null)
+                    {
+                        var CenteredPosition = appWindow.Position;
+                        CenteredPosition.X = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionX")));
+                        CenteredPosition.Y = (int.Parse(ApplicationConfig.GetSettings("ChatStartUpLoactionY")));
+                        appWindow.Move(CenteredPosition);
+                    }
+                }
+                m_window.Closed += (sender, args) =>
+                {
+                    if (HandleClosedEvents)
+                    {
+                        args.Handled = true;
+                        m_window.Hide();
+                    }
+                };
+                m_window.Show();
+                return;
             }
-            m_window.Activate();
+
+            if (m_window.Visible)
+            {
+                m_window.Hide();
+            }
+            else
+            {
+                m_window.Show();
+            }
         }
 
-        private Window m_window;
+        private void ExitApplicationCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        {
+            HandleClosedEvents = false;
+            TrayIcon?.Dispose();
+            m_window?.Close();
+
+            // https://github.com/HavenDV/H.NotifyIcon/issues/66
+            if (m_window == null)
+            {
+                Environment.Exit(0);
+            }
+        }
+
         public void DeleteLog()
         {
             try

@@ -92,7 +92,6 @@ namespace WarThunderChatTranslator.Pages
                         .AddText("µ÷ÓÃ·­ÒëÆ÷£º"+translationResult.Service);
                     var notificationManager = AppNotificationManager.Default;
                     notificationManager.Show(builder.BuildNotification());
-                    ChatWindow.getList().Items.Add(translationResult.Translation);
                 }
                 catch (Exception ex)
                 {

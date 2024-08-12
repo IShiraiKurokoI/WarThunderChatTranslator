@@ -40,8 +40,18 @@
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Margin="0,0,12,0"
+                            Content="字体和样式"
+                            helpers:NavHelper.NavigateTo="views:FontPage">
+                            <NavigationViewItem.Icon>
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        
+                        <NavigationViewItem
+                            Margin="0,0,12,0"
                             Content="主题和背景"
-                            helpers:NavHelper.NavigateTo="views:ThemePage">
+                            helpers:NavHelper.NavigateTo="views:ThemePage"
+                            IsEnabled="False">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Theme.ico"/>
                             </NavigationViewItem.Icon>
@@ -50,18 +60,10 @@
                         <NavigationViewItem
                             Margin="0,0,12,0"
                             Content="位置和布局"
-                            helpers:NavHelper.NavigateTo="views:LocationPage">
+                            helpers:NavHelper.NavigateTo="views:LocationPage"
+                            IsEnabled="False">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Size.ico"/>
-                            </NavigationViewItem.Icon>
-                        </NavigationViewItem>
-
-                        <NavigationViewItem
-                            Margin="0,0,12,0"
-                            Content="字体和样式"
-                            helpers:NavHelper.NavigateTo="views:FontPage">
-                            <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico"/>
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
 

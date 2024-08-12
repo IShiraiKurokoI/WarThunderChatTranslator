@@ -34,31 +34,9 @@ namespace WarThunderChatTranslator.Pages
     /// </summary>
     public sealed partial class ThemePage : Page
     {
-        bool ThemeInitilized = false;
         public ThemePage()
         {
             this.InitializeComponent();
-        }
-
-        private void ThemePanel_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-            if(ThemeInitilized)
-            {
-                ApplicationConfig.SaveSettings("Theme", ((ComboBoxItem)ThemePanel.SelectedItem).Tag.ToString());
-                App.themeManager.OnThemeComboBoxSelectionChanged(sender);
-                ConfigurationUpdateHelper.CallUpdate(this, null);
-            }
-        }
-
-        private void SettingsPageControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            App.themeManager.SetThemeComboBoxDefaultItem(ThemePanel);
-            ThemeInitilized=true;
-        }
-
-        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-        {
-            Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:colors"));
         }
     }
 }

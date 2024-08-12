@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WarThunderChatTranslator"
+    xmlns:tb="using:H.NotifyIcon">
+    <XamlUICommand
+        x:Key="ShowHideWindowCommand"
+        Description="开启/隐藏翻译器设置窗口"
+        Label="开启/隐藏设置窗口">
+        <XamlUICommand.IconSource>
+            <SymbolIconSource Symbol="OpenPane" />
+        </XamlUICommand.IconSource>
+        <XamlUICommand.KeyboardAccelerators>
+            <KeyboardAccelerator Key="S" Modifiers="Control" />
+        </XamlUICommand.KeyboardAccelerators>
+    </XamlUICommand>
+    <XamlUICommand
+        x:Key="ExitApplicationCommand"
+        Description="退出翻译器"
+        Label="退出">
+        <XamlUICommand.IconSource>
+            <SymbolIconSource Symbol="ClosePane" />
+        </XamlUICommand.IconSource>
+        <XamlUICommand.KeyboardAccelerators>
+            <KeyboardAccelerator Key="E" Modifiers="Control" />
+        </XamlUICommand.KeyboardAccelerators>
+    </XamlUICommand>
+    <tb:TaskbarIcon
+        x:Key="TrayIcon"
+        ContextMenuMode="SecondWindow"
+        IconSource="ms-appx:///Assets/favicon.ico"
+        LeftClickCommand="{StaticResource ShowHideWindowCommand}"
+        NoLeftClickDelay="True"
+        ToolTipText="ToolTip"
+        Visibility="Visible">
+        <tb:TaskbarIcon.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Command="{StaticResource ShowHideWindowCommand}" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem Command="{StaticResource ExitApplicationCommand}" />
+            </MenuFlyout>
+        </tb:TaskbarIcon.ContextFlyout>
+    </tb:TaskbarIcon>
+</ResourceDictionary>
