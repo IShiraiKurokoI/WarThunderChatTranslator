@@ -13,7 +13,7 @@ public sealed partial class ShellPage : Page
     {
         this.InitializeComponent();
         shellPageService = new ShellPageService();
-        shellPageService.SetDefaultPage(typeof(NetworkPage));
+        shellPageService.SetDefaultPage(typeof(APIPage));
         INavigationViewServiceEx navigationViewService;
         INavigationServiceEx navigationService;
         navigationService = new NavigationServiceEx(shellPageService);

@@ -24,7 +24,7 @@
                     Margin="0,0,12,0"
                     helpers:NavigationHelperEx.NavigateTo="NetworkPage"
                     Content="网络"
-                    IsSelected="True">
+                    IsEnabled="False">
                     <NavigationViewItem.Icon>
                         <BitmapIcon
                             MinWidth="60"
@@ -34,7 +34,10 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Margin="0,0,12,0" Content="窗体">
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="窗体"
+                    IsEnabled="False">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Windows.ico" />
                     </NavigationViewItem.Icon>
@@ -42,7 +45,8 @@
                         <NavigationViewItem
                             Margin="0,0,12,0"
                             helpers:NavigationHelperEx.NavigateTo="FontPage"
-                            Content="字体和样式">
+                            Content="字体和样式"
+                            IsEnabled="False">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico" />
                             </NavigationViewItem.Icon>
@@ -83,7 +87,8 @@
                 <NavigationViewItem
                     Margin="0,0,12,0"
                     helpers:NavigationHelperEx.NavigateTo="APIPage"
-                    Content="翻译API">
+                    Content="翻译API"
+                    IsSelected="True">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/API.ico" />
                     </NavigationViewItem.Icon>

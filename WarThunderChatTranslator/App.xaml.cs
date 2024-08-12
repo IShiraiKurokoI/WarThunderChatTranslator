@@ -201,6 +201,9 @@ namespace WarThunderChatTranslator
             {
                 Environment.Exit(0);
             }
+
+            Application.Current.Exit();
+            System.Environment.Exit(0);
         }
 
         public void DeleteLog()
@@ -317,6 +320,8 @@ namespace WarThunderChatTranslator
             _httpListener.Start();
             logger.Info("HTTP服务器已启动，正在监听 http://+:8100/");
 
+            Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
+
             // 异步处理HTTP请求
             await Task.Run(() => HandleRequests());
         }
@@ -330,6 +335,7 @@ namespace WarThunderChatTranslator
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             process.Start();
             string output = process.StandardOutput.ReadToEnd();
@@ -347,6 +353,7 @@ namespace WarThunderChatTranslator
             processStartInfo.UseShellExecute = true; // 必须为 true 才能使用 Verb
             processStartInfo.Verb = "runas"; // 提升为管理员权限
             processStartInfo.CreateNoWindow = true;
+            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             try
             {

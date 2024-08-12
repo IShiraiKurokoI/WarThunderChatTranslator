@@ -32,7 +32,7 @@
         IconSource="ms-appx:///Assets/favicon.ico"
         LeftClickCommand="{StaticResource ShowHideWindowCommand}"
         NoLeftClickDelay="True"
-        ToolTipText="ToolTip"
+        ToolTipText="战争雷霆聊天翻译器"
         Visibility="Visible">
         <tb:TaskbarIcon.ContextFlyout>
             <MenuFlyout>
