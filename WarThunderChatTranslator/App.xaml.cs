@@ -15,6 +15,12 @@ using Microsoft.UI.Xaml.Input;
 using H.NotifyIcon;
 using WinUICommunity;
 using Microsoft.UI;
+using System.Net;
+using System.Text;
+using System.Net.Http;
+using System.Diagnostics;
+using GTranslate.Translators;
+using System.Collections.Generic;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -91,6 +97,7 @@ namespace WarThunderChatTranslator
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
             TrayIcon.ForceCreate();
+            StartHttpServer();
         }
         public bool HandleClosedEvents { get; set; } = true;
 
@@ -172,6 +179,7 @@ namespace WarThunderChatTranslator
         private void ExitApplicationCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
         {
             HandleClosedEvents = false;
+            OnClosed();
             TrayIcon?.Dispose();
             m_window?.Close();
 
@@ -266,6 +274,98 @@ namespace WarThunderChatTranslator
             notificationManager.Show(builder.BuildNotification());
             //记录日志
             logger.Error(ex.ToString());
+        }
+        private HttpListener _httpListener;
+
+        AggregateTranslator translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
+
+        private async void StartHttpServer()
+        {
+            _httpListener = new HttpListener();
+
+            // 监听特定端口和路由
+            _httpListener.Prefixes.Add("http://localhost:8080/");
+
+            _httpListener.Start();
+            logger.Info("HTTP服务器已启动，正在监听 http://localhost:8080/");
+
+            // 异步处理HTTP请求
+            await Task.Run(() => HandleRequests());
+        }
+
+        private async Task HandleRequests()
+        {
+            while (_httpListener.IsListening)
+            {
+                var context = await _httpListener.GetContextAsync();
+                var request = context.Request;
+                var response = context.Response;
+
+                try
+                {
+                    Debug.WriteLine(request.Url.AbsolutePath);
+                    if (request.Url.AbsolutePath == "/gamechat")
+                    {
+                        // 获取请求参数lastId
+                        string lastId = request.QueryString["lastId"] ?? "0";
+
+                        // 转发请求到 http://127.0.0.1:8111/gamechat?lastId=
+                        string targetUrl = $"http://127.0.0.1:8111/gamechat?lastId={lastId}";
+                        string responseData = await ForwardRequestAsync(targetUrl);
+
+                        // 打印结果到控制台
+                        Console.WriteLine($"转发请求的返回数据: {responseData}");
+
+                        // 设置响应的编码和内容类型为UTF-8
+                        response.ContentEncoding = Encoding.UTF8;
+                        response.ContentType = "text/html; charset=utf-8";
+
+                        // 将返回数据发送给客户端
+                        byte[] buffer = Encoding.UTF8.GetBytes(responseData);
+                        response.ContentLength64 = buffer.Length;
+                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    }
+                    else
+                    {
+                        // 处理未找到的请求
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        byte[] buffer = Encoding.UTF8.GetBytes("404 Not Found");
+                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 在控制台打印错误信息
+                    logger.Error($"处理请求时发生错误: {ex.Message}");
+
+                    // 返回错误信息给客户端
+                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    response.ContentEncoding = Encoding.UTF8;
+                    response.ContentType = "text/html; charset=utf-8";
+                    byte[] buffer = Encoding.UTF8.GetBytes("聊天数据请求失败");
+                    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                }
+                finally
+                {
+                    response.OutputStream.Close();
+                }
+            }
+        }
+
+        private async Task<string> ForwardRequestAsync(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode(); // 如果请求失败，将抛出异常
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        protected void OnClosed()
+        {
+            _httpListener.Stop();
+            _httpListener.Close();
         }
     }
 }
