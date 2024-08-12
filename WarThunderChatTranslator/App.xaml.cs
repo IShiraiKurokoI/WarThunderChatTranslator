@@ -81,7 +81,7 @@ namespace WarThunderChatTranslator
             }
             if (ApplicationConfig.GetSettings("TranslateAPI") == null)
             {
-                ApplicationConfig.SaveSettings("TranslateAPI", "Yandex");
+                ApplicationConfig.SaveSettings("TranslateAPI", "Microsoft");
             }
             if (ApplicationConfig.GetSettings("FontSize") == null)
             {
@@ -95,7 +95,8 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("FontColor", "#FF000000");
             }
-            //
+
+            //创建托盘图标
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
             showHideWindowCommand.ExecuteRequested += ShowHideWindowCommand_ExecuteRequested;
 
