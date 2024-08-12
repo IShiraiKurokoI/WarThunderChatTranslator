@@ -21,6 +21,8 @@ using System.Net.Http;
 using System.Diagnostics;
 using GTranslate.Translators;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Linq;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -275,7 +277,9 @@ namespace WarThunderChatTranslator
             //记录日志
             logger.Error(ex.ToString());
         }
+
         private HttpListener _httpListener;
+        private Dictionary<int, string> translationCache = new Dictionary<int, string>();
 
         AggregateTranslator translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
 
@@ -313,15 +317,62 @@ namespace WarThunderChatTranslator
                         string targetUrl = $"http://127.0.0.1:8111/gamechat?lastId={lastId}";
                         string responseData = await ForwardRequestAsync(targetUrl);
 
+                        // 处理返回的数据
+                        var chatMessages = JsonConvert.DeserializeObject<List<WarThunderChatTranslator.Entities.ChatMessage>>(responseData);
+
+                        // 使用 Task.WhenAll 并行处理翻译任务
+                        var translationTasks = chatMessages.Select(async message =>
+                        {
+                            // 去掉 Msg 和 Mode 中的 \t
+                            message.Msg = message.Msg.Replace("\t", "");
+                            message.Mode = message.Mode.Replace("\t", "");
+
+                            // 检查缓存中是否已有翻译
+                            if (translationCache.ContainsKey(message.Id) && translationCache[message.Id] == message.Msg)
+                            {
+                                // 从缓存中获取翻译结果
+                                message.TranslatedMessage = translationCache[message.Id];
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    // 使用翻译器翻译 Msg
+                                    var translationResult = await translator.TranslateAsync(message.Msg, "zh-CN");
+                                    var translatedMsg = translationResult.Translation;
+
+                                    // 将翻译结果存储到缓存中
+                                    translationCache[message.Id] = translatedMsg;
+
+                                    // 更新消息的 TranslatedMessage 属性为翻译后的文本
+                                    message.TranslatedMessage = translatedMsg;
+                                }
+                                catch
+                                {
+                                    // 翻译失败，保留原文并添加标记
+                                    message.TranslatedMessage = "(翻译失败) " + message.Msg;
+                                }
+                            }
+
+                            // 生成 PrettyMessage（如果需要，可以格式化消息）
+                            message.PrettyMessage = $"{message.Sender}: {message.TranslatedMessage}";
+                        }).ToList();
+
+                        // 等待所有翻译任务完成
+                        await Task.WhenAll(translationTasks);
+
+                        // 将处理后的数据序列化为JSON
+                        string processedData = JsonConvert.SerializeObject(chatMessages);
+
                         // 打印结果到控制台
-                        Console.WriteLine($"转发请求的返回数据: {responseData}");
+                        Console.WriteLine($"处理后的返回数据: {processedData}");
 
                         // 设置响应的编码和内容类型为UTF-8
                         response.ContentEncoding = Encoding.UTF8;
-                        response.ContentType = "text/html; charset=utf-8";
+                        response.ContentType = "application/json; charset=utf-8";
 
                         // 将返回数据发送给客户端
-                        byte[] buffer = Encoding.UTF8.GetBytes(responseData);
+                        byte[] buffer = Encoding.UTF8.GetBytes(processedData);
                         response.ContentLength64 = buffer.Length;
                         await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
                     }
@@ -351,6 +402,7 @@ namespace WarThunderChatTranslator
                 }
             }
         }
+
 
         private async Task<string> ForwardRequestAsync(string url)
         {
