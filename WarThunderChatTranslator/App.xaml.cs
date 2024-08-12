@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Security.Principal;
 using Windows.UI.Notifications;
+using Windows.ApplicationModel.Core;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -102,8 +103,28 @@ namespace WarThunderChatTranslator
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
             TrayIcon.ForceCreate();
+
+            CoreApplication.Exiting += CoreApplication_Exiting;
+
             StartHttpServer();
         }
+
+        private void CoreApplication_Exiting(object sender, object e)
+        {
+            HandleClosedEvents = false;
+            OnClosed();
+            TrayIcon?.Dispose();
+            m_window?.Close();
+
+            if (m_window == null)
+            {
+                Environment.Exit(0);
+            }
+
+            Application.Current.Exit();
+            System.Environment.Exit(0);
+        }
+
         public static bool IsAdmin()
         {
             var identity = WindowsIdentity.GetCurrent();
@@ -341,7 +362,7 @@ namespace WarThunderChatTranslator
             process.WaitForExit();
 
             // 检查输出中是否有对应端口的规则
-            return output.Contains($"LocalPort={port}");
+            return output.Contains($"WarThunderChatTranslator：允许端口");
         }
 
         private void AddFirewallRule(int port, string ruleName)
