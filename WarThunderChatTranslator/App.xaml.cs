@@ -23,6 +23,7 @@ using GTranslate.Translators;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Security.Principal;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -47,6 +48,10 @@ namespace WarThunderChatTranslator
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            if (!IsAdmin())
+            {
+                Environment.Exit(0);
+            }
             //初始化日志记录
             logger = NLog.LogManager.GetCurrentClassLogger();
             logger.Info("--------程序启动--------");
@@ -100,6 +105,12 @@ namespace WarThunderChatTranslator
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
             TrayIcon.ForceCreate();
             StartHttpServer();
+        }
+        public static bool IsAdmin()
+        {
+            var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
         public bool HandleClosedEvents { get; set; } = true;
 
@@ -285,16 +296,70 @@ namespace WarThunderChatTranslator
 
         private async void StartHttpServer()
         {
+            int port = 8100;
+            string ruleName = $"WarThunderChatTranslator：允许端口 {port}";
+
+            if (!IsPortAllowedInFirewall(port))
+            {
+                logger.Info($"端口 {port} 在防火墙中未被允许。正在添加规则...");
+                AddFirewallRule(port, ruleName);
+            }
+            else
+            {
+                logger.Info($"端口 {port} 已经在防火墙中被允许。");
+            }
+
             _httpListener = new HttpListener();
 
             // 监听特定端口和路由
-            _httpListener.Prefixes.Add("http://localhost:8100/");
+            _httpListener.Prefixes.Add("http://+:8100/");
 
             _httpListener.Start();
-            logger.Info("HTTP服务器已启动，正在监听 http://localhost:8100/");
+            logger.Info("HTTP服务器已启动，正在监听 http://+:8100/");
 
             // 异步处理HTTP请求
             await Task.Run(() => HandleRequests());
+        }
+
+        static bool IsPortAllowedInFirewall(int port)
+        {
+            // 通过调用 netsh 查询是否已有该端口的规则
+            Process process = new Process();
+            process.StartInfo.FileName = "netsh";
+            process.StartInfo.Arguments = $"advfirewall firewall show rule name=all";
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            // 检查输出中是否有对应端口的规则
+            return output.Contains($"LocalPort={port}");
+        }
+
+        private void AddFirewallRule(int port, string ruleName)
+        {
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.FileName = "netsh";
+            processStartInfo.Arguments = $"advfirewall firewall add rule name=\"{ruleName}\" protocol=TCP dir=in localport={port} action=allow description=\"此规则允许端口 {port} 的入站访问\"";
+            processStartInfo.UseShellExecute = true; // 必须为 true 才能使用 Verb
+            processStartInfo.Verb = "runas"; // 提升为管理员权限
+            processStartInfo.CreateNoWindow = true;
+
+            try
+            {
+                using (Process process = Process.Start(processStartInfo))
+                {
+                    process.WaitForExit();
+                    logger.Info($"防火墙规则 '{ruleName}' 已添加。");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Info($"无法添加防火墙规则: {ex.Message}");
+            }
         }
 
         private async Task HandleRequests()
@@ -382,6 +447,16 @@ namespace WarThunderChatTranslator
                         response.ContentEncoding = Encoding.UTF8;
                         response.ContentType = "text/html; charset=utf-8";
                         byte[] buffer = Encoding.UTF8.GetBytes(html);
+                        response.ContentLength64 = buffer.Length;
+                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    }
+                    else if (request.Url.AbsolutePath == "/")
+                    {
+                        response.StatusCode = 302;
+                        response.RedirectLocation = "/dashboard";
+                        response.ContentEncoding = Encoding.UTF8;
+                        response.ContentType = "text/html; charset=utf-8";
+                        byte[] buffer = Encoding.UTF8.GetBytes("302");
                         response.ContentLength64 = buffer.Length;
                         await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
                     }
