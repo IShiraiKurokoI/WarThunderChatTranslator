@@ -17,7 +17,7 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <UseWPF>False</UseWPF>
-    <PackageCertificateThumbprint>66666D9D14B32D42A2C4FB64F5FE087B43DF2480</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>6022128BB49EC12454E1C82369051D7B65A5AD07</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
