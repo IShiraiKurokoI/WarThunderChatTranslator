@@ -448,19 +448,13 @@ namespace WarThunderChatTranslator
                                     message.TranslatedMessage = "(翻译失败) " + message.Msg;
                                 }
                             }
-
-                            // 生成 PrettyMessage（如果需要，可以格式化消息）
                             message.PrettyMessage = $"{message.Sender}: {message.TranslatedMessage}";
                         }).ToList();
 
                         // 等待所有翻译任务完成
                         await Task.WhenAll(translationTasks);
 
-                        // 将处理后的数据序列化为JSON
                         string processedData = JsonConvert.SerializeObject(chatMessages);
-
-                        // 打印结果到控制台
-                        Console.WriteLine($"处理后的返回数据: {processedData}");
 
                         // 设置响应的编码和内容类型为UTF-8
                         response.ContentEncoding = Encoding.UTF8;
@@ -501,7 +495,6 @@ namespace WarThunderChatTranslator
                 }
                 catch (Exception ex)
                 {
-                    // 在控制台打印错误信息
                     logger.Error($"处理请求时发生错误: {ex.Message}");
 
                     // 返回错误信息给客户端
@@ -531,7 +524,7 @@ namespace WarThunderChatTranslator
             using (HttpClient client = new HttpClient())
             {
                 var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode(); // 如果请求失败，将抛出异常
+                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
             }
         }
