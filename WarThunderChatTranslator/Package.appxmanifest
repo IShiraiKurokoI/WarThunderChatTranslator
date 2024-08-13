@@ -6,16 +6,17 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
-  IgnorableNamespaces="uap rescap com desktop">
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  IgnorableNamespaces="uap rescap com desktop mp">
 
   <Identity
-    Name="WarThunderChatTranslator"
-    Publisher="CN=Shirai_Kuroko"
-    Version="1.0.2.0" />
+    Name="IShiraiKurokoI.30940A14F8CD1"
+    Publisher="CN=CA8D01B0-3F39-49D4-85F5-877D7B18934F"
+    Version="1.0.3.0" />
 
   <Properties>
-    <DisplayName>战争雷霆聊天翻译器</DisplayName>
-    <PublisherDisplayName>Shirai_Kuroko</PublisherDisplayName>
+    <DisplayName>WarThunderChatTranslator</DisplayName>
+    <PublisherDisplayName>IShirai_KurokoI</PublisherDisplayName>
     <Logo>Assets\ApplicationIcons\StoreLogo.png</Logo>
   </Properties>
 
@@ -33,7 +34,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="战争雷霆聊天翻译器"
+        DisplayName="WarThunderChatTranslator"
         Description="WarThunderChatTranslator，提供游戏内聊天实时翻译"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\ApplicationIcons\Square150x150Logo.png"
@@ -58,4 +59,6 @@
     <Capability Name="internetClientServer"/>
     <Capability Name="privateNetworkClientServer"/>
   </Capabilities>
+
+  <mp:PhoneIdentity PhoneProductId="a8ad2300-816f-458f-832b-6d7e77447839"/>
 </Package>
