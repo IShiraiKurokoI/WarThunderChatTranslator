@@ -11,6 +11,7 @@ using System.Diagnostics;
 using WarThunderChatTranslator.Dialogs;
 using Windows.UI.Notifications;
 using WarThunderChatTranslator.Helpers;
+using GTranslate;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,12 +55,72 @@ namespace WarThunderChatTranslator.Pages
                         break;
                     }
             }
+            var languageDictionary = GTranslate.Language.LanguageDictionary;
+
+            // 加载所有语言到 TargetLanguage ComboBox
+            foreach (var language in languageDictionary.Values)
+            {
+                var comboBoxItem = new ComboBoxItem()
+                {
+                    Content = language.NativeName,
+                    Tag = language
+                };
+                TargetLanguage.Items.Add(comboBoxItem);
+            }
+
+            string savedLanguage = ApplicationConfig.GetSettings("TargetLanguage");
+            if (!string.IsNullOrEmpty(savedLanguage))
+            {
+                foreach (ComboBoxItem item in TargetLanguage.Items)
+                {
+                    var language = (Language)item.Tag;
+
+                    // 如果找到匹配的语言，则设置为选中项
+                    if (language.ISO6391 == savedLanguage)
+                    {
+                        TargetLanguage.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
         }
 
         private void APIPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ApplicationConfig.SaveSettings("TranslateAPI", ((ComboBoxItem)APIPanel.SelectedItem).Tag.ToString());
+            var selectedTag = ((ComboBoxItem)APIPanel.SelectedItem).Tag.ToString();
+
+            ApplicationConfig.SaveSettings("TranslateAPI", selectedTag);
             TranslationHelper.UpdateTranslator();
+
+            // 遍历 TargetLanguage ComboBox 中的每个语言项，并根据翻译器支持情况调整 IsEnabled
+            foreach (ComboBoxItem item in TargetLanguage.Items)
+            {
+                var language = (Language)item.Tag;
+                bool isSupported = false;
+
+                // 判断当前翻译器是否支持此语言
+                switch (selectedTag)
+                {
+                    case "Microsoft":
+                        isSupported = language.IsServiceSupported(TranslationServices.Microsoft);
+                        break;
+                    case "Yandex":
+                        isSupported = language.IsServiceSupported(TranslationServices.Yandex);
+                        break;
+                    case "Bing":
+                        isSupported = language.IsServiceSupported(TranslationServices.Bing);
+                        break;
+                    case "Google":
+                        isSupported = language.IsServiceSupported(TranslationServices.Google);
+                        break;
+                    default:
+                        isSupported = true; // 如果没有明确的翻译器列表，所有语言都支持
+                        break;
+                }
+
+                // 根据是否支持设置语言项的可用性
+                item.IsEnabled = isSupported;
+            }
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -73,7 +134,7 @@ namespace WarThunderChatTranslator.Pages
                 Checking.Visibility = Visibility.Visible;
                 try
                 {
-                    var translationResult = await TranslationHelper.getCurrentTranslator().TranslateAsync(inputDialog.text, "zh-CN");
+                    var translationResult = await TranslationHelper.TranslateAsync(inputDialog.text);
 
                     // 构建Toast通知内容
                     var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText04);
@@ -115,5 +176,20 @@ namespace WarThunderChatTranslator.Pages
         {
             ApplicationConfig.SaveSettings("Bing_Token", ((TextBox)sender).Text);
         }
+
+        private void TargetLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // 获取当前选中的语言项
+            var selectedItem = (ComboBoxItem)TargetLanguage.SelectedItem;
+            if (selectedItem != null)
+            {
+                var selectedLanguage = (Language)selectedItem.Tag;
+
+                // 保存选定的语言到配置
+                ApplicationConfig.SaveSettings("TargetLanguage", selectedLanguage.ISO6391);
+                logger.Debug($"设置目标语言为{selectedLanguage.ISO6391}");
+            }
+        }
+
     }
 }

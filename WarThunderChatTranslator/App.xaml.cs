@@ -86,6 +86,10 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("TranslateAPI", "Microsoft");
             }
+            if (ApplicationConfig.GetSettings("TargetLanguage") == null)
+            {
+                ApplicationConfig.SaveSettings("TargetLanguage", "zh-CN");
+            }
             if (ApplicationConfig.GetSettings("FontSize") == null)
             {
                 ApplicationConfig.SaveSettings("FontSize", "14");
@@ -437,7 +441,7 @@ namespace WarThunderChatTranslator
                                 {
                                     message.Msg = Regex.Replace(message.Msg, COLOR_PATTERN, match => match.Groups[2].Value);
                                     
-                                    var translationResult = await TranslationHelper.getCurrentTranslator().TranslateAsync(message.Msg, "zh-CN");
+                                    var translationResult = await TranslationHelper.TranslateAsync(message.Msg);
                                     var translatedMsg = translationResult.Translation;
 
                                     // 将翻译结果存储到缓存中

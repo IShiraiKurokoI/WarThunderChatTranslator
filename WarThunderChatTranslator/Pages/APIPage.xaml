@@ -52,6 +52,15 @@
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                 MaxWidth="2000"
+                                Description="选择翻译器翻译的目标语言"
+                                Header="翻译器目标语言">
+                                <labs:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xf2b7;" />
+                                </labs:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="TargetLanguage" SelectionChanged="TargetLanguage_SelectionChanged" />
+                            </labs:SettingsCard>
+                            <labs:SettingsCard
+                                MaxWidth="2000"
                                 Description="输入Bing翻译器所需Token"
                                 Header="翻译器API Token"
                                 Visibility="{Binding IsSelected, ElementName=Bing_Selection, Converter={StaticResource BoolToVisibilityConverter}}">

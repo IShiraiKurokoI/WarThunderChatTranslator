@@ -1,4 +1,5 @@
-﻿using GTranslate.Translators;
+﻿using GTranslate.Results;
+using GTranslate.Translators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,11 @@ namespace WarThunderChatTranslator.Helpers
                         break;
                     }
             }
+        }
+
+        public static async Task<ITranslationResult> TranslateAsync(string text)
+        {
+            return await translator.TranslateAsync(text, ApplicationConfig.GetSettings("TargetLanguage"));
         }
     }
 }
