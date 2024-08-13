@@ -52,7 +52,7 @@
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                 MaxWidth="2000"
-                                Description="选择翻译器翻译的目标语言"
+                                Description="翻译器将会把聊天内容翻译成下面的语言"
                                 Header="翻译器目标语言">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xf2b7;" />

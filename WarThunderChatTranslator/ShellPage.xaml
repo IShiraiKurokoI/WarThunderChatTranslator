@@ -20,11 +20,21 @@
             </NavigationView.Resources>
 
             <NavigationView.MenuItems>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    helpers:NavigationHelperEx.NavigateTo="APIPage"
+                    Content="翻译API"
+                    IsSelected="True">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/API.ico" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
                 <NavigationViewItem
                     Margin="0,0,12,0"
                     helpers:NavigationHelperEx.NavigateTo="NetworkPage"
-                    Content="网络"
-                    IsEnabled="False">
+                    Content="网络">
                     <NavigationViewItem.Icon>
                         <BitmapIcon
                             MinWidth="60"
@@ -82,16 +92,6 @@
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                     </NavigationViewItem.MenuItems>
-                </NavigationViewItem>
-
-                <NavigationViewItem
-                    Margin="0,0,12,0"
-                    helpers:NavigationHelperEx.NavigateTo="APIPage"
-                    Content="翻译API"
-                    IsSelected="True">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/API.ico" />
-                    </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
                 <NavigationViewItem

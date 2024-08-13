@@ -30,6 +30,8 @@ namespace WarThunderChatTranslator.Pages
             logger = NLog.LogManager.GetCurrentClassLogger();
         }
 
+        bool loaded = false;
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             switch(ApplicationConfig.GetSettings("TranslateAPI"))
@@ -83,10 +85,15 @@ namespace WarThunderChatTranslator.Pages
                     }
                 }
             }
+            loaded =true;
         }
 
         private void APIPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!loaded)
+            {
+                return;
+            }
             var selectedTag = ((ComboBoxItem)APIPanel.SelectedItem).Tag.ToString();
 
             ApplicationConfig.SaveSettings("TranslateAPI", selectedTag);
@@ -151,7 +158,6 @@ namespace WarThunderChatTranslator.Pages
                     var toast = new ToastNotification(toastXml);
                     ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
 
-                    Debug.WriteLine(translationResult.Service + translationResult.Translation);
                     logger.Debug($"翻译测试成功！翻译器：{translationResult.Service}, 翻译内容：{translationResult.Source}, 翻译结果：{translationResult.Translation}");
                 }
                 catch (Exception ex)
@@ -174,11 +180,19 @@ namespace WarThunderChatTranslator.Pages
 
         private void Bing_Token_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!loaded)
+            {
+                return;
+            }
             ApplicationConfig.SaveSettings("Bing_Token", ((TextBox)sender).Text);
         }
 
         private void TargetLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!loaded)
+            {
+                return;
+            }
             // 获取当前选中的语言项
             var selectedItem = (ComboBoxItem)TargetLanguage.SelectedItem;
             if (selectedItem != null)

@@ -49,11 +49,13 @@ namespace WarThunderChatTranslator
         private Window m_window;
         public TaskbarIcon TrayIcon { get; private set; }
 
+        static String url = "http://+:8100/";
+
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             if (!IsAdmin())
             {
-                Environment.Exit(0);
+                url = "http://localhost:8100/";
             }
             //初始化日志记录
             logger = NLog.LogManager.GetCurrentClassLogger();
@@ -74,9 +76,13 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("ProxyAddress", "");
             }
-            if (ApplicationConfig.GetSettings("ProxyPort") == null)
+            if (ApplicationConfig.GetSettings("ProxyAccount") == null)
             {
-                ApplicationConfig.SaveSettings("ProxyPort", "");
+                ApplicationConfig.SaveSettings("ProxyAccount", "");
+            }
+            if (ApplicationConfig.GetSettings("ProxyPassword") == null)
+            {
+                ApplicationConfig.SaveSettings("ProxyPassword", "");
             }
             if (ApplicationConfig.GetSettings("LastUpdateCheckDate") == null)
             {
@@ -102,6 +108,10 @@ namespace WarThunderChatTranslator
             {
                 ApplicationConfig.SaveSettings("FontColor", "#FF000000");
             }
+
+            logger.Info("初始化翻译器对象");
+            TranslationHelper.init();
+            logger.Info("翻译器对象初始化完成");
 
             //创建托盘图标
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
@@ -342,12 +352,12 @@ namespace WarThunderChatTranslator
             _httpListener = new HttpListener();
 
             // 监听特定端口和路由
-            _httpListener.Prefixes.Add("http://+:8100/");
+            _httpListener.Prefixes.Add(url);
 
             _httpListener.Start();
-            logger.Info("HTTP服务器已启动，正在监听 http://+:8100/");
+            logger.Info($"HTTP服务器已启动，正在监听 {url}");
 
-            Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
+            //Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
 
             // 异步处理HTTP请求
             await Task.Run(() => HandleRequests());
