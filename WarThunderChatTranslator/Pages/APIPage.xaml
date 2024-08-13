@@ -5,6 +5,7 @@
     x:Class="WarThunderChatTranslator.Pages.APIPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:labs="using:WinUICommunity"
     xmlns:local="using:WarThunderChatTranslator.Pages"
@@ -45,9 +46,19 @@
                                 <ComboBox x:Name="APIPanel" SelectionChanged="APIPanel_SelectionChanged">
                                     <ComboBoxItem Tag="Microsoft">Microsoft Azure</ComboBoxItem>
                                     <ComboBoxItem Tag="Yandex">Yandex</ComboBoxItem>
-                                    <ComboBoxItem IsEnabled="False" Tag="Bing">Bing（需要Token）</ComboBoxItem>
+                                    <ComboBoxItem x:Name="Bing_Selection" Tag="Bing">Bing（需要Token）</ComboBoxItem>
                                     <ComboBoxItem Tag="Google">Google（需要网络环境）</ComboBoxItem>
                                 </ComboBox>
+                            </labs:SettingsCard>
+                            <labs:SettingsCard
+                                MaxWidth="2000"
+                                Description="输入Bing翻译器所需Token"
+                                Header="翻译器API Token"
+                                Visibility="{Binding IsSelected, ElementName=Bing_Selection, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <labs:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#x0e928;" />
+                                </labs:SettingsCard.HeaderIcon>
+                                <TextBox x:Name="Bing_Token" TextChanged="Bing_Token_TextChanged" />
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                 MaxWidth="2000"

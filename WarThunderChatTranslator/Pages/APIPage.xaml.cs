@@ -10,6 +10,7 @@ using GTranslate.Translators;
 using System.Diagnostics;
 using WarThunderChatTranslator.Dialogs;
 using Windows.UI.Notifications;
+using WarThunderChatTranslator.Helpers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,8 +22,6 @@ namespace WarThunderChatTranslator.Pages
     /// </summary>
     public sealed partial class APIPage : Page
     {
-        AggregateTranslator translator;
-
         public NLog.Logger logger;
         public APIPage()
         {
@@ -37,29 +36,21 @@ namespace WarThunderChatTranslator.Pages
                 case "Microsoft":
                     {
                         APIPanel.SelectedIndex = 0;
-                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new MicrosoftTranslator() });
-                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new MicrosoftTranslator() });
                         break;
                     }
                 case "Yandex":
                     {
                         APIPanel.SelectedIndex = 1;
-                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator()});
-                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new YandexTranslator() });
                         break;
                     }
                 case "Bing":
                     {
                         APIPanel.SelectedIndex = 2;
-                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new BingTranslator() });
-                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new BingTranslator() });
                         break;
                     }
                 case "Google":
                     {
                         APIPanel.SelectedIndex = 3;
-                        translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new GoogleTranslator2() });
-                        App.translator = new AggregateTranslator((IReadOnlyCollection<ITranslator>)(object)new ITranslator[1] { new GoogleTranslator2() });
                         break;
                     }
             }
@@ -68,7 +59,7 @@ namespace WarThunderChatTranslator.Pages
         private void APIPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplicationConfig.SaveSettings("TranslateAPI", ((ComboBoxItem)APIPanel.SelectedItem).Tag.ToString());
-            Page_Loaded(null, null);
+            TranslationHelper.UpdateTranslator();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -82,7 +73,7 @@ namespace WarThunderChatTranslator.Pages
                 Checking.Visibility = Visibility.Visible;
                 try
                 {
-                    var translationResult = await translator.TranslateAsync(inputDialog.text, "zh-CN");
+                    var translationResult = await TranslationHelper.getCurrentTranslator().TranslateAsync(inputDialog.text, "zh-CN");
 
                     // ππΩ®ToastÕ®÷™ƒ⁄»›
                     var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText04);
@@ -114,10 +105,15 @@ namespace WarThunderChatTranslator.Pages
                     var toast = new ToastNotification(toastXml);
                     ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
 
-                    logger.Debug($"∑≠“Î≤‚ ‘ ß∞‹£°∑≠“Î∆˜£∫{translator.Name}, ∑≠“Îƒ⁄»›£∫{inputDialog.text}, ¥ÌŒÛ£∫{ex.Message}");
+                    logger.Debug($"∑≠“Î≤‚ ‘ ß∞‹£°∑≠“Î∆˜£∫{TranslationHelper.getCurrentTranslator().Name}, ∑≠“Îƒ⁄»›£∫{inputDialog.text}, ¥ÌŒÛ£∫{ex.Message}");
                 }
                 Checking.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void Bing_Token_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplicationConfig.SaveSettings("Bing_Token", ((TextBox)sender).Text);
         }
     }
 }
