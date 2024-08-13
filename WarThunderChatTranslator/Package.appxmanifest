@@ -45,6 +45,8 @@
             <uap:ShowOn Tile="square310x310Logo"/>
           </uap:ShowNameOnTiles>
         </uap:DefaultTile >
+        <uap:SplashScreen Image="Assets\ApplicationIcons\SplashScreen.png"/>
+        <uap:LockScreen BadgeLogo="Assets\ApplicationIcons\BadgeLogo.png" Notification="badgeAndTileText"/>
       </uap:VisualElements>
     </Application>
   </Applications>

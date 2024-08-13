@@ -31,14 +31,18 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="Assets\dashboard.html" />
+    <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
+    <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-125.png" />
+    <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-150.png" />
+    <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-200.png" />
+    <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-400.png" />
     <Content Remove="Assets\LockScreenLogo.scale-200.png" />
     <Content Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Remove="Assets\StoreLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Author.png" />
-    <None Remove="Assets\favicon.ico" />
+    <None Remove="Assets\dashboard.html" />
     <None Remove="Assets\FluentIcons\About.ico" />
     <None Remove="Assets\FluentIcons\API.ico" />
     <None Remove="Assets\FluentIcons\Font.ico" />
@@ -116,11 +120,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\favicon.ico" />
     <Content Include="Assets\FluentIcons\About.ico" />
     <Content Include="Assets\FluentIcons\Settings.ico" />
     <Content Include="Assets\FluentIcons\Size.ico" />
-    <Content Include="favicon.ico" />
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -191,6 +196,9 @@
     <Page Update="Dialogs\ColorPickerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Content Update="Assets\dashboard.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

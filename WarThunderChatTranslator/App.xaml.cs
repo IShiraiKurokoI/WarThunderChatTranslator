@@ -440,9 +440,9 @@ namespace WarThunderChatTranslator
                             if (currentPort == 8111)
                             {
                                 // 如果当前端口是 8111，尝试切换到 9222
-                                currentPort = 9222;
-                                targetUrl = $"http://127.0.0.1:{currentPort}/gamechat?lastId={lastId}";
+                                targetUrl = $"http://127.0.0.1:9222/gamechat?lastId={lastId}";
                                 responseData = await ForwardRequestAsync(targetUrl);
+                                currentPort = 9222;
                             }
                             else
                             {
@@ -507,13 +507,43 @@ namespace WarThunderChatTranslator
                     }
                     else if (request.Url.AbsolutePath == "/dashboard")
                     {
-                        // 返回 dashboard HTML 文件
-                        string html = Properties.Resources.dashboard;
-                        response.ContentEncoding = Encoding.UTF8;
-                        response.ContentType = "text/html; charset=utf-8";
-                        byte[] buffer = Encoding.UTF8.GetBytes(html);
-                        response.ContentLength64 = buffer.Length;
-                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                        // 从 Assets 目录读取 dashboard.html 文件
+                        string htmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "dashboard.html");
+                        if (File.Exists(htmlPath))
+                        {
+                            string html = await File.ReadAllTextAsync(htmlPath);
+                            response.ContentEncoding = Encoding.UTF8;
+                            response.ContentType = "text/html; charset=utf-8";
+                            byte[] buffer = Encoding.UTF8.GetBytes(html);
+                            response.ContentLength64 = buffer.Length;
+                            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                        }
+                        else
+                        {
+                            // 处理文件未找到的情况
+                            response.StatusCode = (int)HttpStatusCode.NotFound;
+                            byte[] buffer = Encoding.UTF8.GetBytes("404 Not Found - Dashboard file is missing.");
+                            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                        }
+                    }
+                    else if (request.Url.AbsolutePath == "/favicon.ico")
+                    {
+                        // 返回 favicon.ico 文件
+                        string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favicon.ico");
+                        if (File.Exists(iconPath))
+                        {
+                            byte[] icon = await File.ReadAllBytesAsync(iconPath);
+                            response.ContentType = "image/x-icon";
+                            response.ContentLength64 = icon.Length;
+                            await response.OutputStream.WriteAsync(icon, 0, icon.Length);
+                        }
+                        else
+                        {
+                            // 如果没有找到 favicon 文件
+                            response.StatusCode = (int)HttpStatusCode.NotFound;
+                            byte[] buffer = Encoding.UTF8.GetBytes("404 Not Found - Favicon file is missing.");
+                            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                        }
                     }
                     else if (request.Url.AbsolutePath == "/")
                     {

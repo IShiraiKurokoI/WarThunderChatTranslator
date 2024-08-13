@@ -36,7 +36,7 @@ namespace WarThunderChatTranslator
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-            appWindow.SetIcon("Assets/favicon.ico");
+            appWindow.SetIcon("favicon.ico");
             appWindow.Resize(new Windows.Graphics.SizeInt32(1400, 800));
             _presenter = appWindow.Presenter as OverlappedPresenter;
             _presenter.IsAlwaysOnTop = true;

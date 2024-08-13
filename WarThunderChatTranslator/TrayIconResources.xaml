@@ -7,13 +7,10 @@
     <XamlUICommand
         x:Key="ShowHideWindowCommand"
         Description="开启/隐藏翻译器设置窗口"
-        Label="开启/隐藏设置窗口">
+        Label="设置">
         <XamlUICommand.IconSource>
-            <SymbolIconSource Symbol="OpenPane" />
+            <SymbolIconSource Symbol="Setting" />
         </XamlUICommand.IconSource>
-        <XamlUICommand.KeyboardAccelerators>
-            <KeyboardAccelerator Key="S" Modifiers="Control" />
-        </XamlUICommand.KeyboardAccelerators>
     </XamlUICommand>
     <XamlUICommand
         x:Key="ExitApplicationCommand"
@@ -22,15 +19,12 @@
         <XamlUICommand.IconSource>
             <SymbolIconSource Symbol="ClosePane" />
         </XamlUICommand.IconSource>
-        <XamlUICommand.KeyboardAccelerators>
-            <KeyboardAccelerator Key="E" Modifiers="Control" />
-        </XamlUICommand.KeyboardAccelerators>
     </XamlUICommand>
     <tb:TaskbarIcon
         x:Key="TrayIcon"
         ContextMenuMode="SecondWindow"
-        IconSource="ms-appx:///Assets/favicon.ico"
-        LeftClickCommand="{StaticResource ShowHideWindowCommand}"
+        DoubleClickCommand="{StaticResource ShowHideWindowCommand}"
+        IconSource="favicon.ico"
         NoLeftClickDelay="True"
         ToolTipText="战争雷霆聊天翻译器"
         Visibility="Visible">

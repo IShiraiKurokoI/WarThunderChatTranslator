@@ -25,7 +25,7 @@
             IsMaximizable="False"
             IsPaneButtonVisible="False">
             <wuc:TitleBar.Icon>
-                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/favicon.ico" />
+                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///favicon.ico" />
             </wuc:TitleBar.Icon>
         </wuc:TitleBar>
         <local:ShellPage Grid.Row="2" />

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>聊天界面</title>
+    <!-- 引用 favicon.ico -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,12 +31,20 @@
         }
 
         .chat-message {
+            display: flex; /* 添加flex布局 */
+            align-items: center; /* 垂直居中图标和文本 */
             margin-bottom: 15px;
             padding: 10px;
             border-radius: 5px;
             font-size: 16px;
             line-height: 1.5;
         }
+
+            .chat-message img {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px; /* 图标和文本之间的间距 */
+            }
 
             .chat-message.enemy {
                 background-color: #ffe5e5;
@@ -89,7 +99,16 @@
                     messageDiv.classList.add('ally');
                 }
 
-                messageDiv.textContent = `[${message.Mode}] ${message.Sender || '系统'}: ${message.TranslatedMessage}`;
+                // 创建并添加图标
+                const iconImg = document.createElement('img');
+                iconImg.src = '/favicon.ico'; // 设置图标路径
+                messageDiv.appendChild(iconImg);
+
+                // 创建并添加消息文本
+                const messageText = document.createElement('span');
+                messageText.textContent = `[${message.Mode}] ${message.Sender || '系统'}: ${message.TranslatedMessage}`;
+                messageDiv.appendChild(messageText);
+
                 chatContainer.appendChild(messageDiv);
             });
 
