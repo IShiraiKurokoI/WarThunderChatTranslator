@@ -410,6 +410,8 @@ namespace WarThunderChatTranslator
 
         static string COLOR_PATTERN = @"<color(.*?)>(.*?)<\/color>";
 
+        static int currentPort = 8111; // 初始端口为 8111
+
         private async Task HandleRequests()
         {
             while (_httpListener.IsListening)
@@ -425,9 +427,29 @@ namespace WarThunderChatTranslator
                         // 获取请求参数lastId
                         string lastId = request.QueryString["lastId"] ?? "0";
 
-                        // 转发请求到 http://127.0.0.1:8111/gamechat?lastId=
-                        string targetUrl = $"http://127.0.0.1:8111/gamechat?lastId={lastId}";
-                        string responseData = await ForwardRequestAsync(targetUrl);
+                        string targetUrl = $"http://127.0.0.1:{currentPort}/gamechat?lastId={lastId}";
+                        string responseData;
+
+                        try
+                        {
+                            // 尝试请求当前端口
+                            responseData = await ForwardRequestAsync(targetUrl);
+                        }
+                        catch (Exception)
+                        {
+                            if (currentPort == 8111)
+                            {
+                                // 如果当前端口是 8111，尝试切换到 9222
+                                currentPort = 9222;
+                                targetUrl = $"http://127.0.0.1:{currentPort}/gamechat?lastId={lastId}";
+                                responseData = await ForwardRequestAsync(targetUrl);
+                            }
+                            else
+                            {
+                                // 如果当前端口是 9222，且请求失败，抛出异常
+                                throw;
+                            }
+                        }
 
                         // 处理返回的数据
                         var chatMessages = JsonConvert.DeserializeObject<List<WarThunderChatTranslator.Entities.ChatMessage>>(responseData);
@@ -450,7 +472,7 @@ namespace WarThunderChatTranslator
                                 try
                                 {
                                     message.Msg = Regex.Replace(message.Msg, COLOR_PATTERN, match => match.Groups[2].Value);
-                                    
+
                                     var translationResult = await TranslationHelper.TranslateAsync(message.Msg);
                                     var translatedMsg = translationResult.Translation;
 
@@ -530,7 +552,7 @@ namespace WarThunderChatTranslator
                     }
                     catch (Exception ex)
                     {
-
+                        // 忽略关闭流时的异常
                     }
                 }
             }
