@@ -11,7 +11,7 @@
   <Identity
     Name="WarThunderChatTranslator"
     Publisher="CN=Shirai_Kuroko"
-    Version="1.0.1.0" />
+    Version="1.0.2.0" />
 
   <Properties>
     <DisplayName>战争雷霆聊天翻译器</DisplayName>
