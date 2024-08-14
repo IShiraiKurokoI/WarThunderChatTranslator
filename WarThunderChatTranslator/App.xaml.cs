@@ -57,63 +57,47 @@ namespace WarThunderChatTranslator
             {
                 url = "http://localhost:8100/";
             }
-            //初始化日志记录
+
+            // 初始化日志记录
             logger = NLog.LogManager.GetCurrentClassLogger();
             logger.Info("--------程序启动--------");
             logger.Info("日志记录初始化成功");
             DeleteLog();
-            //注册全局异常捕获
+
+            // 注册全局异常捕获
             System.Threading.Tasks.TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             App.Current.UnhandledException += App_UnhandledException;
             Application.Current.UnhandledException += App_UnhandledException;
-            //初始化应用设置
-            if (ApplicationConfig.GetSettings("NetworkProxyMode") == null)
+
+            // 初始化应用设置
+            var defaultSettings = new Dictionary<string, string>
             {
-                ApplicationConfig.SaveSettings("NetworkProxyMode", "Default");
-            }
-            if (ApplicationConfig.GetSettings("ProxyAddress") == null)
+                { "NetworkProxyMode", "Default" },
+                { "ProxyAddress", "" },
+                { "ProxyAccount", "" },
+                { "ProxyPassword", "" },
+                { "LastUpdateCheckDate", "从未" },
+                { "TranslateAPI", "Microsoft" },
+                { "TargetLanguage", "zh-CN" },
+                { "FontSize", "14" },
+                { "FontStyle", "Normal" },
+                { "FontColor", "#FF000000" }
+            };
+
+            foreach (var setting in defaultSettings)
             {
-                ApplicationConfig.SaveSettings("ProxyAddress", "");
-            }
-            if (ApplicationConfig.GetSettings("ProxyAccount") == null)
-            {
-                ApplicationConfig.SaveSettings("ProxyAccount", "");
-            }
-            if (ApplicationConfig.GetSettings("ProxyPassword") == null)
-            {
-                ApplicationConfig.SaveSettings("ProxyPassword", "");
-            }
-            if (ApplicationConfig.GetSettings("LastUpdateCheckDate") == null)
-            {
-                ApplicationConfig.SaveSettings("LastUpdateCheckDate", "从未");
-            }
-            if (ApplicationConfig.GetSettings("TranslateAPI") == null)
-            {
-                ApplicationConfig.SaveSettings("TranslateAPI", "Microsoft");
-            }
-            if (ApplicationConfig.GetSettings("TargetLanguage") == null)
-            {
-                ApplicationConfig.SaveSettings("TargetLanguage", "zh-CN");
-            }
-            if (ApplicationConfig.GetSettings("FontSize") == null)
-            {
-                ApplicationConfig.SaveSettings("FontSize", "14");
-            }
-            if (ApplicationConfig.GetSettings("FontStyle") == null)
-            {
-                ApplicationConfig.SaveSettings("FontStyle", "Normal");
-            }
-            if (ApplicationConfig.GetSettings("FontColor") == null)
-            {
-                ApplicationConfig.SaveSettings("FontColor", "#FF000000");
+                if (ApplicationConfig.GetSettings(setting.Key) == null)
+                {
+                    ApplicationConfig.SaveSettings(setting.Key, setting.Value);
+                }
             }
 
             logger.Info("初始化翻译器对象");
             TranslationHelper.init();
             logger.Info("翻译器对象初始化完成");
 
-            //创建托盘图标
+            // 创建托盘图标
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
             showHideWindowCommand.ExecuteRequested += ShowHideWindowCommand_ExecuteRequested;
 
