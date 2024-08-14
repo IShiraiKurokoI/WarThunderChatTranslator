@@ -38,6 +38,7 @@
         Visibility="Visible">
         <tb:TaskbarIcon.ContextFlyout>
             <MenuFlyout>
+                <MenuFlyoutItem Command="{StaticResource OpenDashboardCommand}" />
                 <MenuFlyoutItem Command="{StaticResource ShowHideWindowCommand}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem Command="{StaticResource ExitApplicationCommand}" />
