@@ -44,10 +44,7 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem
-                    Margin="0,0,12,0"
-                    Content="窗体"
-                    IsEnabled="False">
+                <NavigationViewItem Margin="0,0,12,0" Content="外观">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Windows.ico" />
                     </NavigationViewItem.Icon>
@@ -55,8 +52,7 @@
                         <NavigationViewItem
                             Margin="0,0,12,0"
                             helpers:NavigationHelperEx.NavigateTo="FontPage"
-                            Content="字体和样式"
-                            IsEnabled="False">
+                            Content="字体和样式">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico" />
                             </NavigationViewItem.Icon>

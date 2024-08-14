@@ -4,63 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>聊天界面</title>
-    <!-- 引用 favicon.ico -->
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        #chat-container {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            height: 70vh; /* 高度设置为视图窗口的70% */
-            overflow-y: auto; /* 添加垂直滚动条 */
-        }
-
-        .chat-message {
-            display: flex; /* 添加flex布局 */
-            align-items: center; /* 垂直居中图标和文本 */
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-
-            .chat-message img {
-                width: 20px;
-                height: 20px;
-                margin-right: 10px; /* 图标和文本之间的间距 */
-            }
-
-            .chat-message.enemy {
-                background-color: #ffe5e5;
-                color: #d9534f;
-            }
-
-            .chat-message.ally {
-                background-color: #e5f7ff;
-                color: #5bc0de;
-            }
-
-            .chat-message.system {
-                background-color: #fff3cd;
-                color: #856404;
-            }
-    </style>
+    <!-- 引用动态生成的 CSS -->
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <h1>聊天消息列表</h1>
@@ -89,22 +35,13 @@
                 messageDiv.classList.add('chat-message');
 
                 if (!message.Sender && message.Enemy) {
-                    // 系统消息
                     messageDiv.classList.add('system');
                 } else if (message.Enemy) {
-                    // 敌方消息
                     messageDiv.classList.add('enemy');
                 } else {
-                    // 友方消息
                     messageDiv.classList.add('ally');
                 }
 
-                // 创建并添加图标
-                const iconImg = document.createElement('img');
-                iconImg.src = '/favicon.ico'; // 设置图标路径
-                messageDiv.appendChild(iconImg);
-
-                // 创建并添加消息文本
                 const messageText = document.createElement('span');
                 messageText.textContent = `[${message.Mode}] ${message.Sender || '系统'}: ${message.TranslatedMessage}`;
                 messageDiv.appendChild(messageText);
@@ -112,12 +49,54 @@
                 chatContainer.appendChild(messageDiv);
             });
 
-            // 自动滚动到最底部
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        setInterval(fetchChatData, 4000); // 每4秒刷新一次数据
-        fetchChatData(); // 初次加载时调用
+        function test() {
+            const testMessages = [
+                {
+                    Mode: "友军",
+                    Sender: "玩家1",
+                    TranslatedMessage: "大家加油，我们快赢了！",
+                    Enemy: false
+                },
+                {
+                    Mode: "所有人",
+                    Sender: "敌方玩家",
+                    TranslatedMessage: "你们根本打不过我们！",
+                    Enemy: true
+                },
+                {
+                    Mode: "所有人",
+                    Sender: "",
+                    TranslatedMessage: "比赛将在5分钟后结束。",
+                    Enemy: true
+                },
+                {
+                    Mode: "友军",
+                    Sender: "玩家2",
+                    TranslatedMessage: "注意左侧有人埋伏！",
+                    Enemy: false
+                },
+                {
+                    Mode: "所有人",
+                    Sender: "敌方玩家",
+                    TranslatedMessage: "真是一场激烈的战斗！",
+                    Enemy: true
+                },
+                {
+                    Mode: "所有人",
+                    Sender: "",
+                    TranslatedMessage: "服务器将在10分钟后维护。",
+                    Enemy: true
+                }
+            ];
+
+            renderChatMessages(testMessages);
+        }
+
+        setInterval(fetchChatData, 4000);
+        fetchChatData();
     </script>
 </body>
 </html>

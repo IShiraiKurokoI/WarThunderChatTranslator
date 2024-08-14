@@ -130,13 +130,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GTranslate" Version="2.2.6" />
+    <PackageReference Include="GTranslate" Version="2.2.7" />
     <PackageReference Include="H.NotifyIcon.WinUI" Version="2.0.131" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240627000" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="NLog" Version="5.3.3" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
     <PackageReference Include="WinUICommunity.Components" Version="6.9.0" />
     <PackageReference Include="WinUICommunity.Core" Version="6.9.0" />

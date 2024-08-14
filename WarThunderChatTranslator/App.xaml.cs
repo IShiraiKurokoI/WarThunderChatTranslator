@@ -78,9 +78,12 @@ namespace WarThunderChatTranslator
                 { "LastUpdateCheckDate", "从未" },
                 { "TranslateAPI", "Microsoft" },
                 { "TargetLanguage", "zh-CN" },
+                { "FontFamily", "Segoe UI" },
                 { "FontSize", "14" },
-                { "FontStyle", "Normal" },
-                { "FontColor", "#FF000000" }
+                { "FontStyle", "normal" },
+                { "AllyFontColor", "#FF5BC0DE" },
+                { "EnemyFontColor", "#FFD9534F" },
+                { "SystemFontColor", "#FF856404" },
             };
 
             foreach (var setting in defaultSettings)
@@ -328,6 +331,9 @@ namespace WarThunderChatTranslator
                 case "/gamechat":
                     await HandleGameChatRequest(request, response);
                     break;
+                case "/styles.css":
+                    await ServeDynamicCss(response);
+                    break;
                 case "/dashboard":
                     await ServeFile(response, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets"), "dashboard.html", "text/html");
                     break;
@@ -386,6 +392,82 @@ namespace WarThunderChatTranslator
             await SendResponse(response, processedData, "application/json; charset=utf-8");
         }
 
+        private async Task ServeDynamicCss(HttpListenerResponse response)
+        {
+            var fontFamily = ApplicationConfig.GetSettings("FontFamily") ?? "Segoe UI";
+            var fontSize = ApplicationConfig.GetSettings("FontSize") ?? "14px";
+            var fontStyle = ApplicationConfig.GetSettings("FontStyle") ?? "Normal";
+            var allyFontColor = ToRgba(ApplicationConfig.GetSettings("AllyFontColor") ?? "#FF5BC0DE");
+            var enemyFontColor = ToRgba(ApplicationConfig.GetSettings("EnemyFontColor") ?? "#FFD9534F");
+            var systemFontColor = ToRgba(ApplicationConfig.GetSettings("SystemFontColor") ?? "#FF856404");
+
+            var cssContent = $@"
+                body {{
+                    font-family: {fontFamily}, Arial, sans-serif;
+                    font-weight: {fontStyle};
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 20px;
+                }}
+                h1 {{
+                    text-align: center;
+                    color: #333;
+                }}
+                #chat-container {{
+                    max-width: 800px;
+                    margin: 20px auto;
+                    background-color: #fff;
+                    border-radius: 10px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    padding: 20px;
+                    height: 70vh;
+                    overflow-y: auto;
+                }}
+                .chat-message {{
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    border-radius: 5px;
+                    font-size: {fontSize}px;
+                    line-height: 1.5;
+                }}
+                .chat-message img {{
+                    width: 20px;
+                    height: 20px;
+                    margin-right: 10px;
+                }}
+                .chat-message.ally {{
+                    background-color: #e5f7ff;
+                    color: {allyFontColor};
+                }}
+                .chat-message.enemy {{
+                    background-color: #ffe5e5;
+                    color: {enemyFontColor};
+                }}
+                .chat-message.system {{
+                    background-color: #fff3cd;
+                    color: {systemFontColor};
+                }}";
+
+            var buffer = Encoding.UTF8.GetBytes(cssContent);
+            response.ContentType = "text/css; charset=utf-8";
+            response.ContentLength64 = buffer.Length;
+            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+        }
+        private string ToRgba(string argbColor)
+        {
+            if (argbColor.StartsWith("#"))
+            {
+                var argb = argbColor.Substring(1);
+                var a = int.Parse(argb.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255.0;
+                var r = int.Parse(argb.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                var g = int.Parse(argb.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                var b = int.Parse(argb.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+                return $"rgba({r}, {g}, {b}, {a.ToString("0.##")})";
+            }
+            return argbColor;
+        }
         private async Task ServeFile(HttpListenerResponse response, string directory, string fileName, string contentType)
         {
             var filePath = Path.Combine(directory, fileName);
