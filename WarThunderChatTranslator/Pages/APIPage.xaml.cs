@@ -12,6 +12,7 @@ using WarThunderChatTranslator.Dialogs;
 using Windows.UI.Notifications;
 using WarThunderChatTranslator.Helpers;
 using GTranslate;
+using static WinUICommunity.LanguageDictionary;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -60,6 +61,7 @@ namespace WarThunderChatTranslator.Pages
             var languageDictionary = GTranslate.Language.LanguageDictionary;
 
             // 加载所有语言到 TargetLanguage ComboBox
+            string savedLanguage = ApplicationConfig.GetSettings("TargetLanguage");
             foreach (var language in languageDictionary.Values)
             {
                 var comboBoxItem = new ComboBoxItem()
@@ -67,23 +69,11 @@ namespace WarThunderChatTranslator.Pages
                     Content = language.NativeName,
                     Tag = language
                 };
-                TargetLanguage.Items.Add(comboBoxItem);
-            }
-
-            string savedLanguage = ApplicationConfig.GetSettings("TargetLanguage");
-            if (!string.IsNullOrEmpty(savedLanguage))
-            {
-                foreach (ComboBoxItem item in TargetLanguage.Items)
+                if (language.ISO6391 == savedLanguage)
                 {
-                    var language = (Language)item.Tag;
-
-                    // 如果找到匹配的语言，则设置为选中项
-                    if (language.ISO6391 == savedLanguage)
-                    {
-                        TargetLanguage.SelectedItem = item;
-                        break;
-                    }
+                    comboBoxItem.IsSelected = true;
                 }
+                TargetLanguage.Items.Add(comboBoxItem);
             }
             loaded =true;
         }
