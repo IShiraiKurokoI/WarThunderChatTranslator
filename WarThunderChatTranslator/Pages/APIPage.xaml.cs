@@ -1,199 +1,159 @@
-// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
-
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WarThunderChatTranslator.Configurations;
-using GTranslate.Translators;
-using System.Diagnostics;
 using WarThunderChatTranslator.Dialogs;
-using Windows.UI.Notifications;
 using WarThunderChatTranslator.Helpers;
 using GTranslate;
-using static WinUICommunity.LanguageDictionary;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using GTranslate.Translators;
+using NLog;
+using Windows.UI.Notifications;
+using System.Threading.Tasks;
 
 namespace WarThunderChatTranslator.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class APIPage : Page
     {
-        public NLog.Logger logger;
+        private readonly Logger _logger;
+        private bool _loaded;
+
         public APIPage()
         {
-            this.InitializeComponent();
-            logger = NLog.LogManager.GetCurrentClassLogger();
+            InitializeComponent();
+            _logger = LogManager.GetCurrentClassLogger();
         }
-
-        bool loaded = false;
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            switch(ApplicationConfig.GetSettings("TranslateAPI"))
-            {
-                case "Microsoft":
-                    {
-                        APIPanel.SelectedIndex = 0;
-                        break;
-                    }
-                case "Yandex":
-                    {
-                        APIPanel.SelectedIndex = 1;
-                        break;
-                    }
-                case "Bing":
-                    {
-                        APIPanel.SelectedIndex = 2;
-                        break;
-                    }
-                case "Google":
-                    {
-                        APIPanel.SelectedIndex = 3;
-                        break;
-                    }
-            }
-            var languageDictionary = GTranslate.Language.LanguageDictionary;
+            var selectedAPI = ApplicationConfig.GetSettings("TranslateAPI") ?? "Microsoft";
+            InitializeAPIPanel(selectedAPI);
+            LoadLanguages();
+            UpdateLanguageSupport(selectedAPI);
+            _loaded = true;
+        }
 
-            // 加载所有语言到 TargetLanguage ComboBox
-            string savedLanguage = ApplicationConfig.GetSettings("TargetLanguage");
+        private void InitializeAPIPanel(String selectedAPI)
+        {
+            APIPanel.SelectedIndex = selectedAPI switch
+            {
+                "Yandex" => 1,
+                "Bing" => 2,
+                "Google" => 3,
+                _ => 0
+            };
+        }
+
+        private void LoadLanguages()
+        {
+            var languageDictionary = GTranslate.Language.LanguageDictionary;
+            var savedLanguage = ApplicationConfig.GetSettings("TargetLanguage");
+
             foreach (var language in languageDictionary.Values)
             {
-                var comboBoxItem = new ComboBoxItem()
+                var comboBoxItem = new ComboBoxItem
                 {
                     Content = language.NativeName,
-                    Tag = language
+                    Tag = language,
+                    IsSelected = language.ISO6391 == savedLanguage
                 };
-                if (language.ISO6391 == savedLanguage)
-                {
-                    comboBoxItem.IsSelected = true;
-                }
                 TargetLanguage.Items.Add(comboBoxItem);
             }
-            loaded =true;
         }
 
         private void APIPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loaded)
-            {
-                return;
-            }
-            var selectedTag = ((ComboBoxItem)APIPanel.SelectedItem).Tag.ToString();
+            if (!_loaded) return;
+
+            var selectedTag = ((ComboBoxItem)APIPanel.SelectedItem)?.Tag?.ToString();
+            if (string.IsNullOrEmpty(selectedTag)) return;
 
             ApplicationConfig.SaveSettings("TranslateAPI", selectedTag);
             TranslationHelper.UpdateTranslator();
+            UpdateLanguageSupport(selectedTag);
+        }
 
-            // 遍历 TargetLanguage ComboBox 中的每个语言项，并根据翻译器支持情况调整 IsEnabled
+        private void UpdateLanguageSupport(string selectedTag)
+        {
             foreach (ComboBoxItem item in TargetLanguage.Items)
             {
-                var language = (Language)item.Tag;
-                bool isSupported = false;
-
-                // 判断当前翻译器是否支持此语言
-                switch (selectedTag)
+                if (item.Tag is Language language)
                 {
-                    case "Microsoft":
-                        isSupported = language.IsServiceSupported(TranslationServices.Microsoft);
-                        break;
-                    case "Yandex":
-                        isSupported = language.IsServiceSupported(TranslationServices.Yandex);
-                        break;
-                    case "Bing":
-                        isSupported = language.IsServiceSupported(TranslationServices.Bing);
-                        break;
-                    case "Google":
-                        isSupported = language.IsServiceSupported(TranslationServices.Google);
-                        break;
-                    default:
-                        isSupported = true; // 如果没有明确的翻译器列表，所有语言都支持
-                        break;
+                    item.IsEnabled = selectedTag switch
+                    {
+                        "Microsoft" => language.IsServiceSupported(TranslationServices.Microsoft),
+                        "Yandex" => language.IsServiceSupported(TranslationServices.Yandex),
+                        "Bing" => language.IsServiceSupported(TranslationServices.Bing),
+                        "Google" => language.IsServiceSupported(TranslationServices.Google),
+                        _ => true,
+                    };
                 }
-
-                // 根据是否支持设置语言项的可用性
-                item.IsEnabled = isSupported;
             }
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            InputDialog inputDialog = new InputDialog();
-            inputDialog.XamlRoot = this.XamlRoot;
-            inputDialog.Style = Microsoft.UI.Xaml.Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            var inputDialog = new InputDialog
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style
+            };
             var result = await inputDialog.ShowAsync();
+
             if (result == ContentDialogResult.Primary)
             {
                 Checking.Visibility = Visibility.Visible;
-                try
-                {
-                    var translationResult = await TranslationHelper.TranslateAsync(inputDialog.text);
-
-                    // 构建Toast通知内容
-                    var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText04);
-                    var toastVisualElements = toastXml.GetElementsByTagName("visual");
-                    var appLogoOverlay = toastXml.CreateElement("appLogoOverlay");
-                    appLogoOverlay.SetAttribute("src", "favicon.ico");
-                    appLogoOverlay.SetAttribute("hint-crop", "circle");
-                    var stringElements = toastXml.GetElementsByTagName("text");
-                    stringElements[0].AppendChild(toastXml.CreateTextNode("翻译成功！"));
-                    stringElements[1].AppendChild(toastXml.CreateTextNode("翻译结果：" + translationResult.Translation));
-                    stringElements[2].AppendChild(toastXml.CreateTextNode("调用翻译器：" + translationResult.Service));
-
-                    // 创建并显示通知
-                    var toast = new ToastNotification(toastXml);
-                    ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-
-                    logger.Debug($"翻译测试成功！翻译器：{translationResult.Service}, 翻译内容：{translationResult.Source}, 翻译结果：{translationResult.Translation}");
-                }
-                catch (Exception ex)
-                {
-                    // 构建Toast通知内容
-                    var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
-                    var stringElements = toastXml.GetElementsByTagName("text");
-                    stringElements[0].AppendChild(toastXml.CreateTextNode("翻译失败！"));
-                    stringElements[1].AppendChild(toastXml.CreateTextNode(ex.Message));
-
-                    // 创建并显示通知
-                    var toast = new ToastNotification(toastXml);
-                    ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-
-                    logger.Debug($"翻译测试失败！翻译器：{TranslationHelper.getCurrentTranslator().Name}, 翻译内容：{inputDialog.text}, 错误：{ex.Message}");
-                }
+                await HandleTranslationTest(inputDialog.text);
                 Checking.Visibility = Visibility.Collapsed;
             }
         }
 
+        private async Task HandleTranslationTest(string text)
+        {
+            try
+            {
+                var translationResult = await TranslationHelper.TranslateAsync(text);
+                ShowToastNotification("翻译成功！", $"翻译结果：{translationResult.Translation}", $"调用翻译器：{translationResult.Service}");
+                _logger.Debug($"翻译测试成功！翻译器：{translationResult.Service}, 翻译内容：{translationResult.Source}, 翻译结果：{translationResult.Translation}");
+            }
+            catch (Exception ex)
+            {
+                ShowToastNotification("翻译失败！", ex.Message);
+                _logger.Debug($"翻译测试失败！翻译器：{TranslationHelper.getCurrentTranslator().Name}, 翻译内容：{text}, 错误：{ex.Message}");
+            }
+        }
+
+        private void ShowToastNotification(string title, string message, string subtitle = "")
+        {
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText04);
+            var stringElements = toastXml.GetElementsByTagName("text");
+
+            stringElements[0].AppendChild(toastXml.CreateTextNode(title));
+            stringElements[1].AppendChild(toastXml.CreateTextNode(message));
+            if (!string.IsNullOrEmpty(subtitle))
+            {
+                stringElements[2].AppendChild(toastXml.CreateTextNode(subtitle));
+            }
+
+            var toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
+        }
+
         private void Bing_Token_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!loaded)
+            if (_loaded)
             {
-                return;
+                ApplicationConfig.SaveSettings("Bing_Token", ((TextBox)sender).Text);
             }
-            ApplicationConfig.SaveSettings("Bing_Token", ((TextBox)sender).Text);
         }
 
         private void TargetLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!loaded)
+            if (_loaded && TargetLanguage.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag is Language selectedLanguage)
             {
-                return;
-            }
-            // 获取当前选中的语言项
-            var selectedItem = (ComboBoxItem)TargetLanguage.SelectedItem;
-            if (selectedItem != null)
-            {
-                var selectedLanguage = (Language)selectedItem.Tag;
-
-                // 保存选定的语言到配置
                 ApplicationConfig.SaveSettings("TargetLanguage", selectedLanguage.ISO6391);
-                logger.Debug($"设置目标语言为{selectedLanguage.ISO6391}");
+                _logger.Debug($"设置目标语言为{selectedLanguage.ISO6391}");
             }
         }
-
     }
 }

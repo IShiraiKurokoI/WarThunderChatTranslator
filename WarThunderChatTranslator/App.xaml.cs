@@ -389,7 +389,7 @@ namespace WarThunderChatTranslator
         private async Task ServeFile(HttpListenerResponse response, string directory, string fileName, string contentType)
         {
             var filePath = Path.Combine(directory, fileName);
-            logger.Debug(filePath);
+            logger.Debug($"返回响应文件{filePath}");
             if (File.Exists(filePath))
             {
                 var fileContent = await File.ReadAllBytesAsync(filePath);
