@@ -14,7 +14,7 @@
     </XamlUICommand>
     <XamlUICommand
         x:Key="ShowHideWindowCommand"
-        Description="开启/隐藏翻译器设置窗口"
+        Description="开启翻译器设置窗口"
         Label="设置">
         <XamlUICommand.IconSource>
             <SymbolIconSource Symbol="Setting" />

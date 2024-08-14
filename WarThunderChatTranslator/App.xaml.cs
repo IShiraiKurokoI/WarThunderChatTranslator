@@ -1,16 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
-
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using System;
 using System.IO;
 using WarThunderChatTranslator.Configurations;
 using System.Threading.Tasks;
-using Path = System.IO.Path;
 using Application = Microsoft.UI.Xaml.Application;
-using Microsoft.UI.Xaml.Input;
 using H.NotifyIcon;
-using WinUICommunity;
 using Microsoft.UI;
 using System.Net;
 using System.Text;
@@ -27,50 +21,54 @@ using NLog;
 using System.Text.RegularExpressions;
 using WarThunderChatTranslator.Pages;
 using WarThunderChatTranslator.Helpers;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using Microsoft.UI.Xaml.Input;
+using WinUICommunity;
 
 namespace WarThunderChatTranslator
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
     public partial class App : Microsoft.UI.Xaml.Application
     {
         public NLog.Logger logger;
         public static IThemeService themeService { get; set; }
 
+        private Window m_window;
+        public TaskbarIcon TrayIcon { get; private set; }
+        private static readonly string url = IsAdmin() ? "http://+:8100/" : "http://localhost:8100/";
+        private HttpListener _httpListener;
+        private Dictionary<int, string> translationCache = new Dictionary<int, string>();
+        private static readonly int currentPort = 8111;
+        private static readonly string COLOR_PATTERN = @"<color(.*?)>(.*?)<\/color>";
+
         public App()
         {
             this.InitializeComponent();
+            InitializeLogging();
+            RegisterGlobalExceptionHandlers();
         }
-
-        private Window m_window;
-        public TaskbarIcon TrayIcon { get; private set; }
-
-        static String url = "http://+:8100/";
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            if (!IsAdmin())
-            {
-                url = "http://localhost:8100/";
-            }
+            InitializeAppSettings();
+            InitializeTrayIcon();
+            StartHttpServer();
+        }
 
-            // 初始化日志记录
+        private void InitializeLogging()
+        {
             logger = NLog.LogManager.GetCurrentClassLogger();
             logger.Info("--------程序启动--------");
-            logger.Info("日志记录初始化成功");
-            DeleteLog();
+            DeleteOldLogs();
+        }
 
-            // 注册全局异常捕获
-            System.Threading.Tasks.TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            App.Current.UnhandledException += App_UnhandledException;
-            Application.Current.UnhandledException += App_UnhandledException;
+        private void RegisterGlobalExceptionHandlers()
+        {
+            TaskScheduler.UnobservedTaskException += (sender, e) => HandleException(e.Exception);
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => HandleException(e.ExceptionObject as Exception);
+            App.Current.UnhandledException += (sender, e) => HandleException(e.Exception);
+        }
 
-            // 初始化应用设置
+        private void InitializeAppSettings()
+        {
             var defaultSettings = new Dictionary<string, string>
             {
                 { "NetworkProxyMode", "Default" },
@@ -96,169 +94,127 @@ namespace WarThunderChatTranslator
             logger.Info("初始化翻译器对象");
             TranslationHelper.init();
             logger.Info("翻译器对象初始化完成");
+        }
 
-            // 创建托盘图标
+        private void InitializeTrayIcon()
+        {
             var OpenDashboardCommand = (XamlUICommand)Resources["OpenDashboardCommand"];
-            OpenDashboardCommand.ExecuteRequested += OpenDashboardCommand_ExecuteRequested;
+            OpenDashboardCommand.ExecuteRequested += (sender, args) => Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
 
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
-            showHideWindowCommand.ExecuteRequested += ShowHideWindowCommand_ExecuteRequested;
+            showHideWindowCommand.ExecuteRequested += ToggleMainWindowVisibility;
 
             var exitApplicationCommand = (XamlUICommand)Resources["ExitApplicationCommand"];
-            exitApplicationCommand.ExecuteRequested += ExitApplicationCommand_ExecuteRequested;
+            exitApplicationCommand.ExecuteRequested += (sender, args) => ExitApplication();
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
             TrayIcon.ForceCreate();
 
-            CoreApplication.Exiting += CoreApplication_Exiting;
-
-            StartHttpServer();
+            CoreApplication.Exiting += (sender, e) => ExitApplication();
         }
 
-        private void OpenDashboardCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        private void ToggleMainWindowVisibility(XamlUICommand sender, ExecuteRequestedEventArgs args)
         {
-            Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
-        }
-
-        private void CoreApplication_Exiting(object sender, object e)
-        {
-            HandleClosedEvents = false;
-            OnClosed();
-            TrayIcon?.Dispose();
-            m_window?.Close();
-
             if (m_window == null)
             {
-                Environment.Exit(0);
+                InitializeMainWindow();
+                return;
             }
 
-            Application.Current.Exit();
-            System.Environment.Exit(0);
+            if (!m_window.Visible)
+            {
+                m_window.Show();
+            }
         }
 
-        public static bool IsAdmin()
+        private void InitializeMainWindow()
+        {
+            m_window = new MainWindow();
+
+            var theme = ApplicationConfig.GetSettings("Theme") ?? "Default";
+            ElementTheme SettingsTheme = theme switch
+            {
+                "Light" => ElementTheme.Light,
+                "Dark" => ElementTheme.Dark,
+                _ => ElementTheme.Default,
+            };
+
+            ApplicationConfig.SaveSettings("Theme", theme);
+
+            themeService = new ThemeService();
+            themeService.Initialize(m_window);
+            themeService.ConfigBackdrop(BackdropType.AcrylicThin);
+            themeService.ConfigElementTheme(SettingsTheme);
+            themeService.ConfigTitleBar(new TitleBarCustomization
+            {
+                TitleBarWindowType = TitleBarWindowType.AppWindow,
+                LightTitleBarButtons = new TitleBarButtons { ButtonBackgroundColor = Colors.Transparent },
+                DarkTitleBarButtons = new TitleBarButtons { ButtonBackgroundColor = Colors.Transparent }
+            });
+
+            CenterWindow(m_window);
+
+            m_window.Closed += (sender, args) =>
+            {
+                if (HandleClosedEvents)
+                {
+                    args.Handled = true;
+                    m_window.Hide();
+                }
+            };
+            m_window.Show();
+        }
+
+        private static void CenterWindow(Window window)
+        {
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+            var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+            var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+            var displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
+
+            if (appWindow is not null && displayArea is not null)
+            {
+                var CenteredPosition = appWindow.Position;
+                CenteredPosition.X = (displayArea.WorkArea.Width - appWindow.Size.Width) / 2;
+                CenteredPosition.Y = (displayArea.WorkArea.Height - appWindow.Size.Height) / 2;
+                appWindow.Move(CenteredPosition);
+            }
+        }
+
+        private static bool IsAdmin()
         {
             var identity = WindowsIdentity.GetCurrent();
             var principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
+
         public bool HandleClosedEvents { get; set; } = true;
 
-        private void ShowHideWindowCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
-        {
-            if (m_window == null)
-            {
-                //初始化设置窗口
-                m_window = new MainWindow();
-                //初始化主题设置
-                ElementTheme SettingsTheme = ElementTheme.Default;
-                if (ApplicationConfig.GetSettings("Theme") != null)
-                {
-                    if (ApplicationConfig.GetSettings("Theme") == "Light")
-                    {
-                        SettingsTheme = ElementTheme.Light;
-                    }
-                    if (ApplicationConfig.GetSettings("Theme") == "Dark")
-                    {
-                        SettingsTheme = ElementTheme.Dark;
-                    }
-                }
-                else
-                {
-                    ApplicationConfig.SaveSettings("Theme", "Default");
-                }
-                themeService = new ThemeService();
-                themeService.Initialize(m_window);
-                themeService.ConfigBackdrop(BackdropType.AcrylicThin);
-                themeService.ConfigElementTheme(SettingsTheme);
-                themeService.ConfigTitleBar(new TitleBarCustomization
-                {
-                    TitleBarWindowType = TitleBarWindowType.AppWindow,
-                    LightTitleBarButtons = new TitleBarButtons
-                    {
-                        ButtonBackgroundColor = Colors.Transparent
-                    },
-                    DarkTitleBarButtons = new TitleBarButtons
-                    {
-                        ButtonBackgroundColor = Colors.Transparent
-                    }
-                });
-                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(m_window);
-                Microsoft.UI.WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
-                Microsoft.UI.Windowing.AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-                if (appWindow is not null)
-                {
-                    Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(windowId, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
-                    if (displayArea is not null)
-                    {
-                        var CenteredPosition = appWindow.Position;
-                        CenteredPosition.X = ((displayArea.WorkArea.Width - appWindow.Size.Width) / 2);
-                        CenteredPosition.Y = ((displayArea.WorkArea.Height - appWindow.Size.Height) / 2);
-                        appWindow.Move(CenteredPosition);
-                    }
-                }
-                m_window.Closed += (sender, args) =>
-                {
-                    if (HandleClosedEvents)
-                    {
-                        args.Handled = true;
-                        m_window.Hide();
-                    }
-                };
-                m_window.Show();
-                return;
-            }
-
-            if (m_window.Visible)
-            {
-                m_window.Hide();
-            }
-            else
-            {
-                m_window.Show();
-            }
-        }
-
-        private void ExitApplicationCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        private void ExitApplication()
         {
             HandleClosedEvents = false;
             OnClosed();
             TrayIcon?.Dispose();
             m_window?.Close();
-
-            // https://github.com/HavenDV/H.NotifyIcon/issues/66
-            if (m_window == null)
-            {
-                Environment.Exit(0);
-            }
-
             Application.Current.Exit();
-            System.Environment.Exit(0);
+            Environment.Exit(0);
         }
 
-        public void DeleteLog()
+        private void DeleteOldLogs()
         {
             try
             {
-                string logDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\WTChatTranslator\\Log";
+                string logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WTChatTranslator", "Log");
                 string logFilePrefix = "Log-WTChatTranslator-";
-                int daysThreshold = 3;
-                DateTime deletionDate = DateTime.Now.AddDays(-daysThreshold);
-                string[] logFiles = Directory.GetFiles(logDirectory, logFilePrefix + "*.log");
+                DateTime deletionDate = DateTime.Now.AddDays(-3);
 
-                foreach (string logFile in logFiles)
+                foreach (var logFile in Directory.EnumerateFiles(logDirectory, $"{logFilePrefix}*.log"))
                 {
-                    string fileName = Path.GetFileName(logFile);
-                    string dateString = fileName.Substring(logFilePrefix.Length, 10);
-                    DateTime logDate;
-
-                    if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out logDate))
+                    var dateString = Path.GetFileName(logFile)?.Substring(logFilePrefix.Length, 10);
+                    if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out DateTime logDate) && logDate <= deletionDate)
                     {
-                        if (logDate <= deletionDate)
-                        {
-                            File.Delete(logFile);
-                            logger.Info("删除过期日志: " + fileName);
-                        }
+                        File.Delete(logFile);
+                        logger.Info("删除过期日志: " + Path.GetFileName(logFile));
                     }
                 }
             }
@@ -268,129 +224,70 @@ namespace WarThunderChatTranslator
             }
         }
 
-        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
-        {
-            // 处理未处理的异常
-            HandleException(e.Exception);
-            // 将事件标记为已处理，以防止应用程序崩溃
-            e.Handled = true;
-        }
-
-        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-        {
-            try
-            {
-                if (e.Exception is Exception exception)
-                {
-                    HandleException(exception);
-                }
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
-            finally
-            {
-                e.SetObserved();
-            }
-        }
-
-        //非UI线程未捕获异常处理事件(例如自己创建的一个子线程)
-        private void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
-        {
-            try
-            {
-                if (e.ExceptionObject is Exception exception)
-                {
-                    HandleException(exception);
-                }
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
-        }
-
-        //日志记录
         private void HandleException(Exception ex)
         {
             logger.Error(ex.ToString());
 
             var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-            var stringElements = toastXml.GetElementsByTagName("text");
-            stringElements[0].AppendChild(toastXml.CreateTextNode(ex.Message + ex.StackTrace));
+            toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode(ex.Message + ex.StackTrace));
             var toast = new ToastNotification(toastXml);
             ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
         }
 
-        private HttpListener _httpListener;
-        private Dictionary<int, string> translationCache = new Dictionary<int, string>();
-
         private async void StartHttpServer()
         {
-            int port = 8100;
-            string ruleName = $"WarThunderChatTranslator：允许端口 {port}";
-
-            if (!IsPortAllowedInFirewall(port))
+            if (!IsPortAllowedInFirewall(8100))
             {
-                logger.Info($"端口 {port} 在防火墙中未被允许。正在添加规则...");
-                AddFirewallRule(port, ruleName);
-            }
-            else
-            {
-                logger.Info($"端口 {port} 已经在防火墙中被允许。");
+                logger.Info("端口 8100 在防火墙中未被允许。正在添加规则...");
+                AddFirewallRule(8100, "WarThunderChatTranslator：允许端口 8100");
             }
 
             _httpListener = new HttpListener();
-
-            // 监听特定端口和路由
             _httpListener.Prefixes.Add(url);
-
             _httpListener.Start();
             logger.Info($"HTTP服务器已启动，正在监听 {url}");
 
-            // 异步处理HTTP请求
-            await Task.Run(() => HandleRequests());
+            await Task.Run(HandleRequests);
         }
 
         private bool IsPortAllowedInFirewall(int port)
         {
-            // 通过调用 netsh 查询是否已有该端口的规则
-            Process process = new Process();
-            process.StartInfo.FileName = "netsh";
-            process.StartInfo.Arguments = $"advfirewall firewall show rule name=all";
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-            process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "netsh",
+                    Arguments = "advfirewall firewall show rule name=all",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8
+                }
+            };
 
             process.Start();
             string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            // 检查输出中是否有对应端口的规则
-            return output.Contains($"WarThunderChatTranslator：允许端口");
+            return output.Contains($"WarThunderChatTranslator：允许端口 {port}");
         }
 
         private void AddFirewallRule(int port, string ruleName)
         {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo();
-            processStartInfo.FileName = "netsh";
-            processStartInfo.Arguments = $"advfirewall firewall add rule name=\"{ruleName}\" protocol=TCP dir=in localport={port} action=allow description=\"此规则允许端口 {port} 的入站访问\"";
-            processStartInfo.UseShellExecute = true; // 必须为 true 才能使用 Verb
-            processStartInfo.Verb = "runas"; // 提升为管理员权限
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = "netsh",
+                Arguments = $"advfirewall firewall add rule name=\"{ruleName}\" protocol=TCP dir=in localport={port} action=allow description=\"此规则允许端口 {port} 的入站访问\"",
+                UseShellExecute = true,
+                Verb = "runas",
+                CreateNoWindow = true
+            };
 
             try
             {
-                using (Process process = Process.Start(processStartInfo))
-                {
-                    process.WaitForExit();
-                    logger.Info($"防火墙规则 '{ruleName}' 已添加。");
-                }
+                using var process = Process.Start(processStartInfo);
+                process.WaitForExit();
+                logger.Info($"防火墙规则 '{ruleName}' 已添加。");
             }
             catch (Exception ex)
             {
@@ -398,195 +295,135 @@ namespace WarThunderChatTranslator
             }
         }
 
-        static string COLOR_PATTERN = @"<color(.*?)>(.*?)<\/color>";
-
-        static int currentPort = 8111; // 初始端口为 8111
-
         private async Task HandleRequests()
         {
             while (_httpListener.IsListening)
             {
                 var context = await _httpListener.GetContextAsync();
-                var request = context.Request;
                 var response = context.Response;
 
                 try
                 {
-                    if (request.Url.AbsolutePath == "/gamechat")
-                    {
-                        // 获取请求参数lastId
-                        string lastId = request.QueryString["lastId"] ?? "0";
-
-                        string targetUrl = $"http://127.0.0.1:{currentPort}/gamechat?lastId={lastId}";
-                        string responseData;
-
-                        try
-                        {
-                            // 尝试请求当前端口
-                            responseData = await ForwardRequestAsync(targetUrl);
-                        }
-                        catch (Exception)
-                        {
-                            if (currentPort == 8111)
-                            {
-                                // 如果当前端口是 8111，尝试切换到 9222
-                                targetUrl = $"http://127.0.0.1:9222/gamechat?lastId={lastId}";
-                                responseData = await ForwardRequestAsync(targetUrl);
-                                currentPort = 9222;
-                            }
-                            else
-                            {
-                                // 如果当前端口是 9222，且请求失败，抛出异常
-                                throw;
-                            }
-                        }
-
-                        // 处理返回的数据
-                        var chatMessages = JsonConvert.DeserializeObject<List<WarThunderChatTranslator.Entities.ChatMessage>>(responseData);
-
-                        // 使用 Task.WhenAll 并行处理翻译任务
-                        var translationTasks = chatMessages.Select(async message =>
-                        {
-                            // 去掉 Msg 和 Mode 中的 \t
-                            message.Msg = message.Msg.Replace("\t", "");
-                            message.Mode = message.Mode.Replace("\t", "");
-
-                            // 检查缓存中是否已有翻译
-                            if (translationCache.ContainsKey(message.Id) && translationCache[message.Id] == message.Msg)
-                            {
-                                // 从缓存中获取翻译结果
-                                message.TranslatedMessage = translationCache[message.Id];
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    message.Msg = Regex.Replace(message.Msg, COLOR_PATTERN, match => match.Groups[2].Value);
-
-                                    var translationResult = await TranslationHelper.TranslateAsync(message.Msg);
-                                    var translatedMsg = translationResult.Translation;
-
-                                    // 将翻译结果存储到缓存中
-                                    translationCache[message.Id] = translatedMsg;
-
-                                    // 更新消息的 TranslatedMessage 属性为翻译后的文本
-                                    message.TranslatedMessage = translatedMsg;
-                                }
-                                catch
-                                {
-                                    // 翻译失败，保留原文并添加标记
-                                    message.TranslatedMessage = "(翻译失败) " + message.Msg;
-                                }
-                            }
-                            message.PrettyMessage = $"{message.Sender}: {message.TranslatedMessage}";
-                        }).ToList();
-
-                        // 等待所有翻译任务完成
-                        await Task.WhenAll(translationTasks);
-
-                        string processedData = JsonConvert.SerializeObject(chatMessages);
-
-                        // 设置响应的编码和内容类型为UTF-8
-                        response.ContentEncoding = Encoding.UTF8;
-                        response.ContentType = "application/json; charset=utf-8";
-
-                        // 将返回数据发送给客户端
-                        byte[] buffer = Encoding.UTF8.GetBytes(processedData);
-                        response.ContentLength64 = buffer.Length;
-                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-                    }
-                    else if (request.Url.AbsolutePath == "/dashboard")
-                    {
-                        // 从 Assets 目录读取 dashboard.html 文件
-                        string htmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "dashboard.html");
-                        if (File.Exists(htmlPath))
-                        {
-                            string html = await File.ReadAllTextAsync(htmlPath);
-                            response.ContentEncoding = Encoding.UTF8;
-                            response.ContentType = "text/html; charset=utf-8";
-                            byte[] buffer = Encoding.UTF8.GetBytes(html);
-                            response.ContentLength64 = buffer.Length;
-                            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-                        }
-                        else
-                        {
-                            // 处理文件未找到的情况
-                            response.StatusCode = (int)HttpStatusCode.NotFound;
-                            byte[] buffer = Encoding.UTF8.GetBytes("404 Not Found - Dashboard file is missing.");
-                            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-                        }
-                    }
-                    else if (request.Url.AbsolutePath == "/favicon.ico")
-                    {
-                        // 返回 favicon.ico 文件
-                        string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favicon.ico");
-                        if (File.Exists(iconPath))
-                        {
-                            byte[] icon = await File.ReadAllBytesAsync(iconPath);
-                            response.ContentType = "image/x-icon";
-                            response.ContentLength64 = icon.Length;
-                            await response.OutputStream.WriteAsync(icon, 0, icon.Length);
-                        }
-                        else
-                        {
-                            // 如果没有找到 favicon 文件
-                            response.StatusCode = (int)HttpStatusCode.NotFound;
-                            byte[] buffer = Encoding.UTF8.GetBytes("404 Not Found - Favicon file is missing.");
-                            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-                        }
-                    }
-                    else if (request.Url.AbsolutePath == "/")
-                    {
-                        response.StatusCode = 302;
-                        response.RedirectLocation = "/dashboard";
-                        response.ContentEncoding = Encoding.UTF8;
-                        response.ContentType = "text/html; charset=utf-8";
-                        byte[] buffer = Encoding.UTF8.GetBytes("302");
-                        response.ContentLength64 = buffer.Length;
-                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-                    }
-                    else
-                    {
-                        // 处理未找到的请求
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        byte[] buffer = Encoding.UTF8.GetBytes("404 Not Found");
-                        await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-                    }
+                    await ProcessRequest(context);
                 }
                 catch (Exception ex)
                 {
                     logger.Error($"处理请求时发生错误: {ex.Message}");
-
-                    // 返回错误信息给客户端
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    response.ContentEncoding = Encoding.UTF8;
-                    response.ContentType = "text/html; charset=utf-8";
-                    byte[] buffer = Encoding.UTF8.GetBytes("聊天数据请求失败");
-                    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    await SendErrorResponse(response, "聊天数据请求失败");
                 }
                 finally
                 {
-                    try
-                    {
-                        response.OutputStream.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        // 忽略关闭流时的异常
-                    }
+                    response.OutputStream.Close();
                 }
             }
         }
 
+        private async Task ProcessRequest(HttpListenerContext context)
+        {
+            var request = context.Request;
+            var response = context.Response;
+
+            switch (request.Url.AbsolutePath)
+            {
+                case "/gamechat":
+                    await HandleGameChatRequest(request, response);
+                    break;
+                case "/dashboard":
+                    await ServeFile(response, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets"), "dashboard.html", "text/html");
+                    break;
+                case "/favicon.ico":
+                    await ServeFile(response, AppDomain.CurrentDomain.BaseDirectory, "favicon.ico", "image/x-icon");
+                    break;
+                case "/":
+                    response.StatusCode = 302;
+                    response.RedirectLocation = "/dashboard";
+                    response.ContentEncoding = Encoding.UTF8;
+                    response.ContentType = "text/html; charset=utf-8";
+                    var buffer = Encoding.UTF8.GetBytes("302");
+                    response.ContentLength64 = buffer.Length;
+                    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    break;
+                default:
+                    await SendErrorResponse(response, "404 Not Found");
+                    break;
+            }
+        }
+
+        private async Task HandleGameChatRequest(HttpListenerRequest request, HttpListenerResponse response)
+        {
+            var lastId = request.QueryString["lastId"] ?? "0";
+            var targetUrl = $"http://127.0.0.1:{currentPort}/gamechat?lastId={lastId}";
+            var responseData = await ForwardRequestAsync(targetUrl);
+
+            var chatMessages = JsonConvert.DeserializeObject<List<WarThunderChatTranslator.Entities.ChatMessage>>(responseData);
+
+            var translationTasks = chatMessages.Select(async message =>
+            {
+                message.Msg = Regex.Replace(message.Msg.Replace("\t", ""), COLOR_PATTERN, match => match.Groups[2].Value);
+                message.Mode = message.Mode.Replace("\t", "");
+
+                if (!translationCache.TryGetValue(message.Id, out string translatedMsg))
+                {
+                    try
+                    {
+                        var translationResult = await TranslationHelper.TranslateAsync(message.Msg);
+                        translatedMsg = translationResult.Translation;
+                        translationCache[message.Id] = translatedMsg;
+                    }
+                    catch
+                    {
+                        translatedMsg = "(翻译失败) " + message.Msg;
+                    }
+                }
+
+                message.TranslatedMessage = translatedMsg;
+                message.PrettyMessage = $"{message.Sender}: {translatedMsg}";
+            }).ToList();
+
+            await Task.WhenAll(translationTasks);
+
+            var processedData = JsonConvert.SerializeObject(chatMessages);
+            await SendResponse(response, processedData, "application/json; charset=utf-8");
+        }
+
+        private async Task ServeFile(HttpListenerResponse response, string directory, string fileName, string contentType)
+        {
+            var filePath = Path.Combine(directory, fileName);
+            logger.Debug(filePath);
+            if (File.Exists(filePath))
+            {
+                var fileContent = await File.ReadAllBytesAsync(filePath);
+                response.ContentType = contentType;
+                response.ContentLength64 = fileContent.Length;
+                await response.OutputStream.WriteAsync(fileContent, 0, fileContent.Length);
+            }
+            else
+            {
+                await SendErrorResponse(response, "404 Not Found - File is missing.");
+            }
+        }
 
         private async Task<string> ForwardRequestAsync(string url)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
-            }
+            using var client = new HttpClient();
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        private async Task SendResponse(HttpListenerResponse response, string data, string contentType)
+        {
+            response.ContentEncoding = Encoding.UTF8;
+            response.ContentType = contentType;
+            var buffer = Encoding.UTF8.GetBytes(data);
+            response.ContentLength64 = buffer.Length;
+            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+        }
+
+        private async Task SendErrorResponse(HttpListenerResponse response, string errorMessage)
+        {
+            response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            await SendResponse(response, errorMessage, "text/html; charset=utf-8");
         }
 
         protected void OnClosed()
