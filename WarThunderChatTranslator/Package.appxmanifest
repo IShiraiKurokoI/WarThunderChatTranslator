@@ -59,6 +59,4 @@
     <Capability Name="internetClientServer"/>
     <Capability Name="privateNetworkClientServer"/>
   </Capabilities>
-
-  <mp:PhoneIdentity PhoneProductId="a8ad2300-816f-458f-832b-6d7e77447839"/>
 </Package>

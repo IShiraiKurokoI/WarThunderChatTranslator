@@ -98,6 +98,9 @@ namespace WarThunderChatTranslator
             logger.Info("翻译器对象初始化完成");
 
             // 创建托盘图标
+            var OpenDashboardCommand = (XamlUICommand)Resources["OpenDashboardCommand"];
+            OpenDashboardCommand.ExecuteRequested += OpenDashboardCommand_ExecuteRequested;
+
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
             showHideWindowCommand.ExecuteRequested += ShowHideWindowCommand_ExecuteRequested;
 
@@ -110,6 +113,11 @@ namespace WarThunderChatTranslator
             CoreApplication.Exiting += CoreApplication_Exiting;
 
             StartHttpServer();
+        }
+
+        private void OpenDashboardCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        {
+            Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
         }
 
         private void CoreApplication_Exiting(object sender, object e)
@@ -340,8 +348,6 @@ namespace WarThunderChatTranslator
 
             _httpListener.Start();
             logger.Info($"HTTP服务器已启动，正在监听 {url}");
-
-            //Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
 
             // 异步处理HTTP请求
             await Task.Run(() => HandleRequests());

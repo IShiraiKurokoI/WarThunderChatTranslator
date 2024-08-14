@@ -5,6 +5,14 @@
     xmlns:local="using:WarThunderChatTranslator"
     xmlns:tb="using:H.NotifyIcon">
     <XamlUICommand
+        x:Key="OpenDashboardCommand"
+        Description="开启聊天窗口"
+        Label="面板">
+        <XamlUICommand.IconSource>
+            <SymbolIconSource Symbol="Message" />
+        </XamlUICommand.IconSource>
+    </XamlUICommand>
+    <XamlUICommand
         x:Key="ShowHideWindowCommand"
         Description="开启/隐藏翻译器设置窗口"
         Label="设置">
