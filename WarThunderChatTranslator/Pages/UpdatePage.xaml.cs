@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
-
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
@@ -8,127 +5,118 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.ApplicationModel;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Configurations;
+using WarThunderChatTranslator.Helpers;
 using Windows.UI.Notifications;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using NLog;
 
 namespace WarThunderChatTranslator.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class UpdatePage : Page
     {
-        public NLog.Logger logger;
-        public string Version = string.Format("V{0}.{1}.{2}.{3}",
-                        Package.Current.Id.Version.Major,
-                        Package.Current.Id.Version.Minor,
-                        Package.Current.Id.Version.Build,
-                        Package.Current.Id.Version.Revision);
+        private readonly Logger _logger;
+        public string Version { get; } = $"V{Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}.{Package.Current.Id.Version.Build}.{Package.Current.Id.Version.Revision}";
+
         public UpdatePage()
         {
-            logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Info("打开参数配置页面");
-            this.InitializeComponent();
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            CheckUpdate();
-        }
-
-        private void CheckUpdate()
-        {
-            var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-            Task.Run(async () => {
-                try
-                {
-                    var ver = await WarThunderChatTranslator.Helpers.UpdateHelper.CheckUpdateAsync("IShiraiKurokoI", "WarThunderChatTranslator");
-                    string SizeString = "";
-                    var dic = ByteConversionGBMBKB(ver.Assets[0].Size);
-                    foreach (KeyValuePair<string, double> key in dic)
-                    {
-                        var filetype = key.Key;
-                        var filesize = key.Value;
-                        SizeString = filesize + filetype;
-                    }
-
-                    if (ver.IsExistNewVersion)
-                    {
-                        dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, async () =>
-                        {
-                            logger.Info($"发现新版本{ver.TagName}");
-                            ContentDialog dialog = new ContentDialog();
-                            dialog.XamlRoot = this.XamlRoot;
-                            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-                            dialog.Title = "发现新版本！";
-                            dialog.PrimaryButtonText = "前往更新";
-                            dialog.CloseButtonText = "暂不更新";
-                            dialog.DefaultButton = ContentDialogButton.Primary;
-                            dialog.Content = $"检测到新版本：V{ver.TagName}\n发布时间：{ver.PublishedAt}\n大小：{SizeString}";
-                            var result = await dialog.ShowAsync();
-                            if (result == ContentDialogResult.Primary)
-                            {
-                                await Windows.System.Launcher.LaunchUriAsync(new Uri(ver.HtmlUrl.ToString()));
-                            }
-                        });
-                    }
-                    else
-                    {
-                        var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-                        var stringElements = toastXml.GetElementsByTagName("text");
-                        stringElements[0].AppendChild(toastXml.CreateTextNode($"您当前使用的是最新版本！"));
-                        var toast = new ToastNotification(toastXml);
-                        ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-                    }
-                    dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
-                    {
-                        LastUpdateCheckDate.Text = DateTime.Now.ToString();
-                        ApplicationConfig.SaveSettings("LastUpdateCheckDate", LastUpdateCheckDate.Text);
-                    });
-                }
-                catch (Exception e)
-                {
-                    logger.Error(e);
-                    var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-                    var stringElements = toastXml.GetElementsByTagName("text");
-                    stringElements[0].AppendChild(toastXml.CreateTextNode($"检查更新失败：{e.Message}"));
-                    var toast = new ToastNotification(toastXml);
-                    ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-                }
-            });
-        }
-
-        public Dictionary<string, double> ByteConversionGBMBKB(int KSize)
-        {
-            var dic = new Dictionary<string, double>();
-            int GB = 1024 * 1024 * 1024;//定义GB的计算常量
-            int MB = 1024 * 1024;//定义MB的计算常量
-            int KB = 1024;//定义KB的计算常量
-
-            if (KSize / GB >= 1)//如果当前Byte的值大于等于1GB
-            {
-                dic.Add("GB", Math.Round(KSize / (float)GB, 2)); //将其转换成GB
-            }
-            else if (KSize / MB >= 1)//如果当前Byte的值大于等于1MB
-            {
-                dic.Add("MB", Math.Round(KSize / (float)MB, 2)); //将其转换成MB
-            }
-            else if (KSize / KB >= 1)//如果当前Byte的值大于等于1KB
-            {
-                dic.Add("KB", Math.Round(KSize / (float)KB, 2)); //将其转换成KB
-            }
-            else
-            {
-                dic.Add("Byte", KSize);  //显示Byte值
-            }
-            return dic;
+            _logger = LogManager.GetCurrentClassLogger();
+            _logger.Info("打开参数配置页面");
+            InitializeComponent();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             LastUpdateCheckDate.Text = ApplicationConfig.GetSettings("LastUpdateCheckDate");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            CheckForUpdateAsync();
+        }
+
+        private async void CheckForUpdateAsync()
+        {
+            var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+            dispatcherQueue.TryEnqueue(() => Checking.Visibility = Visibility.Visible);
+
+
+            try
+            {
+                var updateInfo = await UpdateHelper.CheckUpdateAsync("IShiraiKurokoI", "WarThunderChatTranslator");
+                var sizeString = ConvertSizeToString(updateInfo.Assets[0].Size);
+
+                if (updateInfo.IsExistNewVersion)
+                {
+                    dispatcherQueue.TryEnqueue(async () =>
+                    {
+                        await ShowUpdateDialogAsync(updateInfo.TagName, updateInfo.PublishedAt, sizeString, updateInfo.HtmlUrl.ToString());
+                    });
+                }
+                else
+                {
+                    dispatcherQueue.TryEnqueue(() => ShowToast("您当前使用的是最新版本！"));
+                }
+
+                dispatcherQueue.TryEnqueue(() =>
+                {
+                    LastUpdateCheckDate.Text = DateTime.Now.ToString();
+                    ApplicationConfig.SaveSettings("LastUpdateCheckDate", LastUpdateCheckDate.Text);
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                dispatcherQueue.TryEnqueue(() => ShowToast($"检查更新失败：{ex.Message}"));
+            }
+            finally
+            {
+                dispatcherQueue.TryEnqueue(() => Checking.Visibility = Visibility.Collapsed);
+            }
+        }
+
+        private async Task ShowUpdateDialogAsync(string version, DateTimeOffset publishedAt, string sizeString, string updateUrl)
+        {
+            _logger.Info($"发现新版本{version}");
+            var dialog = new ContentDialog
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = "发现新版本！",
+                PrimaryButtonText = "前往更新",
+                CloseButtonText = "暂不更新",
+                DefaultButton = ContentDialogButton.Primary,
+                Content = $"检测到新版本：V{version}\n发布时间：{publishedAt}\n大小：{sizeString}"
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(updateUrl));
+            }
+        }
+
+        private void ShowToast(string message)
+        {
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+            var stringElements = toastXml.GetElementsByTagName("text");
+            stringElements[0].AppendChild(toastXml.CreateTextNode(message));
+            var toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
+        }
+
+        private string ConvertSizeToString(int sizeInBytes)
+        {
+            const int GB = 1024 * 1024 * 1024;
+            const int MB = 1024 * 1024;
+            const int KB = 1024;
+
+            return sizeInBytes switch
+            {
+                >= GB => $"{Math.Round(sizeInBytes / (double)GB, 2)} GB",
+                >= MB => $"{Math.Round(sizeInBytes / (double)MB, 2)} MB",
+                >= KB => $"{Math.Round(sizeInBytes / (double)KB, 2)} KB",
+                _ => $"{sizeInBytes} Bytes"
+            };
         }
     }
 }
