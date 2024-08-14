@@ -414,7 +414,7 @@ namespace WarThunderChatTranslator
                     color: #333;
                 }}
                 #chat-container {{
-                    max-width: 800px;
+                    max-width: 84vw;
                     margin: 20px auto;
                     background-color: #fff;
                     border-radius: 10px;
