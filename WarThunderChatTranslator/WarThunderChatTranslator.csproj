@@ -12,22 +12,21 @@
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Users\Shirai_Kuroko\source\repos\DLUTToolBoxV2\DLUTToolBoxV2\DLUTToolBox V2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
     <Title>战争雷霆聊天翻译器</Title>
-    <Authors>Shirai_Kuroko</Authors>
+    <Authors>CA8D01B0-3F39-49D4-85F5-877D7B18934F</Authors>
     <PackageIcon></PackageIcon>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <UseWPF>False</UseWPF>
-    <PackageCertificateThumbprint>6022128BB49EC12454E1C82369051D7B65A5AD07</PackageCertificateThumbprint>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxPackageDir>D:\app\WarThunderChatTranslator\Publish\</AppxPackageDir>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
-    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <GenerateTestArtifacts>False</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
   </PropertyGroup>
@@ -133,7 +132,7 @@
     <PackageReference Include="GTranslate" Version="2.2.7" />
     <PackageReference Include="H.NotifyIcon.WinUI" Version="2.0.131" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240627000" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.3.3" />

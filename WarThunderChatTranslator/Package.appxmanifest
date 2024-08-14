@@ -12,7 +12,7 @@
   <Identity
     Name="IShiraiKurokoI.30940A14F8CD1"
     Publisher="CN=CA8D01B0-3F39-49D4-85F5-877D7B18934F"
-    Version="1.0.3.0" />
+    Version="1.0.4.0" />
 
   <Properties>
     <DisplayName>WarThunderChatTranslator</DisplayName>
@@ -47,7 +47,6 @@
           </uap:ShowNameOnTiles>
         </uap:DefaultTile >
         <uap:SplashScreen Image="Assets\ApplicationIcons\SplashScreen.png"/>
-        <uap:LockScreen BadgeLogo="Assets\ApplicationIcons\BadgeLogo.png" Notification="badgeAndTileText"/>
       </uap:VisualElements>
     </Application>
   </Applications>
