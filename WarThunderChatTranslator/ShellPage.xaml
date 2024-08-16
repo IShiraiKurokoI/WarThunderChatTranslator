@@ -61,8 +61,7 @@
                         <NavigationViewItem
                             Margin="0,0,12,0"
                             helpers:NavigationHelperEx.NavigateTo="ThemePage"
-                            Content="主题和背景"
-                            IsEnabled="False">
+                            Content="主题和背景">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Theme.ico" />
                             </NavigationViewItem.Icon>

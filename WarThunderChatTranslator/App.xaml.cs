@@ -84,6 +84,8 @@ namespace WarThunderChatTranslator
                 { "AllyFontColor", "#FF5BC0DE" },
                 { "EnemyFontColor", "#FFD9534F" },
                 { "SystemFontColor", "#FF856404" },
+                { "Theme", "Default" },
+                { "BackgroundCSS", "background-color: #f4f4f4;" },
             };
 
             foreach (var setting in defaultSettings)
@@ -400,14 +402,15 @@ namespace WarThunderChatTranslator
             var allyFontColor = ToRgba(ApplicationConfig.GetSettings("AllyFontColor") ?? "#FF5BC0DE");
             var enemyFontColor = ToRgba(ApplicationConfig.GetSettings("EnemyFontColor") ?? "#FFD9534F");
             var systemFontColor = ToRgba(ApplicationConfig.GetSettings("SystemFontColor") ?? "#FF856404");
+            var bodyBackground = ApplicationConfig.GetSettings("BackgroundCSS") ?? "opacity: 0;";
 
             var cssContent = $@"
                 body {{
                     font-family: {fontFamily}, Arial, sans-serif;
                     font-weight: {fontStyle};
-                    background-color: #f4f4f4;
                     margin: 0;
                     padding: 20px;
+                    {bodyBackground}
                 }}
                 h1 {{
                     text-align: center;

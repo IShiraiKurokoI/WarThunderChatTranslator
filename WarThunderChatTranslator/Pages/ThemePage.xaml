@@ -12,4 +12,64 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     x:Name="Page"
-    mc:Ignorable="d" />
+    mc:Ignorable="d">
+    <Grid
+        Padding="20,0,0,0"
+        Loaded="Grid_Loaded"
+        RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            x:Name="Header"
+            Margin="0,44,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="程序主题" />
+        <ScrollViewer Grid.Row="1">
+            <Grid Padding="0,0,20,0" RowSpacing="0">
+                <ContentPresenter
+                    x:Name="ModuleContentPresenter"
+                    Grid.Row="1"
+                    Margin="0,0,0,0">
+                    <ContentPresenter.Content>
+                        <StackPanel>
+                            <controls:SettingsCard MaxWidth="2000" Header="全局主题模式">
+                                <controls:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xe771;" />
+                                </controls:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="ThemePanel" SelectionChanged="ThemePanel_SelectionChanged">
+                                    <ComboBoxItem Content="浅色" Tag="Light" />
+                                    <ComboBoxItem Content="深色" Tag="Dark" />
+                                    <ComboBoxItem
+                                        x:Name="Default"
+                                        Content="跟随系统"
+                                        Tag="Default" />
+                                </ComboBox>
+                                <controls:SettingsCard.Description>
+                                    <HyperlinkButton
+                                        Click="HyperlinkButton_Click"
+                                        Content="点此打开系统主题设置"
+                                        Visibility="{Binding IsSelected, ElementName=Default, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                </controls:SettingsCard.Description>
+                            </controls:SettingsCard>
+                            <controls:SettingsCard MaxWidth="2000" Header="页面背景css (附加在页面body css中) ">
+                                <controls:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xef1f;" />
+                                </controls:SettingsCard.HeaderIcon>
+                                <controls:SettingsCard.Description>
+                                    <HyperlinkButton Content="点此打开系统主题设置" />
+                                </controls:SettingsCard.Description>
+                                <TextBox x:Name="BackgroundCSS" TextChanged="BackgroundCSS_TextChanged" />
+                            </controls:SettingsCard>
+                        </StackPanel>
+                    </ContentPresenter.Content>
+                </ContentPresenter>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -46,7 +46,7 @@
                                 <ComboBox x:Name="APIPanel" SelectionChanged="APIPanel_SelectionChanged">
                                     <ComboBoxItem Tag="Microsoft">Microsoft Azure</ComboBoxItem>
                                     <ComboBoxItem Tag="Yandex">Yandex</ComboBoxItem>
-                                    <ComboBoxItem x:Name="Bing_Selection" Tag="Bing">Bing（需要Token）</ComboBoxItem>
+                                    <ComboBoxItem x:Name="Bing_Selection" Tag="Bing" IsEnabled="false">Bing（需要Token）</ComboBoxItem>
                                     <ComboBoxItem Tag="Google">Google（需要网络环境）</ComboBoxItem>
                                 </ComboBox>
                             </labs:SettingsCard>
