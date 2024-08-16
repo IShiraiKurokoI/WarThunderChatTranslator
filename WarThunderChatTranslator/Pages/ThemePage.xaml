@@ -57,12 +57,12 @@
                                         Visibility="{Binding IsSelected, ElementName=Default, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 </controls:SettingsCard.Description>
                             </controls:SettingsCard>
-                            <controls:SettingsCard MaxWidth="2000" Header="页面背景css (附加在页面body css中) ">
+                            <controls:SettingsCard MaxWidth="2000" Header="页面背景CSS (附加在页面body css中) ">
                                 <controls:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xef1f;" />
                                 </controls:SettingsCard.HeaderIcon>
                                 <controls:SettingsCard.Description>
-                                    <HyperlinkButton Content="点此打开系统主题设置" />
+                                    <HyperlinkButton Content="背景CSS格式介绍" NavigateUri="https://www.w3schools.com/cssref/css3_pr_background.php" />
                                 </controls:SettingsCard.Description>
                                 <TextBox x:Name="BackgroundCSS" TextChanged="BackgroundCSS_TextChanged" />
                             </controls:SettingsCard>
