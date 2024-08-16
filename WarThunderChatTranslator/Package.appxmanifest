@@ -35,7 +35,7 @@
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
         DisplayName="WarThunderChatTranslator"
-        Description="WarThunderChatTranslator，提供游戏内聊天实时翻译"
+        Description="WarThunderChatTranslator，提供游戏内聊天实时翻译。需要.NET Desktop Runtime来运行。"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\ApplicationIcons\Square150x150Logo.png"
         Square44x44Logo="Assets\ApplicationIcons\Square44x44Logo.png">
