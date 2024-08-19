@@ -23,6 +23,7 @@ using WarThunderChatTranslator.Pages;
 using WarThunderChatTranslator.Helpers;
 using Microsoft.UI.Xaml.Input;
 using WinUICommunity;
+using System.Threading; // 引入命名空间
 
 namespace WarThunderChatTranslator
 {
@@ -39,8 +40,23 @@ namespace WarThunderChatTranslator
         private static readonly int currentPort = 8111;
         private static readonly string COLOR_PATTERN = @"<color(.*?)>(.*?)<\/color>";
 
+        private static Mutex mutex; // 定义静态 Mutex 变量
+
         public App()
         {
+            // 创建 Mutex，判断是否已经存在同名 Mutex
+            bool isNewInstance;
+            mutex = new Mutex(true, "WarThunderChatTranslator_Mutex", out isNewInstance);
+
+            if (!isNewInstance)
+            {
+                var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+                toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode("WarThunderChatTranslator 已在运行，请勿开启新实例。"));
+                var toast = new ToastNotification(toastXml);
+                ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
+                Environment.Exit(0);
+                return;
+            }
             this.InitializeComponent();
             InitializeLogging();
             RegisterGlobalExceptionHandlers();
@@ -198,9 +214,30 @@ namespace WarThunderChatTranslator
         private void ExitApplication()
         {
             HandleClosedEvents = false;
-            OnClosed();
-            TrayIcon?.Dispose();
-            m_window?.Close();
+            try
+            {
+                OnClosed();
+            }
+            catch (Exception)
+            { 
+
+            }
+            try
+            {
+                TrayIcon?.Dispose();
+            }
+            catch (Exception)
+            {
+
+            }
+            try
+            {
+                m_window?.Close();
+            }
+            catch (Exception)
+            {
+
+            }
             Application.Current.Exit();
             Environment.Exit(0);
         }
