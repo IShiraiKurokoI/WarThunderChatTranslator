@@ -283,11 +283,23 @@ namespace WarThunderChatTranslator
                 logger.Info("端口 8100 在防火墙中未被允许。正在添加规则...");
                 AddFirewallRule(8100, "WarThunderChatTranslator：允许端口 8100");
             }
-
-            _httpListener = new HttpListener();
-            _httpListener.Prefixes.Add(url);
-            _httpListener.Start();
-            logger.Info($"HTTP服务器已启动，正在监听 {url}");
+            try
+            {
+                _httpListener = new HttpListener();
+                _httpListener.Prefixes.Add(url);
+                _httpListener.Start();
+                logger.Info($"HTTP服务器已启动，正在监听 {url}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+                var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+                toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode("8100端口被其他端口占用，请检查端口占用后再打开应用！"));
+                var toast = new ToastNotification(toastXml);
+                ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
+                Environment.Exit(0);
+                return;
+            }
 
             await Task.Run(HandleRequests);
         }
