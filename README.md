@@ -2,7 +2,9 @@
 
 打雷的时候看不懂对面在讲什么飞机？这里可以实时翻译聊天对话！目前支持选择Yandex，微软或google翻译接口。
 
-微软生草机belike：
+[<img src="https://get.microsoft.com/images/zh-cn%20dark.svg" alt="从商店下载" height="96">](https://apps.microsoft.com/store/detail/9PJ8K0V3KZHF)
+
+## 机翻生草机belike
 
 ![](doc/1.png)
 
