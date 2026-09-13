@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using WarThunderChatTranslator.Configurations;
 using Microsoft.UI;
@@ -35,6 +36,7 @@ namespace WarThunderChatTranslator.Pages
     {
         bool ThemeInitilized = false;
         bool LanguageInitialized = false;
+        bool CssEditorExpanded = true;
         public ThemePage()
         {
             this.InitializeComponent();
@@ -81,6 +83,18 @@ namespace WarThunderChatTranslator.Pages
             }
         }
 
+        private async void BackgroundCssInfo_Click(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://www.w3schools.com/cssref/css3_pr_background.php"));
+        }
+
+        private void SettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            CssEditorExpanded = !CssEditorExpanded;
+            CssEditorPanel.Visibility = CssEditorExpanded ? Visibility.Visible : Visibility.Collapsed;
+            CssEditorChevron.Glyph = CssEditorExpanded ? "\uE70E" : "\uE70D";
+        }
+
         private void LanguagePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!LanguageInitialized || LanguagePanel.SelectedItem is not ComboBoxItem selectedItem)
@@ -89,7 +103,6 @@ namespace WarThunderChatTranslator.Pages
             }
 
             Localization.Apply(selectedItem.Tag.ToString());
-            App.ReloadMainWindow();
         }
     }
 }

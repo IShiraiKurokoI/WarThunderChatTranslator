@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.IO;
 using WarThunderChatTranslator.Configurations;
@@ -89,7 +90,7 @@ namespace WarThunderChatTranslator
                 { "ProxyAddress", "" },
                 { "ProxyAccount", "" },
                 { "ProxyPassword", "" },
-                { "LastUpdateCheckDate", "从未" },
+                { "LastUpdateCheckDate", "Never" },
                 { "TranslateAPI", "Microsoft" },
                 { "TargetLanguage", "zh-CN" },
                 { "FontFamily", "Segoe UI" },
@@ -130,49 +131,38 @@ namespace WarThunderChatTranslator
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
             TrayIcon.ForceCreate();
-            UpdateTrayLocalization();
+            UpdateTrayMenuWidth();
+            Localization.CultureChanged += UpdateTrayMenuWidth;
 
             CoreApplication.Exiting += (sender, e) => ExitApplication();
         }
 
-        public static void ReloadMainWindow()
+        private void UpdateTrayMenuWidth()
         {
-            if (Current is not App app || app.m_window == null)
+            if (TrayIcon?.ContextFlyout is not MenuFlyout menuFlyout)
             {
                 return;
             }
 
-            app.HandleClosedEvents = false;
-            app.m_window.Close();
-            app.m_window = null;
-            app.HandleClosedEvents = true;
-            app.InitializeMainWindow();
-            app.UpdateTrayLocalization();
-        }
-
-        private void UpdateTrayLocalization()
-        {
-            if (Resources["OpenDashboardCommand"] is XamlUICommand openDashboardCommand)
+            var menuKeys = new[] { "TrayDashboard", "TraySettings", "TrayExit" };
+            var widestText = 0.0;
+            foreach (var key in menuKeys)
             {
-                openDashboardCommand.Label = Localization.GetString("TrayDashboard");
-                openDashboardCommand.Description = Localization.GetString("TrayDashboardDescription");
+                var textBlock = new TextBlock
+                {
+                    FontSize = 14,
+                    Text = Localization.GetString(key)
+                };
+                textBlock.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+                widestText = Math.Max(widestText, textBlock.DesiredSize.Width);
             }
 
-            if (Resources["ShowHideWindowCommand"] is XamlUICommand showWindowCommand)
+            const double iconAndPaddingWidth = 88;
+            var menuWidth = Math.Max(180, Math.Ceiling(widestText + iconAndPaddingWidth));
+            foreach (var menuItem in menuFlyout.Items.OfType<MenuFlyoutItem>())
             {
-                showWindowCommand.Label = Localization.GetString("TraySettings");
-                showWindowCommand.Description = Localization.GetString("TraySettingsDescription");
-            }
-
-            if (Resources["ExitApplicationCommand"] is XamlUICommand exitCommand)
-            {
-                exitCommand.Label = Localization.GetString("TrayExit");
-                exitCommand.Description = Localization.GetString("TrayExitDescription");
-            }
-
-            if (TrayIcon != null)
-            {
-                TrayIcon.ToolTipText = Localization.GetString("TrayToolTip");
+                menuItem.Width = menuWidth;
+                menuItem.MaxWidth = menuWidth;
             }
         }
 
@@ -188,6 +178,8 @@ namespace WarThunderChatTranslator
             {
                 m_window.Show();
             }
+
+            m_window.Activate();
         }
 
         private void InitializeMainWindow()
@@ -218,6 +210,7 @@ namespace WarThunderChatTranslator
                 }
             };
             m_window.Show();
+            m_window.Activate();
         }
 
         public static void ApplyTheme(ElementTheme theme)

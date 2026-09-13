@@ -19,13 +19,16 @@ namespace WarThunderChatTranslator.Pages
         public UpdatePage()
         {
             _logger = LogManager.GetCurrentClassLogger();
-            _logger.Info("打开参数配置页面");
+            _logger.Info("锟津开诧拷锟斤拷锟斤拷锟斤拷页锟斤拷");
             InitializeComponent();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            LastUpdateCheckDate.Text = ApplicationConfig.GetSettings("LastUpdateCheckDate");
+            var lastUpdateCheckDate = ApplicationConfig.GetSettings("LastUpdateCheckDate");
+            LastUpdateCheckDate.Text = lastUpdateCheckDate is null or "Never" or "浠庢湭"
+                ? Localization.GetString("UpdateNever")
+                : lastUpdateCheckDate;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -42,31 +45,30 @@ namespace WarThunderChatTranslator.Pages
 
             try
             {
-                var updateInfo = await UpdateHelper.CheckUpdateAsync("IShiraiKurokoI", "WarThunderChatTranslator");
-                var sizeString = ConvertSizeToString(updateInfo.Assets[0].Size);
+                var updates = await UpdateHelper.GetAvailableUpdatesAsync();
 
-                if (updateInfo.IsExistNewVersion)
+                if (updates.Count > 0)
                 {
                     dispatcherQueue.TryEnqueue(async () =>
                     {
-                        await ShowUpdateDialogAsync(updateInfo.TagName, updateInfo.PublishedAt, sizeString, updateInfo.HtmlUrl.ToString());
+                        await ShowUpdateDialogAsync(updates);
                     });
                 }
                 else
                 {
-                    dispatcherQueue.TryEnqueue(() => ShowToast("您当前使用的是最新版本！"));
+                    dispatcherQueue.TryEnqueue(() => ShowToast(Localization.GetString("UpdateLatest")));
                 }
 
                 dispatcherQueue.TryEnqueue(() =>
                 {
-                    LastUpdateCheckDate.Text = DateTime.Now.ToString();
+                    LastUpdateCheckDate.Text = DateTime.Now.ToString("g");
                     ApplicationConfig.SaveSettings("LastUpdateCheckDate", LastUpdateCheckDate.Text);
                 });
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                dispatcherQueue.TryEnqueue(() => ShowToast($"检查更新失败：{ex.Message}"));
+                dispatcherQueue.TryEnqueue(() => ShowToast($"{Localization.GetString("UpdateCheckFailed")}: {ex.Message}"));
             }
             finally
             {
@@ -74,24 +76,24 @@ namespace WarThunderChatTranslator.Pages
             }
         }
 
-        private async Task ShowUpdateDialogAsync(string version, DateTimeOffset publishedAt, string sizeString, string updateUrl)
+        private async Task ShowUpdateDialogAsync(IReadOnlyList<Windows.Services.Store.StorePackageUpdate> updates)
         {
-            _logger.Info($"发现新版本{version}");
+            _logger.Info("Microsoft Store 涓湁鍙敤鏇存柊");
             var dialog = new ContentDialog
             {
                 XamlRoot = this.XamlRoot,
                 Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-                Title = "发现新版本！",
-                PrimaryButtonText = "前往更新",
-                CloseButtonText = "暂不更新",
+                Title = Localization.GetString("UpdateAvailable"),
+                PrimaryButtonText = Localization.GetString("UpdateDownload"),
+                CloseButtonText = Localization.GetString("UpdateLater"),
                 DefaultButton = ContentDialogButton.Primary,
-                Content = $"检测到新版本：V{version}\n发布时间：{publishedAt}\n大小：{sizeString}"
+                Content = Localization.GetString("UpdateAvailableContent")
             };
 
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(updateUrl));
+                await UpdateHelper.InstallUpdatesAsync(updates);
             }
         }
 
@@ -102,21 +104,6 @@ namespace WarThunderChatTranslator.Pages
             stringElements[0].AppendChild(toastXml.CreateTextNode(message));
             var toast = new ToastNotification(toastXml);
             ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-        }
-
-        private string ConvertSizeToString(int sizeInBytes)
-        {
-            const int GB = 1024 * 1024 * 1024;
-            const int MB = 1024 * 1024;
-            const int KB = 1024;
-
-            return sizeInBytes switch
-            {
-                >= GB => $"{Math.Round(sizeInBytes / (double)GB, 2)} GB",
-                >= MB => $"{Math.Round(sizeInBytes / (double)MB, 2)} MB",
-                >= KB => $"{Math.Round(sizeInBytes / (double)KB, 2)} KB",
-                _ => $"{sizeInBytes} Bytes"
-            };
         }
     }
 }

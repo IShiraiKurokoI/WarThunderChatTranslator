@@ -7,6 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:DevWinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="Transparent"
@@ -25,7 +26,7 @@
             VerticalAlignment="Stretch"
             AutomationProperties.HeadingLevel="1"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="翻译器更新" />
+            Text="{helpers:Loc Key=UpdateTitle}" />
 
         <ScrollViewer Grid.Row="1">
             <Grid Padding="0,0,20,48" RowSpacing="0">
@@ -40,12 +41,12 @@
                                 <controls:SettingsCard.Description>
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock Style="{StaticResource SecondaryTextStyle}">
-                                            <Run Text="上次检查更新: " />
+                                            <Run Text="{helpers:Loc Key=UpdateLastChecked}" />
                                             <Run x:Name="LastUpdateCheckDate" Text="" />
                                         </TextBlock>
                                         <HyperlinkButton
                                             Margin="0,2,0,0"
-                                            Content="发行说明"
+                                            Content="{helpers:Loc Key=UpdateReleaseNotes}"
                                             FontWeight="SemiBold"
                                             NavigateUri="https://github.com/IShiraiKurokoI/WarThunderChatTranslator/releases" />
                                     </StackPanel>
@@ -57,10 +58,9 @@
                                         Height="24"
                                         Visibility="Collapsed" />
                                     <Button
-                                        Width="100"
                                         HorizontalAlignment="Right"
                                         Click="Button_Click"
-                                        Content="检查更新" />
+                                        Content="{helpers:Loc Key=UpdateCheck}" />
                                 </StackPanel>
                             </controls:SettingsCard>
                         </StackPanel>

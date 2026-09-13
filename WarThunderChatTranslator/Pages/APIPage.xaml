@@ -7,6 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:labs="using:DevWinUI"
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -26,7 +27,7 @@
             VerticalAlignment="Stretch"
             AutomationProperties.HeadingLevel="1"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="翻译器API" />
+            Text="{helpers:Loc Key=ApiTitle}" />
 
         <ScrollViewer Grid.Row="1">
             <Grid Padding="0,0,20,0" RowSpacing="0">
@@ -38,22 +39,22 @@
                         <StackPanel>
                             <labs:SettingsCard
                                 MaxWidth="2000"
-                                Description="选择翻译器使用的翻译提供方"
-                                Header="翻译器API">
+                                Description="{helpers:Loc Key=ApiProviderDescription}"
+                                Header="{helpers:Loc Key=ApiTitle}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8c1;" />
                                 </labs:SettingsCard.HeaderIcon>
                                 <ComboBox x:Name="APIPanel" SelectionChanged="APIPanel_SelectionChanged">
                                     <ComboBoxItem Tag="Microsoft">Microsoft Azure</ComboBoxItem>
                                     <ComboBoxItem Tag="Yandex">Yandex</ComboBoxItem>
-                                    <ComboBoxItem x:Name="Bing_Selection" Tag="Bing" IsEnabled="false">Bing（需要Token）</ComboBoxItem>
-                                    <ComboBoxItem Tag="Google">Google（需要网络环境）</ComboBoxItem>
+                                    <ComboBoxItem x:Name="Bing_Selection" Tag="Bing" IsEnabled="false" Content="{helpers:Loc Key=ApiBing}" />
+                                    <ComboBoxItem Tag="Google" Content="{helpers:Loc Key=ApiGoogle}" />
                                 </ComboBox>
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                 MaxWidth="2000"
-                                Description="翻译器将会把聊天内容翻译成下面的语言"
-                                Header="翻译器目标语言">
+                                Description="{helpers:Loc Key=ApiTargetDescription}"
+                                Header="{helpers:Loc Key=ApiTargetLanguage}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xf2b7;" />
                                 </labs:SettingsCard.HeaderIcon>
@@ -61,8 +62,8 @@
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                 MaxWidth="2000"
-                                Description="输入Bing翻译器所需Token"
-                                Header="翻译器API Token"
+                                Description="{helpers:Loc Key=ApiTokenDescription}"
+                                Header="{helpers:Loc Key=ApiToken}"
                                 Visibility="{Binding IsSelected, ElementName=Bing_Selection, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#x0e928;" />
@@ -71,8 +72,8 @@
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                 MaxWidth="2000"
-                                Description="测试翻译功能"
-                                Header="测试">
+                                Description="{helpers:Loc Key=ApiTestDescription}"
+                                Header="{helpers:Loc Key=ApiTest}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xf87b;" />
                                 </labs:SettingsCard.HeaderIcon>
@@ -82,7 +83,7 @@
                                         Width="24"
                                         Height="24"
                                         Visibility="Collapsed" />
-                                    <Button Click="Button_Click" Content="测试翻译功能" />
+                                    <Button Click="Button_Click" Content="{helpers:Loc Key=ApiTestButton}" />
                                 </StackPanel>
                             </labs:SettingsCard>
                         </StackPanel>

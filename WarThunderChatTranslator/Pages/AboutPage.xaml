@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:DevWinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -19,7 +20,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="30"
-                            Text="战争雷霆聊天自动翻译器" />
+                            Text="{helpers:Loc Key=AboutAppName}" />
                         <TextBlock
                             Margin="20,0,0,0"
                             VerticalAlignment="Center"
@@ -30,24 +31,24 @@
                 <TextBlock
                     Margin="0,10,0,10"
                     FontSize="20"
-                    Text="作者" />
+                    Text="{helpers:Loc Key=AboutAuthor}" />
                 <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
                     <PersonPicture
                         HorizontalAlignment="Left"
                         DisplayName="IShirai_KurokoI"
-                        ProfilePicture="ms-appx:///Assets/Author.png" />
+                        ProfilePicture="https://avatars.githubusercontent.com/u/73374735" />
                     <StackPanel Margin="10,0,0,0">
                         <TextBlock
                             Margin="5,0,0,0"
                             FontSize="18"
                             FontWeight="Bold"
                             Text="IShirai_KurokoI" />
-                        <HyperlinkButton Content="Github主页" NavigateUri="https://github.com/IShiraiKurokoI" />
-                        <HyperlinkButton Content="BiliBili主页" NavigateUri="https://space.bilibili.com/310144483" />
+                        <HyperlinkButton Content="{helpers:Loc Key=AboutGitHub}" NavigateUri="https://github.com/IShiraiKurokoI" />
+                        <HyperlinkButton Content="{helpers:Loc Key=AboutBilibili}" NavigateUri="https://space.bilibili.com/310144483" />
                     </StackPanel>
                 </StackPanel>
 
-                <controls:SettingsCard Margin="0,4,0,0" Header="点此复制项目链接分享给好友">
+                <controls:SettingsCard Margin="0,4,0,0" Header="{helpers:Loc Key=AboutCopyLinkDescription}">
                     <controls:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xe72d;" />
                     </controls:SettingsCard.HeaderIcon>
@@ -55,15 +56,15 @@
                         x:Name="CopyLink"
                         HorizontalAlignment="Right"
                         Click="HyperlinkButton_Click"
-                        Content="复制链接" />
+                        Content="{helpers:Loc Key=AboutCopyLink}" />
                 </controls:SettingsCard>
 
                 <controls:SettingsCard
                     MaxWidth="2000"
-                    ActionIconToolTip="打开项目页面"
+                    ActionIconToolTip="{helpers:Loc Key=AboutOpenProject}"
                     Click="SettingsCard_Click"
-                    Description="你可以点此打开本翻译器项目页面"
-                    Header="项目页面"
+                    Description="{helpers:Loc Key=AboutProjectDescription}"
+                    Header="{helpers:Loc Key=AboutProject}"
                     IsClickEnabled="True">
                     <controls:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xE12B;" />
@@ -75,8 +76,8 @@
 
                 <TeachingTip
                     x:Name="CopyTip"
-                    Title="复制成功！"
-                    Subtitle="快将Github链接分享给好友吧"
+                    Title="{helpers:Loc Key=AboutCopySuccess}"
+                    Subtitle="{helpers:Loc Key=AboutCopySuccessDescription}"
                     Target="{x:Bind CopyLink}">
                     <TeachingTip.IconSource>
                         <SymbolIconSource Symbol="Accept" />
@@ -86,7 +87,7 @@
                 <controls:SettingsExpander
                     MaxWidth="2000"
                     Margin="0,0,0,20"
-                    Header="感谢以下本应用中使用的开源项目">
+                    Header="{helpers:Loc Key=AboutOpenSourceThanks}">
                     <controls:SettingsExpander.HeaderIcon>
                         <FontIcon Glyph="&#xe734;" />
                     </controls:SettingsExpander.HeaderIcon>

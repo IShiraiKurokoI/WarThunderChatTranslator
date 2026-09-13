@@ -6,6 +6,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:labs="using:DevWinUI"
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -26,7 +27,7 @@
             VerticalAlignment="Stretch"
             AutomationProperties.HeadingLevel="1"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="字体设置" />
+            Text="{helpers:Loc Key=FontTitle}" />
 
         <ScrollViewer Grid.Row="1">
             <Grid Padding="0,0,20,0" RowSpacing="0">
@@ -36,7 +37,7 @@
                     Margin="0,0,0,0">
                     <ContentPresenter.Content>
                         <StackPanel>
-                            <labs:SettingsCard MaxWidth="2000" Header="字体">
+                            <labs:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=FontFamily}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8d2;" />
                                 </labs:SettingsCard.HeaderIcon>
@@ -47,7 +48,7 @@
                                     SelectedValuePath="Item2"
                                     SelectionChanged="FontFamilyPanel_SelectionChanged" />
                             </labs:SettingsCard>
-                            <labs:SettingsCard MaxWidth="2000" Header="文字大小">
+                            <labs:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=FontSize}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8e9;" />
                                 </labs:SettingsCard.HeaderIcon>
@@ -59,18 +60,18 @@
                                     SpinButtonPlacementMode="Compact"
                                     ValueChanged="FontSizePanel_TextChanged" />
                             </labs:SettingsCard>
-                            <labs:SettingsCard MaxWidth="2000" Header="文字样式">
+                            <labs:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=FontStyle}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8dd;" />
                                 </labs:SettingsCard.HeaderIcon>
                                 <ComboBox x:Name="FontStylePanel" SelectionChanged="FontStylePanel_SelectionChanged">
-                                    <ComboBoxItem Tag="lighter">较细</ComboBoxItem>
-                                    <ComboBoxItem Tag="normal">正常</ComboBoxItem>
-                                    <ComboBoxItem Tag="bold">粗体</ComboBoxItem>
-                                    <ComboBoxItem Tag="bolder">加粗</ComboBoxItem>
+                                    <ComboBoxItem Tag="lighter" Content="{helpers:Loc Key=FontLighter}" />
+                                    <ComboBoxItem Tag="normal" Content="{helpers:Loc Key=FontNormal}" />
+                                    <ComboBoxItem Tag="bold" Content="{helpers:Loc Key=FontBold}" />
+                                    <ComboBoxItem Tag="bolder" Content="{helpers:Loc Key=FontBolder}" />
                                 </ComboBox>
                             </labs:SettingsCard>
-                            <labs:SettingsCard MaxWidth="2000" Header="友军文本颜色">
+                            <labs:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=FontAllyColor}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8d3;" />
                                 </labs:SettingsCard.HeaderIcon>
@@ -81,10 +82,10 @@
                                         Height="30"
                                         Margin="0,0,10,0"
                                         Fill="{x:Bind AllyPreviewBrush, Mode=TwoWay}" />
-                                    <Button Click="Ally_Button_Click" Content="选择颜色" />
+                                    <Button Click="Ally_Button_Click" Content="{helpers:Loc Key=SelectColor}" />
                                 </StackPanel>
                             </labs:SettingsCard>
-                            <labs:SettingsCard MaxWidth="2000" Header="敌军文本颜色">
+                            <labs:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=FontEnemyColor}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8d3;" />
                                 </labs:SettingsCard.HeaderIcon>
@@ -95,10 +96,10 @@
                                         Height="30"
                                         Margin="0,0,10,0"
                                         Fill="{x:Bind EnemyPreviewBrush, Mode=TwoWay}" />
-                                    <Button Click="Enemy_Button_Click" Content="选择颜色" />
+                                    <Button Click="Enemy_Button_Click" Content="{helpers:Loc Key=SelectColor}" />
                                 </StackPanel>
                             </labs:SettingsCard>
-                            <labs:SettingsCard MaxWidth="2000" Header="系统文本颜色">
+                            <labs:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=FontSystemColor}">
                                 <labs:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe8d3;" />
                                 </labs:SettingsCard.HeaderIcon>
@@ -109,7 +110,7 @@
                                         Height="30"
                                         Margin="0,0,10,0"
                                         Fill="{x:Bind SystemPreviewBrush, Mode=TwoWay}" />
-                                    <Button Click="System_Button_Click" Content="选择颜色" />
+                                    <Button Click="System_Button_Click" Content="{helpers:Loc Key=SelectColor}" />
                                 </StackPanel>
                             </labs:SettingsCard>
                         </StackPanel>

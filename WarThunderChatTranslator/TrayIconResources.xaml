@@ -2,28 +2,29 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:local="using:WarThunderChatTranslator"
     xmlns:tb="using:H.NotifyIcon">
     <XamlUICommand
         x:Key="OpenDashboardCommand"
-        Description="开启聊天窗口"
-        Label="面板">
+        Description="{helpers:Loc Key=TrayDashboardDescription}"
+        Label="{helpers:Loc Key=TrayDashboard}">
         <XamlUICommand.IconSource>
             <SymbolIconSource Symbol="Message" />
         </XamlUICommand.IconSource>
     </XamlUICommand>
     <XamlUICommand
         x:Key="ShowHideWindowCommand"
-        Description="开启翻译器设置窗口"
-        Label="设置">
+        Description="{helpers:Loc Key=TraySettingsDescription}"
+        Label="{helpers:Loc Key=TraySettings}">
         <XamlUICommand.IconSource>
             <SymbolIconSource Symbol="Setting" />
         </XamlUICommand.IconSource>
     </XamlUICommand>
     <XamlUICommand
         x:Key="ExitApplicationCommand"
-        Description="退出翻译器"
-        Label="退出">
+        Description="{helpers:Loc Key=TrayExitDescription}"
+        Label="{helpers:Loc Key=TrayExit}">
         <XamlUICommand.IconSource>
             <SymbolIconSource Symbol="ClosePane" />
         </XamlUICommand.IconSource>
@@ -34,7 +35,7 @@
         DoubleClickCommand="{StaticResource ShowHideWindowCommand}"
         IconSource="favicon.ico"
         NoLeftClickDelay="True"
-        ToolTipText="战争雷霆聊天翻译器"
+        ToolTipText="{helpers:Loc Key=TrayToolTip}"
         Visibility="Visible">
         <tb:TaskbarIcon.ContextFlyout>
             <MenuFlyout>

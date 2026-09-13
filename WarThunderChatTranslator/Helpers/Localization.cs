@@ -13,6 +13,7 @@ namespace WarThunderChatTranslator.Helpers
         private static readonly ResourceManager ResourceManager = new("WarThunderChatTranslator.Properties.Resources", typeof(Localization).Assembly);
 
         public static string CurrentLanguage { get; private set; } = "en-US";
+        public static event Action CultureChanged = delegate { };
 
         public static void Initialize(string savedLanguage)
         {
@@ -21,7 +22,9 @@ namespace WarThunderChatTranslator.Helpers
 
         public static void Apply(string language, bool updateWindowsPreference = true)
         {
-            CurrentLanguage = language == "zh-CN" ? "zh-CN" : "en-US";
+            var selectedLanguage = language == "zh-CN" ? "zh-CN" : "en-US";
+            var languageChanged = CurrentLanguage != selectedLanguage;
+            CurrentLanguage = selectedLanguage;
             var culture = CultureInfo.GetCultureInfo(CurrentLanguage);
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
@@ -31,8 +34,12 @@ namespace WarThunderChatTranslator.Helpers
 
             if (updateWindowsPreference)
             {
-                uint languageCount = 1;
-                SetUserPreferredUILanguages(MuiLanguageName, CurrentLanguage + "\0\0", ref languageCount);
+                SetProcessPreferredUILanguages(MuiLanguageName, CurrentLanguage + "\0\0", out _);
+            }
+
+            if (languageChanged)
+            {
+                CultureChanged();
             }
         }
 
@@ -49,6 +56,10 @@ namespace WarThunderChatTranslator.Helpers
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern bool SetUserPreferredUILanguages(uint flags, string languagesBuffer, ref uint numberOfLanguages);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetProcessPreferredUILanguages(
+            uint dwFlags,
+            string pwszLanguagesBuffer,
+            out uint pulNumLanguages);
     }
 }

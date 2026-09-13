@@ -361,4 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/WarThunderChatTranslator/Helpers/UpdateHelper.cs

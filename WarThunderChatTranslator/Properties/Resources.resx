@@ -145,4 +145,63 @@
   <data name="NavLayout" xml:space="preserve"><value>Position and layout</value></data>
   <data name="NavUpdate" xml:space="preserve"><value>Updates</value></data>
   <data name="NavAbout" xml:space="preserve"><value>About</value></data>
+  <data name="ApiTitle" xml:space="preserve"><value>Translation API</value></data>
+  <data name="ApiProviderDescription" xml:space="preserve"><value>Select the translation provider used by the translator.</value></data>
+  <data name="ApiBing" xml:space="preserve"><value>Bing (token required)</value></data>
+  <data name="ApiGoogle" xml:space="preserve"><value>Google (network required)</value></data>
+  <data name="ApiTargetDescription" xml:space="preserve"><value>Chat messages will be translated into this language.</value></data>
+  <data name="ApiTargetLanguage" xml:space="preserve"><value>Target language</value></data>
+  <data name="ApiTokenDescription" xml:space="preserve"><value>Enter the token required by Bing Translator.</value></data>
+  <data name="ApiToken" xml:space="preserve"><value>Translator API token</value></data>
+  <data name="ApiTestDescription" xml:space="preserve"><value>Test the translation feature.</value></data>
+  <data name="ApiTest" xml:space="preserve"><value>Test</value></data>
+  <data name="ApiTestButton" xml:space="preserve"><value>Test translation</value></data>
+  <data name="FontTitle" xml:space="preserve"><value>Font settings</value></data>
+  <data name="FontFamily" xml:space="preserve"><value>Font</value></data>
+  <data name="FontSize" xml:space="preserve"><value>Text size</value></data>
+  <data name="FontStyle" xml:space="preserve"><value>Text style</value></data>
+  <data name="FontLighter" xml:space="preserve"><value>Lighter</value></data>
+  <data name="FontNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="FontBold" xml:space="preserve"><value>Bold</value></data>
+  <data name="FontBolder" xml:space="preserve"><value>Bolder</value></data>
+  <data name="FontAllyColor" xml:space="preserve"><value>Ally text color</value></data>
+  <data name="FontEnemyColor" xml:space="preserve"><value>Enemy text color</value></data>
+  <data name="FontSystemColor" xml:space="preserve"><value>System text color</value></data>
+  <data name="SelectColor" xml:space="preserve"><value>Select color</value></data>
+  <data name="NetworkTitle" xml:space="preserve"><value>Network settings</value></data>
+  <data name="NetworkDescription" xml:space="preserve"><value>Configure the network proxy used by the translator (disabled by default).</value></data>
+  <data name="ProxyMode" xml:space="preserve"><value>Network proxy mode</value></data>
+  <data name="ProxyDefault" xml:space="preserve"><value>Do not use a proxy</value></data>
+  <data name="ProxySystem" xml:space="preserve"><value>Use system proxy</value></data>
+  <data name="ProxyCustom" xml:space="preserve"><value>Custom</value></data>
+  <data name="ProxyCustomSettings" xml:space="preserve"><value>Custom proxy settings</value></data>
+  <data name="ProxyAddress" xml:space="preserve"><value>Proxy address</value></data>
+  <data name="ProxyAddressPlaceholder" xml:space="preserve"><value>Example: http://127.0.0.1:7890</value></data>
+  <data name="ProxyAccount" xml:space="preserve"><value>Account (optional)</value></data>
+  <data name="ProxyAccountPlaceholder" xml:space="preserve"><value>Proxy account</value></data>
+  <data name="ProxyPassword" xml:space="preserve"><value>Password (optional)</value></data>
+  <data name="ProxyPasswordPlaceholder" xml:space="preserve"><value>Proxy password</value></data>
+  <data name="AboutAppName" xml:space="preserve"><value>War Thunder Chat Translator</value></data>
+  <data name="AboutAuthor" xml:space="preserve"><value>Author</value></data>
+  <data name="AboutGitHub" xml:space="preserve"><value>GitHub profile</value></data>
+  <data name="AboutBilibili" xml:space="preserve"><value>BiliBili profile</value></data>
+  <data name="AboutCopyLinkDescription" xml:space="preserve"><value>Copy the project link to share it with friends</value></data>
+  <data name="AboutCopyLink" xml:space="preserve"><value>Copy link</value></data>
+  <data name="AboutOpenProject" xml:space="preserve"><value>Open project page</value></data>
+  <data name="AboutProjectDescription" xml:space="preserve"><value>Open this translator's project page.</value></data>
+  <data name="AboutProject" xml:space="preserve"><value>Project page</value></data>
+  <data name="AboutCopySuccess" xml:space="preserve"><value>Copied successfully</value></data>
+  <data name="AboutCopySuccessDescription" xml:space="preserve"><value>Share the GitHub link with your friends.</value></data>
+  <data name="AboutOpenSourceThanks" xml:space="preserve"><value>Open-source projects used by this app</value></data>
+  <data name="UpdateTitle" xml:space="preserve"><value>Updates</value></data>
+  <data name="UpdateLastChecked" xml:space="preserve"><value>Last checked: </value></data>
+  <data name="UpdateNever" xml:space="preserve"><value>Never</value></data>
+  <data name="UpdateReleaseNotes" xml:space="preserve"><value>Release notes</value></data>
+  <data name="UpdateCheck" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="UpdateLatest" xml:space="preserve"><value>You are using the latest version.</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>Update check failed</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>New version available</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="UpdateLater" xml:space="preserve"><value>Later</value></data>
+  <data name="UpdateAvailableContent" xml:space="preserve"><value>A Microsoft Store update is available.</value></data>
 </root>

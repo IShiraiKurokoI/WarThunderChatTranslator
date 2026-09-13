@@ -8,6 +8,7 @@
     xmlns:controls="using:DevWinUI"
     xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="Transparent"
@@ -29,7 +30,7 @@
             VerticalAlignment="Stretch"
             AutomationProperties.HeadingLevel="1"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="网络设置" />
+            Text="{helpers:Loc Key=NetworkTitle}" />
 
         <ScrollViewer Grid.Row="1">
             <Grid Padding="0,0,20,48" RowSpacing="0">
@@ -50,7 +51,7 @@
                             x:Name="AboutDescription"
                             VerticalAlignment="Center"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            Text="设置翻译器使用的网络代理（默认不使用）"
+                            Text="{helpers:Loc Key=NetworkDescription}"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </Grid>
@@ -62,25 +63,25 @@
                     Margin="0,8,0,0">
                     <ContentPresenter.Content>
                         <StackPanel>
-                            <TextBlock FontSize="20" Text="网络代理模式" />
+                            <TextBlock FontSize="20" Text="{helpers:Loc Key=ProxyMode}" />
                             <StackPanel x:Name="ProxyPanel" Margin="0,10,0,10">
                                 <RadioButton
                                     Checked="RadioButton_Checked"
-                                    Content="不使用代理"
+                                    Content="{helpers:Loc Key=ProxyDefault}"
                                     Tag="Default" />
                                 <RadioButton
                                     Checked="RadioButton_Checked"
-                                    Content="使用系统代理"
+                                    Content="{helpers:Loc Key=ProxySystem}"
                                     Tag="System" />
                                 <RadioButton
                                     x:Name="CustomProxy"
                                     Checked="RadioButton_Checked"
-                                    Content="自定义"
+                                    Content="{helpers:Loc Key=ProxyCustom}"
                                     Tag="Custom" />
                             </StackPanel>
                             <TextBlock
                                 FontSize="20"
-                                Text="自定义代理设置"
+                                Text="{helpers:Loc Key=ProxyCustomSettings}"
                                 Visibility="{Binding IsChecked, ElementName=CustomProxy, Converter={StaticResource BoolToVisibilityConverter}}" />
                             <StackPanel
                                 Margin="0,10,0,0"
@@ -89,22 +90,22 @@
                                 <TextBox
                                     x:Name="ProxyAddress"
                                     Width="180"
-                                    Header="代理地址"
-                                    PlaceholderText="例：http://127.0.0.1:7890"
+                                    Header="{helpers:Loc Key=ProxyAddress}"
+                                    PlaceholderText="{helpers:Loc Key=ProxyAddressPlaceholder}"
                                     TextChanged="ProxyAddress_TextChanged" />
                                 <TextBox
                                     x:Name="ProxyAccount"
                                     Margin="20,0,0,0"
-                                    Header="账户名（选填）"
+                                    Header="{helpers:Loc Key=ProxyAccount}"
                                     InputScope="Number"
-                                    PlaceholderText="代理账户名"
+                                    PlaceholderText="{helpers:Loc Key=ProxyAccountPlaceholder}"
                                     TextChanged="ProxyAccount_TextChanged" />
                                 <TextBox
                                     x:Name="ProxyPassword"
                                     Margin="20,0,0,0"
-                                    Header="密码（选填）"
+                                    Header="{helpers:Loc Key=ProxyPassword}"
                                     InputScope="Number"
-                                    PlaceholderText="代理密码"
+                                    PlaceholderText="{helpers:Loc Key=ProxyPasswordPlaceholder}"
                                     TextChanged="ProxyPassword_TextChanged" />
                             </StackPanel>
                         </StackPanel>

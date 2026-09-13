@@ -32,4 +32,63 @@
   <data name="NavLayout" xml:space="preserve"><value>位置和布局</value></data>
   <data name="NavUpdate" xml:space="preserve"><value>翻译器更新</value></data>
   <data name="NavAbout" xml:space="preserve"><value>关于</value></data>
+  <data name="ApiTitle" xml:space="preserve"><value>翻译器 API</value></data>
+  <data name="ApiProviderDescription" xml:space="preserve"><value>选择翻译器使用的翻译提供方。</value></data>
+  <data name="ApiBing" xml:space="preserve"><value>Bing（需要 Token）</value></data>
+  <data name="ApiGoogle" xml:space="preserve"><value>Google（需要网络环境）</value></data>
+  <data name="ApiTargetDescription" xml:space="preserve"><value>翻译器会将聊天内容翻译成此语言。</value></data>
+  <data name="ApiTargetLanguage" xml:space="preserve"><value>翻译器目标语言</value></data>
+  <data name="ApiTokenDescription" xml:space="preserve"><value>输入 Bing 翻译器所需 Token。</value></data>
+  <data name="ApiToken" xml:space="preserve"><value>翻译器 API Token</value></data>
+  <data name="ApiTestDescription" xml:space="preserve"><value>测试翻译功能。</value></data>
+  <data name="ApiTest" xml:space="preserve"><value>测试</value></data>
+  <data name="ApiTestButton" xml:space="preserve"><value>测试翻译功能</value></data>
+  <data name="FontTitle" xml:space="preserve"><value>字体设置</value></data>
+  <data name="FontFamily" xml:space="preserve"><value>字体</value></data>
+  <data name="FontSize" xml:space="preserve"><value>文字大小</value></data>
+  <data name="FontStyle" xml:space="preserve"><value>文字样式</value></data>
+  <data name="FontLighter" xml:space="preserve"><value>较细</value></data>
+  <data name="FontNormal" xml:space="preserve"><value>正常</value></data>
+  <data name="FontBold" xml:space="preserve"><value>粗体</value></data>
+  <data name="FontBolder" xml:space="preserve"><value>加粗</value></data>
+  <data name="FontAllyColor" xml:space="preserve"><value>友军文本颜色</value></data>
+  <data name="FontEnemyColor" xml:space="preserve"><value>敌军文本颜色</value></data>
+  <data name="FontSystemColor" xml:space="preserve"><value>系统文本颜色</value></data>
+  <data name="SelectColor" xml:space="preserve"><value>选择颜色</value></data>
+  <data name="NetworkTitle" xml:space="preserve"><value>网络设置</value></data>
+  <data name="NetworkDescription" xml:space="preserve"><value>设置翻译器使用的网络代理（默认不使用）。</value></data>
+  <data name="ProxyMode" xml:space="preserve"><value>网络代理模式</value></data>
+  <data name="ProxyDefault" xml:space="preserve"><value>不使用代理</value></data>
+  <data name="ProxySystem" xml:space="preserve"><value>使用系统代理</value></data>
+  <data name="ProxyCustom" xml:space="preserve"><value>自定义</value></data>
+  <data name="ProxyCustomSettings" xml:space="preserve"><value>自定义代理设置</value></data>
+  <data name="ProxyAddress" xml:space="preserve"><value>代理地址</value></data>
+  <data name="ProxyAddressPlaceholder" xml:space="preserve"><value>例：http://127.0.0.1:7890</value></data>
+  <data name="ProxyAccount" xml:space="preserve"><value>账户名（选填）</value></data>
+  <data name="ProxyAccountPlaceholder" xml:space="preserve"><value>代理账户名</value></data>
+  <data name="ProxyPassword" xml:space="preserve"><value>密码（选填）</value></data>
+  <data name="ProxyPasswordPlaceholder" xml:space="preserve"><value>代理密码</value></data>
+  <data name="AboutAppName" xml:space="preserve"><value>战争雷霆聊天自动翻译器</value></data>
+  <data name="AboutAuthor" xml:space="preserve"><value>作者</value></data>
+  <data name="AboutGitHub" xml:space="preserve"><value>GitHub 主页</value></data>
+  <data name="AboutBilibili" xml:space="preserve"><value>BiliBili 主页</value></data>
+  <data name="AboutCopyLinkDescription" xml:space="preserve"><value>点此复制项目链接分享给好友</value></data>
+  <data name="AboutCopyLink" xml:space="preserve"><value>复制链接</value></data>
+  <data name="AboutOpenProject" xml:space="preserve"><value>打开项目页面</value></data>
+  <data name="AboutProjectDescription" xml:space="preserve"><value>你可以点此打开本翻译器项目页面。</value></data>
+  <data name="AboutProject" xml:space="preserve"><value>项目页面</value></data>
+  <data name="AboutCopySuccess" xml:space="preserve"><value>复制成功！</value></data>
+  <data name="AboutCopySuccessDescription" xml:space="preserve"><value>快将 GitHub 链接分享给好友吧。</value></data>
+  <data name="AboutOpenSourceThanks" xml:space="preserve"><value>感谢以下本应用中使用的开源项目</value></data>
+  <data name="UpdateTitle" xml:space="preserve"><value>翻译器更新</value></data>
+  <data name="UpdateLastChecked" xml:space="preserve"><value>上次检查更新: </value></data>
+  <data name="UpdateNever" xml:space="preserve"><value>从未</value></data>
+  <data name="UpdateReleaseNotes" xml:space="preserve"><value>发行说明</value></data>
+  <data name="UpdateCheck" xml:space="preserve"><value>检查更新</value></data>
+  <data name="UpdateLatest" xml:space="preserve"><value>当前使用的是最新版本。</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>检查更新失败</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>发现新版本</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>前往下载</value></data>
+  <data name="UpdateLater" xml:space="preserve"><value>暂不更新</value></data>
+  <data name="UpdateAvailableContent" xml:space="preserve"><value>Microsoft Store 中有可用更新。</value></data>
 </root>

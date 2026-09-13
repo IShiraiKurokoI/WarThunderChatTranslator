@@ -39,6 +39,18 @@
                     Margin="0,0,0,0">
                     <ContentPresenter.Content>
                         <StackPanel>
+                            <controls:SettingsCard
+                                MaxWidth="2000"
+                                Description="{helpers:Loc Key=LanguageDescription}"
+                                Header="{helpers:Loc Key=Language}">
+                                <controls:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xe774;" />
+                                </controls:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="LanguagePanel" SelectionChanged="LanguagePanel_SelectionChanged">
+                                    <ComboBoxItem Content="{helpers:Loc Key=Chinese}" Tag="zh-CN" />
+                                    <ComboBoxItem Content="{helpers:Loc Key=English}" Tag="en-US" />
+                                </ComboBox>
+                            </controls:SettingsCard>
                             <controls:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=Theme}">
                                 <controls:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe771;" />
@@ -58,27 +70,45 @@
                                         Visibility="{Binding IsSelected, ElementName=Default, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 </controls:SettingsCard.Description>
                             </controls:SettingsCard>
-                            <controls:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=BackgroundCss}">
+                            <controls:SettingsCard
+                                Click="SettingsCard_Click"
+                                IsClickEnabled="True"
+                                MaxWidth="2000"
+                                Header="{helpers:Loc Key=BackgroundCss}">
                                 <controls:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xef1f;" />
                                 </controls:SettingsCard.HeaderIcon>
                                 <controls:SettingsCard.Description>
-                                    <HyperlinkButton Content="{helpers:Loc Key=BackgroundCssInfo}" NavigateUri="https://www.w3schools.com/cssref/css3_pr_background.php" />
+                                    <HyperlinkButton
+                                        Padding="0"
+                                        Click="BackgroundCssInfo_Click"
+                                        Content="{helpers:Loc Key=BackgroundCssInfo}" />
                                 </controls:SettingsCard.Description>
-                                <TextBox x:Name="BackgroundCSS" TextChanged="BackgroundCSS_TextChanged" />
+                                <controls:SettingsCard.ActionIcon>
+                                    <FontIcon x:Name="CssEditorChevron" Glyph="&#xe70e;" />
+                                </controls:SettingsCard.ActionIcon>
                             </controls:SettingsCard>
-                            <controls:SettingsCard
-                                MaxWidth="2000"
-                                Description="{helpers:Loc Key=LanguageDescription}"
-                                Header="{helpers:Loc Key=Language}">
-                                <controls:SettingsCard.HeaderIcon>
-                                    <FontIcon Glyph="&#xe774;" />
-                                </controls:SettingsCard.HeaderIcon>
-                                <ComboBox x:Name="LanguagePanel" SelectionChanged="LanguagePanel_SelectionChanged">
-                                    <ComboBoxItem Content="{helpers:Loc Key=Chinese}" Tag="zh-CN" />
-                                    <ComboBoxItem Content="{helpers:Loc Key=English}" Tag="en-US" />
-                                </ComboBox>
-                            </controls:SettingsCard>
+                            <Grid
+                                x:Name="CssEditorPanel"
+                                Height="280"
+                                Margin="0,0,0,12"
+                                HorizontalAlignment="Stretch"
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                Visibility="Visible">
+                                    <TextBox
+                                        x:Name="BackgroundCSS"
+                                        Padding="12,8"
+                                        AcceptsReturn="True"
+                                        BorderThickness="0"
+                                        FontFamily="Cascadia Code"
+                                        FontSize="14"
+                                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                        TextChanged="BackgroundCSS_TextChanged"
+                                        TextWrapping="NoWrap"
+                                        ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                            </Grid>
                         </StackPanel>
                     </ContentPresenter.Content>
                 </ContentPresenter>
