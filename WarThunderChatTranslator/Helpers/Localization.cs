@@ -16,7 +16,7 @@ namespace WarThunderChatTranslator.Helpers
 
         public static void Initialize(string savedLanguage)
         {
-            Apply(string.IsNullOrWhiteSpace(savedLanguage) ? GetSystemLanguage() : savedLanguage, false);
+            Apply(string.IsNullOrWhiteSpace(savedLanguage) ? GetSystemLanguage() : savedLanguage);
         }
 
         public static void Apply(string language, bool updateWindowsPreference = true)
