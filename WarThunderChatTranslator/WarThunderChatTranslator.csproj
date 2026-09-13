@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>WarThunderChatTranslator</RootNamespace>
     <Platforms>x86;x64;ARM64</Platforms>
-    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
@@ -29,6 +29,7 @@
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
@@ -129,17 +130,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GTranslate" Version="2.2.7" />
-    <PackageReference Include="H.NotifyIcon.WinUI" Version="2.0.131" />
-    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240627000" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.3.3" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
-    <PackageReference Include="WinUICommunity.Components" Version="6.9.0" />
-    <PackageReference Include="WinUICommunity.Core" Version="6.9.0" />
-    <PackageReference Include="WinUICommunity.Win2D" Version="6.9.0" />
+    <PackageReference Include="DevWinUI" Version="10.4.1" />
+    <PackageReference Include="DevWinUI.Shader" Version="10.1.0" />
+    <PackageReference Include="GTranslate" Version="2.4.0" />
+    <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.2.0" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
