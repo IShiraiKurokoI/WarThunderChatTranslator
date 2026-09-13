@@ -2,7 +2,7 @@
     x:Class="WarThunderChatTranslator.Pages.AboutPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:WinUICommunity"
+    xmlns:controls="using:DevWinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -106,9 +106,9 @@
                                         NavigateUri="https://github.com/microsoft/windowsappsdk" />
                                     <HyperlinkButton
                                         Margin="5"
-                                        Content="WinUICommunity"
+                                        Content="DevWinUI"
                                         FontSize="18"
-                                        NavigateUri="https://github.com/WinUICommunity/WinUICommunity" />
+                                        NavigateUri="https://github.com/ghost1372/DevWinUI" />
                                     <HyperlinkButton
                                         Margin="5"
                                         Content="Newtonsoft/Json"

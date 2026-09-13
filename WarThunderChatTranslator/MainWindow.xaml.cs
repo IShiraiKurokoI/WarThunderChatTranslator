@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml.Controls;
-using WinUICommunity;
 using WarThunderChatTranslator.Pages;
 using Microsoft.UI.Xaml;
 using System.Runtime.InteropServices;
@@ -24,14 +23,16 @@ namespace WarThunderChatTranslator
 
     public sealed partial class MainWindow : Window
     {
-        public string TitleText = "Õ½ÕùÀ×öªÁÄÌì·­ÒëÆ÷";
+        public string TitleText = "Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì·­ï¿½ï¿½ï¿½ï¿½";
         internal static MainWindow Instance { get; private set; }
         private OverlappedPresenter _presenter;
         public MainWindow()
         {
             this.InitializeComponent();
-            this.Title = "·­ÒëÆ÷ÉèÖÃ½çÃæ";
+            this.Title = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½";
             Instance = this;
+            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(AppTitleBar);
 
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
@@ -40,8 +41,6 @@ namespace WarThunderChatTranslator
             appWindow.Resize(new Windows.Graphics.SizeInt32(1400, 800));
             _presenter = appWindow.Presenter as OverlappedPresenter;
             _presenter.IsAlwaysOnTop = true;
-
-            appTitleBar.Window = this;
         }
     }
 }

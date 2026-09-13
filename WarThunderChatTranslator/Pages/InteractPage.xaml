@@ -8,7 +8,7 @@
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:WinUICommunity"
+    xmlns:controls="using:DevWinUI"
     mc:Ignorable="d"
     Background="Transparent">
     <Grid

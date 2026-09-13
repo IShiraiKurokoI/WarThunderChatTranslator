@@ -7,7 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:labs="using:WinUICommunity"
+    xmlns:labs="using:DevWinUI"
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="Transparent"

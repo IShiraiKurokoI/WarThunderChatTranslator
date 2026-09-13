@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
 using WarThunderChatTranslator.Pages;
-using WinUICommunity;
 
 namespace WarThunderChatTranslator;
 
@@ -13,12 +12,14 @@ public sealed partial class ShellPage : Page
     {
         this.InitializeComponent();
         shellPageService = new ShellPageService();
-        shellPageService.SetDefaultPage(typeof(APIPage));
-        INavigationViewServiceEx navigationViewService;
-        INavigationServiceEx navigationService;
-        navigationService = new NavigationServiceEx(shellPageService);
-        navigationService.Frame = shellFrame;
-        navigationViewService = new NavigationViewServiceEx(navigationService, shellPageService);
-        navigationViewService.Initialize(navigationView);
+        shellFrame.Navigate(typeof(APIPage));
+    }
+
+    private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+    {
+        if (args.InvokedItemContainer?.Tag is string pageKey)
+        {
+            shellFrame.Navigate(shellPageService.GetPageType(pageKey));
+        }
     }
 }

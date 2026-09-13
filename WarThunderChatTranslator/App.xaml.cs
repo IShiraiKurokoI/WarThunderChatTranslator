@@ -22,16 +22,14 @@ using System.Text.RegularExpressions;
 using WarThunderChatTranslator.Pages;
 using WarThunderChatTranslator.Helpers;
 using Microsoft.UI.Xaml.Input;
-using WinUICommunity;
 using System.Threading; // 引入命名空间
+using Microsoft.UI.Xaml.Media;
 
 namespace WarThunderChatTranslator
 {
     public partial class App : Microsoft.UI.Xaml.Application
     {
         public NLog.Logger logger;
-        public static IThemeService themeService { get; set; }
-
         private Window m_window;
         public TaskbarIcon TrayIcon { get; private set; }
         private static readonly string url = IsAdmin() ? "http://+:8100/" : "http://localhost:8100/";
@@ -162,16 +160,8 @@ namespace WarThunderChatTranslator
 
             ApplicationConfig.SaveSettings("Theme", theme);
 
-            themeService = new ThemeService();
-            themeService.Initialize(m_window);
-            themeService.ConfigBackdrop(BackdropType.AcrylicThin);
-            themeService.ConfigElementTheme(SettingsTheme);
-            themeService.ConfigTitleBar(new TitleBarCustomization
-            {
-                TitleBarWindowType = TitleBarWindowType.AppWindow,
-                LightTitleBarButtons = new TitleBarButtons { ButtonBackgroundColor = Colors.Transparent },
-                DarkTitleBarButtons = new TitleBarButtons { ButtonBackgroundColor = Colors.Transparent }
-            });
+            m_window.SystemBackdrop = new DesktopAcrylicBackdrop();
+            ApplyTheme(SettingsTheme);
 
             CenterWindow(m_window);
 
@@ -184,6 +174,14 @@ namespace WarThunderChatTranslator
                 }
             };
             m_window.Show();
+        }
+
+        public static void ApplyTheme(ElementTheme theme)
+        {
+            if (Current is App app && app.m_window?.Content is FrameworkElement root)
+            {
+                root.RequestedTheme = theme;
+            }
         }
 
         private static void CenterWindow(Window window)

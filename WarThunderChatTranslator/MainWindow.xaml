@@ -8,26 +8,31 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:WarThunderChatTranslator"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:wuc="using:WinUICommunity"
     mc:Ignorable="d">
     <Grid Name="Root">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <wuc:TitleBar
-            x:Name="appTitleBar"
-            Title="战争雷霆聊天翻译器设置界面"
+        <Grid
+            x:Name="AppTitleBar"
             Height="40"
-            VerticalAlignment="Top"
-            IsBackButtonVisible="False"
-            IsDoubleTapEnabled="False"
-            IsMaximizable="False"
-            IsPaneButtonVisible="False">
-            <wuc:TitleBar.Icon>
-                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///favicon.ico" />
-            </wuc:TitleBar.Icon>
-        </wuc:TitleBar>
-        <local:ShellPage Grid.Row="2" />
+            Padding="12,0,0,0"
+            ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <BitmapIcon
+                Width="20"
+                Height="20"
+                ShowAsMonochrome="False"
+                UriSource="ms-appx:///favicon.ico" />
+            <TextBlock
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Text="战争雷霆聊天翻译器设置界面" />
+        </Grid>
+        <local:ShellPage Grid.Row="1" />
     </Grid>
 </Window>

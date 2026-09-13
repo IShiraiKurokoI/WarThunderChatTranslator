@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Pages;
-using WinUICommunity;
 
 namespace WarThunderChatTranslator
 {
-    public class ShellPageService : PageServiceEx
+    public class ShellPageService
     {
+        private readonly Dictionary<string, Type> _pageKeyToTypeMap;
+
         public ShellPageService()
         {
             _pageKeyToTypeMap = new Dictionary<string, Type>
@@ -24,5 +25,7 @@ namespace WarThunderChatTranslator
                 { "AboutPage", typeof(AboutPage) },
             };
         }
+
+        public Type GetPageType(string pageKey) => _pageKeyToTypeMap[pageKey];
     }
 }
