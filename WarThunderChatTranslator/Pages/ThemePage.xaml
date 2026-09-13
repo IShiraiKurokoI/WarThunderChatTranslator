@@ -8,6 +8,7 @@
     xmlns:controls="using:DevWinUI"
     xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
@@ -29,7 +30,7 @@
             VerticalAlignment="Stretch"
             AutomationProperties.HeadingLevel="1"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="程序主题" />
+            Text="{helpers:Loc Key=Theme}" />
         <ScrollViewer Grid.Row="1">
             <Grid Padding="0,0,20,0" RowSpacing="0">
                 <ContentPresenter
@@ -38,33 +39,45 @@
                     Margin="0,0,0,0">
                     <ContentPresenter.Content>
                         <StackPanel>
-                            <controls:SettingsCard MaxWidth="2000" Header="全局主题模式">
+                            <controls:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=Theme}">
                                 <controls:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xe771;" />
                                 </controls:SettingsCard.HeaderIcon>
                                 <ComboBox x:Name="ThemePanel" SelectionChanged="ThemePanel_SelectionChanged">
-                                    <ComboBoxItem Content="浅色" Tag="Light" />
-                                    <ComboBoxItem Content="深色" Tag="Dark" />
+                                    <ComboBoxItem Content="{helpers:Loc Key=Light}" Tag="Light" />
+                                    <ComboBoxItem Content="{helpers:Loc Key=Dark}" Tag="Dark" />
                                     <ComboBoxItem
                                         x:Name="Default"
-                                        Content="跟随系统"
+                                        Content="{helpers:Loc Key=SystemDefault}"
                                         Tag="Default" />
                                 </ComboBox>
                                 <controls:SettingsCard.Description>
                                     <HyperlinkButton
                                         Click="HyperlinkButton_Click"
-                                        Content="点此打开系统主题设置"
+                                        Content="{helpers:Loc Key=OpenSystemTheme}"
                                         Visibility="{Binding IsSelected, ElementName=Default, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 </controls:SettingsCard.Description>
                             </controls:SettingsCard>
-                            <controls:SettingsCard MaxWidth="2000" Header="页面背景CSS (附加在页面body css中) ">
+                            <controls:SettingsCard MaxWidth="2000" Header="{helpers:Loc Key=BackgroundCss}">
                                 <controls:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xef1f;" />
                                 </controls:SettingsCard.HeaderIcon>
                                 <controls:SettingsCard.Description>
-                                    <HyperlinkButton Content="背景CSS格式介绍" NavigateUri="https://www.w3schools.com/cssref/css3_pr_background.php" />
+                                    <HyperlinkButton Content="{helpers:Loc Key=BackgroundCssInfo}" NavigateUri="https://www.w3schools.com/cssref/css3_pr_background.php" />
                                 </controls:SettingsCard.Description>
                                 <TextBox x:Name="BackgroundCSS" TextChanged="BackgroundCSS_TextChanged" />
+                            </controls:SettingsCard>
+                            <controls:SettingsCard
+                                MaxWidth="2000"
+                                Description="{helpers:Loc Key=LanguageDescription}"
+                                Header="{helpers:Loc Key=Language}">
+                                <controls:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xe774;" />
+                                </controls:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="LanguagePanel" SelectionChanged="LanguagePanel_SelectionChanged">
+                                    <ComboBoxItem Content="{helpers:Loc Key=Chinese}" Tag="zh-CN" />
+                                    <ComboBoxItem Content="{helpers:Loc Key=English}" Tag="en-US" />
+                                </ComboBox>
                             </controls:SettingsCard>
                         </StackPanel>
                     </ContentPresenter.Content>

@@ -110,6 +110,8 @@ namespace WarThunderChatTranslator
                 }
             }
 
+            Localization.Initialize(ApplicationConfig.GetSettings("ApplicationLanguage"));
+
             logger.Info("初始化翻译器对象");
             TranslationHelper.init();
             logger.Info("翻译器对象初始化完成");
@@ -118,7 +120,7 @@ namespace WarThunderChatTranslator
         private void InitializeTrayIcon()
         {
             var OpenDashboardCommand = (XamlUICommand)Resources["OpenDashboardCommand"];
-            OpenDashboardCommand.ExecuteRequested += (sender, args) => Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
+            OpenDashboardCommand.ExecuteRequested += async (sender, args) => await Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
 
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
             showHideWindowCommand.ExecuteRequested += ToggleMainWindowVisibility;
@@ -128,8 +130,50 @@ namespace WarThunderChatTranslator
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
             TrayIcon.ForceCreate();
+            UpdateTrayLocalization();
 
             CoreApplication.Exiting += (sender, e) => ExitApplication();
+        }
+
+        public static void ReloadMainWindow()
+        {
+            if (Current is not App app || app.m_window == null)
+            {
+                return;
+            }
+
+            app.HandleClosedEvents = false;
+            app.m_window.Close();
+            app.m_window = null;
+            app.HandleClosedEvents = true;
+            app.InitializeMainWindow();
+            app.UpdateTrayLocalization();
+        }
+
+        private void UpdateTrayLocalization()
+        {
+            if (Resources["OpenDashboardCommand"] is XamlUICommand openDashboardCommand)
+            {
+                openDashboardCommand.Label = Localization.GetString("TrayDashboard");
+                openDashboardCommand.Description = Localization.GetString("TrayDashboardDescription");
+            }
+
+            if (Resources["ShowHideWindowCommand"] is XamlUICommand showWindowCommand)
+            {
+                showWindowCommand.Label = Localization.GetString("TraySettings");
+                showWindowCommand.Description = Localization.GetString("TraySettingsDescription");
+            }
+
+            if (Resources["ExitApplicationCommand"] is XamlUICommand exitCommand)
+            {
+                exitCommand.Label = Localization.GetString("TrayExit");
+                exitCommand.Description = Localization.GetString("TrayExitDescription");
+            }
+
+            if (TrayIcon != null)
+            {
+                TrayIcon.ToolTipText = Localization.GetString("TrayToolTip");
+            }
         }
 
         private void ToggleMainWindowVisibility(XamlUICommand sender, ExecuteRequestedEventArgs args)

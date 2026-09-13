@@ -6,7 +6,7 @@
     <RootNamespace>WarThunderChatTranslator</RootNamespace>
     <Platforms>x86;x64;ARM64</Platforms>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <SignAssembly>False</SignAssembly>
@@ -15,7 +15,7 @@
     <Authors>CA8D01B0-3F39-49D4-85F5-877D7B18934F</Authors>
     <PackageIcon></PackageIcon>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <DefaultLanguage>zh-Hans-CN</DefaultLanguage>
     <UseWPF>False</UseWPF>
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <ApplicationManifest>app.manifest</ApplicationManifest>

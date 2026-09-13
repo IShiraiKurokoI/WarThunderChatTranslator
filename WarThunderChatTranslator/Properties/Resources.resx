@@ -117,4 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppTitle" xml:space="preserve"><value>War Thunder Chat Translator Settings</value></data>
+  <data name="Language" xml:space="preserve"><value>Application language</value></data>
+  <data name="LanguageDescription" xml:space="preserve"><value>Changes are applied immediately and remembered.</value></data>
+  <data name="Chinese" xml:space="preserve"><value>Chinese (Simplified)</value></data>
+  <data name="English" xml:space="preserve"><value>English</value></data>
+  <data name="Theme" xml:space="preserve"><value>Theme</value></data>
+  <data name="Light" xml:space="preserve"><value>Light</value></data>
+  <data name="Dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="SystemDefault" xml:space="preserve"><value>Use system setting</value></data>
+  <data name="OpenSystemTheme" xml:space="preserve"><value>Open system theme settings</value></data>
+  <data name="BackgroundCss" xml:space="preserve"><value>Page background CSS (appended to the page body CSS)</value></data>
+  <data name="BackgroundCssInfo" xml:space="preserve"><value>Background CSS reference</value></data>
+  <data name="TrayDashboard" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="TrayDashboardDescription" xml:space="preserve"><value>Open chat window</value></data>
+  <data name="TraySettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="TraySettingsDescription" xml:space="preserve"><value>Open translator settings</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
+  <data name="TrayExitDescription" xml:space="preserve"><value>Exit translator</value></data>
+  <data name="TrayToolTip" xml:space="preserve"><value>War Thunder Chat Translator</value></data>
+  <data name="NavApi" xml:space="preserve"><value>Translation API</value></data>
+  <data name="NavNetwork" xml:space="preserve"><value>Network</value></data>
+  <data name="NavAppearance" xml:space="preserve"><value>Appearance</value></data>
+  <data name="NavFont" xml:space="preserve"><value>Fonts and styles</value></data>
+  <data name="NavTheme" xml:space="preserve"><value>Theme and background</value></data>
+  <data name="NavInteraction" xml:space="preserve"><value>Interaction and actions</value></data>
+  <data name="NavLayout" xml:space="preserve"><value>Position and layout</value></data>
+  <data name="NavUpdate" xml:space="preserve"><value>Updates</value></data>
+  <data name="NavAbout" xml:space="preserve"><value>About</value></data>
 </root>

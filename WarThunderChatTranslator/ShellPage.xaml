@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
@@ -23,7 +24,7 @@
 
                 <NavigationViewItem
                     Margin="0,0,12,0"
-                    Content="翻译API"
+                    Content="{helpers:Loc Key=NavApi}"
                     IsSelected="True"
                     Tag="APIPage">
                     <NavigationViewItem.Icon>
@@ -33,7 +34,7 @@
 
                 <NavigationViewItem
                     Margin="0,0,12,0"
-                    Content="网络"
+                    Content="{helpers:Loc Key=NavNetwork}"
                     Tag="NetworkPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon
@@ -44,14 +45,14 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Margin="0,0,12,0" Content="外观">
+                <NavigationViewItem Margin="0,0,12,0" Content="{helpers:Loc Key=NavAppearance}">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Windows.ico" />
                     </NavigationViewItem.Icon>
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="字体和样式"
+                            Content="{helpers:Loc Key=NavFont}"
                             Tag="FontPage">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico" />
@@ -60,7 +61,7 @@
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="主题和背景"
+                            Content="{helpers:Loc Key=NavTheme}"
                             Tag="ThemePage">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Theme.ico" />
@@ -69,7 +70,7 @@
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="互动和操作"
+                            Content="{helpers:Loc Key=NavInteraction}"
                             IsEnabled="False"
                             Tag="InteractPage">
                             <NavigationViewItem.Icon>
@@ -79,7 +80,7 @@
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="位置和布局"
+                            Content="{helpers:Loc Key=NavLayout}"
                             IsEnabled="False"
                             Tag="LocationPage">
                             <NavigationViewItem.Icon>
@@ -91,7 +92,7 @@
 
                 <NavigationViewItem
                     Margin="0,0,12,0"
-                    Content="翻译器更新"
+                    Content="{helpers:Loc Key=NavUpdate}"
                     Tag="UpdatePage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Update.png" />
@@ -101,7 +102,7 @@
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="关于" Tag="AboutPage">
+                <NavigationViewItem Content="{helpers:Loc Key=NavAbout}" Tag="AboutPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/About.ico" />
                     </NavigationViewItem.Icon>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>战争雷霆聊天翻译器设置界面</value></data>
+  <data name="Language" xml:space="preserve"><value>程序语言</value></data>
+  <data name="LanguageDescription" xml:space="preserve"><value>切换后立即生效，并会记住此选择。</value></data>
+  <data name="Chinese" xml:space="preserve"><value>中文（简体）</value></data>
+  <data name="English" xml:space="preserve"><value>English</value></data>
+  <data name="Theme" xml:space="preserve"><value>全局主题模式</value></data>
+  <data name="Light" xml:space="preserve"><value>浅色</value></data>
+  <data name="Dark" xml:space="preserve"><value>深色</value></data>
+  <data name="SystemDefault" xml:space="preserve"><value>跟随系统</value></data>
+  <data name="OpenSystemTheme" xml:space="preserve"><value>点此打开系统主题设置</value></data>
+  <data name="BackgroundCss" xml:space="preserve"><value>页面背景CSS（附加在页面body CSS中）</value></data>
+  <data name="BackgroundCssInfo" xml:space="preserve"><value>背景CSS格式介绍</value></data>
+  <data name="TrayDashboard" xml:space="preserve"><value>面板</value></data>
+  <data name="TrayDashboardDescription" xml:space="preserve"><value>开启聊天窗口</value></data>
+  <data name="TraySettings" xml:space="preserve"><value>设置</value></data>
+  <data name="TraySettingsDescription" xml:space="preserve"><value>开启翻译器设置窗口</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>退出</value></data>
+  <data name="TrayExitDescription" xml:space="preserve"><value>退出翻译器</value></data>
+  <data name="TrayToolTip" xml:space="preserve"><value>战争雷霆聊天翻译器</value></data>
+  <data name="NavApi" xml:space="preserve"><value>翻译API</value></data>
+  <data name="NavNetwork" xml:space="preserve"><value>网络</value></data>
+  <data name="NavAppearance" xml:space="preserve"><value>外观</value></data>
+  <data name="NavFont" xml:space="preserve"><value>字体和样式</value></data>
+  <data name="NavTheme" xml:space="preserve"><value>主题和背景</value></data>
+  <data name="NavInteraction" xml:space="preserve"><value>互动和操作</value></data>
+  <data name="NavLayout" xml:space="preserve"><value>位置和布局</value></data>
+  <data name="NavUpdate" xml:space="preserve"><value>翻译器更新</value></data>
+  <data name="NavAbout" xml:space="preserve"><value>关于</value></data>
+</root>

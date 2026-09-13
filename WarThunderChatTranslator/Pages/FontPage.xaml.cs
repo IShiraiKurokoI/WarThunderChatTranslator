@@ -61,7 +61,7 @@ namespace WarThunderChatTranslator.Pages
             };
         }
 
-        public async Task LoadFontFamilies()
+        public void LoadFontFamilies()
         {
             Fonts = FontHelper.GetFontFamilies()
                 .Select(fontFamily => new Tuple<string, FontFamily>(fontFamily.Source, fontFamily))

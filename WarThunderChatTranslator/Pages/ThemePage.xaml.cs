@@ -34,6 +34,7 @@ namespace WarThunderChatTranslator.Pages
     public sealed partial class ThemePage : Page
     {
         bool ThemeInitilized = false;
+        bool LanguageInitialized = false;
         public ThemePage()
         {
             this.InitializeComponent();
@@ -48,6 +49,8 @@ namespace WarThunderChatTranslator.Pages
             };
             BackgroundCSS.Text = ApplicationConfig.GetSettings("BackgroundCSS");
             ThemeInitilized = true;
+            LanguagePanel.SelectedIndex = Localization.CurrentLanguage == "zh-CN" ? 0 : 1;
+            LanguageInitialized = true;
         }
 
         private void ThemePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -65,9 +68,9 @@ namespace WarThunderChatTranslator.Pages
             }
         }
 
-        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        private async void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
-            Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:colors"));
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:colors"));
         }
 
         private void BackgroundCSS_TextChanged(object sender, TextChangedEventArgs e)
@@ -76,6 +79,17 @@ namespace WarThunderChatTranslator.Pages
             {
                 ApplicationConfig.SaveSettings("BackgroundCSS", BackgroundCSS.Text);
             }
+        }
+
+        private void LanguagePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!LanguageInitialized || LanguagePanel.SelectedItem is not ComboBoxItem selectedItem)
+            {
+                return;
+            }
+
+            Localization.Apply(selectedItem.Tag.ToString());
+            App.ReloadMainWindow();
         }
     }
 }

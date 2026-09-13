@@ -19,7 +19,7 @@ namespace WarThunderChatTranslator.Properties {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -57,6 +57,258 @@ namespace WarThunderChatTranslator.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 War Thunder Chat Translator Settings 的本地化字符串。
+        /// </summary>
+        internal static string AppTitle {
+            get {
+                return ResourceManager.GetString("AppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Page background CSS (appended to the page body CSS) 的本地化字符串。
+        /// </summary>
+        internal static string BackgroundCss {
+            get {
+                return ResourceManager.GetString("BackgroundCss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Background CSS reference 的本地化字符串。
+        /// </summary>
+        internal static string BackgroundCssInfo {
+            get {
+                return ResourceManager.GetString("BackgroundCssInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Chinese (Simplified) 的本地化字符串。
+        /// </summary>
+        internal static string Chinese {
+            get {
+                return ResourceManager.GetString("Chinese", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Dark 的本地化字符串。
+        /// </summary>
+        internal static string Dark {
+            get {
+                return ResourceManager.GetString("Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 English 的本地化字符串。
+        /// </summary>
+        internal static string English {
+            get {
+                return ResourceManager.GetString("English", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Application language 的本地化字符串。
+        /// </summary>
+        internal static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Changes are applied immediately and remembered. 的本地化字符串。
+        /// </summary>
+        internal static string LanguageDescription {
+            get {
+                return ResourceManager.GetString("LanguageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Light 的本地化字符串。
+        /// </summary>
+        internal static string Light {
+            get {
+                return ResourceManager.GetString("Light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 About 的本地化字符串。
+        /// </summary>
+        internal static string NavAbout {
+            get {
+                return ResourceManager.GetString("NavAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Translation API 的本地化字符串。
+        /// </summary>
+        internal static string NavApi {
+            get {
+                return ResourceManager.GetString("NavApi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Appearance 的本地化字符串。
+        /// </summary>
+        internal static string NavAppearance {
+            get {
+                return ResourceManager.GetString("NavAppearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Fonts and styles 的本地化字符串。
+        /// </summary>
+        internal static string NavFont {
+            get {
+                return ResourceManager.GetString("NavFont", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Interaction and actions 的本地化字符串。
+        /// </summary>
+        internal static string NavInteraction {
+            get {
+                return ResourceManager.GetString("NavInteraction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Position and layout 的本地化字符串。
+        /// </summary>
+        internal static string NavLayout {
+            get {
+                return ResourceManager.GetString("NavLayout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Network 的本地化字符串。
+        /// </summary>
+        internal static string NavNetwork {
+            get {
+                return ResourceManager.GetString("NavNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Theme and background 的本地化字符串。
+        /// </summary>
+        internal static string NavTheme {
+            get {
+                return ResourceManager.GetString("NavTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Updates 的本地化字符串。
+        /// </summary>
+        internal static string NavUpdate {
+            get {
+                return ResourceManager.GetString("NavUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open system theme settings 的本地化字符串。
+        /// </summary>
+        internal static string OpenSystemTheme {
+            get {
+                return ResourceManager.GetString("OpenSystemTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Use system setting 的本地化字符串。
+        /// </summary>
+        internal static string SystemDefault {
+            get {
+                return ResourceManager.GetString("SystemDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Theme 的本地化字符串。
+        /// </summary>
+        internal static string Theme {
+            get {
+                return ResourceManager.GetString("Theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Dashboard 的本地化字符串。
+        /// </summary>
+        internal static string TrayDashboard {
+            get {
+                return ResourceManager.GetString("TrayDashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open chat window 的本地化字符串。
+        /// </summary>
+        internal static string TrayDashboardDescription {
+            get {
+                return ResourceManager.GetString("TrayDashboardDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Exit 的本地化字符串。
+        /// </summary>
+        internal static string TrayExit {
+            get {
+                return ResourceManager.GetString("TrayExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Exit translator 的本地化字符串。
+        /// </summary>
+        internal static string TrayExitDescription {
+            get {
+                return ResourceManager.GetString("TrayExitDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Settings 的本地化字符串。
+        /// </summary>
+        internal static string TraySettings {
+            get {
+                return ResourceManager.GetString("TraySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open translator settings 的本地化字符串。
+        /// </summary>
+        internal static string TraySettingsDescription {
+            get {
+                return ResourceManager.GetString("TraySettingsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 War Thunder Chat Translator 的本地化字符串。
+        /// </summary>
+        internal static string TrayToolTip {
+            get {
+                return ResourceManager.GetString("TrayToolTip", resourceCulture);
             }
         }
     }
