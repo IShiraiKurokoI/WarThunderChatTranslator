@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>实时聊天消息列表</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <!-- 引用动态生成的 CSS -->
+    <!-- Reference dynamically generated CSS. -->
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -13,22 +13,62 @@
     <div id="chat-container"></div>
 
     <script>
+        let lastId = 0;
+        let processGeneration = 0;
+        let fetchInProgress = false;
+        let webPollIntervalMs = 4000;
+        let pollTimer = null;
+
         async function fetchChatData() {
+            if (fetchInProgress) {
+                return;
+            }
+
+            fetchInProgress = true;
             try {
-                const response = await fetch('/gamechat');
+                const response = await fetch(`/gamechat?lastId=${lastId}&session=${processGeneration}`, { cache: 'no-store' });
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error(`HTTP ${response.status}`);
                 }
+
+                const responseGeneration = Number(response.headers.get('X-Game-Process-Generation') || response.headers.get('X-Game-Session') || '0');
+                const configuredInterval = Number(response.headers.get('X-Web-Poll-Interval-Ms') || '4000');
+                if (Number.isFinite(configuredInterval) && configuredInterval >= 1000) {
+                    webPollIntervalMs = configuredInterval;
+                }
+
                 const chatMessages = await response.json();
-                renderChatMessages(chatMessages);
+
+                // The generation changes only when the monitored game process instance changes. It does not identify individual battles within the same PID.
+                if (responseGeneration !== processGeneration) {
+                    processGeneration = responseGeneration;
+                    lastId = 0;
+                    document.getElementById('chat-container').innerHTML = '';
+                }
+
+                appendChatMessages(chatMessages);
+
+                if (chatMessages.length > 0) {
+                    lastId = Math.max(lastId, ...chatMessages.map(message => message.Id));
+                }
             } catch (error) {
                 console.error('Failed to fetch chat messages:', error);
+            } finally {
+                fetchInProgress = false;
+                scheduleNextPoll();
             }
         }
 
-        function renderChatMessages(chatMessages) {
+        function scheduleNextPoll() {
+            if (pollTimer !== null) {
+                clearTimeout(pollTimer);
+            }
+            pollTimer = setTimeout(fetchChatData, webPollIntervalMs);
+        }
+
+        function appendChatMessages(chatMessages) {
             const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
 
             chatMessages.forEach(message => {
                 const messageDiv = document.createElement('div');
@@ -45,57 +85,16 @@
                 const messageText = document.createElement('span');
                 messageText.textContent = `[${message.Mode}] ${message.Sender || '系统'}: ${message.TranslatedMessage}`;
                 messageDiv.appendChild(messageText);
-
-                chatContainer.appendChild(messageDiv);
+                fragment.appendChild(messageDiv);
             });
 
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            if (chatMessages.length > 0) {
+                chatContainer.appendChild(fragment);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
         }
 
-        function test() {
-            const testMessages = [
-                {
-                    Mode: "友军",
-                    Sender: "玩家1",
-                    TranslatedMessage: "大家加油，我们快赢了！",
-                    Enemy: false
-                },
-                {
-                    Mode: "所有人",
-                    Sender: "敌方玩家",
-                    TranslatedMessage: "你们根本打不过我们！",
-                    Enemy: true
-                },
-                {
-                    Mode: "所有人",
-                    Sender: "",
-                    TranslatedMessage: "比赛将在5分钟后结束。",
-                    Enemy: true
-                },
-                {
-                    Mode: "友军",
-                    Sender: "玩家2",
-                    TranslatedMessage: "注意左侧有人埋伏！",
-                    Enemy: false
-                },
-                {
-                    Mode: "所有人",
-                    Sender: "敌方玩家",
-                    TranslatedMessage: "真是一场激烈的战斗！",
-                    Enemy: true
-                },
-                {
-                    Mode: "所有人",
-                    Sender: "",
-                    TranslatedMessage: "服务器将在10分钟后维护。",
-                    Enemy: true
-                }
-            ];
-
-            renderChatMessages(testMessages);
-        }
-
-        setInterval(fetchChatData, 4000);
+        // Load immediately on first visit, then schedule serial polls using the server-provided web polling interval.
         fetchChatData();
     </script>
 </body>

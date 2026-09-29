@@ -169,7 +169,7 @@
   <data name="FontSystemColor" xml:space="preserve"><value>System text color</value></data>
   <data name="SelectColor" xml:space="preserve"><value>Select color</value></data>
   <data name="NetworkTitle" xml:space="preserve"><value>Network settings</value></data>
-  <data name="NetworkDescription" xml:space="preserve"><value>Configure the network proxy used by the translator (disabled by default).</value></data>
+  <data name="NetworkDescription" xml:space="preserve"><value>Configure the translator network proxy and polling intervals.</value></data>
   <data name="ProxyMode" xml:space="preserve"><value>Network proxy mode</value></data>
   <data name="ProxyDefault" xml:space="preserve"><value>Do not use a proxy</value></data>
   <data name="ProxySystem" xml:space="preserve"><value>Use system proxy</value></data>
@@ -181,6 +181,13 @@
   <data name="ProxyAccountPlaceholder" xml:space="preserve"><value>Proxy account</value></data>
   <data name="ProxyPassword" xml:space="preserve"><value>Password (optional)</value></data>
   <data name="ProxyPasswordPlaceholder" xml:space="preserve"><value>Proxy password</value></data>
+  <data name="PollingSettings" xml:space="preserve"><value>Polling intervals</value></data>
+  <data name="PollingSettingsDescription" xml:space="preserve"><value>Configure how often the app requests game chat data and how often the dashboard reads the local translated cache. Changes are saved automatically.</value></data>
+  <data name="GamePollingInterval" xml:space="preserve"><value>Game polling interval (seconds)</value></data>
+  <data name="GamePollingIntervalDescription" xml:space="preserve"><value>Interval for incremental requests to the game's port 8111. Default: 4 seconds.</value></data>
+  <data name="WebPollingInterval" xml:space="preserve"><value>Dashboard polling interval (seconds)</value></data>
+  <data name="WebPollingIntervalDescription" xml:space="preserve"><value>Interval for the dashboard to read translated data from the local server. Default: 4 seconds.</value></data>
+  <data name="PollingIntervalRange" xml:space="preserve"><value>Allowed range: 1-60 seconds. Settings take effect automatically without restarting the app.</value></data>
   <data name="AboutAppName" xml:space="preserve"><value>War Thunder Chat Translator</value></data>
   <data name="AboutAuthor" xml:space="preserve"><value>Author</value></data>
   <data name="AboutGitHub" xml:space="preserve"><value>GitHub profile</value></data>

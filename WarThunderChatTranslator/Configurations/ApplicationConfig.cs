@@ -1,27 +1,49 @@
-﻿using ABI.Windows.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Globalization;
 using Windows.Storage;
-using Windows.UI;
 
 namespace WarThunderChatTranslator.Configurations
 {
-
     static class ApplicationConfig
     {
-        static ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+        private static readonly ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
 
-        public static void SaveSettings(String Key,String Value)
+        public const string GamePollingIntervalSecondsKey = "GamePollingIntervalSeconds";
+        public const string WebPollingIntervalSecondsKey = "WebPollingIntervalSeconds";
+
+        public const int DefaultPollingIntervalSeconds = 4;
+        public const int MinPollingIntervalSeconds = 1;
+        public const int MaxPollingIntervalSeconds = 60;
+
+        public static void SaveSettings(string key, string value)
         {
-            localSettings.Values[Key] = Value;
+            LocalSettings.Values[key] = value;
         }
-        
-        public static string GetSettings(String Key)
+
+        public static string GetSettings(string key)
         {
-            return localSettings.Values[Key] as string;
+            return LocalSettings.Values[key] as string;
+        }
+
+        public static int GetPollingIntervalSeconds(string key)
+        {
+            var rawValue = GetSettings(key);
+            if (!int.TryParse(rawValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seconds))
+            {
+                return DefaultPollingIntervalSeconds;
+            }
+
+            return Math.Clamp(seconds, MinPollingIntervalSeconds, MaxPollingIntervalSeconds);
+        }
+
+        public static TimeSpan GetGamePollingInterval()
+        {
+            return TimeSpan.FromSeconds(GetPollingIntervalSeconds(GamePollingIntervalSecondsKey));
+        }
+
+        public static int GetWebPollingIntervalMilliseconds()
+        {
+            return checked(GetPollingIntervalSeconds(WebPollingIntervalSecondsKey) * 1000);
         }
     }
 }

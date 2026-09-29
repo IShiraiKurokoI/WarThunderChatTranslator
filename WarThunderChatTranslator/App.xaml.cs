@@ -7,23 +7,18 @@ using System.Threading.Tasks;
 using Application = Microsoft.UI.Xaml.Application;
 using H.NotifyIcon;
 using Microsoft.UI;
-using System.Net;
 using System.Text;
-using System.Net.Http;
 using System.Diagnostics;
-using GTranslate.Translators;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Security.Principal;
 using Windows.UI.Notifications;
 using Windows.ApplicationModel.Core;
 using NLog;
-using System.Text.RegularExpressions;
-using WarThunderChatTranslator.Pages;
 using WarThunderChatTranslator.Helpers;
+using WarThunderChatTranslator.Services;
 using Microsoft.UI.Xaml.Input;
-using System.Threading; // 引入命名空间
+using System.Threading;
 using Microsoft.UI.Xaml.Media;
 
 namespace WarThunderChatTranslator
@@ -33,17 +28,17 @@ namespace WarThunderChatTranslator
         public NLog.Logger logger;
         private Window m_window;
         public TaskbarIcon TrayIcon { get; private set; }
-        private static readonly string url = IsAdmin() ? "http://+:8100/" : "http://localhost:8100/";
-        private HttpListener _httpListener;
-        private Dictionary<int, string> translationCache = new Dictionary<int, string>();
-        private static readonly int currentPort = 8111;
-        private static readonly string COLOR_PATTERN = @"<color(.*?)>(.*?)<\/color>";
+        private readonly CancellationTokenSource _shutdownCts = new();
+        private GameChatPollingService _gameChatPollingService;
+        private LocalHttpServer _localHttpServer;
+        private Task _gamePollingTask;
+        private int _servicesStopped;
 
-        private static Mutex mutex; // 定义静态 Mutex 变量
+        private static Mutex mutex; // Defines the process-wide mutex used for single-instance enforcement.
 
         public App()
         {
-            // 创建 Mutex，判断是否已经存在同名 Mutex
+            // Create the mutex and detect whether another instance already owns the same name.
             bool isNewInstance;
             mutex = new Mutex(true, "WarThunderChatTranslator_Mutex", out isNewInstance);
 
@@ -65,7 +60,7 @@ namespace WarThunderChatTranslator
         {
             InitializeAppSettings();
             InitializeTrayIcon();
-            StartHttpServer();
+            _ = StartBackgroundServicesAsync();
         }
 
         private void InitializeLogging()
@@ -101,6 +96,8 @@ namespace WarThunderChatTranslator
                 { "SystemFontColor", "#FF856404" },
                 { "Theme", "Default" },
                 { "BackgroundCSS", "background-color: #f4f4f4;" },
+                { ApplicationConfig.GamePollingIntervalSecondsKey, ApplicationConfig.DefaultPollingIntervalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ApplicationConfig.WebPollingIntervalSecondsKey, ApplicationConfig.DefaultPollingIntervalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) },
             };
 
             foreach (var setting in defaultSettings)
@@ -311,32 +308,57 @@ namespace WarThunderChatTranslator
             ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
         }
 
-        private async void StartHttpServer()
+        private async Task StartBackgroundServicesAsync()
         {
-            if (!IsPortAllowedInFirewall(8100))
-            {
-                logger.Info("端口 8100 在防火墙中未被允许。正在添加规则...");
-                AddFirewallRule(8100, "WarThunderChatTranslator：允许端口 8100");
-            }
             try
             {
-                _httpListener = new HttpListener();
-                _httpListener.Prefixes.Add(url);
-                _httpListener.Start();
-                logger.Info($"HTTP服务器已启动，正在监听 {url}");
+                var listenOnLan = IsAdmin();
+                if (listenOnLan && !IsPortAllowedInFirewall(8100))
+                {
+                    logger.Info("端口 8100 在防火墙中未被允许。正在添加规则...");
+                    AddFirewallRule(8100, "WarThunderChatTranslator：允许端口 8100");
+                }
+
+                _gameChatPollingService = new GameChatPollingService();
+                _localHttpServer = new LocalHttpServer(_gameChatPollingService, listenOnLan);
+
+                await _localHttpServer.StartAsync(_shutdownCts.Token);
+
+                _gamePollingTask = _gameChatPollingService.RunAsync(_shutdownCts.Token);
+                _ = ObserveBackgroundTaskAsync(_gamePollingTask, "游戏聊天轮询");
+            }
+            catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
+            {
+                // The application is shutting down.
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                logger.Error(ex, "启动本地 HTTP 服务失败");
+
                 var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-                toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode("8100端口被其他端口占用，请检查端口占用后再打开应用！"));
+                toastXml.GetElementsByTagName("text")[0].AppendChild(
+                    toastXml.CreateTextNode("8100端口启动失败，请检查端口占用后再打开应用！"));
                 var toast = new ToastNotification(toastXml);
                 ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-                Environment.Exit(0);
-                return;
-            }
 
-            await Task.Run(HandleRequests);
+                ExitApplication();
+            }
+        }
+
+        private async Task ObserveBackgroundTaskAsync(Task task, string taskName)
+        {
+            try
+            {
+                await task;
+            }
+            catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
+            {
+                // Normal shutdown.
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"后台任务 {taskName} 异常退出");
+            }
         }
 
         private bool IsPortAllowedInFirewall(int port)
@@ -384,221 +406,28 @@ namespace WarThunderChatTranslator
             }
         }
 
-        private async Task HandleRequests()
-        {
-            while (_httpListener.IsListening)
-            {
-                var context = await _httpListener.GetContextAsync();
-                var response = context.Response;
-
-                try
-                {
-                    await ProcessRequest(context);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error($"处理请求时发生错误: {ex.Message}");
-                    await SendErrorResponse(response, "聊天数据请求失败");
-                }
-                finally
-                {
-                    response.OutputStream.Close();
-                }
-            }
-        }
-
-        private async Task ProcessRequest(HttpListenerContext context)
-        {
-            var request = context.Request;
-            var response = context.Response;
-
-            switch (request.Url.AbsolutePath)
-            {
-                case "/gamechat":
-                    await HandleGameChatRequest(request, response);
-                    break;
-                case "/styles.css":
-                    await ServeDynamicCss(response);
-                    break;
-                case "/dashboard":
-                    await ServeFile(response, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets"), "dashboard.html", "text/html");
-                    break;
-                case "/favicon.ico":
-                    await ServeFile(response, AppDomain.CurrentDomain.BaseDirectory, "favicon.ico", "image/x-icon");
-                    break;
-                case "/":
-                    response.StatusCode = 302;
-                    response.RedirectLocation = "/dashboard";
-                    response.ContentEncoding = Encoding.UTF8;
-                    response.ContentType = "text/html; charset=utf-8";
-                    var buffer = Encoding.UTF8.GetBytes("302");
-                    response.ContentLength64 = buffer.Length;
-                    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-                    break;
-                default:
-                    await SendErrorResponse(response, "404 Not Found");
-                    break;
-            }
-        }
-
-        private async Task HandleGameChatRequest(HttpListenerRequest request, HttpListenerResponse response)
-        {
-            var lastId = request.QueryString["lastId"] ?? "0";
-            var targetUrl = $"http://127.0.0.1:{currentPort}/gamechat?lastId={lastId}";
-            var responseData = await ForwardRequestAsync(targetUrl);
-
-            var chatMessages = JsonConvert.DeserializeObject<List<WarThunderChatTranslator.Entities.ChatMessage>>(responseData);
-
-            var translationTasks = chatMessages.Select(async message =>
-            {
-                message.Msg = Regex.Replace(message.Msg.Replace("\t", ""), COLOR_PATTERN, match => match.Groups[2].Value);
-                message.Mode = message.Mode.Replace("\t", "");
-
-                if (!translationCache.TryGetValue(message.Id, out string translatedMsg))
-                {
-                    try
-                    {
-                        var translationResult = await TranslationHelper.TranslateAsync(message.Msg);
-                        translatedMsg = translationResult.Translation;
-                        translationCache[message.Id] = translatedMsg;
-                    }
-                    catch
-                    {
-                        translatedMsg = "(翻译失败) " + message.Msg;
-                    }
-                }
-
-                message.TranslatedMessage = translatedMsg;
-                message.PrettyMessage = $"{message.Sender}: {translatedMsg}";
-            }).ToList();
-
-            await Task.WhenAll(translationTasks);
-
-            var processedData = JsonConvert.SerializeObject(chatMessages);
-            await SendResponse(response, processedData, "application/json; charset=utf-8");
-        }
-
-        private async Task ServeDynamicCss(HttpListenerResponse response)
-        {
-            var fontFamily = ApplicationConfig.GetSettings("FontFamily") ?? "Segoe UI";
-            var fontSize = ApplicationConfig.GetSettings("FontSize") ?? "14px";
-            var fontStyle = ApplicationConfig.GetSettings("FontStyle") ?? "Normal";
-            var allyFontColor = ToRgba(ApplicationConfig.GetSettings("AllyFontColor") ?? "#FF5BC0DE");
-            var enemyFontColor = ToRgba(ApplicationConfig.GetSettings("EnemyFontColor") ?? "#FFD9534F");
-            var systemFontColor = ToRgba(ApplicationConfig.GetSettings("SystemFontColor") ?? "#FF856404");
-            var bodyBackground = ApplicationConfig.GetSettings("BackgroundCSS") ?? "opacity: 0;";
-
-            var cssContent = $@"
-                body {{
-                    font-family: {fontFamily}, Arial, sans-serif;
-                    font-weight: {fontStyle};
-                    margin: 0;
-                    padding: 20px;
-                    {bodyBackground}
-                }}
-                h1 {{
-                    text-align: center;
-                    color: #333;
-                }}
-                #chat-container {{
-                    max-width: 84vw;
-                    margin: 20px auto;
-                    background-color: #fff;
-                    border-radius: 10px;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                    padding: 20px;
-                    height: 70vh;
-                    overflow-y: auto;
-                }}
-                .chat-message {{
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 15px;
-                    padding: 10px;
-                    border-radius: 5px;
-                    font-size: {fontSize}px;
-                    line-height: 1.5;
-                }}
-                .chat-message img {{
-                    width: 20px;
-                    height: 20px;
-                    margin-right: 10px;
-                }}
-                .chat-message.ally {{
-                    background-color: #e5f7ff;
-                    color: {allyFontColor};
-                }}
-                .chat-message.enemy {{
-                    background-color: #ffe5e5;
-                    color: {enemyFontColor};
-                }}
-                .chat-message.system {{
-                    background-color: #fff3cd;
-                    color: {systemFontColor};
-                }}";
-
-            var buffer = Encoding.UTF8.GetBytes(cssContent);
-            response.ContentType = "text/css; charset=utf-8";
-            response.ContentLength64 = buffer.Length;
-            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-        }
-        private string ToRgba(string argbColor)
-        {
-            if (argbColor.StartsWith("#"))
-            {
-                var argb = argbColor.Substring(1);
-                var a = int.Parse(argb.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255.0;
-                var r = int.Parse(argb.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-                var g = int.Parse(argb.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                var b = int.Parse(argb.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
-                return $"rgba({r}, {g}, {b}, {a.ToString("0.##")})";
-            }
-            return argbColor;
-        }
-        private async Task ServeFile(HttpListenerResponse response, string directory, string fileName, string contentType)
-        {
-            var filePath = Path.Combine(directory, fileName);
-            logger.Debug($"返回响应文件{filePath}");
-            if (File.Exists(filePath))
-            {
-                var fileContent = await File.ReadAllBytesAsync(filePath);
-                response.ContentType = contentType;
-                response.ContentLength64 = fileContent.Length;
-                await response.OutputStream.WriteAsync(fileContent, 0, fileContent.Length);
-            }
-            else
-            {
-                await SendErrorResponse(response, "404 Not Found - File is missing.");
-            }
-        }
-
-        private async Task<string> ForwardRequestAsync(string url)
-        {
-            using var client = new HttpClient();
-            var response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private async Task SendResponse(HttpListenerResponse response, string data, string contentType)
-        {
-            response.ContentEncoding = Encoding.UTF8;
-            response.ContentType = contentType;
-            var buffer = Encoding.UTF8.GetBytes(data);
-            response.ContentLength64 = buffer.Length;
-            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-        }
-
-        private async Task SendErrorResponse(HttpListenerResponse response, string errorMessage)
-        {
-            response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            await SendResponse(response, errorMessage, "text/html; charset=utf-8");
-        }
-
         protected void OnClosed()
         {
-            _httpListener.Stop();
-            _httpListener.Close();
+            if (Interlocked.Exchange(ref _servicesStopped, 1) != 0)
+            {
+                return;
+            }
+
+            _shutdownCts.Cancel();
+
+            // Do not synchronously wait for translation requests on the UI shutdown thread, which could block exit if a third-party translation service hangs.
+            // The cancellation token stops polling delays and game HTTP requests immediately; any remaining tasks terminate with the process.
+
+            try
+            {
+                _localHttpServer?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "停止本地 HTTP 服务失败");
+            }
+
+            _gameChatPollingService?.Dispose();
         }
     }
 }

@@ -108,6 +108,60 @@
                                     PlaceholderText="{helpers:Loc Key=ProxyPasswordPlaceholder}"
                                     TextChanged="ProxyPassword_TextChanged" />
                             </StackPanel>
+
+                            <StackPanel Margin="0,32,0,0">
+                                <TextBlock FontSize="20" Text="{helpers:Loc Key=PollingSettings}" />
+                                <TextBlock
+                                    Margin="0,6,0,0"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="{helpers:Loc Key=PollingSettingsDescription}"
+                                    TextWrapping="Wrap" />
+
+                                <Grid Margin="0,16,0,0" ColumnSpacing="24">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel>
+                                        <NumberBox
+                                            x:Name="GamePollingInterval"
+                                            Header="{helpers:Loc Key=GamePollingInterval}"
+                                            Maximum="60"
+                                            Minimum="1"
+                                            SmallChange="1"
+                                            SpinButtonPlacementMode="Inline"
+                                            ValueChanged="GamePollingInterval_ValueChanged" />
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Text="{helpers:Loc Key=GamePollingIntervalDescription}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1">
+                                        <NumberBox
+                                            x:Name="WebPollingInterval"
+                                            Header="{helpers:Loc Key=WebPollingInterval}"
+                                            Maximum="60"
+                                            Minimum="1"
+                                            SmallChange="1"
+                                            SpinButtonPlacementMode="Inline"
+                                            ValueChanged="WebPollingInterval_ValueChanged" />
+                                        <TextBlock
+                                            Margin="0,6,0,0"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Text="{helpers:Loc Key=WebPollingIntervalDescription}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <TextBlock
+                                    Margin="0,10,0,0"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="{helpers:Loc Key=PollingIntervalRange}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
                         </StackPanel>
                     </ContentPresenter.Content>
                 </ContentPresenter>

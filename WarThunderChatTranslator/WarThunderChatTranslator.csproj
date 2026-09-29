@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
@@ -30,6 +30,10 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <Version>1.0.5</Version>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <FileVersion>1.0.5.0</FileVersion>
+    <InformationalVersion>1.0.5</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
@@ -130,6 +134,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DevWinUI" Version="10.4.1" />
     <PackageReference Include="DevWinUI.Shader" Version="10.1.0" />
     <PackageReference Include="GTranslate" Version="2.4.0" />
@@ -137,7 +145,6 @@
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NLog" Version="6.2.0" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
     <Manifest Include="$(ApplicationManifest)" />

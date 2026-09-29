@@ -1,0 +1,338 @@
+﻿using NLog;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using WarThunderChatTranslator.Configurations;
+using WarThunderChatTranslator.Entities;
+using WarThunderChatTranslator.Helpers;
+
+namespace WarThunderChatTranslator.Services
+{
+    /// <summary>
+    /// Polls game chat independently from browser requests.
+    /// Sends incremental requests to port 8111 at a fixed interval only while a War Thunder process is running.
+    /// </summary>
+    internal sealed partial class GameChatPollingService : IDisposable
+    {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly string[] GameProcessNames = ["aces", "aces-min-cpu"];
+        private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.General)
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        private readonly ConcurrentDictionary<int, string> _translationCache = new();
+        private readonly ConcurrentDictionary<int, ChatMessage> _chatMessages = new();
+        private readonly HttpClient _gameHttpClient;
+
+        private int _currentGamePid;
+        private long _currentGameStartTicks;
+        private int _lastGameChatId;
+        private long _processGeneration;
+        private bool _gameEndpointHealthy = true;
+        private bool _gameProcessWasVisible;
+        private bool _disposed;
+
+        public GameChatPollingService()
+        {
+            var handler = new SocketsHttpHandler
+            {
+                UseProxy = false,
+                ConnectTimeout = TimeSpan.FromSeconds(1),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+                MaxConnectionsPerServer = 2
+            };
+
+            _gameHttpClient = new HttpClient(handler, disposeHandler: true)
+            {
+                BaseAddress = new Uri("http://127.0.0.1:8111/"),
+                Timeout = TimeSpan.FromSeconds(3)
+            };
+        }
+
+        public async Task RunAsync(CancellationToken cancellationToken)
+        {
+            var initialInterval = ApplicationConfig.GetGamePollingInterval();
+            Logger.Info($"游戏聊天后台轮询已启动，当前间隔 {initialInterval.TotalSeconds:0} 秒");
+
+            try
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    var cycleStarted = Stopwatch.GetTimestamp();
+                    await PollOnceSafelyAsync(cancellationToken).ConfigureAwait(false);
+
+                    // Base the fixed interval on the start time of each cycle so slow requests never create overlapping polls.
+                    // Reload the interval every cycle so changes take effect without restarting the application.
+                    var pollInterval = ApplicationConfig.GetGamePollingInterval();
+                    var elapsed = Stopwatch.GetElapsedTime(cycleStarted);
+                    var remainingDelay = pollInterval - elapsed;
+
+                    if (remainingDelay > TimeSpan.Zero)
+                    {
+                        await Task.Delay(remainingDelay, cancellationToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // Normal shutdown.
+            }
+            finally
+            {
+                Logger.Info("游戏聊天后台轮询已停止");
+            }
+        }
+
+        public IReadOnlyList<ChatMessage> GetCurrentMessages()
+        {
+            return _chatMessages.Values
+                .OrderBy(message => message.Id)
+                .ToArray();
+        }
+
+        public IReadOnlyList<ChatMessage> GetMessagesAfter(int lastId)
+        {
+            return _chatMessages.Values
+                .Where(message => message.Id > lastId)
+                .OrderBy(message => message.Id)
+                .ToArray();
+        }
+
+        public int CurrentGamePid => Volatile.Read(ref _currentGamePid);
+
+        public int LastGameChatId => Volatile.Read(ref _lastGameChatId);
+
+        public long ProcessGeneration => Interlocked.Read(ref _processGeneration);
+
+        private async Task PollOnceSafelyAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await PollOnceAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                LogEndpointFailureOnce(ex.Message);
+            }
+            catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+            {
+                LogEndpointFailureOnce($"请求超时: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "游戏聊天轮询发生未预期异常");
+            }
+        }
+
+        private async Task PollOnceAsync(CancellationToken cancellationToken)
+        {
+            var gameProcess = FindRunningGameProcess();
+            if (gameProcess is null)
+            {
+                if (_gameProcessWasVisible)
+                {
+                    Logger.Info("未检测到 aces.exe 或 aces-min-cpu.exe，暂停游戏聊天请求");
+                    _gameProcessWasVisible = false;
+                }
+                return;
+            }
+
+            _gameProcessWasVisible = true;
+
+            if (IsNewGameProcess(gameProcess.Value))
+            {
+                ResetForNewGameProcess(gameProcess.Value);
+            }
+
+            var requestLastId = Volatile.Read(ref _lastGameChatId);
+            var requestUri = $"gamechat?lastId={requestLastId}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            using var response = await _gameHttpClient.SendAsync(
+                request,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            await using var responseStream = await response.Content
+                .ReadAsStreamAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var incomingMessages = await JsonSerializer.DeserializeAsync<List<ChatMessage>>(
+                responseStream,
+                JsonOptions,
+                cancellationToken).ConfigureAwait(false) ?? [];
+
+            if (!_gameEndpointHealthy)
+            {
+                _gameEndpointHealthy = true;
+                Logger.Info("游戏聊天接口已恢复");
+            }
+
+            if (incomingMessages.Count == 0)
+            {
+                return;
+            }
+
+            // Process only messages newer than the requested lastId so duplicate items returned by the game are not translated again.
+            var incrementalMessages = incomingMessages
+                .Where(message => message.Id > requestLastId)
+                .GroupBy(message => message.Id)
+                .Select(group => group.Last())
+                .OrderBy(message => message.Id)
+                .ToArray();
+
+            if (incrementalMessages.Length == 0)
+            {
+                return;
+            }
+
+            await Task.WhenAll(incrementalMessages.Select(ProcessMessageAsync)).ConfigureAwait(false);
+
+            foreach (var message in incrementalMessages)
+            {
+                _chatMessages[message.Id] = message;
+            }
+
+            // Track the highest ID received during the current game process lifetime and send it as lastId on the next poll.
+            // A single process lifetime can contain multiple battles; PID/process generation is not a battle identifier.
+            var maxId = incrementalMessages.Max(message => message.Id);
+            if (maxId > requestLastId)
+            {
+                Interlocked.Exchange(ref _lastGameChatId, maxId);
+            }
+        }
+
+        private async Task ProcessMessageAsync(ChatMessage message)
+        {
+            message.Msg = ColorTagRegex().Replace((message.Msg ?? string.Empty).Replace("\t", string.Empty), "$2");
+            message.Mode = (message.Mode ?? string.Empty).Replace("\t", string.Empty);
+
+            if (!_translationCache.TryGetValue(message.Id, out var translatedMessage))
+            {
+                try
+                {
+                    var translationResult = await TranslationHelper.TranslateAsync(message.Msg).ConfigureAwait(false);
+                    translatedMessage = translationResult.Translation;
+                    _translationCache[message.Id] = translatedMessage;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn(ex, $"翻译聊天消息失败，ID={message.Id}");
+                    translatedMessage = "(翻译失败) " + message.Msg;
+                }
+            }
+
+            message.TranslatedMessage = translatedMessage;
+            message.PrettyMessage = $"{message.Sender}: {translatedMessage}";
+        }
+
+        private bool IsNewGameProcess(GameProcessInfo process)
+        {
+            return Volatile.Read(ref _currentGamePid) != process.Pid
+                || Interlocked.Read(ref _currentGameStartTicks) != process.StartTimeUtc.Ticks;
+        }
+
+        private void ResetForNewGameProcess(GameProcessInfo process)
+        {
+            _translationCache.Clear();
+            _chatMessages.Clear();
+            Interlocked.Exchange(ref _lastGameChatId, 0);
+            Interlocked.Exchange(ref _currentGamePid, process.Pid);
+            Interlocked.Exchange(ref _currentGameStartTicks, process.StartTimeUtc.Ticks);
+            var processGeneration = Interlocked.Increment(ref _processGeneration);
+            _gameEndpointHealthy = true;
+
+            Logger.Info(
+                $"检测到新的游戏进程：{process.ProcessName}.exe，PID={process.Pid}，进程代次={processGeneration}，" +
+                "已清空翻译缓存和聊天缓存，并将 lastId 重置为 0");
+        }
+
+        private void LogEndpointFailureOnce(string reason)
+        {
+            if (_gameEndpointHealthy)
+            {
+                _gameEndpointHealthy = false;
+                Logger.Warn($"游戏进程存在，但 8111 游戏聊天接口暂时不可用：{reason}");
+            }
+            else
+            {
+                Logger.Debug($"游戏聊天接口仍不可用：{reason}");
+            }
+        }
+
+        private static GameProcessInfo? FindRunningGameProcess()
+        {
+            GameProcessInfo? newestProcess = null;
+
+            foreach (var processName in GameProcessNames)
+            {
+                foreach (var process in Process.GetProcessesByName(processName))
+                {
+                    try
+                    {
+                        if (process.HasExited)
+                        {
+                            continue;
+                        }
+
+                        var info = new GameProcessInfo(
+                            process.Id,
+                            process.ProcessName,
+                            process.StartTime.ToUniversalTime());
+
+                        if (newestProcess is null
+                            || info.StartTimeUtc > newestProcess.Value.StartTimeUtc
+                            || (info.StartTimeUtc == newestProcess.Value.StartTimeUtc && info.Pid > newestProcess.Value.Pid))
+                        {
+                            newestProcess = info;
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // The process may exit after enumeration; ignore it and continue.
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+                        // If the start time cannot be read, ignore this process and retry on the next poll.
+                    }
+                    finally
+                    {
+                        process.Dispose();
+                    }
+                }
+            }
+
+            return newestProcess;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+            _gameHttpClient.Dispose();
+        }
+
+        [GeneratedRegex(@"<color(.*?)>(.*?)</color>", RegexOptions.CultureInvariant)]
+        private static partial Regex ColorTagRegex();
+
+        private readonly record struct GameProcessInfo(int Pid, string ProcessName, DateTime StartTimeUtc);
+    }
+}
