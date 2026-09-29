@@ -143,8 +143,8 @@ namespace WarThunderChatTranslator
             exitApplicationCommand.ExecuteRequested += (sender, args) => EnqueueOnUiThread(() => _ = ExitApplicationAsync());
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
-            TrayIcon.ForceCreate();
             UpdateTrayMenuWidth();
+            TrayIcon.ForceCreate();
             Localization.CultureChanged += UpdateTrayMenuWidth;
         }
 

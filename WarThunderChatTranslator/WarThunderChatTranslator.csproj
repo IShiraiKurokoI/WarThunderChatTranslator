@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
@@ -30,10 +30,10 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-    <Version>1.0.5.1</Version>
-    <AssemblyVersion>1.0.5.1</AssemblyVersion>
-    <FileVersion>1.0.5.1</FileVersion>
-    <InformationalVersion>1.0.5.1</InformationalVersion>
+    <Version>1.0.5.2</Version>
+    <AssemblyVersion>1.0.5.2</AssemblyVersion>
+    <FileVersion>1.0.5.2</FileVersion>
+    <InformationalVersion>1.0.5.2</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
@@ -48,6 +48,7 @@
   <ItemGroup>
     <None Remove="Assets\Author.png" />
     <None Remove="Assets\dashboard.html" />
+    <None Remove="Assets\dashboard.css" />
     <None Remove="Assets\FluentIcons\About.ico" />
     <None Remove="Assets\FluentIcons\API.ico" />
     <None Remove="Assets\FluentIcons\Font.ico" />
@@ -204,6 +205,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Content Update="Assets\dashboard.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\dashboard.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Update="NLog.config">

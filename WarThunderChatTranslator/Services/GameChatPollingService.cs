@@ -28,7 +28,7 @@ namespace WarThunderChatTranslator.Services
             PropertyNameCaseInsensitive = true
         };
 
-        private readonly ConcurrentDictionary<int, string> _translationCache = new();
+        private readonly ConcurrentDictionary<int, TranslationCacheEntry> _translationCache = new();
         private readonly ConcurrentDictionary<int, ChatMessage> _chatMessages = new();
         private readonly HttpClient _gameHttpClient;
 
@@ -176,6 +176,19 @@ namespace WarThunderChatTranslator.Services
                 JsonOptions,
                 cancellationToken).ConfigureAwait(false) ?? [];
 
+            // Revalidate the process after the HTTP request so a rapidly recycled PID cannot associate a new game's response with the previous process generation.
+            var verifiedProcess = FindRunningGameProcess();
+            if (verifiedProcess is null || !IsSameProcessInstance(gameProcess.Value, verifiedProcess.Value))
+            {
+                if (verifiedProcess is { } replacementProcess && IsNewGameProcess(replacementProcess))
+                {
+                    ResetForNewGameProcess(replacementProcess);
+                }
+
+                Logger.Debug("Discarded a game chat response because the War Thunder process changed during the poll cycle.");
+                return;
+            }
+
             if (!_gameEndpointHealthy)
             {
                 _gameEndpointHealthy = true;
@@ -220,30 +233,41 @@ namespace WarThunderChatTranslator.Services
         {
             message.Msg = ColorTagRegex().Replace((message.Msg ?? string.Empty).Replace("\t", string.Empty), "$2");
             message.Mode = (message.Mode ?? string.Empty).Replace("\t", string.Empty);
+            message.OriginalMessage = message.Msg;
 
-            if (!_translationCache.TryGetValue(message.Id, out var translatedMessage))
+            if (!_translationCache.TryGetValue(message.Id, out var cachedTranslation))
             {
                 try
                 {
                     var translationResult = await TranslationHelper.TranslateAsync(message.Msg).ConfigureAwait(false);
-                    translatedMessage = translationResult.Translation;
-                    _translationCache[message.Id] = translatedMessage;
+                    cachedTranslation = new TranslationCacheEntry(
+                        translationResult.Translation,
+                        translationResult.SourceLanguage?.ISO6391 ?? string.Empty);
+                    _translationCache[message.Id] = cachedTranslation;
                 }
                 catch (Exception ex)
                 {
                     Logger.Warn(ex, $"翻译聊天消息失败，ID={message.Id}");
-                    translatedMessage = "(翻译失败) " + message.Msg;
+                    cachedTranslation = new TranslationCacheEntry("(翻译失败) " + message.Msg, string.Empty);
                 }
             }
 
-            message.TranslatedMessage = translatedMessage;
-            message.PrettyMessage = $"{message.Sender}: {translatedMessage}";
+            message.TranslatedMessage = cachedTranslation.Translation;
+            message.SourceLanguageIsoCode = cachedTranslation.SourceLanguageIsoCode;
+            message.PrettyMessage = $"{message.Sender}: {cachedTranslation.Translation}";
         }
 
         private bool IsNewGameProcess(GameProcessInfo process)
         {
             return Volatile.Read(ref _currentGamePid) != process.Pid
                 || Interlocked.Read(ref _currentGameStartTicks) != process.StartTimeUtc.Ticks;
+        }
+
+        private static bool IsSameProcessInstance(GameProcessInfo left, GameProcessInfo right)
+        {
+            return left.Pid == right.Pid
+                && left.StartTimeUtc.Ticks == right.StartTimeUtc.Ticks
+                && string.Equals(left.ProcessName, right.ProcessName, StringComparison.OrdinalIgnoreCase);
         }
 
         private void ResetForNewGameProcess(GameProcessInfo process)
@@ -334,5 +358,7 @@ namespace WarThunderChatTranslator.Services
         private static partial Regex ColorTagRegex();
 
         private readonly record struct GameProcessInfo(int Pid, string ProcessName, DateTime StartTimeUtc);
+
+        private readonly record struct TranslationCacheEntry(string Translation, string SourceLanguageIsoCode);
     }
 }

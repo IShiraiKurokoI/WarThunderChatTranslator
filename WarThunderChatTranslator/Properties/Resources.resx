@@ -211,4 +211,23 @@
   <data name="UpdateDownload" xml:space="preserve"><value>Download</value></data>
   <data name="UpdateLater" xml:space="preserve"><value>Later</value></data>
   <data name="UpdateAvailableContent" xml:space="preserve"><value>A Microsoft Store update is available.</value></data>
+  <data name="DashboardTitle" xml:space="preserve"><value>Real-time Chat</value></data>
+  <data name="DashboardSubtitle" xml:space="preserve"><value>War Thunder translated chat</value></data>
+  <data name="DashboardDisplayMode" xml:space="preserve"><value>Message display</value></data>
+  <data name="DashboardDisplayTranslation" xml:space="preserve"><value>Translation</value></data>
+  <data name="DashboardDisplayOriginal" xml:space="preserve"><value>Original</value></data>
+  <data name="DashboardDisplayTranslationAndOriginal" xml:space="preserve"><value>Translation (Original)</value></data>
+  <data name="DashboardShowSourceLanguage" xml:space="preserve"><value>Show source language code</value></data>
+  <data name="DashboardSystemSender" xml:space="preserve"><value>System</value></data>
+  <data name="DashboardEmptyState" xml:space="preserve"><value>Waiting for chat messages…</value></data>
+  <data name="DashboardControlsAriaLabel" xml:space="preserve"><value>Chat display options</value></data>
+  <data name="DashboardChatAriaLabel" xml:space="preserve"><value>Translated chat messages</value></data>
+  <data name="DashboardTestAllySender" xml:space="preserve"><value>Test Ally</value></data>
+  <data name="DashboardTestEnemySender" xml:space="preserve"><value>Test Enemy</value></data>
+  <data name="DashboardTestAllyOriginal" xml:space="preserve"><value>Hello team, this is an ally color preview.</value></data>
+  <data name="DashboardTestAllyTranslation" xml:space="preserve"><value>Ally translation and color preview.</value></data>
+  <data name="DashboardTestEnemyOriginal" xml:space="preserve"><value>Противник обнаружен. Проверка цвета противника.</value></data>
+  <data name="DashboardTestEnemyTranslation" xml:space="preserve"><value>Enemy translation and color preview.</value></data>
+  <data name="DashboardTestSystemOriginal" xml:space="preserve"><value>システムメッセージの色テストです。</value></data>
+  <data name="DashboardTestSystemTranslation" xml:space="preserve"><value>System message color preview.</value></data>
 </root>

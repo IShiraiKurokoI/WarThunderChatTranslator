@@ -98,4 +98,23 @@
   <data name="UpdateDownload" xml:space="preserve"><value>前往下载</value></data>
   <data name="UpdateLater" xml:space="preserve"><value>暂不更新</value></data>
   <data name="UpdateAvailableContent" xml:space="preserve"><value>Microsoft Store 中有可用更新。</value></data>
+  <data name="DashboardTitle" xml:space="preserve"><value>实时聊天消息</value></data>
+  <data name="DashboardSubtitle" xml:space="preserve"><value>战争雷霆聊天实时翻译</value></data>
+  <data name="DashboardDisplayMode" xml:space="preserve"><value>消息显示</value></data>
+  <data name="DashboardDisplayTranslation" xml:space="preserve"><value>翻译结果</value></data>
+  <data name="DashboardDisplayOriginal" xml:space="preserve"><value>原文</value></data>
+  <data name="DashboardDisplayTranslationAndOriginal" xml:space="preserve"><value>翻译结果（原文）</value></data>
+  <data name="DashboardShowSourceLanguage" xml:space="preserve"><value>显示原始语言代码</value></data>
+  <data name="DashboardSystemSender" xml:space="preserve"><value>系统</value></data>
+  <data name="DashboardEmptyState" xml:space="preserve"><value>等待聊天消息…</value></data>
+  <data name="DashboardControlsAriaLabel" xml:space="preserve"><value>聊天显示选项</value></data>
+  <data name="DashboardChatAriaLabel" xml:space="preserve"><value>翻译聊天消息</value></data>
+  <data name="DashboardTestAllySender" xml:space="preserve"><value>测试友军</value></data>
+  <data name="DashboardTestEnemySender" xml:space="preserve"><value>测试敌军</value></data>
+  <data name="DashboardTestAllyOriginal" xml:space="preserve"><value>Hello team, this is an ally color preview.</value></data>
+  <data name="DashboardTestAllyTranslation" xml:space="preserve"><value>这是友军翻译与颜色预览。</value></data>
+  <data name="DashboardTestEnemyOriginal" xml:space="preserve"><value>Противник обнаружен. Проверка цвета противника.</value></data>
+  <data name="DashboardTestEnemyTranslation" xml:space="preserve"><value>这是敌军翻译与颜色预览。</value></data>
+  <data name="DashboardTestSystemOriginal" xml:space="preserve"><value>システムメッセージの色テストです。</value></data>
+  <data name="DashboardTestSystemTranslation" xml:space="preserve"><value>这是系统消息颜色预览。</value></data>
 </root>

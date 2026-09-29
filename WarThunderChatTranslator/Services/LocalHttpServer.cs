@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Configurations;
+using WarThunderChatTranslator.Helpers;
 
 namespace WarThunderChatTranslator.Services
 {
@@ -84,10 +85,27 @@ namespace WarThunderChatTranslator.Services
                 return Results.Json(messages, JsonOptions);
             });
 
-            app.MapGet("/styles.css", () => Results.Text(
-                BuildDynamicCss(),
-                "text/css; charset=utf-8",
-                Encoding.UTF8));
+            app.MapGet("/styles.css", (HttpContext context) =>
+            {
+                context.Response.Headers.CacheControl = "no-store";
+                var filePath = Path.Combine(AppContext.BaseDirectory, "Assets", "dashboard.css");
+                return File.Exists(filePath)
+                    ? (IResult)Results.File(filePath, "text/css; charset=utf-8")
+                    : Results.NotFound("404 Not Found - File is missing.");
+            });
+
+            app.MapGet("/user-styles.css", (HttpContext context) =>
+            {
+                context.Response.Headers.CacheControl = "no-store";
+                return Results.Text(
+                    BuildUserCss(),
+                    "text/css; charset=utf-8",
+                    Encoding.UTF8);
+            });
+
+            app.MapGet("/api/dashboard-ui", () => Results.Json(
+                BuildDashboardLocalization(),
+                JsonOptions));
 
             app.MapGet("/dashboard", () =>
             {
@@ -113,63 +131,57 @@ namespace WarThunderChatTranslator.Services
             Logger.Info($"Kestrel HTTP 服务器已启动，正在监听 {_listenUrl}");
         }
 
-        private static string BuildDynamicCss()
+        private static object BuildDashboardLocalization()
+        {
+            return new
+            {
+                language = Localization.CurrentLanguage,
+                strings = new
+                {
+                    pageTitle = Localization.GetString("DashboardTitle"),
+                    subtitle = Localization.GetString("DashboardSubtitle"),
+                    displayMode = Localization.GetString("DashboardDisplayMode"),
+                    displayTranslation = Localization.GetString("DashboardDisplayTranslation"),
+                    displayOriginal = Localization.GetString("DashboardDisplayOriginal"),
+                    displayTranslationAndOriginal = Localization.GetString("DashboardDisplayTranslationAndOriginal"),
+                    showSourceLanguage = Localization.GetString("DashboardShowSourceLanguage"),
+                    systemSender = Localization.GetString("DashboardSystemSender"),
+                    testAllySender = Localization.GetString("DashboardTestAllySender"),
+                    testEnemySender = Localization.GetString("DashboardTestEnemySender"),
+                    testAllyOriginal = Localization.GetString("DashboardTestAllyOriginal"),
+                    testAllyTranslation = Localization.GetString("DashboardTestAllyTranslation"),
+                    testEnemyOriginal = Localization.GetString("DashboardTestEnemyOriginal"),
+                    testEnemyTranslation = Localization.GetString("DashboardTestEnemyTranslation"),
+                    testSystemOriginal = Localization.GetString("DashboardTestSystemOriginal"),
+                    testSystemTranslation = Localization.GetString("DashboardTestSystemTranslation"),
+                    emptyState = Localization.GetString("DashboardEmptyState"),
+                    controlsAriaLabel = Localization.GetString("DashboardControlsAriaLabel"),
+                    chatAriaLabel = Localization.GetString("DashboardChatAriaLabel")
+                }
+            };
+        }
+
+        private static string BuildUserCss()
         {
             var fontFamily = ApplicationConfig.GetSettings("FontFamily") ?? "Segoe UI";
             var fontSize = ApplicationConfig.GetSettings("FontSize") ?? "14";
-            var fontStyle = ApplicationConfig.GetSettings("FontStyle") ?? "Normal";
+            var fontStyle = ApplicationConfig.GetSettings("FontStyle") ?? "normal";
             var allyFontColor = ToRgba(ApplicationConfig.GetSettings("AllyFontColor") ?? "#FF5BC0DE");
             var enemyFontColor = ToRgba(ApplicationConfig.GetSettings("EnemyFontColor") ?? "#FFD9534F");
             var systemFontColor = ToRgba(ApplicationConfig.GetSettings("SystemFontColor") ?? "#FF856404");
-            var bodyBackground = ApplicationConfig.GetSettings("BackgroundCSS") ?? "opacity: 0;";
+            var bodyCss = ApplicationConfig.GetSettings("BackgroundCSS") ?? "background-color: #f4f4f4;";
 
             return $@"
+                :root {{
+                    --app-font-family: {fontFamily};
+                    --app-font-weight: {fontStyle};
+                    --app-font-size: {fontSize}px;
+                    --ally-color: {allyFontColor};
+                    --enemy-color: {enemyFontColor};
+                    --system-color: {systemFontColor};
+                }}
                 body {{
-                    font-family: {fontFamily}, Arial, sans-serif;
-                    font-weight: {fontStyle};
-                    margin: 0;
-                    padding: 20px;
-                    {bodyBackground}
-                }}
-                h1 {{
-                    text-align: center;
-                    color: #333;
-                }}
-                #chat-container {{
-                    max-width: 84vw;
-                    margin: 20px auto;
-                    background-color: #fff;
-                    border-radius: 10px;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                    padding: 20px;
-                    height: 70vh;
-                    overflow-y: auto;
-                }}
-                .chat-message {{
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 15px;
-                    padding: 10px;
-                    border-radius: 5px;
-                    font-size: {fontSize}px;
-                    line-height: 1.5;
-                }}
-                .chat-message img {{
-                    width: 20px;
-                    height: 20px;
-                    margin-right: 10px;
-                }}
-                .chat-message.ally {{
-                    background-color: #e5f7ff;
-                    color: {allyFontColor};
-                }}
-                .chat-message.enemy {{
-                    background-color: #ffe5e5;
-                    color: {enemyFontColor};
-                }}
-                .chat-message.system {{
-                    background-color: #fff3cd;
-                    color: {systemFontColor};
+                    {bodyCss}
                 }}";
         }
 
