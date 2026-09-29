@@ -13,13 +13,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using Windows.UI.Notifications;
-using Windows.ApplicationModel.Core;
 using NLog;
 using WarThunderChatTranslator.Helpers;
 using WarThunderChatTranslator.Services;
 using Microsoft.UI.Xaml.Input;
 using System.Threading;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Dispatching;
 
 namespace WarThunderChatTranslator
 {
@@ -32,7 +32,9 @@ namespace WarThunderChatTranslator
         private GameChatPollingService _gameChatPollingService;
         private LocalHttpServer _localHttpServer;
         private Task _gamePollingTask;
+        private DispatcherQueue _dispatcherQueue;
         private int _servicesStopped;
+        private int _exitStarted;
 
         private static Mutex mutex; // Defines the process-wide mutex used for single-instance enforcement.
 
@@ -58,6 +60,7 @@ namespace WarThunderChatTranslator
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
             InitializeAppSettings();
             InitializeTrayIcon();
             _ = StartBackgroundServicesAsync();
@@ -117,21 +120,40 @@ namespace WarThunderChatTranslator
 
         private void InitializeTrayIcon()
         {
-            var OpenDashboardCommand = (XamlUICommand)Resources["OpenDashboardCommand"];
-            OpenDashboardCommand.ExecuteRequested += async (sender, args) => await Windows.System.Launcher.LaunchUriAsync(new System.Uri("http://localhost:8100"));
+            var openDashboardCommand = (XamlUICommand)Resources["OpenDashboardCommand"];
+            openDashboardCommand.ExecuteRequested += (sender, args) =>
+            {
+                EnqueueOnUiThread(async () =>
+                {
+                    try
+                    {
+                        await Windows.System.Launcher.LaunchUriAsync(new Uri("http://localhost:8100"));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "打开聊天面板失败");
+                    }
+                });
+            };
 
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
-            showHideWindowCommand.ExecuteRequested += ToggleMainWindowVisibility;
+            showHideWindowCommand.ExecuteRequested += (sender, args) => EnqueueOnUiThread(ToggleMainWindowVisibility);
 
             var exitApplicationCommand = (XamlUICommand)Resources["ExitApplicationCommand"];
-            exitApplicationCommand.ExecuteRequested += (sender, args) => ExitApplication();
+            exitApplicationCommand.ExecuteRequested += (sender, args) => EnqueueOnUiThread(() => _ = ExitApplicationAsync());
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
             TrayIcon.ForceCreate();
             UpdateTrayMenuWidth();
             Localization.CultureChanged += UpdateTrayMenuWidth;
+        }
 
-            CoreApplication.Exiting += (sender, e) => ExitApplication();
+        private void EnqueueOnUiThread(Action action)
+        {
+            if (_dispatcherQueue == null || !_dispatcherQueue.TryEnqueue(() => action()))
+            {
+                logger.Warn("无法将托盘命令调度到主 UI 线程");
+            }
         }
 
         private void UpdateTrayMenuWidth()
@@ -163,7 +185,7 @@ namespace WarThunderChatTranslator
             }
         }
 
-        private void ToggleMainWindowVisibility(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        private void ToggleMainWindowVisibility()
         {
             if (m_window == null)
             {
@@ -243,35 +265,46 @@ namespace WarThunderChatTranslator
 
         public bool HandleClosedEvents { get; set; } = true;
 
-        private void ExitApplication()
+        private async Task ExitApplicationAsync()
         {
+            if (Interlocked.Exchange(ref _exitStarted, 1) != 0)
+            {
+                return;
+            }
+
             HandleClosedEvents = false;
-            try
-            {
-                OnClosed();
-            }
-            catch (Exception)
-            { 
 
-            }
             try
             {
+                await StopBackgroundServicesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "停止后台服务时发生错误");
+            }
+
+            try
+            {
+                Localization.CultureChanged -= UpdateTrayMenuWidth;
                 TrayIcon?.Dispose();
+                TrayIcon = null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error(ex, "释放托盘图标时发生错误");
             }
+
             try
             {
                 m_window?.Close();
+                m_window = null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                logger.Error(ex, "关闭主窗口时发生错误");
             }
+
             Application.Current.Exit();
-            Environment.Exit(0);
         }
 
         private void DeleteOldLogs()
@@ -341,7 +374,7 @@ namespace WarThunderChatTranslator
                 var toast = new ToastNotification(toastXml);
                 ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
 
-                ExitApplication();
+                await ExitApplicationAsync();
             }
         }
 
@@ -406,7 +439,7 @@ namespace WarThunderChatTranslator
             }
         }
 
-        protected void OnClosed()
+        private async Task StopBackgroundServicesAsync()
         {
             if (Interlocked.Exchange(ref _servicesStopped, 1) != 0)
             {
@@ -415,12 +448,16 @@ namespace WarThunderChatTranslator
 
             _shutdownCts.Cancel();
 
-            // Do not synchronously wait for translation requests on the UI shutdown thread, which could block exit if a third-party translation service hangs.
-            // The cancellation token stops polling delays and game HTTP requests immediately; any remaining tasks terminate with the process.
+            // Stop Kestrel asynchronously so shutdown never blocks the UI thread.
+            // The polling cancellation token interrupts delays and in-flight game HTTP requests.
 
             try
             {
-                _localHttpServer?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                if (_localHttpServer != null)
+                {
+                    await _localHttpServer.DisposeAsync();
+                    _localHttpServer = null;
+                }
             }
             catch (Exception ex)
             {
@@ -428,6 +465,7 @@ namespace WarThunderChatTranslator
             }
 
             _gameChatPollingService?.Dispose();
+            _gameChatPollingService = null;
         }
     }
 }
