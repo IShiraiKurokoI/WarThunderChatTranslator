@@ -14,7 +14,9 @@ namespace WarThunderChatTranslator.Entities
         public bool Enemy { get; set; }
         public string Mode { get; set; }
         public int Time { get; set; }
+        public string OriginalMessage { get; set; }
         public string TranslatedMessage { get; set; }
+        public string SourceLanguageIsoCode { get; set; }
         public string PrettyMessage { get; set; }
     }
 }

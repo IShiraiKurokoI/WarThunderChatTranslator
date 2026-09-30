@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GTranslate" Version="2.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.4.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\WarThunderChatTranslator\Entities\AiProviderConfig.cs" Link="Source\AiProviderConfig.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslationResult.cs" Link="Source\AiTranslationResult.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslator.cs" Link="Source\AiTranslator.cs" />
+  </ItemGroup>
+</Project>

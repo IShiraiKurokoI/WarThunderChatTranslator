@@ -12,7 +12,7 @@
   <Identity
     Name="IShiraiKurokoI.30940A14F8CD1"
     Publisher="CN=CA8D01B0-3F39-49D4-85F5-877D7B18934F"
-    Version="1.0.4.0" />
+    Version="1.0.8.2" />
 
   <Properties>
     <DisplayName>WarThunderChatTranslator</DisplayName>

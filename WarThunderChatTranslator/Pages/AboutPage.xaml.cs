@@ -7,7 +7,7 @@ namespace WarThunderChatTranslator.Pages
 {
     public sealed partial class AboutPage : Page
     {
-        public string Version { get; } = $"版本：{Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}.{Package.Current.Id.Version.Build}.{Package.Current.Id.Version.Revision}";
+        public string Version { get; } = $"{Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}.{Package.Current.Id.Version.Build}.{Package.Current.Id.Version.Revision}";
 
         public AboutPage()
         {

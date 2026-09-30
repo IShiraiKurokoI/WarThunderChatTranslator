@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -36,6 +37,9 @@ namespace WarThunderChatTranslator.Pages
             ProxyAddress.Text = ApplicationConfig.GetSettings("ProxyAddress");
             ProxyAccount.Text = ApplicationConfig.GetSettings("ProxyAccount");
             ProxyPassword.Text = ApplicationConfig.GetSettings("ProxyPassword");
+
+            GamePollingInterval.Value = ApplicationConfig.GetPollingIntervalSeconds(ApplicationConfig.GamePollingIntervalSecondsKey);
+            WebPollingInterval.Value = ApplicationConfig.GetPollingIntervalSeconds(ApplicationConfig.WebPollingIntervalSecondsKey);
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -77,6 +81,40 @@ namespace WarThunderChatTranslator.Pages
 
             ApplicationConfig.SaveSettings("ProxyPassword", ((TextBox)sender).Text);
             UpdateHttpClientWithUriValidation();
+        }
+
+
+        private void GamePollingInterval_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            SavePollingInterval(sender, args.NewValue, ApplicationConfig.GamePollingIntervalSecondsKey);
+        }
+
+        private void WebPollingInterval_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            SavePollingInterval(sender, args.NewValue, ApplicationConfig.WebPollingIntervalSecondsKey);
+        }
+
+        private void SavePollingInterval(NumberBox numberBox, double newValue, string settingKey)
+        {
+            if (!_loaded) return;
+
+            if (double.IsNaN(newValue))
+            {
+                numberBox.Value = ApplicationConfig.GetPollingIntervalSeconds(settingKey);
+                return;
+            }
+
+            var seconds = Math.Clamp(
+                (int)Math.Round(newValue, MidpointRounding.AwayFromZero),
+                ApplicationConfig.MinPollingIntervalSeconds,
+                ApplicationConfig.MaxPollingIntervalSeconds);
+
+            if (Math.Abs(numberBox.Value - seconds) > double.Epsilon)
+            {
+                numberBox.Value = seconds;
+            }
+
+            ApplicationConfig.SaveSettings(settingKey, seconds.ToString(CultureInfo.InvariantCulture));
         }
 
         private void UpdateHttpClientWithUriValidation()

@@ -1,14 +1,96 @@
-﻿<!--  Copyright (c) Microsoft Corporation and Contributors.  -->
-<!--  Licensed under the MIT License.  -->
-
-<Page
+﻿<Page
     x:Class="WarThunderChatTranslator.Pages.LocationPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:WarThunderChatTranslator.Pages"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
+    xmlns:labs="using:DevWinUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="Transparent"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
     mc:Ignorable="d">
-    <Grid Padding="20,0,0,0" RowSpacing="24" />
+
+    <Grid Padding="20,0,0,0" RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Margin="0,44,0,0"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="{helpers:Loc Key=LocationTitle}" />
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Padding="0,0,20,0">
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=LocationMonitorDescription}"
+                    Header="{helpers:Loc Key=LocationMonitor}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7F4;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="MonitorComboBox"
+                        Width="288"
+                        SelectionChanged="MonitorComboBox_SelectionChanged" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=LocationPositionDescription}"
+                    Header="{helpers:Loc Key=LocationPosition}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE707;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <NumberBox
+                            x:Name="XBox"
+                            Width="140"
+                            Header="X"
+                            SpinButtonPlacementMode="Compact" />
+                        <NumberBox
+                            x:Name="YBox"
+                            Width="140"
+                            Header="Y"
+                            SpinButtonPlacementMode="Compact" />
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=LocationSizeDescription}"
+                    Header="{helpers:Loc Key=LocationSize}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7EA;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <NumberBox
+                            x:Name="WidthBox"
+                            Width="140"
+                            Header="{helpers:Loc Key=LocationWidth}"
+                            Minimum="420"
+                            SpinButtonPlacementMode="Compact" />
+                        <NumberBox
+                            x:Name="HeightBox"
+                            Width="140"
+                            Header="{helpers:Loc Key=LocationHeight}"
+                            Minimum="180"
+                            SpinButtonPlacementMode="Compact" />
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <StackPanel
+                    Margin="0,16,0,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="10">
+                    <Button Click="CenterButton_Click" Content="{helpers:Loc Key=LocationCenter}" />
+                    <Button Click="ApplyButton_Click" Content="{helpers:Loc Key=LocationApply}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Page>

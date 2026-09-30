@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation and Contributors.
+﻿// Copyright (c) Microsoft Corporation and Contributors.
 // Licensed under the MIT License.
 
 using System;
@@ -14,8 +14,8 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
-using WinUICommunity;
 using WarThunderChatTranslator.Configurations;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Markup;
@@ -35,29 +35,44 @@ namespace WarThunderChatTranslator.Pages
     public sealed partial class ThemePage : Page
     {
         bool ThemeInitilized = false;
+        bool LanguageInitialized = false;
+        bool CssEditorExpanded = true;
         public ThemePage()
         {
             this.InitializeComponent();
         }
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            App.themeService.SetThemeComboBoxDefaultItem(ThemePanel);
+            ThemePanel.SelectedIndex = (ApplicationConfig.GetSettings("Theme") ?? "Default") switch
+            {
+                "Light" => 0,
+                "Dark" => 1,
+                _ => 2,
+            };
             BackgroundCSS.Text = ApplicationConfig.GetSettings("BackgroundCSS");
             ThemeInitilized = true;
+            LanguagePanel.SelectedIndex = Localization.CurrentLanguage == "zh-CN" ? 0 : 1;
+            LanguageInitialized = true;
         }
 
         private void ThemePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ThemeInitilized)
             {
-                ApplicationConfig.SaveSettings("Theme", ((ComboBoxItem)ThemePanel.SelectedItem).Tag.ToString());
-                App.themeService.OnThemeComboBoxSelectionChanged(sender);
+                var theme = ((ComboBoxItem)ThemePanel.SelectedItem).Tag.ToString();
+                ApplicationConfig.SaveSettings("Theme", theme);
+                App.ApplyTheme(theme switch
+                {
+                    "Light" => ElementTheme.Light,
+                    "Dark" => ElementTheme.Dark,
+                    _ => ElementTheme.Default,
+                });
             }
         }
 
-        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        private async void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
-            Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:colors"));
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:colors"));
         }
 
         private void BackgroundCSS_TextChanged(object sender, TextChangedEventArgs e)
@@ -66,6 +81,28 @@ namespace WarThunderChatTranslator.Pages
             {
                 ApplicationConfig.SaveSettings("BackgroundCSS", BackgroundCSS.Text);
             }
+        }
+
+        private async void BackgroundCssInfo_Click(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://www.w3schools.com/cssref/css3_pr_background.php"));
+        }
+
+        private void SettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            CssEditorExpanded = !CssEditorExpanded;
+            CssEditorPanel.Visibility = CssEditorExpanded ? Visibility.Visible : Visibility.Collapsed;
+            CssEditorChevron.Glyph = CssEditorExpanded ? "\uE70E" : "\uE70D";
+        }
+
+        private void LanguagePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!LanguageInitialized || LanguagePanel.SelectedItem is not ComboBoxItem selectedItem)
+            {
+                return;
+            }
+
+            Localization.Apply(selectedItem.Tag.ToString());
         }
     }
 }

@@ -1,102 +1,944 @@
 ﻿<!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>实时聊天消息列表</title>
+    <title></title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <!-- 引用动态生成的 CSS -->
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/user-styles.css">
+    <style id="dashboard-user-style"></style>
 </head>
 <body>
-    <h1>实时聊天消息列表</h1>
-    <div id="chat-container"></div>
+    <main class="dashboard-shell">
+        <header class="dashboard-header">
+            <div class="title-group">
+                <h1 id="dashboard-title" class="dashboard-title"></h1>
+                <div class="dashboard-subtitle-row">
+                    <p id="dashboard-subtitle" class="dashboard-subtitle"></p>
+                    <span id="game-status" class="game-status" tabindex="0" role="status" aria-live="polite">
+                        <span class="game-status-dot" aria-hidden="true"></span>
+                        <span id="game-status-text" class="game-status-text"></span>
+                        <span id="game-status-tooltip" class="game-status-tooltip" role="tooltip"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div id="control-bar" class="control-bar">
+                <div class="control-item select-control">
+                    <span id="display-mode-label" class="control-label"></span>
+                    <div id="display-mode-select" class="custom-select">
+                        <button id="display-mode-button" class="custom-select-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="display-mode-menu">
+                            <span id="display-mode-value" class="custom-select-value"></span>
+                            <span class="custom-select-chevron" aria-hidden="true"></span>
+                        </button>
+                        <div id="display-mode-menu" class="custom-select-menu" role="listbox" hidden>
+                            <button id="display-mode-option-translation" class="custom-select-option" type="button" role="option" data-value="translation"></button>
+                            <button id="display-mode-option-original" class="custom-select-option" type="button" role="option" data-value="original"></button>
+                            <button id="display-mode-option-translationWithOriginal" class="custom-select-option" type="button" role="option" data-value="translationWithOriginal"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <label class="control-item toggle-control" for="show-source-language">
+                    <span id="show-source-language-label" class="control-label"></span>
+                    <span class="toggle-switch">
+                        <input id="show-source-language" type="checkbox">
+                        <span class="toggle-track" aria-hidden="true"></span>
+                    </span>
+                </label>
+
+                <label class="control-item toggle-control" for="night-mode">
+                    <span class="theme-label-wrap"><span id="theme-mode-icon" class="theme-mode-icon" aria-hidden="true">☾</span><span id="night-mode-label" class="control-label"></span></span>
+                    <span class="toggle-switch">
+                        <input id="night-mode" type="checkbox">
+                        <span class="toggle-track" aria-hidden="true"></span>
+                    </span>
+                </label>
+
+                <label class="control-item toggle-control" for="show-chat-bubbles">
+                    <span id="show-chat-bubbles-label" class="control-label"></span>
+                    <span class="toggle-switch">
+                        <input id="show-chat-bubbles" type="checkbox">
+                        <span class="toggle-track" aria-hidden="true"></span>
+                    </span>
+                </label>
+            </div>
+        </header>
+
+        <section id="chat-container" role="log" aria-live="polite">
+            <div id="empty-state" class="empty-state"></div>
+        </section>
+    </main>
 
     <script>
-        async function fetchChatData() {
+        const DISPLAY_MODE_STORAGE_KEY = 'wtct.dashboard.displayMode';
+        const SHOW_SOURCE_LANGUAGE_STORAGE_KEY = 'wtct.dashboard.showSourceLanguage';
+        const NIGHT_MODE_STORAGE_KEY = 'wtct.dashboard.nightMode';
+        const systemThemeQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+        const SHOW_CHAT_BUBBLES_STORAGE_KEY = 'wtct.dashboard.showChatBubbles';
+        const DISPLAY_MODES = new Set(['translation', 'original', 'translationWithOriginal']);
+        const MIN_MESSAGE_CONTRAST = 4.5;
+        const MAX_AUTO_SURFACE_TINT = 0.35;
+        const AUTO_BORDER_TINT = 0.28;
+        const DASHBOARD_STYLE_SYNC_INTERVAL_MS = 1000;
+        const DASHBOARD_STYLE_ERROR_LOG_INTERVAL_MS = 10000;
+
+        let lastId = 0;
+        let processGeneration = 0;
+        let fetchInProgress = false;
+        let webPollIntervalMs = 4000;
+        let pollTimer = null;
+        let displayMode = 'translation';
+        let showSourceLanguage = false;
+        let nightMode = false;
+        let showChatBubbles = true;
+        let uiStrings = {};
+        let dashboardTestMessagesVisible = false;
+        let dashboardStyleVersion = null;
+        let dashboardStyleSyncInProgress = false;
+        let dashboardStyleSyncTimer = null;
+        let lastDashboardStyleErrorLogAt = 0;
+        let scrollToBottomAnimationFrame = null;
+        const messagesById = new Map();
+
+        function readStorage(key, fallbackValue) {
             try {
-                const response = await fetch('/gamechat');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const chatMessages = await response.json();
-                renderChatMessages(chatMessages);
-            } catch (error) {
-                console.error('Failed to fetch chat messages:', error);
+                const value = localStorage.getItem(key);
+                return value === null ? fallbackValue : value;
+            } catch {
+                return fallbackValue;
             }
         }
 
-        function renderChatMessages(chatMessages) {
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML = '';
+        function writeStorage(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch {
+                // The dashboard keeps working when browser storage is unavailable.
+            }
+        }
 
-            chatMessages.forEach(message => {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('chat-message');
+        function applyDashboardStyle(style) {
+            const shouldStickToBottom = isChatNearBottom();
+            const root = document.documentElement;
+            const version = Number(style?.version);
+            const fontFamilyCss = typeof style?.fontFamilyCss === 'string' && style.fontFamilyCss.length > 0
+                ? style.fontFamilyCss
+                : '"Segoe UI"';
+            const fontSize = Number(style?.fontSize);
+            const fontWeight = typeof style?.fontWeight === 'string' ? style.fontWeight : 'normal';
+            const allyColor = typeof style?.allyColor === 'string' ? style.allyColor : 'rgba(91, 192, 222, 1)';
+            const enemyColor = typeof style?.enemyColor === 'string' ? style.enemyColor : 'rgba(217, 83, 79, 1)';
+            const systemColor = typeof style?.systemColor === 'string' ? style.systemColor : 'rgba(133, 100, 4, 1)';
 
-                if (!message.Sender && message.Enemy) {
-                    messageDiv.classList.add('system');
-                } else if (message.Enemy) {
-                    messageDiv.classList.add('enemy');
-                } else {
-                    messageDiv.classList.add('ally');
+            root.style.setProperty('--app-font-family', fontFamilyCss);
+            root.style.setProperty('--app-font-weight', fontWeight);
+            root.style.setProperty('--app-font-size', `${Number.isFinite(fontSize) ? Math.min(200, Math.max(1, fontSize)) : 14}px`);
+            root.style.setProperty('--ally-color', allyColor);
+            root.style.setProperty('--enemy-color', enemyColor);
+            root.style.setProperty('--system-color', systemColor);
+
+            const userStyleElement = document.getElementById('dashboard-user-style');
+            if (userStyleElement) {
+                const backgroundCss = typeof style?.backgroundCss === 'string' ? style.backgroundCss : '';
+                userStyleElement.textContent = `body { ${backgroundCss} }`;
+            }
+
+            if (document.body && Number.isFinite(version)) {
+                document.body.dataset.dashboardStyleVersion = String(version);
+            }
+
+            dashboardStyleVersion = Number.isFinite(version) ? version : dashboardStyleVersion;
+
+            requestAnimationFrame(() => {
+                updateAutomaticMessageSurfaces();
+                if (shouldStickToBottom) {
+                    scheduleChatScrollToBottom();
                 }
 
-                const messageText = document.createElement('span');
-                messageText.textContent = `[${message.Mode}] ${message.Sender || '系统'}: ${message.TranslatedMessage}`;
-                messageDiv.appendChild(messageText);
+                if (document.fonts && typeof document.fonts.load === 'function') {
+                    const requestedFont = `${Number.isFinite(fontSize) ? fontSize : 14}px ${fontFamilyCss}`;
+                    document.fonts.load(requestedFont)
+                        .then(() => {
+                            // A late font swap can change wrapped message heights after the
+                            // first layout pass. Preserve the user's bottom position in that case.
+                            if (shouldStickToBottom) {
+                                scheduleChatScrollToBottom();
+                            }
+                        })
+                        .catch(() => {
+                            // System font availability is best-effort; CSS fallback remains active.
+                        });
+                }
+            });
+        }
 
-                chatContainer.appendChild(messageDiv);
+        async function syncDashboardStyle(force = false) {
+            if (dashboardStyleSyncInProgress) {
+                return false;
+            }
+
+            dashboardStyleSyncInProgress = true;
+            try {
+                const response = await fetch('/api/dashboard-style', {
+                    cache: 'no-store',
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const style = await response.json();
+                const version = Number(style?.version);
+                if (force || dashboardStyleVersion === null || !Number.isFinite(version) || version !== dashboardStyleVersion) {
+                    applyDashboardStyle(style);
+                    return true;
+                }
+
+                return false;
+            } catch (error) {
+                const now = Date.now();
+                if (now - lastDashboardStyleErrorLogAt >= DASHBOARD_STYLE_ERROR_LOG_INTERVAL_MS) {
+                    console.warn('Failed to synchronize dashboard style:', error);
+                    lastDashboardStyleErrorLogAt = now;
+                }
+                return false;
+            } finally {
+                dashboardStyleSyncInProgress = false;
+            }
+        }
+
+        function scheduleDashboardStyleSync(delay = DASHBOARD_STYLE_SYNC_INTERVAL_MS) {
+            if (dashboardStyleSyncTimer !== null) {
+                clearTimeout(dashboardStyleSyncTimer);
+            }
+
+            dashboardStyleSyncTimer = setTimeout(async () => {
+                await syncDashboardStyle(false);
+                scheduleDashboardStyleSync();
+            }, delay);
+        }
+
+        function initializeDashboardStyleSync() {
+            scheduleDashboardStyleSync();
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    void syncDashboardStyle(false);
+                }
             });
 
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            window.addEventListener('focus', () => {
+                void syncDashboardStyle(false);
+            });
         }
 
-        function test() {
-            const testMessages = [
+        async function loadDashboardLocalization() {
+            const response = await fetch('/api/dashboard-ui', { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const localization = await response.json();
+            uiStrings = localization.strings || {};
+            document.documentElement.lang = localization.language || 'en-US';
+            document.title = uiStrings.pageTitle || '';
+            document.getElementById('dashboard-title').textContent = uiStrings.pageTitle || '';
+            document.getElementById('dashboard-subtitle').textContent = uiStrings.subtitle || '';
+            document.getElementById('display-mode-label').textContent = uiStrings.displayMode || '';
+            document.getElementById('show-source-language-label').textContent = uiStrings.showSourceLanguage || '';
+            document.getElementById('night-mode-label').textContent = uiStrings.nightMode || 'Night mode';
+            document.getElementById('show-chat-bubbles-label').textContent = uiStrings.showChatBubbles || 'Show chat bubble backgrounds';
+            document.getElementById('empty-state').textContent = uiStrings.emptyState || '';
+            document.getElementById('control-bar').setAttribute('aria-label', uiStrings.controlsAriaLabel || '');
+            document.getElementById('chat-container').setAttribute('aria-label', uiStrings.chatAriaLabel || '');
+
+            document.getElementById('display-mode-option-translation').textContent = uiStrings.displayTranslation || '';
+            document.getElementById('display-mode-option-original').textContent = uiStrings.displayOriginal || '';
+            document.getElementById('display-mode-option-translationWithOriginal').textContent = uiStrings.displayTranslationAndOriginal || '';
+            document.getElementById('display-mode-button').setAttribute('aria-label', uiStrings.displayMode || '');
+            updateGameStatus(0, '');
+        }
+
+        function getDisplayModeLabel(value) {
+            switch (value) {
+                case 'original':
+                    return uiStrings.displayOriginal || '';
+                case 'translationWithOriginal':
+                    return uiStrings.displayTranslationAndOriginal || '';
+                case 'translation':
+                default:
+                    return uiStrings.displayTranslation || '';
+            }
+        }
+
+        function updateDisplayModeControl() {
+            document.getElementById('display-mode-value').textContent = getDisplayModeLabel(displayMode);
+            document.querySelectorAll('.custom-select-option').forEach(option => {
+                const selected = option.dataset.value === displayMode;
+                option.setAttribute('aria-selected', String(selected));
+                option.classList.toggle('selected', selected);
+            });
+        }
+
+        function setDisplayMode(value, persist = true) {
+            displayMode = DISPLAY_MODES.has(value) ? value : 'translation';
+            updateDisplayModeControl();
+
+            if (persist) {
+                writeStorage(DISPLAY_MODE_STORAGE_KEY, displayMode);
+            }
+
+            renderAllMessages();
+        }
+
+        function setDisplayModeMenuOpen(open, focusSelected = false) {
+            const button = document.getElementById('display-mode-button');
+            const menu = document.getElementById('display-mode-menu');
+            menu.hidden = !open;
+            button.setAttribute('aria-expanded', String(open));
+            document.getElementById('display-mode-select').classList.toggle('open', open);
+
+            if (open && focusSelected) {
+                const selected = menu.querySelector('.custom-select-option.selected') || menu.querySelector('.custom-select-option');
+                selected?.focus();
+            }
+        }
+
+        function initializeDisplayModeControl() {
+            const select = document.getElementById('display-mode-select');
+            const button = document.getElementById('display-mode-button');
+            const menu = document.getElementById('display-mode-menu');
+            const options = [...menu.querySelectorAll('.custom-select-option')];
+
+            button.addEventListener('click', () => {
+                setDisplayModeMenuOpen(menu.hidden, false);
+            });
+
+            button.addEventListener('keydown', event => {
+                if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    setDisplayModeMenuOpen(true, true);
+                }
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    setDisplayMode(option.dataset.value);
+                    setDisplayModeMenuOpen(false);
+                    button.focus();
+                });
+            });
+
+            menu.addEventListener('keydown', event => {
+                const currentIndex = options.indexOf(document.activeElement);
+                let nextIndex = currentIndex;
+
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    nextIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+                } else if (event.key === 'Home') {
+                    event.preventDefault();
+                    nextIndex = 0;
+                } else if (event.key === 'End') {
+                    event.preventDefault();
+                    nextIndex = options.length - 1;
+                } else if (event.key === 'Escape') {
+                    event.preventDefault();
+                    setDisplayModeMenuOpen(false);
+                    button.focus();
+                    return;
+                } else {
+                    return;
+                }
+
+                options[nextIndex]?.focus();
+            });
+
+            document.addEventListener('pointerdown', event => {
+                if (!select.contains(event.target)) {
+                    setDisplayModeMenuOpen(false);
+                }
+            });
+        }
+
+        function initializePreferences() {
+            const storedDisplayMode = readStorage(DISPLAY_MODE_STORAGE_KEY, 'translation');
+            displayMode = DISPLAY_MODES.has(storedDisplayMode) ? storedDisplayMode : 'translation';
+            showSourceLanguage = readStorage(SHOW_SOURCE_LANGUAGE_STORAGE_KEY, 'false') === 'true';
+            const storedNightMode = readStorage(NIGHT_MODE_STORAGE_KEY, null);
+            const hasManualThemePreference = storedNightMode === 'true' || storedNightMode === 'false';
+            nightMode = hasManualThemePreference
+                ? storedNightMode === 'true'
+                : Boolean(systemThemeQuery && systemThemeQuery.matches);
+            showChatBubbles = readStorage(SHOW_CHAT_BUBBLES_STORAGE_KEY, 'true') !== 'false';
+
+            const showSourceLanguageCheckbox = document.getElementById('show-source-language');
+            const nightModeCheckbox = document.getElementById('night-mode');
+            const showChatBubblesCheckbox = document.getElementById('show-chat-bubbles');
+            showSourceLanguageCheckbox.checked = showSourceLanguage;
+            nightModeCheckbox.checked = nightMode;
+            showChatBubblesCheckbox.checked = showChatBubbles;
+            applyAppearancePreferences();
+            updateDisplayModeControl();
+            initializeDisplayModeControl();
+
+            showSourceLanguageCheckbox.addEventListener('change', () => {
+                showSourceLanguage = showSourceLanguageCheckbox.checked;
+                writeStorage(SHOW_SOURCE_LANGUAGE_STORAGE_KEY, String(showSourceLanguage));
+                renderAllMessages();
+            });
+
+            nightModeCheckbox.addEventListener('change', () => {
+                nightMode = nightModeCheckbox.checked;
+                writeStorage(NIGHT_MODE_STORAGE_KEY, String(nightMode));
+                applyAppearancePreferences();
+            });
+
+            if (systemThemeQuery) {
+                const handleSystemThemeChange = (event) => {
+                    const storedNightMode = readStorage(NIGHT_MODE_STORAGE_KEY, null);
+                    if (storedNightMode === 'true' || storedNightMode === 'false') {
+                        return;
+                    }
+
+                    nightMode = event.matches;
+                    nightModeCheckbox.checked = nightMode;
+                    applyAppearancePreferences();
+                };
+
+                if (typeof systemThemeQuery.addEventListener === 'function') {
+                    systemThemeQuery.addEventListener('change', handleSystemThemeChange);
+                } else if (typeof systemThemeQuery.addListener === 'function') {
+                    systemThemeQuery.addListener(handleSystemThemeChange);
+                }
+            }
+
+            showChatBubblesCheckbox.addEventListener('change', () => {
+                showChatBubbles = showChatBubblesCheckbox.checked;
+                writeStorage(SHOW_CHAT_BUBBLES_STORAGE_KEY, String(showChatBubbles));
+                applyAppearancePreferences();
+            });
+        }
+
+        function applyAppearancePreferences() {
+            document.documentElement.classList.toggle('night-mode', nightMode);
+            document.documentElement.classList.toggle('no-chat-bubbles', !showChatBubbles);
+            const icon = document.getElementById('theme-mode-icon');
+            if (icon) icon.textContent = nightMode ? '☀' : '☾';
+        }
+
+        function updateGameStatus(pid, startTimeUtc) {
+            const status = document.getElementById('game-status');
+            const statusText = document.getElementById('game-status-text');
+            const tooltip = document.getElementById('game-status-tooltip');
+            if (!status || !statusText || !tooltip) {
+                return;
+            }
+
+            const isRunning = Number.isInteger(pid) && pid > 0;
+            status.classList.toggle('running', isRunning);
+
+            if (!isRunning) {
+                const stoppedText = uiStrings.gameStopped || 'Game is not running';
+                statusText.textContent = stoppedText;
+                status.setAttribute('aria-label', stoppedText);
+                tooltip.textContent = stoppedText;
+                return;
+            }
+
+            const runningText = uiStrings.gameRunning || 'Game is running';
+            statusText.textContent = runningText;
+            const pidLabel = uiStrings.gamePid || 'PID';
+            const startLabel = uiStrings.gameStartTime || 'Started';
+            let formattedStartTime = startTimeUtc || '—';
+            const parsedStartTime = startTimeUtc ? new Date(startTimeUtc) : null;
+            if (parsedStartTime && !Number.isNaN(parsedStartTime.getTime())) {
+                formattedStartTime = new Intl.DateTimeFormat(document.documentElement.lang || undefined, {
+                    dateStyle: 'medium',
+                    timeStyle: 'medium'
+                }).format(parsedStartTime);
+            }
+
+            const details = `${runningText}\n${pidLabel}: ${pid}\n${startLabel}: ${formattedStartTime}`;
+            status.setAttribute('aria-label', details.replaceAll('\n', ', '));
+            tooltip.textContent = details;
+        }
+
+        async function fetchChatData() {
+            if (fetchInProgress) {
+                return;
+            }
+
+            fetchInProgress = true;
+            try {
+                const response = await fetch(`/gamechat?lastId=${lastId}&session=${processGeneration}`, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const responseGeneration = Number(response.headers.get('X-Game-Process-Generation') || response.headers.get('X-Game-Session') || '0');
+                const gamePid = Number(response.headers.get('X-Game-Pid') || '0');
+                const gameStartTime = response.headers.get('X-Game-Start-Time') || '';
+                updateGameStatus(Number.isFinite(gamePid) ? Math.trunc(gamePid) : 0, gameStartTime);
+                const configuredInterval = Number(response.headers.get('X-Web-Poll-Interval-Ms') || '4000');
+                if (Number.isFinite(configuredInterval) && configuredInterval >= 1000) {
+                    webPollIntervalMs = configuredInterval;
+                }
+
+                const serverStyleVersion = Number(response.headers.get('X-Dashboard-Style-Version'));
+                if (Number.isFinite(serverStyleVersion) && dashboardStyleVersion !== null && serverStyleVersion !== dashboardStyleVersion) {
+                    void syncDashboardStyle(false);
+                }
+
+                const chatMessages = await response.json();
+
+                // The generation changes only when the monitored game process instance changes. It does not identify individual battles within the same process.
+                if (responseGeneration !== processGeneration) {
+                    processGeneration = responseGeneration;
+                    lastId = 0;
+                    messagesById.clear();
+                    clearRenderedMessages();
+                }
+
+                appendChatMessages(chatMessages);
+
+                if (chatMessages.length > 0) {
+                    lastId = Math.max(lastId, ...chatMessages.map(message => message.Id));
+                }
+            } catch (error) {
+                console.error('Failed to fetch chat messages:', error);
+            } finally {
+                fetchInProgress = false;
+                scheduleNextPoll();
+            }
+        }
+
+        function scheduleNextPoll() {
+            if (pollTimer !== null) {
+                clearTimeout(pollTimer);
+            }
+            pollTimer = setTimeout(fetchChatData, webPollIntervalMs);
+        }
+
+        function isChatNearBottom(threshold = 48) {
+            const chatContainer = document.getElementById('chat-container');
+            if (!chatContainer) {
+                return true;
+            }
+
+            return chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < threshold;
+        }
+
+        function scheduleChatScrollToBottom() {
+            if (scrollToBottomAnimationFrame !== null) {
+                cancelAnimationFrame(scrollToBottomAnimationFrame);
+            }
+
+            // Two animation frames let DOM insertion, wrapping, and CSS/font metrics settle
+            // before scrollHeight is sampled. This avoids stopping one row short.
+            scrollToBottomAnimationFrame = requestAnimationFrame(() => {
+                scrollToBottomAnimationFrame = requestAnimationFrame(() => {
+                    const chatContainer = document.getElementById('chat-container');
+                    if (chatContainer) {
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }
+                    scrollToBottomAnimationFrame = null;
+                });
+            });
+        }
+
+        function appendChatMessages(chatMessages) {
+            if (!Array.isArray(chatMessages) || chatMessages.length === 0) {
+                renderDashboardTestMessages();
+                updateEmptyState();
+                return;
+            }
+
+            const chatContainer = document.getElementById('chat-container');
+            const fragment = document.createDocumentFragment();
+
+            chatMessages.forEach(message => {
+                messagesById.set(message.Id, message);
+                fragment.appendChild(createMessageElement(message));
+            });
+
+            chatContainer.appendChild(fragment);
+            renderDashboardTestMessages();
+            updateEmptyState();
+            scheduleChatScrollToBottom();
+        }
+
+        function renderAllMessages() {
+            const chatContainer = document.getElementById('chat-container');
+            const shouldStickToBottom = isChatNearBottom();
+            clearRenderedMessages();
+
+            const fragment = document.createDocumentFragment();
+            [...messagesById.values()]
+                .sort((left, right) => left.Id - right.Id)
+                .forEach(message => fragment.appendChild(createMessageElement(message)));
+
+            chatContainer.appendChild(fragment);
+            renderDashboardTestMessages();
+            updateEmptyState();
+
+            if (shouldStickToBottom) {
+                scheduleChatScrollToBottom();
+            }
+        }
+
+        function clearRenderedMessages() {
+            document.querySelectorAll('#chat-container > .chat-message').forEach(element => element.remove());
+            updateEmptyState();
+        }
+
+        function hasSender(message) {
+            return typeof message?.Sender === 'string' && message.Sender.trim().length > 0;
+        }
+
+        function getMessageType(message) {
+            if (!hasSender(message)) {
+                return 'system';
+            }
+
+            return message.Enemy ? 'enemy' : 'ally';
+        }
+
+        function createMessageElement(message, isDashboardTestMessage = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message', getMessageType(message));
+
+            if (isDashboardTestMessage) {
+                messageDiv.dataset.wtctTestMessage = 'true';
+            }
+
+            const messageText = document.createElement('span');
+            messageText.classList.add('message-text');
+            messageText.textContent = formatMessage(message);
+            messageDiv.appendChild(messageText);
+            return messageDiv;
+        }
+
+        function buildDashboardTestMessages() {
+            return [
                 {
-                    Mode: "友军",
-                    Sender: "玩家1",
-                    TranslatedMessage: "大家加油，我们快赢了！",
-                    Enemy: false
+                    Sender: uiStrings.testAllySender || '',
+                    Enemy: false,
+                    OriginalMessage: uiStrings.testAllyOriginal || '',
+                    TranslatedMessage: uiStrings.testAllyTranslation || '',
+                    SourceLanguageIsoCode: 'en'
                 },
                 {
-                    Mode: "所有人",
-                    Sender: "敌方玩家",
-                    TranslatedMessage: "你们根本打不过我们！",
-                    Enemy: true
+                    Sender: uiStrings.testEnemySender || '',
+                    Enemy: true,
+                    OriginalMessage: uiStrings.testEnemyOriginal || '',
+                    TranslatedMessage: uiStrings.testEnemyTranslation || '',
+                    SourceLanguageIsoCode: 'ru'
                 },
                 {
-                    Mode: "所有人",
-                    Sender: "",
-                    TranslatedMessage: "比赛将在5分钟后结束。",
-                    Enemy: true
-                },
-                {
-                    Mode: "友军",
-                    Sender: "玩家2",
-                    TranslatedMessage: "注意左侧有人埋伏！",
-                    Enemy: false
-                },
-                {
-                    Mode: "所有人",
-                    Sender: "敌方玩家",
-                    TranslatedMessage: "真是一场激烈的战斗！",
-                    Enemy: true
-                },
-                {
-                    Mode: "所有人",
-                    Sender: "",
-                    TranslatedMessage: "服务器将在10分钟后维护。",
-                    Enemy: true
+                    Sender: '',
+                    Enemy: true,
+                    OriginalMessage: uiStrings.testSystemOriginal || '',
+                    TranslatedMessage: uiStrings.testSystemTranslation || '',
+                    SourceLanguageIsoCode: 'ja'
                 }
             ];
-
-            renderChatMessages(testMessages);
         }
 
-        setInterval(fetchChatData, 4000);
-        fetchChatData();
+        function renderDashboardTestMessages() {
+            document.querySelectorAll('#chat-container > [data-wtct-test-message="true"]').forEach(element => element.remove());
+
+            if (!dashboardTestMessagesVisible) {
+                return;
+            }
+
+            const chatContainer = document.getElementById('chat-container');
+            const fragment = document.createDocumentFragment();
+            buildDashboardTestMessages().forEach(message => {
+                fragment.appendChild(createMessageElement(message, true));
+            });
+            chatContainer.appendChild(fragment);
+        }
+
+        function formatMessage(message) {
+            const original = message.OriginalMessage || message.Msg || '';
+            const translation = message.TranslatedMessage || original;
+            let content;
+
+            switch (displayMode) {
+                case 'original':
+                    content = original;
+                    break;
+                case 'translationWithOriginal':
+                    content = `${translation} (${original})`;
+                    break;
+                case 'translation':
+                default:
+                    content = translation;
+                    break;
+            }
+
+            const sourceLanguage = message.SourceLanguageIsoCode || '';
+            if (showSourceLanguage && sourceLanguage) {
+                content += ` [${sourceLanguage}]`;
+            }
+
+            const modePrefix = message.Mode ? `[${message.Mode}] ` : '';
+            const sender = hasSender(message) ? message.Sender.trim() : (uiStrings.systemSender || '');
+            return `${modePrefix}${sender}: ${content}`;
+        }
+
+        function clamp(value, min, max) {
+            return Math.min(max, Math.max(min, value));
+        }
+
+        function parseComputedColor(value) {
+            const parts = String(value || '').match(/-?\d*\.?\d+/g);
+            if (!parts || parts.length < 3) {
+                return null;
+            }
+
+            return {
+                r: clamp(Number(parts[0]), 0, 255),
+                g: clamp(Number(parts[1]), 0, 255),
+                b: clamp(Number(parts[2]), 0, 255),
+                a: parts.length >= 4 ? clamp(Number(parts[3]), 0, 1) : 1
+            };
+        }
+
+        function resolveCssColor(variableName, fallback) {
+            const probe = document.createElement('span');
+            probe.style.position = 'fixed';
+            probe.style.visibility = 'hidden';
+            probe.style.pointerEvents = 'none';
+            probe.style.color = `var(${variableName}, ${fallback})`;
+            document.body.appendChild(probe);
+
+            const resolved = parseComputedColor(getComputedStyle(probe).color);
+            probe.remove();
+            return resolved || parseComputedColor(fallback);
+        }
+
+        function srgbChannelToLinear(channel) {
+            const value = channel / 255;
+            return value <= 0.04045
+                ? value / 12.92
+                : Math.pow((value + 0.055) / 1.055, 2.4);
+        }
+
+        function relativeLuminance(color) {
+            return (0.2126 * srgbChannelToLinear(color.r))
+                + (0.7152 * srgbChannelToLinear(color.g))
+                + (0.0722 * srgbChannelToLinear(color.b));
+        }
+
+        function compositeColor(foreground, background) {
+            const alpha = foreground.a ?? 1;
+            return {
+                r: (foreground.r * alpha) + (background.r * (1 - alpha)),
+                g: (foreground.g * alpha) + (background.g * (1 - alpha)),
+                b: (foreground.b * alpha) + (background.b * (1 - alpha)),
+                a: 1
+            };
+        }
+
+        function contrastRatio(foreground, background) {
+            const effectiveForeground = compositeColor(foreground, background);
+            const foregroundLuminance = relativeLuminance(effectiveForeground);
+            const backgroundLuminance = relativeLuminance(background);
+            const lighter = Math.max(foregroundLuminance, backgroundLuminance);
+            const darker = Math.min(foregroundLuminance, backgroundLuminance);
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        function mixColors(base, tint, amount) {
+            const ratio = clamp(amount, 0, 1);
+            return {
+                r: base.r + ((tint.r - base.r) * ratio),
+                g: base.g + ((tint.g - base.g) * ratio),
+                b: base.b + ((tint.b - base.b) * ratio),
+                a: 1
+            };
+        }
+
+        function toCssRgb(color) {
+            return `rgb(${Math.round(color.r)}, ${Math.round(color.g)}, ${Math.round(color.b)})`;
+        }
+
+        function deriveMessageSurface(textColor) {
+            const black = { r: 0, g: 0, b: 0, a: 1 };
+            const white = { r: 255, g: 255, b: 255, a: 1 };
+            const blackContrast = contrastRatio(textColor, black);
+            const whiteContrast = contrastRatio(textColor, white);
+            const oppositeBase = blackContrast >= whiteContrast ? black : white;
+
+            let low = 0;
+            let high = MAX_AUTO_SURFACE_TINT;
+            let bestBackground = oppositeBase;
+
+            for (let index = 0; index < 16; index += 1) {
+                const amount = (low + high) / 2;
+                const candidate = mixColors(oppositeBase, textColor, amount);
+
+                if (contrastRatio(textColor, candidate) >= MIN_MESSAGE_CONTRAST) {
+                    bestBackground = candidate;
+                    low = amount;
+                } else {
+                    high = amount;
+                }
+            }
+
+            const border = mixColors(bestBackground, textColor, AUTO_BORDER_TINT);
+            return { background: bestBackground, border };
+        }
+
+        function updateAutomaticMessageSurfaces() {
+            const messageColors = [
+                ['ally', '--ally-color', 'rgba(91, 192, 222, 1)'],
+                ['enemy', '--enemy-color', 'rgba(217, 83, 79, 1)'],
+                ['system', '--system-color', 'rgba(133, 100, 4, 1)']
+            ];
+
+            messageColors.forEach(([type, variableName, fallback]) => {
+                const textColor = resolveCssColor(variableName, fallback);
+                if (!textColor) {
+                    return;
+                }
+
+                const surface = deriveMessageSurface(textColor);
+                document.documentElement.style.setProperty(`--${type}-auto-background`, toCssRgb(surface.background));
+                document.documentElement.style.setProperty(`--${type}-auto-border`, toCssRgb(surface.border));
+            });
+        }
+
+        function compositeLayer(foreground, background) {
+            const foregroundAlpha = foreground?.a ?? 0;
+            const backgroundAlpha = background?.a ?? 0;
+            const outputAlpha = foregroundAlpha + (backgroundAlpha * (1 - foregroundAlpha));
+
+            if (outputAlpha <= 0) {
+                return { r: 0, g: 0, b: 0, a: 0 };
+            }
+
+            return {
+                r: ((foreground.r * foregroundAlpha) + (background.r * backgroundAlpha * (1 - foregroundAlpha))) / outputAlpha,
+                g: ((foreground.g * foregroundAlpha) + (background.g * backgroundAlpha * (1 - foregroundAlpha))) / outputAlpha,
+                b: ((foreground.b * foregroundAlpha) + (background.b * backgroundAlpha * (1 - foregroundAlpha))) / outputAlpha,
+                a: outputAlpha
+            };
+        }
+
+        function resolveRenderedBackground(element, initialColor) {
+            let resolved = initialColor || { r: 0, g: 0, b: 0, a: 0 };
+            let parent = element.parentElement;
+
+            while (resolved.a < 0.999 && parent) {
+                const parentColor = parseComputedColor(getComputedStyle(parent).backgroundColor);
+                if (parentColor) {
+                    resolved = compositeLayer(resolved, parentColor);
+                }
+                parent = parent.parentElement;
+            }
+
+            if (resolved.a < 0.999) {
+                resolved = compositeLayer(resolved, { r: 255, g: 255, b: 255, a: 1 });
+            }
+
+            return { ...resolved, a: 1 };
+        }
+
+        function readRenderedMessageColors(type) {
+            const chatContainer = document.getElementById('chat-container');
+            const probe = document.createElement('div');
+            probe.classList.add('chat-message', type);
+            probe.style.position = 'absolute';
+            probe.style.visibility = 'hidden';
+            probe.style.pointerEvents = 'none';
+            probe.style.width = '1px';
+            probe.style.height = '1px';
+            probe.textContent = ' ';
+            chatContainer.appendChild(probe);
+
+            const computed = getComputedStyle(probe);
+            const textColor = parseComputedColor(computed.color);
+            const backgroundColor = parseComputedColor(computed.backgroundColor);
+            const effectiveBackground = resolveRenderedBackground(probe, backgroundColor);
+            const contrast = textColor
+                ? contrastRatio(textColor, effectiveBackground)
+                : Number.NaN;
+
+            const result = {
+                text: computed.color,
+                background: computed.backgroundColor,
+                border: computed.borderTopColor,
+                contrast: Number.isFinite(contrast) ? Number(contrast.toFixed(2)) : null
+            };
+
+            probe.remove();
+            return result;
+        }
+
+        function getDashboardColorConfiguration(logToConsole = true) {
+            updateAutomaticMessageSurfaces();
+
+            const result = {
+                ally: readRenderedMessageColors('ally'),
+                enemy: readRenderedMessageColors('enemy'),
+                system: readRenderedMessageColors('system')
+            };
+
+            if (logToConsole) {
+                console.table(result);
+            }
+
+            return result;
+        }
+
+        function showDashboardTestMessages() {
+            dashboardTestMessagesVisible = true;
+            renderAllMessages();
+            return getDashboardColorConfiguration(true);
+        }
+
+        function clearDashboardTestMessages() {
+            dashboardTestMessagesVisible = false;
+            renderAllMessages();
+        }
+
+        window.wtctTest = showDashboardTestMessages;
+        window.wtctTestClear = clearDashboardTestMessages;
+        window.wtctTestColors = getDashboardColorConfiguration;
+        window.wtctRefreshStyle = () => syncDashboardStyle(true);
+        window.WTCTDashboardTest = Object.freeze({
+            show: showDashboardTestMessages,
+            clear: clearDashboardTestMessages,
+            colors: getDashboardColorConfiguration
+        });
+
+        function updateEmptyState() {
+            document.getElementById('empty-state').hidden = messagesById.size > 0 || dashboardTestMessagesVisible;
+        }
+
+        async function initializeDashboard() {
+            try {
+                await loadDashboardLocalization();
+                await syncDashboardStyle(true);
+                initializeDashboardStyleSync();
+                initializePreferences();
+                updateAutomaticMessageSurfaces();
+                updateEmptyState();
+                await fetchChatData();
+            } catch (error) {
+                console.error('Failed to initialize dashboard:', error);
+            }
+        }
+
+        initializeDashboard();
     </script>
 </body>
 </html>

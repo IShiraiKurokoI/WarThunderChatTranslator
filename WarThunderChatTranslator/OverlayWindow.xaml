@@ -1,0 +1,281 @@
+﻿<Window
+    x:Class="WarThunderChatTranslator.OverlayWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="using:WarThunderChatTranslator.Controls"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid x:Name="OverlayRoot" Background="#E2141418">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <controls:CursorGrid
+            x:Name="OverlayToolbar"
+            Padding="8,6"
+            Background="#B3202026"
+            ColumnSpacing="8"
+            PointerCanceled="OverlayToolbar_PointerCanceled"
+            PointerExited="OverlayToolbar_PointerExited"
+            PointerMoved="OverlayToolbar_PointerMoved"
+            PointerPressed="OverlayToolbar_PointerPressed"
+            PointerReleased="OverlayToolbar_PointerReleased">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Border
+                x:Name="DragHandle"
+                Width="32"
+                Height="32"
+                Background="#2AFFFFFF"
+                CornerRadius="8"
+                DoubleTapped="DragHandle_DoubleTapped"
+                PointerMoved="DragHandle_PointerMoved"
+                PointerPressed="DragHandle_PointerPressed"
+                PointerReleased="DragHandle_PointerReleased"
+                PointerCanceled="DragHandle_PointerCanceled"
+                ToolTipService.ToolTip="{helpers:Loc Key=OverlayHandleToolTip}">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Foreground="White"
+                    Glyph="&#xE7C2;" />
+            </Border>
+
+            <TextBlock
+                x:Name="OverlayTitle"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Foreground="White"
+                Opacity="0.92"
+                Text="{helpers:Loc Key=OverlayTitle}" />
+
+            <controls:ArrowCursorButton
+                x:Name="SettingsButton"
+                Grid.Column="2"
+                Width="32"
+                Height="32"
+                Padding="0"
+                Background="#2AFFFFFF"
+                BorderThickness="0"
+                CornerRadius="8"
+                ToolTipService.ToolTip="{helpers:Loc Key=OverlaySettingsTitle}">
+                <controls:ArrowCursorButton.Content>
+                    <FontIcon
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="16"
+                        Foreground="White"
+                        Glyph="&#xE713;" />
+                </controls:ArrowCursorButton.Content>
+                <controls:ArrowCursorButton.Flyout>
+                    <Flyout
+                        Placement="Bottom"
+                        ShouldConstrainToRootBounds="False">
+                        <StackPanel MinWidth="280" Spacing="14">
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{helpers:Loc Key=OverlaySettingsTitle}" />
+
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{helpers:Loc Key=DashboardDisplayMode}" />
+                                <ComboBox
+                                    x:Name="DisplayModeComboBox"
+                                    HorizontalAlignment="Stretch"
+                                    SelectionChanged="DisplayModeComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="{helpers:Loc Key=DashboardDisplayTranslation}" Tag="translation" />
+                                    <ComboBoxItem Content="{helpers:Loc Key=DashboardDisplayOriginal}" Tag="original" />
+                                    <ComboBoxItem Content="{helpers:Loc Key=DashboardDisplayTranslationAndOriginal}" Tag="translationWithOriginal" />
+                                </ComboBox>
+                            </StackPanel>
+
+                            <ToggleSwitch
+                                x:Name="ShowIsoToggle"
+                                Header="{helpers:Loc Key=DashboardShowSourceLanguage}"
+                                Toggled="ShowIsoToggle_Toggled" />
+
+                            <StackPanel Spacing="6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{helpers:Loc Key=OverlayOpacity}" />
+                                    <TextBlock
+                                        x:Name="OpacityValueText"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+                                <TextBlock
+                                    Opacity="0.72"
+                                    Text="{helpers:Loc Key=OverlayOpacityDescription}"
+                                    TextWrapping="Wrap" />
+                                <Slider
+                                    x:Name="OpacitySlider"
+                                    Maximum="100"
+                                    Minimum="35"
+                                    SmallChange="5"
+                                    StepFrequency="5"
+                                    ValueChanged="OpacitySlider_ValueChanged" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Flyout>
+                </controls:ArrowCursorButton.Flyout>
+            </controls:ArrowCursorButton>
+        </controls:CursorGrid>
+
+        <Grid Grid.Row="1">
+            <ScrollViewer
+                x:Name="MessageScrollViewer"
+                Padding="10,8,10,12"
+                HorizontalScrollBarVisibility="Disabled"
+                IsHitTestVisible="False"
+                VerticalScrollBarVisibility="Hidden">
+                <StackPanel x:Name="MessagePanel" Spacing="4" />
+            </ScrollViewer>
+
+            <TextBlock
+                x:Name="EmptyStateText"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Foreground="#BEFFFFFF"
+                IsHitTestVisible="False"
+                Text="{helpers:Loc Key=DashboardEmptyState}"
+                TextAlignment="Center" />
+        </Grid>
+
+        <!--
+            Manual resize hit areas. The native WS_THICKFRAME is intentionally not used:
+            on some Windows 11/WinUI combinations it creates a temporary white
+            non-client/title strip above the overlay. These transparent edges keep the
+            window fully borderless while adjustment mode is active.
+        -->
+        <Grid
+            x:Name="ResizeLayer"
+            Grid.RowSpan="2"
+            IsHitTestVisible="True"
+            Visibility="Collapsed">
+            <controls:CursorBorder
+                Height="10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthSouth"
+                Tag="Top" />
+            <controls:CursorBorder
+                Height="10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthSouth"
+                Tag="Bottom" />
+            <controls:CursorBorder
+                Width="10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeWestEast"
+                Tag="Left" />
+            <controls:CursorBorder
+                Width="10"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeWestEast"
+                Tag="Right" />
+
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthwestSoutheast"
+                Tag="Top,Left" />
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNortheastSouthwest"
+                Tag="Top,Right" />
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNortheastSouthwest"
+                Tag="Bottom,Left" />
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthwestSoutheast"
+                Tag="Bottom,Right" />
+        </Grid>
+    </Grid>
+</Window>

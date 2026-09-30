@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>WarThunderChatTranslator</RootNamespace>
     <Platforms>x86;x64;ARM64</Platforms>
-    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <SignAssembly>False</SignAssembly>
@@ -15,7 +15,7 @@
     <Authors>CA8D01B0-3F39-49D4-85F5-877D7B18934F</Authors>
     <PackageIcon></PackageIcon>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <DefaultLanguage>zh-Hans-CN</DefaultLanguage>
     <UseWPF>False</UseWPF>
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -29,6 +29,11 @@
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <Version>1.0.8.2</Version>
+    <AssemblyVersion>1.0.8.2</AssemblyVersion>
+    <FileVersion>1.0.8.2</FileVersion>
+    <InformationalVersion>1.0.8.2</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
@@ -43,6 +48,7 @@
   <ItemGroup>
     <None Remove="Assets\Author.png" />
     <None Remove="Assets\dashboard.html" />
+    <None Remove="Assets\dashboard.css" />
     <None Remove="Assets\FluentIcons\About.ico" />
     <None Remove="Assets\FluentIcons\API.ico" />
     <None Remove="Assets\FluentIcons\Font.ico" />
@@ -110,6 +116,7 @@
     <None Remove="Dialogs\InputDialog.xaml" />
     <None Remove="Pages\AboutPage.xaml" />
     <None Remove="Pages\APIPage.xaml" />
+    <None Remove="Pages\AITranslationPage.xaml" />
     <None Remove="Pages\FontPage.xaml" />
     <None Remove="Pages\InteractPage.xaml" />
     <None Remove="Pages\LocationPage.xaml" />
@@ -117,6 +124,7 @@
     <None Remove="Pages\ThemePage.xaml" />
     <None Remove="Pages\UpdatePage.xaml" />
     <None Remove="TrayIconResources.xaml" />
+    <None Remove="OverlayWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -129,17 +137,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GTranslate" Version="2.2.7" />
-    <PackageReference Include="H.NotifyIcon.WinUI" Version="2.0.131" />
-    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240627000" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.3.3" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
-    <PackageReference Include="WinUICommunity.Components" Version="6.9.0" />
-    <PackageReference Include="WinUICommunity.Core" Version="6.9.0" />
-    <PackageReference Include="WinUICommunity.Win2D" Version="6.9.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevWinUI" Version="10.4.1" />
+    <PackageReference Include="DevWinUI.Shader" Version="10.1.0" />
+    <PackageReference Include="GTranslate" Version="2.4.0" />
+    <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+    <PackageReference Include="NLog" Version="6.2.0" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -190,6 +200,9 @@
     <Page Update="Pages\APIPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Pages\AITranslationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Pages\UpdatePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,6 +212,9 @@
     <Content Update="Assets\dashboard.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\dashboard.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -206,6 +222,9 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <Page Update="TrayIconResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="OverlayWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

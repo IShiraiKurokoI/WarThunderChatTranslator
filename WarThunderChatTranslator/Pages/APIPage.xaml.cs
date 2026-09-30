@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -8,7 +8,6 @@ using WarThunderChatTranslator.Helpers;
 using GTranslate;
 using GTranslate.Translators;
 using NLog;
-using Windows.UI.Notifications;
 using System.Threading.Tasks;
 
 namespace WarThunderChatTranslator.Pages
@@ -40,6 +39,7 @@ namespace WarThunderChatTranslator.Pages
                 "Yandex" => 1,
                 "Bing" => 2,
                 "Google" => 3,
+                "AI" => 4,
                 _ => 0
             };
         }
@@ -102,9 +102,20 @@ namespace WarThunderChatTranslator.Pages
 
             if (result == ContentDialogResult.Primary)
             {
+                TestTranslationButton.IsEnabled = false;
                 Checking.Visibility = Visibility.Visible;
-                await HandleTranslationTest(inputDialog.text);
-                Checking.Visibility = Visibility.Collapsed;
+                Checking.IsActive = true;
+
+                try
+                {
+                    await HandleTranslationTest(inputDialog.text);
+                }
+                finally
+                {
+                    Checking.IsActive = false;
+                    Checking.Visibility = Visibility.Collapsed;
+                    TestTranslationButton.IsEnabled = true;
+                }
             }
         }
 
@@ -113,30 +124,14 @@ namespace WarThunderChatTranslator.Pages
             try
             {
                 var translationResult = await TranslationHelper.TranslateAsync(text);
-                ShowToastNotification("∑≠“Î≥…π¶£°", $"∑≠“ÎΩ·π˚£∫{translationResult.Translation}", $"µ˜”√∑≠“Î∆˜£∫{translationResult.Service}");
-                _logger.Debug($"∑≠“Î≤‚ ‘≥…π¶£°∑≠“Î∆˜£∫{translationResult.Service}, ∑≠“Îƒ⁄»›£∫{translationResult.Source}, ∑≠“ÎΩ·π˚£∫{translationResult.Translation}");
+                await TranslationTestDialogHelper.ShowResultAsync(XamlRoot, text, translationResult);
+                _logger.Debug($"Translation test succeeded. Translator={translationResult.Service}, Source={translationResult.Source}, Translation={translationResult.Translation}");
             }
             catch (Exception ex)
             {
-                ShowToastNotification("∑≠“Î ß∞‹£°", ex.Message);
-                _logger.Debug($"∑≠“Î≤‚ ‘ ß∞‹£°∑≠“Î∆˜£∫{TranslationHelper.getCurrentTranslator().Name}, ∑≠“Îƒ⁄»›£∫{text}, ¥ÌŒÛ£∫{ex.Message}");
+                await TranslationTestDialogHelper.ShowFailureAsync(XamlRoot, ex.Message);
+                _logger.Debug(ex, $"Translation test failed. Translator={TranslationHelper.getCurrentTranslator().Name}, Source={text}");
             }
-        }
-
-        private void ShowToastNotification(string title, string message, string subtitle = "")
-        {
-            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText04);
-            var stringElements = toastXml.GetElementsByTagName("text");
-
-            stringElements[0].AppendChild(toastXml.CreateTextNode(title));
-            stringElements[1].AppendChild(toastXml.CreateTextNode(message));
-            if (!string.IsNullOrEmpty(subtitle))
-            {
-                stringElements[2].AppendChild(toastXml.CreateTextNode(subtitle));
-            }
-
-            var toast = new ToastNotification(toastXml);
-            ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
         }
 
         private void Bing_Token_TextChanged(object sender, TextChangedEventArgs e)
@@ -152,7 +147,7 @@ namespace WarThunderChatTranslator.Pages
             if (_loaded && TargetLanguage.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag is Language selectedLanguage)
             {
                 ApplicationConfig.SaveSettings("TargetLanguage", selectedLanguage.ISO6391);
-                _logger.Debug($"…Ë÷√ƒø±Í”Ô—‘Œ™{selectedLanguage.ISO6391}");
+                _logger.Debug($"Target language set to {selectedLanguage.ISO6391}.");
             }
         }
     }

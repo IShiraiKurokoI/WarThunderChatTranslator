@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:helpers="using:WinUICommunity"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
@@ -13,6 +13,7 @@
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
             IsTitleBarAutoPaddingEnabled="False"
+            ItemInvoked="NavigationView_ItemInvoked"
             OpenPaneLength="240">
 
             <NavigationView.Resources>
@@ -23,9 +24,9 @@
 
                 <NavigationViewItem
                     Margin="0,0,12,0"
-                    helpers:NavigationHelperEx.NavigateTo="APIPage"
-                    Content="翻译API"
-                    IsSelected="True">
+                    Content="{helpers:Loc Key=NavApi}"
+                    IsSelected="True"
+                    Tag="APIPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/API.ico" />
                     </NavigationViewItem.Icon>
@@ -33,8 +34,17 @@
 
                 <NavigationViewItem
                     Margin="0,0,12,0"
-                    helpers:NavigationHelperEx.NavigateTo="NetworkPage"
-                    Content="网络">
+                    Content="{helpers:Loc Key=NavAiTranslation}"
+                    Tag="AITranslationPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8C1;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="{helpers:Loc Key=NavNetwork}"
+                    Tag="NetworkPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon
                             MinWidth="60"
@@ -44,15 +54,15 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Margin="0,0,12,0" Content="外观">
+                <NavigationViewItem Margin="0,0,12,0" Content="{helpers:Loc Key=NavAppearance}">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Windows.ico" />
                     </NavigationViewItem.Icon>
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            helpers:NavigationHelperEx.NavigateTo="FontPage"
-                            Content="字体和样式">
+                            Content="{helpers:Loc Key=NavFont}"
+                            Tag="FontPage">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico" />
                             </NavigationViewItem.Icon>
@@ -60,8 +70,8 @@
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            helpers:NavigationHelperEx.NavigateTo="ThemePage"
-                            Content="主题和背景">
+                            Content="{helpers:Loc Key=NavTheme}"
+                            Tag="ThemePage">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Theme.ico" />
                             </NavigationViewItem.Icon>
@@ -69,21 +79,20 @@
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            helpers:NavigationHelperEx.NavigateTo="InteractPage"
-                            Content="互动和操作"
-                            IsEnabled="False">
+                            Content="{helpers:Loc Key=NavLayout}"
+                            Tag="LocationPage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico" />
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Size.ico" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            helpers:NavigationHelperEx.NavigateTo="LocationPage"
-                            Content="位置和布局"
-                            IsEnabled="False">
+                            Content="{helpers:Loc Key=NavInteraction}"
+                            IsEnabled="False"
+                            Tag="InteractPage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Size.ico" />
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                     </NavigationViewItem.MenuItems>
@@ -91,8 +100,8 @@
 
                 <NavigationViewItem
                     Margin="0,0,12,0"
-                    helpers:NavigationHelperEx.NavigateTo="UpdatePage"
-                    Content="翻译器更新">
+                    Content="{helpers:Loc Key=NavUpdate}"
+                    Tag="UpdatePage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Update.png" />
                     </NavigationViewItem.Icon>
@@ -101,7 +110,7 @@
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem helpers:NavigationHelperEx.NavigateTo="AboutPage" Content="关于">
+                <NavigationViewItem Content="{helpers:Loc Key=NavAbout}" Tag="AboutPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/About.ico" />
                     </NavigationViewItem.Icon>

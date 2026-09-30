@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>战争雷霆聊天翻译器设置界面</value></data>
+  <data name="Language" xml:space="preserve"><value>程序语言</value></data>
+  <data name="LanguageDescription" xml:space="preserve"><value>切换后立即生效，并会记住此选择。</value></data>
+  <data name="Chinese" xml:space="preserve"><value>中文（简体）</value></data>
+  <data name="English" xml:space="preserve"><value>English</value></data>
+  <data name="Theme" xml:space="preserve"><value>全局主题模式</value></data>
+  <data name="Light" xml:space="preserve"><value>浅色</value></data>
+  <data name="Dark" xml:space="preserve"><value>深色</value></data>
+  <data name="SystemDefault" xml:space="preserve"><value>跟随系统</value></data>
+  <data name="OpenSystemTheme" xml:space="preserve"><value>点此打开系统主题设置</value></data>
+  <data name="BackgroundCss" xml:space="preserve"><value>页面背景CSS（附加在页面body CSS中）</value></data>
+  <data name="BackgroundCssInfo" xml:space="preserve"><value>背景CSS格式介绍</value></data>
+  <data name="TrayDashboard" xml:space="preserve"><value>面板</value></data>
+  <data name="TrayDashboardDescription" xml:space="preserve"><value>开启聊天窗口</value></data>
+  <data name="TraySettings" xml:space="preserve"><value>设置</value></data>
+  <data name="TraySettingsDescription" xml:space="preserve"><value>开启翻译器设置窗口</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>退出</value></data>
+  <data name="TrayExitDescription" xml:space="preserve"><value>退出翻译器</value></data>
+  <data name="TrayToolTip" xml:space="preserve"><value>战争雷霆聊天翻译器</value></data>
+  <data name="NavApi" xml:space="preserve"><value>翻译API</value></data>
+  <data name="NavNetwork" xml:space="preserve"><value>网络</value></data>
+  <data name="NavAppearance" xml:space="preserve"><value>外观</value></data>
+  <data name="NavFont" xml:space="preserve"><value>字体和样式</value></data>
+  <data name="NavTheme" xml:space="preserve"><value>主题和背景</value></data>
+  <data name="NavInteraction" xml:space="preserve"><value>互动和操作</value></data>
+  <data name="NavLayout" xml:space="preserve"><value>位置和布局</value></data>
+  <data name="NavUpdate" xml:space="preserve"><value>翻译器更新</value></data>
+  <data name="NavAbout" xml:space="preserve"><value>关于</value></data>
+  <data name="ApiTitle" xml:space="preserve"><value>翻译器 API</value></data>
+  <data name="ApiProviderDescription" xml:space="preserve"><value>选择翻译器使用的翻译提供方。</value></data>
+  <data name="ApiBing" xml:space="preserve"><value>Bing（需要 Token）</value></data>
+  <data name="ApiGoogle" xml:space="preserve"><value>Google（需要网络环境）</value></data>
+  <data name="ApiTargetDescription" xml:space="preserve"><value>翻译器会将聊天内容翻译成此语言。</value></data>
+  <data name="ApiTargetLanguage" xml:space="preserve"><value>翻译器目标语言</value></data>
+  <data name="ApiTokenDescription" xml:space="preserve"><value>输入 Bing 翻译器所需 Token。</value></data>
+  <data name="ApiToken" xml:space="preserve"><value>翻译器 API Token</value></data>
+  <data name="ApiTestDescription" xml:space="preserve"><value>测试翻译功能。</value></data>
+  <data name="ApiTest" xml:space="preserve"><value>测试</value></data>
+  <data name="ApiTestButton" xml:space="preserve"><value>测试翻译功能</value></data>
+  <data name="FontTitle" xml:space="preserve"><value>字体设置</value></data>
+  <data name="FontFamily" xml:space="preserve"><value>字体</value></data>
+  <data name="FontSize" xml:space="preserve"><value>文字大小</value></data>
+  <data name="FontStyle" xml:space="preserve"><value>文字样式</value></data>
+  <data name="FontLighter" xml:space="preserve"><value>较细</value></data>
+  <data name="FontNormal" xml:space="preserve"><value>正常</value></data>
+  <data name="FontBold" xml:space="preserve"><value>粗体</value></data>
+  <data name="FontBolder" xml:space="preserve"><value>加粗</value></data>
+  <data name="FontAllyColor" xml:space="preserve"><value>友军文本颜色</value></data>
+  <data name="FontEnemyColor" xml:space="preserve"><value>敌军文本颜色</value></data>
+  <data name="FontSystemColor" xml:space="preserve"><value>系统文本颜色</value></data>
+  <data name="SelectColor" xml:space="preserve"><value>选择颜色</value></data>
+  <data name="NetworkTitle" xml:space="preserve"><value>网络设置</value></data>
+  <data name="NetworkDescription" xml:space="preserve"><value>设置翻译器使用的网络代理与数据轮询间隔。</value></data>
+  <data name="ProxyMode" xml:space="preserve"><value>网络代理模式</value></data>
+  <data name="ProxyDefault" xml:space="preserve"><value>不使用代理</value></data>
+  <data name="ProxySystem" xml:space="preserve"><value>使用系统代理</value></data>
+  <data name="ProxyCustom" xml:space="preserve"><value>自定义</value></data>
+  <data name="ProxyCustomSettings" xml:space="preserve"><value>自定义代理设置</value></data>
+  <data name="ProxyAddress" xml:space="preserve"><value>代理地址</value></data>
+  <data name="ProxyAddressPlaceholder" xml:space="preserve"><value>例：http://127.0.0.1:7890</value></data>
+  <data name="ProxyAccount" xml:space="preserve"><value>账户名（选填）</value></data>
+  <data name="ProxyAccountPlaceholder" xml:space="preserve"><value>代理账户名</value></data>
+  <data name="ProxyPassword" xml:space="preserve"><value>密码（选填）</value></data>
+  <data name="ProxyPasswordPlaceholder" xml:space="preserve"><value>代理密码</value></data>
+  <data name="PollingSettings" xml:space="preserve"><value>轮询设置</value></data>
+  <data name="PollingSettingsDescription" xml:space="preserve"><value>设置程序请求游戏聊天数据以及网页读取本地翻译缓存的频率，修改后自动保存。</value></data>
+  <data name="GamePollingInterval" xml:space="preserve"><value>游戏数据轮询间隔（秒）</value></data>
+  <data name="GamePollingIntervalDescription" xml:space="preserve"><value>向游戏 8111 端口发起增量聊天请求的间隔，默认 4 秒。</value></data>
+  <data name="WebPollingInterval" xml:space="preserve"><value>网页数据轮询间隔（秒）</value></data>
+  <data name="WebPollingIntervalDescription" xml:space="preserve"><value>Dashboard 从本地服务器读取翻译数据的间隔，默认 4 秒。</value></data>
+  <data name="PollingIntervalRange" xml:space="preserve"><value>可设置范围：1-60 秒。修改后无需重启程序，会自动生效。</value></data>
+  <data name="AboutAppName" xml:space="preserve"><value>战争雷霆聊天自动翻译器</value></data>
+  <data name="AboutAuthor" xml:space="preserve"><value>作者</value></data>
+  <data name="AboutGitHub" xml:space="preserve"><value>GitHub 主页</value></data>
+  <data name="AboutBilibili" xml:space="preserve"><value>BiliBili 主页</value></data>
+  <data name="AboutCopyLinkDescription" xml:space="preserve"><value>点此复制项目链接分享给好友</value></data>
+  <data name="AboutCopyLink" xml:space="preserve"><value>复制链接</value></data>
+  <data name="AboutOpenProject" xml:space="preserve"><value>打开项目页面</value></data>
+  <data name="AboutProjectDescription" xml:space="preserve"><value>你可以点此打开本翻译器项目页面。</value></data>
+  <data name="AboutProject" xml:space="preserve"><value>项目页面</value></data>
+  <data name="AboutCopySuccess" xml:space="preserve"><value>复制成功！</value></data>
+  <data name="AboutCopySuccessDescription" xml:space="preserve"><value>快将 GitHub 链接分享给好友吧。</value></data>
+  <data name="AboutOpenSourceThanks" xml:space="preserve"><value>感谢以下本应用中使用的开源项目</value></data>
+  <data name="UpdateTitle" xml:space="preserve"><value>翻译器更新</value></data>
+  <data name="UpdateLastChecked" xml:space="preserve"><value>上次检查更新: </value></data>
+  <data name="UpdateNever" xml:space="preserve"><value>从未</value></data>
+  <data name="UpdateReleaseNotes" xml:space="preserve"><value>发行说明</value></data>
+  <data name="UpdateCheck" xml:space="preserve"><value>检查更新</value></data>
+  <data name="UpdateLatest" xml:space="preserve"><value>当前使用的是最新版本。</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>检查更新失败</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>发现新版本</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>前往下载</value></data>
+  <data name="UpdateLater" xml:space="preserve"><value>暂不更新</value></data>
+  <data name="UpdateAvailableContent" xml:space="preserve"><value>Microsoft Store 中有可用更新。</value></data>
+  <data name="DashboardTitle" xml:space="preserve"><value>实时聊天消息</value></data>
+  <data name="DashboardSubtitle" xml:space="preserve"><value>战争雷霆聊天实时翻译</value></data>
+  <data name="DashboardDisplayMode" xml:space="preserve"><value>消息显示</value></data>
+  <data name="DashboardDisplayTranslation" xml:space="preserve"><value>翻译结果</value></data>
+  <data name="DashboardDisplayOriginal" xml:space="preserve"><value>原文</value></data>
+  <data name="DashboardDisplayTranslationAndOriginal" xml:space="preserve"><value>翻译结果（原文）</value></data>
+  <data name="DashboardShowSourceLanguage" xml:space="preserve"><value>显示原始语言代码</value></data>
+  <data name="DashboardSystemSender" xml:space="preserve"><value>系统</value></data>
+  <data name="DashboardEmptyState" xml:space="preserve"><value>等待聊天消息…</value></data>
+  <data name="DashboardControlsAriaLabel" xml:space="preserve"><value>聊天显示选项</value></data>
+  <data name="DashboardChatAriaLabel" xml:space="preserve"><value>翻译聊天消息</value></data>
+  <data name="DashboardTestAllySender" xml:space="preserve"><value>测试友军</value></data>
+  <data name="DashboardTestEnemySender" xml:space="preserve"><value>测试敌军</value></data>
+  <data name="DashboardTestAllyOriginal" xml:space="preserve"><value>Hello team, this is an ally color preview.</value></data>
+  <data name="DashboardTestAllyTranslation" xml:space="preserve"><value>这是友军翻译与颜色预览。</value></data>
+  <data name="DashboardTestEnemyOriginal" xml:space="preserve"><value>Противник обнаружен. Проверка цвета противника.</value></data>
+  <data name="DashboardTestEnemyTranslation" xml:space="preserve"><value>这是敌军翻译与颜色预览。</value></data>
+  <data name="DashboardTestSystemOriginal" xml:space="preserve"><value>システムメッセージの色テストです。</value></data>
+  <data name="DashboardTestSystemTranslation" xml:space="preserve"><value>这是系统消息颜色预览。</value></data>
+  <data name="DashboardGameRunning" xml:space="preserve"><value>游戏正在运行</value></data>
+  <data name="DashboardGameStopped" xml:space="preserve"><value>游戏未运行</value></data>
+  <data name="DashboardGamePid" xml:space="preserve"><value>PID</value></data>
+  <data name="DashboardGameStartTime" xml:space="preserve"><value>启动时间</value></data>
+  <data name="DashboardNightMode" xml:space="preserve"><value>深夜模式</value></data>
+  <data name="DashboardShowChatBubbles" xml:space="preserve"><value>显示聊天气泡背景</value></data>
+  <data name="NavAiTranslation" xml:space="preserve"><value>AI 翻译模型</value></data>
+  <data name="ApiAI" xml:space="preserve"><value>AI 翻译（自定义）</value></data>
+  <data name="AiPageTitle" xml:space="preserve"><value>AI 翻译模型</value></data>
+  <data name="AiPageDescription" xml:space="preserve"><value>管理你自己的 AI 翻译接口。支持 OpenAI Responses、OpenAI 兼容 Chat Completions 与 Anthropic Messages API；“AI 翻译（自定义）”会调用当前选中的模型。</value></data>
+  <data name="AiConnectionsTitle" xml:space="preserve"><value>AI 模型接口</value></data>
+  <data name="AiAddDescription" xml:space="preserve"><value>添加、编辑、测试、选择或删除 AI 翻译模型。</value></data>
+  <data name="AiAddProvider" xml:space="preserve"><value>添加模型</value></data>
+  <data name="AiEmptyTitle" xml:space="preserve"><value>尚未配置 AI 翻译模型</value></data>
+  <data name="AiEmptyDescription" xml:space="preserve"><value>先添加一个 API 接口并将其选中，即可用于 AI 翻译。API Key 仅保存在本应用的本地设置中。</value></data>
+  <data name="AiSelected" xml:space="preserve"><value>当前使用</value></data>
+  <data name="AiUse" xml:space="preserve"><value>使用</value></data>
+  <data name="AiTest" xml:space="preserve"><value>测试</value></data>
+  <data name="AiEdit" xml:space="preserve"><value>编辑</value></data>
+  <data name="AiDelete" xml:space="preserve"><value>删除</value></data>
+  <data name="AiProviderTypeOpenAIResponses" xml:space="preserve"><value>OpenAI Responses</value></data>
+  <data name="AiProviderTypeOpenAIChatCompletions" xml:space="preserve"><value>OpenAI 兼容 Chat Completions</value></data>
+  <data name="AiProviderTypeAnthropic" xml:space="preserve"><value>Anthropic Messages</value></data>
+  <data name="AiModelLabel" xml:space="preserve"><value>模型</value></data>
+  <data name="AiEndpointLabel" xml:space="preserve"><value>接口</value></data>
+  <data name="AiPromptLabel" xml:space="preserve"><value>提示词</value></data>
+  <data name="AiPromptDefault" xml:space="preserve"><value>提示词：使用默认翻译指令</value></data>
+  <data name="AiAddDialogTitle" xml:space="preserve"><value>添加 AI 翻译模型</value></data>
+  <data name="AiEditDialogTitle" xml:space="preserve"><value>编辑 AI 翻译模型</value></data>
+  <data name="AiName" xml:space="preserve"><value>显示名称</value></data>
+  <data name="AiNamePlaceholder" xml:space="preserve"><value>例如：OpenAI / 本地 LLM</value></data>
+  <data name="AiApiType" xml:space="preserve"><value>API 类型</value></data>
+  <data name="AiBaseUrl" xml:space="preserve"><value>Base URL</value></data>
+  <data name="AiApiKey" xml:space="preserve"><value>API Key</value></data>
+  <data name="AiApiKeyPlaceholder" xml:space="preserve"><value>本地接口可留空</value></data>
+  <data name="AiApiKeyDescription" xml:space="preserve"><value>密钥保存在本应用的本地设置中，模型列表不会显示明文；无需鉴权的本地接口可留空。</value></data>
+  <data name="AiModel" xml:space="preserve"><value>模型</value></data>
+  <data name="AiTemperatureEnabled" xml:space="preserve"><value>发送 temperature</value></data>
+  <data name="AiTemperature" xml:space="preserve"><value>Temperature</value></data>
+  <data name="AiTemperatureOmitted" xml:space="preserve"><value>不发送</value></data>
+  <data name="AiTemperatureDescription" xml:space="preserve"><value>可选采样参数。关闭时请求体不会发送 temperature。OpenAI 范围为 0–2；Anthropic 的旧模型范围为 0–1，当前 Claude 4.7+ 模型可能拒绝非默认 temperature，因此除非所选模型明确支持，否则建议保持关闭。</value></data>
+  <data name="AiTemperatureRangeError" xml:space="preserve"><value>当前 API 类型的 Temperature 必须在 0 到 {0} 之间。</value></data>
+  <data name="AiCustomPrompt" xml:space="preserve"><value>自定义提示词</value></data>
+  <data name="AiCustomPromptPlaceholder" xml:space="preserve"><value>可选：术语、风格或翻译规则</value></data>
+  <data name="AiCustomPromptDescription" xml:space="preserve"><value>可选占位符：{text}、{target_language}、{target_language_name}、{source_language}。强制 JSON 返回格式会始终追加。</value></data>
+  <data name="AiSave" xml:space="preserve"><value>保存</value></data>
+  <data name="AiValidationRequired" xml:space="preserve"><value>显示名称、有效的 HTTP(S) Base URL 和模型名称不能为空。</value></data>
+  <data name="AiDeleteDialogTitle" xml:space="preserve"><value>删除 AI 翻译模型？</value></data>
+  <data name="AiDeleteDialogMessage" xml:space="preserve"><value>确定删除“{0}”吗？此操作无法撤销。</value></data>
+  <data name="AiDeleteConfirm" xml:space="preserve"><value>删除</value></data>
+  <data name="AiNoProviderError" xml:space="preserve"><value>尚未选中 AI 翻译模型。请先在“AI 翻译模型”页面添加并选择一个模型。</value></data>
+  <data name="AiEndpointRequiredError" xml:space="preserve"><value>当前 AI 翻译模型未配置 Base URL。</value></data>
+  <data name="AiModelRequiredError" xml:space="preserve"><value>当前 AI 翻译模型未配置模型名称。</value></data>
+  <data name="AiInvalidResponseError" xml:space="preserve"><value>AI API 返回内容缺少必要的翻译字段。</value></data>
+  <data name="AiInvalidJsonError" xml:space="preserve"><value>AI 模型未返回有效的 JSON 翻译对象。</value></data>
+  <data name="AiApiErrorFormat" xml:space="preserve"><value>AI API 请求失败（HTTP {0}）：{1}</value></data>
+  <data name="AiEmptyApiError" xml:space="preserve"><value>服务器未返回错误详情。</value></data>
+  <data name="DialogTranslateInputTitle" xml:space="preserve"><value>输入要翻译的文字</value></data>
+  <data name="CommonConfirm" xml:space="preserve"><value>确定</value></data>
+  <data name="CommonCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="CommonClose" xml:space="preserve"><value>关闭</value></data>
+  <data name="TranslationTestSuccessTitle" xml:space="preserve"><value>翻译测试成功</value></data>
+  <data name="TranslationTestFailureTitle" xml:space="preserve"><value>翻译测试失败</value></data>
+  <data name="TranslationTestResultFormat" xml:space="preserve"><value>翻译结果&#10;原文：{0}&#10;译文：{1}&#10;翻译服务：{9}&#10;&#10;Dashboard 映射&#10;OriginalMessage：{0}&#10;TranslatedMessage：{1}&#10;SourceLanguageIsoCode：{2}&#10;&#10;语言信息&#10;SourceLanguage.Name：{3}&#10;SourceLanguage.ISO6391：{4}&#10;SourceLanguage.ISO6393：{5}&#10;TargetLanguage.Name：{6}&#10;TargetLanguage.ISO6391：{7}&#10;TargetLanguage.ISO6393：{8}</value></data>
+  <data name="TrayOverlay" xml:space="preserve"><value>悬浮窗</value></data>
+  <data name="TrayOverlayDescription" xml:space="preserve"><value>显示或隐藏游戏聊天悬浮窗</value></data>
+  <data name="OverlayTitle" xml:space="preserve"><value>实时聊天</value></data>
+  <data name="OverlaySettingsTitle" xml:space="preserve"><value>悬浮窗设置</value></data>
+  <data name="OverlayHandleToolTip" xml:space="preserve"><value>按住拖动调整位置；双击切换可调整大小/鼠标透传状态。</value></data>
+  <data name="LocationTitle" xml:space="preserve"><value>位置和大小</value></data>
+  <data name="LocationMonitor" xml:space="preserve"><value>悬浮窗显示器</value></data>
+  <data name="LocationMonitorDescription" xml:space="preserve"><value>选择并记忆悬浮窗使用的显示器。</value></data>
+  <data name="LocationPosition" xml:space="preserve"><value>悬浮窗位置</value></data>
+  <data name="LocationPositionDescription" xml:space="preserve"><value>使用桌面像素坐标；拖动悬浮窗后会自动同步这里的数值。</value></data>
+  <data name="LocationSize" xml:space="preserve"><value>悬浮窗大小</value></data>
+  <data name="LocationSizeDescription" xml:space="preserve"><value>双击悬浮窗移动图标后，可直接用鼠标拖动窗口边缘调整大小。</value></data>
+  <data name="LocationWidth" xml:space="preserve"><value>宽度</value></data>
+  <data name="LocationHeight" xml:space="preserve"><value>高度</value></data>
+  <data name="LocationApply" xml:space="preserve"><value>应用</value></data>
+  <data name="LocationCenter" xml:space="preserve"><value>在所选显示器居中</value></data>
+  <data name="OverlayOpacity" xml:space="preserve"><value>半透明透明度</value></data>
+  <data name="OverlayOpacityDescription" xml:space="preserve"><value>调整悬浮窗背景的半透明程度。</value></data>
+</root>
