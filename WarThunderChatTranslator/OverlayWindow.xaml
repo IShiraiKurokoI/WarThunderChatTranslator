@@ -1,8 +1,9 @@
-<Window
+﻿<Window
     x:Class="WarThunderChatTranslator.OverlayWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="using:WarThunderChatTranslator.Controls"
     xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -13,11 +14,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid
+        <controls:CursorGrid
             x:Name="OverlayToolbar"
             Padding="8,6"
             Background="#B3202026"
-            ColumnSpacing="8">
+            ColumnSpacing="8"
+            PointerCanceled="OverlayToolbar_PointerCanceled"
+            PointerExited="OverlayToolbar_PointerExited"
+            PointerMoved="OverlayToolbar_PointerMoved"
+            PointerPressed="OverlayToolbar_PointerPressed"
+            PointerReleased="OverlayToolbar_PointerReleased">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -55,7 +61,7 @@
                 Opacity="0.92"
                 Text="{helpers:Loc Key=OverlayTitle}" />
 
-            <Button
+            <controls:ArrowCursorButton
                 x:Name="SettingsButton"
                 Grid.Column="2"
                 Width="32"
@@ -65,14 +71,14 @@
                 BorderThickness="0"
                 CornerRadius="8"
                 ToolTipService.ToolTip="{helpers:Loc Key=OverlaySettingsTitle}">
-                <Button.Content>
+                <controls:ArrowCursorButton.Content>
                     <FontIcon
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         FontSize="16"
                         Foreground="White"
                         Glyph="&#xE713;" />
-                </Button.Content>
-                <Button.Flyout>
+                </controls:ArrowCursorButton.Content>
+                <controls:ArrowCursorButton.Flyout>
                     <Flyout
                         Placement="Bottom"
                         ShouldConstrainToRootBounds="False">
@@ -125,18 +131,151 @@
                             </StackPanel>
                         </StackPanel>
                     </Flyout>
-                </Button.Flyout>
-            </Button>
+                </controls:ArrowCursorButton.Flyout>
+            </controls:ArrowCursorButton>
+        </controls:CursorGrid>
+
+        <Grid Grid.Row="1">
+            <ScrollViewer
+                x:Name="MessageScrollViewer"
+                Padding="10,8,10,12"
+                HorizontalScrollBarVisibility="Disabled"
+                IsHitTestVisible="False"
+                VerticalScrollBarVisibility="Hidden">
+                <StackPanel x:Name="MessagePanel" Spacing="4" />
+            </ScrollViewer>
+
+            <TextBlock
+                x:Name="EmptyStateText"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Foreground="#BEFFFFFF"
+                IsHitTestVisible="False"
+                Text="{helpers:Loc Key=DashboardEmptyState}"
+                TextAlignment="Center" />
         </Grid>
 
-        <ScrollViewer
-            x:Name="MessageScrollViewer"
-            Grid.Row="1"
-            Padding="10,8,10,12"
-            HorizontalScrollBarVisibility="Disabled"
-            IsHitTestVisible="False"
-            VerticalScrollBarVisibility="Hidden">
-            <StackPanel x:Name="MessagePanel" Spacing="4" />
-        </ScrollViewer>
+        <!--
+            Manual resize hit areas. The native WS_THICKFRAME is intentionally not used:
+            on some Windows 11/WinUI combinations it creates a temporary white
+            non-client/title strip above the overlay. These transparent edges keep the
+            window fully borderless while adjustment mode is active.
+        -->
+        <Grid
+            x:Name="ResizeLayer"
+            Grid.RowSpan="2"
+            IsHitTestVisible="True"
+            Visibility="Collapsed">
+            <controls:CursorBorder
+                Height="10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthSouth"
+                Tag="Top" />
+            <controls:CursorBorder
+                Height="10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthSouth"
+                Tag="Bottom" />
+            <controls:CursorBorder
+                Width="10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeWestEast"
+                Tag="Left" />
+            <controls:CursorBorder
+                Width="10"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeWestEast"
+                Tag="Right" />
+
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthwestSoutheast"
+                Tag="Top,Left" />
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNortheastSouthwest"
+                Tag="Top,Right" />
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNortheastSouthwest"
+                Tag="Bottom,Left" />
+            <controls:CursorBorder
+                Width="18"
+                Height="18"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="#01000000"
+                PointerCanceled="ResizeBorder_PointerCanceled"
+                PointerEntered="ResizeBorder_PointerEntered"
+                PointerExited="ResizeBorder_PointerExited"
+                PointerMoved="ResizeBorder_PointerMoved"
+                PointerPressed="ResizeBorder_PointerPressed"
+                PointerReleased="ResizeBorder_PointerReleased"
+                CursorShape="SizeNorthwestSoutheast"
+                Tag="Bottom,Right" />
+        </Grid>
     </Grid>
 </Window>

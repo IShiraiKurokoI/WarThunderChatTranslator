@@ -30,10 +30,10 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-    <Version>1.0.8.0</Version>
-    <AssemblyVersion>1.0.8.0</AssemblyVersion>
-    <FileVersion>1.0.8.0</FileVersion>
-    <InformationalVersion>1.0.8.0</InformationalVersion>
+    <Version>1.0.8.1</Version>
+    <AssemblyVersion>1.0.8.1</AssemblyVersion>
+    <FileVersion>1.0.8.1</FileVersion>
+    <InformationalVersion>1.0.8.1</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />

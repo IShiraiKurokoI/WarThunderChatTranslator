@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -64,6 +65,9 @@ namespace WarThunderChatTranslator
         private bool _isClosed;
         private bool _adjustmentMode;
         private bool _isDragging;
+        private bool _isResizing;
+        private UIElement _dragCaptureElement;
+        private UIElement _resizeCaptureElement;
         private bool _applyingPlacement;
         private bool _clickThroughApplied;
         private long _lastProcessGeneration = long.MinValue;
@@ -71,8 +75,22 @@ namespace WarThunderChatTranslator
         private long _lastStyleVersion = long.MinValue;
         private NativePoint _dragStartCursor;
         private PointInt32 _dragStartWindow;
+        private NativePoint _resizeStartCursor;
+        private PointInt32 _resizeStartWindow;
+        private SizeInt32 _resizeStartSize;
+        private ResizeEdge _resizeEdge;
         private uint _lastForegroundPid;
         private bool _lastForegroundWasGame;
+
+        [Flags]
+        private enum ResizeEdge
+        {
+            None = 0,
+            Left = 1,
+            Top = 2,
+            Right = 4,
+            Bottom = 8
+        }
 
         internal OverlayWindow(Func<GameChatPollingService> gameChatServiceAccessor, OverlayWindowManager manager)
         {
@@ -276,16 +294,10 @@ namespace WarThunderChatTranslator
         private void RenderMessages(System.Collections.Generic.IReadOnlyList<ChatMessage> messages)
         {
             MessagePanel.Children.Clear();
+            EmptyStateText.Visibility = messages.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
             if (messages.Count == 0)
             {
-                MessagePanel.Children.Add(new TextBlock
-                {
-                    Text = Localization.GetString("DashboardEmptyState"),
-                    Foreground = new SolidColorBrush(Color.FromArgb(190, 255, 255, 255)),
-                    FontSize = 13,
-                    Margin = new Thickness(4, 8, 4, 0)
-                });
                 return;
             }
 
@@ -406,7 +418,75 @@ namespace WarThunderChatTranslator
 
         private void DragHandle_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            var point = e.GetCurrentPoint(DragHandle);
+            BeginWindowDrag(DragHandle, e);
+        }
+
+        private void DragHandle_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            ContinueWindowDrag(e);
+        }
+
+        private void DragHandle_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            EndWindowDrag(e);
+        }
+
+        private void DragHandle_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            EndWindowDrag(e);
+        }
+
+        private void OverlayToolbar_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_adjustmentMode || IsPointerFromSettingsButton(e.OriginalSource))
+            {
+                return;
+            }
+
+            BeginWindowDrag(OverlayToolbar, e);
+        }
+
+        private void OverlayToolbar_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (_adjustmentMode)
+            {
+                // The whole toolbar is draggable in adjustment mode. Use the move
+                // cursor as a visual hint, but keep the normal cursor over Settings.
+                OverlayToolbar.SetSystemCursor(
+                    IsPointerFromSettingsButton(e.OriginalSource)
+                        ? InputSystemCursorShape.Arrow
+                        : InputSystemCursorShape.SizeAll);
+                ContinueWindowDrag(e);
+            }
+        }
+
+        private void OverlayToolbar_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_isDragging && !_isResizing)
+            {
+                OverlayToolbar.SetSystemCursor(_adjustmentMode ? InputSystemCursorShape.SizeAll : null);
+            }
+        }
+
+        private void OverlayToolbar_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (_adjustmentMode)
+            {
+                EndWindowDrag(e);
+            }
+        }
+
+        private void OverlayToolbar_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            if (_adjustmentMode)
+            {
+                EndWindowDrag(e);
+            }
+        }
+
+        private void BeginWindowDrag(UIElement captureElement, PointerRoutedEventArgs e)
+        {
+            var point = e.GetCurrentPoint(captureElement);
             if (!point.Properties.IsLeftButtonPressed || !GetCursorPos(out _dragStartCursor))
             {
                 return;
@@ -414,11 +494,12 @@ namespace WarThunderChatTranslator
 
             _isDragging = true;
             _dragStartWindow = _appWindow.Position;
-            DragHandle.CapturePointer(e.Pointer);
+            _dragCaptureElement = captureElement;
+            captureElement.CapturePointer(e.Pointer);
             e.Handled = true;
         }
 
-        private void DragHandle_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void ContinueWindowDrag(PointerRoutedEventArgs e)
         {
             if (!_isDragging || !GetCursorPos(out var current))
             {
@@ -432,27 +513,38 @@ namespace WarThunderChatTranslator
             e.Handled = true;
         }
 
-        private void DragHandle_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private void EndWindowDrag(PointerRoutedEventArgs e)
         {
             if (_isDragging)
             {
                 _isDragging = false;
-                DragHandle.ReleasePointerCapture(e.Pointer);
+                _dragCaptureElement?.ReleasePointerCapture(e.Pointer);
+                _dragCaptureElement = null;
                 _placementSaveTimer.Stop();
                 PersistCurrentPlacement();
             }
+
             e.Handled = true;
         }
 
-        private void DragHandle_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        private bool IsPointerFromSettingsButton(object originalSource)
         {
-            if (_isDragging)
+            for (var current = originalSource as DependencyObject;
+                 current is not null;
+                 current = VisualTreeHelper.GetParent(current))
             {
-                _isDragging = false;
-                DragHandle.ReleasePointerCapture(e.Pointer);
-                _placementSaveTimer.Stop();
-                PersistCurrentPlacement();
+                if (ReferenceEquals(current, SettingsButton))
+                {
+                    return true;
+                }
+
+                if (ReferenceEquals(current, OverlayToolbar))
+                {
+                    break;
+                }
             }
+
+            return false;
         }
 
         private void DragHandle_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
@@ -465,15 +557,20 @@ namespace WarThunderChatTranslator
 
         private void ApplyAdjustmentMode()
         {
-            _presenter.IsResizable = _adjustmentMode;
-            _presenter.SetBorderAndTitleBar(_adjustmentMode, false);
-            ApplyNativeFrameStyle();
+            // Keep the native window permanently borderless. Turning on WS_THICKFRAME
+            // makes Windows briefly create a non-client/title area on some Win11 builds,
+            // which is the white strip visible while entering resize mode. Resizing is
+            // handled by our transparent edge hit areas instead, so the client content
+            // never moves down and no native frame is added.
+            _presenter.IsResizable = false;
+            ResizeLayer.Visibility = _adjustmentMode ? Visibility.Visible : Visibility.Collapsed;
             DragHandle.Background = new SolidColorBrush(_adjustmentMode
                 ? Color.FromArgb(110, 0, 120, 212)
                 : Color.FromArgb(42, 255, 255, 255));
 
             ApplyDwmFramePreferences();
             UpdateInputBehavior(force: true);
+            OverlayToolbar.SetSystemCursor(_adjustmentMode ? InputSystemCursorShape.SizeAll : null);
             if (_adjustmentMode)
             {
                 Activate();
@@ -488,16 +585,8 @@ namespace WarThunderChatTranslator
             }
 
             var style = GetWindowLongPtr(_hwnd, GwlStyle).ToInt64();
-            if (_adjustmentMode)
-            {
-                style &= ~WsPopup;
-                style |= WsThickFrame;
-            }
-            else
-            {
-                style &= ~(WsCaption | WsSysMenu | WsThickFrame | WsMinimizeBox | WsMaximizeBox);
-                style |= WsPopup;
-            }
+            style &= ~(WsCaption | WsSysMenu | WsThickFrame | WsMinimizeBox | WsMaximizeBox);
+            style |= WsPopup;
 
             SetWindowLongPtr(_hwnd, GwlStyle, WindowLongToIntPtr(style));
             SetWindowPos(
@@ -508,6 +597,155 @@ namespace WarThunderChatTranslator
                 0,
                 0,
                 SwpNoMove | SwpNoSize | SwpNoActivate | SwpFrameChanged);
+        }
+
+        private void ResizeBorder_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_adjustmentMode || sender is not FrameworkElement element ||
+                !TryGetResizeEdge(element.Tag?.ToString(), out var edge))
+            {
+                return;
+            }
+
+            // CursorBorder uses UIElement.ProtectedCursor, so WinUI keeps the
+            // correct resize cursor instead of overwriting a temporary user32 cursor.
+        }
+
+        private void ResizeBorder_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            // No manual cursor reset here. The hit-tested CursorBorder (or its pointer
+            // capture while resizing) owns the correct system cursor. Outside the edge,
+            // WinUI naturally falls back to the normal arrow.
+        }
+
+        private void ResizeBorder_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_adjustmentMode || sender is not FrameworkElement element)
+            {
+                return;
+            }
+
+            var point = e.GetCurrentPoint(element);
+            if (!point.Properties.IsLeftButtonPressed ||
+                !TryGetResizeEdge(element.Tag?.ToString(), out var edge) ||
+                !GetCursorPos(out _resizeStartCursor))
+            {
+                return;
+            }
+
+            _isResizing = true;
+            _resizeEdge = edge;
+            _resizeStartWindow = _appWindow.Position;
+            _resizeStartSize = _appWindow.Size;
+            _resizeCaptureElement = element;
+
+            // Capture at both the XAML and HWND levels. The XAML capture can be
+            // lost when the pointer leaves a completely borderless window, which
+            // made resizing appear to stop as soon as the mouse crossed the edge.
+            element.CapturePointer(e.Pointer);
+            SetCapture(_hwnd);
+            e.Handled = true;
+        }
+
+        private void ResizeBorder_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_isResizing || !GetCursorPos(out var current))
+            {
+                return;
+            }
+
+            var deltaX = current.X - _resizeStartCursor.X;
+            var deltaY = current.Y - _resizeStartCursor.Y;
+
+            var x = _resizeStartWindow.X;
+            var y = _resizeStartWindow.Y;
+            var width = _resizeStartSize.Width;
+            var height = _resizeStartSize.Height;
+
+            if ((_resizeEdge & ResizeEdge.Left) != 0)
+            {
+                width = _resizeStartSize.Width - deltaX;
+                x = _resizeStartWindow.X + deltaX;
+                if (width < MinimumWidth)
+                {
+                    width = MinimumWidth;
+                    x = _resizeStartWindow.X + _resizeStartSize.Width - MinimumWidth;
+                }
+            }
+            else if ((_resizeEdge & ResizeEdge.Right) != 0)
+            {
+                width = Math.Max(MinimumWidth, _resizeStartSize.Width + deltaX);
+            }
+
+            if ((_resizeEdge & ResizeEdge.Top) != 0)
+            {
+                height = _resizeStartSize.Height - deltaY;
+                y = _resizeStartWindow.Y + deltaY;
+                if (height < MinimumHeight)
+                {
+                    height = MinimumHeight;
+                    y = _resizeStartWindow.Y + _resizeStartSize.Height - MinimumHeight;
+                }
+            }
+            else if ((_resizeEdge & ResizeEdge.Bottom) != 0)
+            {
+                height = Math.Max(MinimumHeight, _resizeStartSize.Height + deltaY);
+            }
+
+            // Use AppWindow for the actual resize. Unlike the native resizable
+            // frame, this does not add any non-client/title area, so the overlay
+            // stays borderless and the white strip cannot reappear.
+            _appWindow.MoveAndResize(new RectInt32(x, y, width, height));
+            EnsureTopMost();
+            e.Handled = true;
+        }
+
+        private void ResizeBorder_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            EndWindowResize(e);
+        }
+
+        private void ResizeBorder_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            EndWindowResize(e);
+        }
+
+        private void EndWindowResize(PointerRoutedEventArgs e)
+        {
+            if (_isResizing)
+            {
+                _isResizing = false;
+                _resizeEdge = ResizeEdge.None;
+                _resizeCaptureElement?.ReleasePointerCapture(e.Pointer);
+                ReleaseCapture();
+                _resizeCaptureElement = null;
+                _placementSaveTimer.Stop();
+                PersistCurrentPlacement();
+            }
+
+            e.Handled = true;
+        }
+
+        private static bool TryGetResizeEdge(string value, out ResizeEdge edge)
+        {
+            edge = ResizeEdge.None;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            foreach (var token in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            {
+                if (!Enum.TryParse<ResizeEdge>(token, ignoreCase: true, out var parsed))
+                {
+                    edge = ResizeEdge.None;
+                    return false;
+                }
+
+                edge |= parsed;
+            }
+
+            return edge != ResizeEdge.None;
         }
 
         private void UpdateInputBehavior(bool force)
@@ -836,6 +1074,13 @@ namespace WarThunderChatTranslator
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GetCursorPos(out NativePoint point);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetCapture(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ReleaseCapture();
 
         [StructLayout(LayoutKind.Sequential)]
         private struct NativePoint
