@@ -49,6 +49,7 @@
                                     <ComboBoxItem Tag="Yandex">Yandex</ComboBoxItem>
                                     <ComboBoxItem x:Name="Bing_Selection" Tag="Bing" IsEnabled="false" Content="{helpers:Loc Key=ApiBing}" />
                                     <ComboBoxItem Tag="Google" Content="{helpers:Loc Key=ApiGoogle}" />
+                                    <ComboBoxItem Tag="AI" Content="{helpers:Loc Key=ApiAI}" />
                                 </ComboBox>
                             </labs:SettingsCard>
                             <labs:SettingsCard
@@ -83,7 +84,10 @@
                                         Width="24"
                                         Height="24"
                                         Visibility="Collapsed" />
-                                    <Button Click="Button_Click" Content="{helpers:Loc Key=ApiTestButton}" />
+                                    <Button
+                                        x:Name="TestTranslationButton"
+                                        Click="Button_Click"
+                                        Content="{helpers:Loc Key=ApiTestButton}" />
                                 </StackPanel>
                             </labs:SettingsCard>
                         </StackPanel>

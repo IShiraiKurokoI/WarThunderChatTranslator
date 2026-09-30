@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -130,7 +130,7 @@ namespace WarThunderChatTranslator.Services
 
             _webApplication = app;
             await app.StartAsync(cancellationToken).ConfigureAwait(false);
-            Logger.Info($"Kestrel HTTP 服务器已启动，正在监听 {_listenUrl}");
+            Logger.Info($"Kestrel HTTP server started and is listening on {_listenUrl}.");
         }
 
         private static object BuildDashboardLocalization()

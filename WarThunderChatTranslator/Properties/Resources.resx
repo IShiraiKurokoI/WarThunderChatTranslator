@@ -236,4 +236,62 @@
   <data name="DashboardGameStartTime" xml:space="preserve"><value>Started</value></data>
   <data name="DashboardNightMode" xml:space="preserve"><value>Night mode</value></data>
   <data name="DashboardShowChatBubbles" xml:space="preserve"><value>Show chat bubble backgrounds</value></data>
+  <data name="NavAiTranslation" xml:space="preserve"><value>AI translation models</value></data>
+  <data name="ApiAI" xml:space="preserve"><value>AI translation (custom)</value></data>
+  <data name="AiPageTitle" xml:space="preserve"><value>AI translation models</value></data>
+  <data name="AiPageDescription" xml:space="preserve"><value>Manage your own AI translation endpoints. OpenAI Responses, OpenAI-compatible Chat Completions, and Anthropic Messages APIs are supported; the selected model is used by “AI translation (custom)”.</value></data>
+  <data name="AiConnectionsTitle" xml:space="preserve"><value>AI model connections</value></data>
+  <data name="AiAddDescription" xml:space="preserve"><value>Add, edit, test, select, and remove AI translation models.</value></data>
+  <data name="AiAddProvider" xml:space="preserve"><value>Add model</value></data>
+  <data name="AiEmptyTitle" xml:space="preserve"><value>No AI translation models configured</value></data>
+  <data name="AiEmptyDescription" xml:space="preserve"><value>Add an API connection, then select it for AI translation. API keys stay in this app’s local settings.</value></data>
+  <data name="AiSelected" xml:space="preserve"><value>Selected</value></data>
+  <data name="AiUse" xml:space="preserve"><value>Use</value></data>
+  <data name="AiTest" xml:space="preserve"><value>Test</value></data>
+  <data name="AiEdit" xml:space="preserve"><value>Edit</value></data>
+  <data name="AiDelete" xml:space="preserve"><value>Delete</value></data>
+  <data name="AiProviderTypeOpenAIResponses" xml:space="preserve"><value>OpenAI Responses</value></data>
+  <data name="AiProviderTypeOpenAIChatCompletions" xml:space="preserve"><value>OpenAI-compatible Chat Completions</value></data>
+  <data name="AiProviderTypeAnthropic" xml:space="preserve"><value>Anthropic Messages</value></data>
+  <data name="AiModelLabel" xml:space="preserve"><value>Model</value></data>
+  <data name="AiEndpointLabel" xml:space="preserve"><value>Endpoint</value></data>
+  <data name="AiPromptLabel" xml:space="preserve"><value>Prompt</value></data>
+  <data name="AiPromptDefault" xml:space="preserve"><value>Prompt: default translation instructions</value></data>
+  <data name="AiAddDialogTitle" xml:space="preserve"><value>Add AI translation model</value></data>
+  <data name="AiEditDialogTitle" xml:space="preserve"><value>Edit AI translation model</value></data>
+  <data name="AiName" xml:space="preserve"><value>Display name</value></data>
+  <data name="AiNamePlaceholder" xml:space="preserve"><value>For example: OpenAI / Local LLM</value></data>
+  <data name="AiApiType" xml:space="preserve"><value>API type</value></data>
+  <data name="AiBaseUrl" xml:space="preserve"><value>Base URL</value></data>
+  <data name="AiApiKey" xml:space="preserve"><value>API key</value></data>
+  <data name="AiApiKeyPlaceholder" xml:space="preserve"><value>Optional for local endpoints</value></data>
+  <data name="AiApiKeyDescription" xml:space="preserve"><value>The key is stored in the app’s local settings and is never shown in the model list. Leave it empty for endpoints that do not require authentication.</value></data>
+  <data name="AiModel" xml:space="preserve"><value>Model</value></data>
+  <data name="AiTemperatureEnabled" xml:space="preserve"><value>Send temperature</value></data>
+  <data name="AiTemperature" xml:space="preserve"><value>Temperature</value></data>
+  <data name="AiTemperatureOmitted" xml:space="preserve"><value>not sent</value></data>
+  <data name="AiTemperatureDescription" xml:space="preserve"><value>Optional sampling parameter. When disabled, temperature is omitted from the request. OpenAI accepts 0–2. Anthropic accepts 0–1 on older supported models; current Claude 4.7+ models may reject non-default temperature, so leave it disabled unless the selected model supports it.</value></data>
+  <data name="AiTemperatureRangeError" xml:space="preserve"><value>Temperature must be between 0 and {0} for the selected API type.</value></data>
+  <data name="AiCustomPrompt" xml:space="preserve"><value>Custom prompt</value></data>
+  <data name="AiCustomPromptPlaceholder" xml:space="preserve"><value>Optional: terminology, style, or translation rules</value></data>
+  <data name="AiCustomPromptDescription" xml:space="preserve"><value>Optional placeholders: {text}, {target_language}, {target_language_name}, {source_language}. The mandatory JSON response contract is always appended.</value></data>
+  <data name="AiSave" xml:space="preserve"><value>Save</value></data>
+  <data name="AiValidationRequired" xml:space="preserve"><value>Display name, a valid HTTP(S) Base URL, and model are required.</value></data>
+  <data name="AiDeleteDialogTitle" xml:space="preserve"><value>Delete AI translation model?</value></data>
+  <data name="AiDeleteDialogMessage" xml:space="preserve"><value>Delete “{0}”? This cannot be undone.</value></data>
+  <data name="AiDeleteConfirm" xml:space="preserve"><value>Delete</value></data>
+  <data name="AiNoProviderError" xml:space="preserve"><value>No AI translation model is selected. Add and select one on the AI translation models page.</value></data>
+  <data name="AiEndpointRequiredError" xml:space="preserve"><value>The selected AI translation model has no Base URL.</value></data>
+  <data name="AiModelRequiredError" xml:space="preserve"><value>The selected AI translation model has no model name.</value></data>
+  <data name="AiInvalidResponseError" xml:space="preserve"><value>The AI API response is missing required translation fields.</value></data>
+  <data name="AiInvalidJsonError" xml:space="preserve"><value>The AI model did not return a valid JSON translation object.</value></data>
+  <data name="AiApiErrorFormat" xml:space="preserve"><value>AI API request failed (HTTP {0}): {1}</value></data>
+  <data name="AiEmptyApiError" xml:space="preserve"><value>The server returned no error details.</value></data>
+  <data name="DialogTranslateInputTitle" xml:space="preserve"><value>Enter text to translate</value></data>
+  <data name="CommonConfirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="CommonCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="CommonClose" xml:space="preserve"><value>Close</value></data>
+  <data name="TranslationTestSuccessTitle" xml:space="preserve"><value>Translation test succeeded</value></data>
+  <data name="TranslationTestFailureTitle" xml:space="preserve"><value>Translation test failed</value></data>
+  <data name="TranslationTestResultFormat" xml:space="preserve"><value>Translation result&#10;Original text: {0}&#10;Translated text: {1}&#10;Service: {9}&#10;&#10;Dashboard mapping&#10;OriginalMessage: {0}&#10;TranslatedMessage: {1}&#10;SourceLanguageIsoCode: {2}&#10;&#10;Language details&#10;SourceLanguage.Name: {3}&#10;SourceLanguage.ISO6391: {4}&#10;SourceLanguage.ISO6393: {5}&#10;TargetLanguage.Name: {6}&#10;TargetLanguage.ISO6391: {7}&#10;TargetLanguage.ISO6393: {8}</value></data>
 </root>

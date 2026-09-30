@@ -21,6 +21,7 @@ namespace WarThunderChatTranslator
                 { "LocationPage", typeof(LocationPage) },
                 { "InteractPage", typeof(InteractPage) },
                 { "APIPage", typeof(APIPage) },
+                { "AITranslationPage", typeof(AITranslationPage) },
                 { "UpdatePage", typeof(UpdatePage) },
                 { "AboutPage", typeof(AboutPage) },
             };

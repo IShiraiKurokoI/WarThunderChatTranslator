@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation and Contributors.
+﻿// Copyright (c) Microsoft Corporation and Contributors.
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml.Controls;
@@ -10,6 +10,7 @@ using Windows.Graphics;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using WarThunderChatTranslator.Configurations;
+using WarThunderChatTranslator.Helpers;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -24,7 +25,6 @@ namespace WarThunderChatTranslator
 
     public sealed partial class MainWindow : Window
     {
-        public string TitleText = "ս���������췭����";
         internal static MainWindow Instance { get; private set; }
         private OverlappedPresenter _presenter;
         private AppWindow _appWindow;
@@ -40,8 +40,9 @@ namespace WarThunderChatTranslator
         public MainWindow()
         {
             this.InitializeComponent();
-            this.Title = "���������ý���";
             Instance = this;
+            Localization.CultureChanged += UpdateNativeTitle;
+            UpdateNativeTitle();
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
 
@@ -49,11 +50,23 @@ namespace WarThunderChatTranslator
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
             _appWindow = AppWindow.GetFromWindowId(windowId);
             _appWindow.SetIcon("favicon.ico");
+            UpdateNativeTitle();
             ApplyDpiScale(hWnd, true);
             _appWindow.Changed += AppWindow_Changed;
             Closed += MainWindow_Closed;
             _presenter = _appWindow.Presenter as OverlappedPresenter;
             _presenter.IsAlwaysOnTop = false;
+        }
+
+        private void UpdateNativeTitle()
+        {
+            var title = Localization.GetString("AppTitle");
+            Title = title;
+
+            if (_appWindow != null)
+            {
+                _appWindow.Title = title;
+            }
         }
 
         private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
@@ -66,6 +79,7 @@ namespace WarThunderChatTranslator
 
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
+            Localization.CultureChanged -= UpdateNativeTitle;
             if (_appWindow != null)
             {
                 _appWindow.Changed -= AppWindow_Changed;

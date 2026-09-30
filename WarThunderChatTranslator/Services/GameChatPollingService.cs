@@ -60,7 +60,7 @@ namespace WarThunderChatTranslator.Services
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             var initialInterval = ApplicationConfig.GetGamePollingInterval();
-            Logger.Info($"游戏聊天后台轮询已启动，当前间隔 {initialInterval.TotalSeconds:0} 秒");
+            Logger.Info($"Game chat background polling started with an interval of {initialInterval.TotalSeconds:0} seconds.");
 
             try
             {
@@ -87,7 +87,7 @@ namespace WarThunderChatTranslator.Services
             }
             finally
             {
-                Logger.Info("游戏聊天后台轮询已停止");
+                Logger.Info("Game chat background polling stopped.");
             }
         }
 
@@ -137,11 +137,11 @@ namespace WarThunderChatTranslator.Services
             }
             catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
             {
-                LogEndpointFailureOnce($"请求超时: {ex.Message}");
+                LogEndpointFailureOnce($"Request timed out: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "游戏聊天轮询发生未预期异常");
+                Logger.Error(ex, "Unexpected error while polling game chat.");
             }
         }
 
@@ -155,7 +155,7 @@ namespace WarThunderChatTranslator.Services
 
                 if (_gameProcessWasVisible)
                 {
-                    Logger.Info("未检测到 aces.exe 或 aces-min-cpu.exe，暂停游戏聊天请求");
+                    Logger.Info("No aces.exe or aces-min-cpu.exe process detected. Game chat requests are paused.");
                     _gameProcessWasVisible = false;
                 }
                 return;
@@ -204,7 +204,7 @@ namespace WarThunderChatTranslator.Services
             if (!_gameEndpointHealthy)
             {
                 _gameEndpointHealthy = true;
-                Logger.Info("游戏聊天接口已恢复");
+                Logger.Info("The game chat endpoint has recovered.");
             }
 
             if (incomingMessages.Count == 0)
@@ -259,7 +259,7 @@ namespace WarThunderChatTranslator.Services
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warn(ex, $"翻译聊天消息失败，ID={message.Id}");
+                    Logger.Warn(ex, $"Failed to translate chat message. ID={message.Id}.");
                     cachedTranslation = new TranslationCacheEntry("(翻译失败) " + message.Msg, string.Empty);
                 }
             }
@@ -293,8 +293,8 @@ namespace WarThunderChatTranslator.Services
             _gameEndpointHealthy = true;
 
             Logger.Info(
-                $"检测到新的游戏进程：{process.ProcessName}.exe，PID={process.Pid}，进程代次={processGeneration}，" +
-                "已清空翻译缓存和聊天缓存，并将 lastId 重置为 0");
+                $"Detected a new game process: {process.ProcessName}.exe, PID={process.Pid}, generation={processGeneration}. " +
+                "Translation and chat caches were cleared, and lastId was reset to 0.");
         }
 
         private void LogEndpointFailureOnce(string reason)
@@ -302,11 +302,11 @@ namespace WarThunderChatTranslator.Services
             if (_gameEndpointHealthy)
             {
                 _gameEndpointHealthy = false;
-                Logger.Warn($"游戏进程存在，但 8111 游戏聊天接口暂时不可用：{reason}");
+                Logger.Warn($"The game process is running, but the port 8111 game chat endpoint is temporarily unavailable: {reason}");
             }
             else
             {
-                Logger.Debug($"游戏聊天接口仍不可用：{reason}");
+                Logger.Debug($"The game chat endpoint is still unavailable: {reason}");
             }
         }
 

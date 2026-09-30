@@ -69,7 +69,7 @@ namespace WarThunderChatTranslator
         private void InitializeLogging()
         {
             logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Info("--------程序启动--------");
+            logger.Info("--------Application started--------");
             DeleteOldLogs();
         }
 
@@ -90,6 +90,7 @@ namespace WarThunderChatTranslator
                 { "ProxyPassword", "" },
                 { "LastUpdateCheckDate", "Never" },
                 { "TranslateAPI", "Microsoft" },
+                { "AiSelectedProviderId", "" },
                 { "TargetLanguage", "zh-CN" },
                 { "FontFamily", "Segoe UI" },
                 { "FontSize", "14" },
@@ -113,9 +114,9 @@ namespace WarThunderChatTranslator
 
             Localization.Initialize(ApplicationConfig.GetSettings("ApplicationLanguage"));
 
-            logger.Info("初始化翻译器对象");
+            logger.Info("Initializing translator.");
             TranslationHelper.init();
-            logger.Info("翻译器对象初始化完成");
+            logger.Info("Translator initialization completed.");
         }
 
         private void InitializeTrayIcon()
@@ -131,7 +132,7 @@ namespace WarThunderChatTranslator
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex, "打开聊天面板失败");
+                        logger.Error(ex, "Failed to open the chat dashboard.");
                     }
                 });
             };
@@ -152,7 +153,7 @@ namespace WarThunderChatTranslator
         {
             if (_dispatcherQueue == null || !_dispatcherQueue.TryEnqueue(() => action()))
             {
-                logger.Warn("无法将托盘命令调度到主 UI 线程");
+                logger.Warn("Failed to dispatch the tray command to the main UI thread.");
             }
         }
 
@@ -280,7 +281,7 @@ namespace WarThunderChatTranslator
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "停止后台服务时发生错误");
+                logger.Error(ex, "An error occurred while stopping background services.");
             }
 
             try
@@ -291,7 +292,7 @@ namespace WarThunderChatTranslator
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "释放托盘图标时发生错误");
+                logger.Error(ex, "An error occurred while disposing the tray icon.");
             }
 
             try
@@ -301,7 +302,7 @@ namespace WarThunderChatTranslator
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "关闭主窗口时发生错误");
+                logger.Error(ex, "An error occurred while closing the main window.");
             }
 
             Application.Current.Exit();
@@ -321,19 +322,19 @@ namespace WarThunderChatTranslator
                     if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out DateTime logDate) && logDate <= deletionDate)
                     {
                         File.Delete(logFile);
-                        logger.Info("删除过期日志: " + Path.GetFileName(logFile));
+                        logger.Info("Deleted expired log file: " + Path.GetFileName(logFile));
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                logger.Error(ex, "Failed to delete expired log files.");
             }
         }
 
         private void HandleException(Exception ex)
         {
-            logger.Error(ex.ToString());
+            logger.Error(ex, "Unhandled application exception.");
 
             var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
             toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode(ex.Message + ex.StackTrace));
@@ -348,8 +349,8 @@ namespace WarThunderChatTranslator
                 var listenOnLan = IsAdmin();
                 if (listenOnLan && !IsPortAllowedInFirewall(8100))
                 {
-                    logger.Info("端口 8100 在防火墙中未被允许。正在添加规则...");
-                    AddFirewallRule(8100, "WarThunderChatTranslator：允许端口 8100");
+                    logger.Info("Port 8100 is not allowed by the firewall. Adding a rule...");
+                    AddFirewallRule(8100, GetFirewallRuleName(8100));
                 }
 
                 _gameChatPollingService = new GameChatPollingService();
@@ -358,7 +359,7 @@ namespace WarThunderChatTranslator
                 await _localHttpServer.StartAsync(_shutdownCts.Token);
 
                 _gamePollingTask = _gameChatPollingService.RunAsync(_shutdownCts.Token);
-                _ = ObserveBackgroundTaskAsync(_gamePollingTask, "游戏聊天轮询");
+                _ = ObserveBackgroundTaskAsync(_gamePollingTask, "game chat polling");
             }
             catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
             {
@@ -366,7 +367,7 @@ namespace WarThunderChatTranslator
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "启动本地 HTTP 服务失败");
+                logger.Error(ex, "Failed to start the local HTTP server.");
 
                 var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
                 toastXml.GetElementsByTagName("text")[0].AppendChild(
@@ -390,8 +391,18 @@ namespace WarThunderChatTranslator
             }
             catch (Exception ex)
             {
-                logger.Error(ex, $"后台任务 {taskName} 异常退出");
+                logger.Error(ex, $"Background task '{taskName}' terminated unexpectedly.");
             }
+        }
+
+        private static string GetFirewallRuleName(int port)
+        {
+            return $"WarThunderChatTranslator: Allow port {port}";
+        }
+
+        private static string GetLegacyFirewallRuleName(int port)
+        {
+            return $"WarThunderChatTranslator：允许端口 {port}";
         }
 
         private bool IsPortAllowedInFirewall(int port)
@@ -413,7 +424,8 @@ namespace WarThunderChatTranslator
             string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            return output.Contains($"WarThunderChatTranslator：允许端口 {port}");
+            return output.Contains(GetFirewallRuleName(port), StringComparison.Ordinal)
+                || output.Contains(GetLegacyFirewallRuleName(port), StringComparison.Ordinal);
         }
 
         private void AddFirewallRule(int port, string ruleName)
@@ -421,7 +433,7 @@ namespace WarThunderChatTranslator
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = "netsh",
-                Arguments = $"advfirewall firewall add rule name=\"{ruleName}\" protocol=TCP dir=in localport={port} action=allow description=\"此规则允许端口 {port} 的入站访问\"",
+                Arguments = $"advfirewall firewall add rule name=\"{ruleName}\" protocol=TCP dir=in localport={port} action=allow description=\"Allows inbound TCP traffic on port {port}.\"",
                 UseShellExecute = true,
                 Verb = "runas",
                 CreateNoWindow = true
@@ -431,11 +443,11 @@ namespace WarThunderChatTranslator
             {
                 using var process = Process.Start(processStartInfo);
                 process.WaitForExit();
-                logger.Info($"防火墙规则 '{ruleName}' 已添加。");
+                logger.Info($"Firewall rule '{ruleName}' was added.");
             }
             catch (Exception ex)
             {
-                logger.Info($"无法添加防火墙规则: {ex.Message}");
+                logger.Warn(ex, $"Failed to add firewall rule '{ruleName}'.");
             }
         }
 
@@ -461,7 +473,7 @@ namespace WarThunderChatTranslator
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "停止本地 HTTP 服务失败");
+                logger.Error(ex, "Failed to stop the local HTTP server.");
             }
 
             _gameChatPollingService?.Dispose();
