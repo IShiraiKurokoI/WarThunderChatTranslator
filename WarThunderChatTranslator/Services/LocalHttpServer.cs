@@ -67,12 +67,14 @@ namespace WarThunderChatTranslator.Services
             {
                 var currentProcessGeneration = _gameChatService.ProcessGeneration;
                 var currentPid = _gameChatService.CurrentGamePid;
+                var currentStartTimeUtc = _gameChatService.CurrentGameStartTimeUtc;
                 var sameProcessGeneration = session.HasValue && session.Value == currentProcessGeneration;
 
                 // Keep X-Game-Session for backward compatibility. Its value represents the game process generation, not an individual battle.
                 context.Response.Headers["X-Game-Session"] = currentProcessGeneration.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 context.Response.Headers["X-Game-Process-Generation"] = currentProcessGeneration.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 context.Response.Headers["X-Game-Pid"] = currentPid.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                context.Response.Headers["X-Game-Start-Time"] = currentStartTimeUtc?.ToString("O", System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
                 context.Response.Headers["X-Game-Last-Id"] = _gameChatService.LastGameChatId.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 context.Response.Headers["X-Web-Poll-Interval-Ms"] = ApplicationConfig.GetWebPollingIntervalMilliseconds().ToString(System.Globalization.CultureInfo.InvariantCulture);
                 context.Response.Headers.CacheControl = "no-store";
@@ -145,6 +147,8 @@ namespace WarThunderChatTranslator.Services
                     displayOriginal = Localization.GetString("DashboardDisplayOriginal"),
                     displayTranslationAndOriginal = Localization.GetString("DashboardDisplayTranslationAndOriginal"),
                     showSourceLanguage = Localization.GetString("DashboardShowSourceLanguage"),
+                    nightMode = Localization.GetString("DashboardNightMode"),
+                    showChatBubbles = Localization.GetString("DashboardShowChatBubbles"),
                     systemSender = Localization.GetString("DashboardSystemSender"),
                     testAllySender = Localization.GetString("DashboardTestAllySender"),
                     testEnemySender = Localization.GetString("DashboardTestEnemySender"),
@@ -156,7 +160,11 @@ namespace WarThunderChatTranslator.Services
                     testSystemTranslation = Localization.GetString("DashboardTestSystemTranslation"),
                     emptyState = Localization.GetString("DashboardEmptyState"),
                     controlsAriaLabel = Localization.GetString("DashboardControlsAriaLabel"),
-                    chatAriaLabel = Localization.GetString("DashboardChatAriaLabel")
+                    chatAriaLabel = Localization.GetString("DashboardChatAriaLabel"),
+                    gameRunning = Localization.GetString("DashboardGameRunning"),
+                    gameStopped = Localization.GetString("DashboardGameStopped"),
+                    gamePid = Localization.GetString("DashboardGamePid"),
+                    gameStartTime = Localization.GetString("DashboardGameStartTime")
                 }
             };
         }

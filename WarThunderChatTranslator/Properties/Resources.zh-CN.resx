@@ -117,4 +117,10 @@
   <data name="DashboardTestEnemyTranslation" xml:space="preserve"><value>这是敌军翻译与颜色预览。</value></data>
   <data name="DashboardTestSystemOriginal" xml:space="preserve"><value>システムメッセージの色テストです。</value></data>
   <data name="DashboardTestSystemTranslation" xml:space="preserve"><value>这是系统消息颜色预览。</value></data>
+  <data name="DashboardGameRunning" xml:space="preserve"><value>游戏正在运行</value></data>
+  <data name="DashboardGameStopped" xml:space="preserve"><value>游戏未运行</value></data>
+  <data name="DashboardGamePid" xml:space="preserve"><value>PID</value></data>
+  <data name="DashboardGameStartTime" xml:space="preserve"><value>启动时间</value></data>
+  <data name="DashboardNightMode" xml:space="preserve"><value>深夜模式</value></data>
+  <data name="DashboardShowChatBubbles" xml:space="preserve"><value>显示聊天气泡背景</value></data>
 </root>

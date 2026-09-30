@@ -13,7 +13,14 @@
         <header class="dashboard-header">
             <div class="title-group">
                 <h1 id="dashboard-title" class="dashboard-title"></h1>
-                <p id="dashboard-subtitle" class="dashboard-subtitle"></p>
+                <div class="dashboard-subtitle-row">
+                    <p id="dashboard-subtitle" class="dashboard-subtitle"></p>
+                    <span id="game-status" class="game-status" tabindex="0" role="status" aria-live="polite">
+                        <span class="game-status-dot" aria-hidden="true"></span>
+                        <span id="game-status-text" class="game-status-text"></span>
+                        <span id="game-status-tooltip" class="game-status-tooltip" role="tooltip"></span>
+                    </span>
+                </div>
             </div>
 
             <div id="control-bar" class="control-bar">
@@ -39,6 +46,22 @@
                         <span class="toggle-track" aria-hidden="true"></span>
                     </span>
                 </label>
+
+                <label class="control-item toggle-control" for="night-mode">
+                    <span class="theme-label-wrap"><span id="theme-mode-icon" class="theme-mode-icon" aria-hidden="true">☾</span><span id="night-mode-label" class="control-label"></span></span>
+                    <span class="toggle-switch">
+                        <input id="night-mode" type="checkbox">
+                        <span class="toggle-track" aria-hidden="true"></span>
+                    </span>
+                </label>
+
+                <label class="control-item toggle-control" for="show-chat-bubbles">
+                    <span id="show-chat-bubbles-label" class="control-label"></span>
+                    <span class="toggle-switch">
+                        <input id="show-chat-bubbles" type="checkbox">
+                        <span class="toggle-track" aria-hidden="true"></span>
+                    </span>
+                </label>
             </div>
         </header>
 
@@ -50,6 +73,9 @@
     <script>
         const DISPLAY_MODE_STORAGE_KEY = 'wtct.dashboard.displayMode';
         const SHOW_SOURCE_LANGUAGE_STORAGE_KEY = 'wtct.dashboard.showSourceLanguage';
+        const NIGHT_MODE_STORAGE_KEY = 'wtct.dashboard.nightMode';
+        const systemThemeQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+        const SHOW_CHAT_BUBBLES_STORAGE_KEY = 'wtct.dashboard.showChatBubbles';
         const DISPLAY_MODES = new Set(['translation', 'original', 'translationWithOriginal']);
         const MIN_MESSAGE_CONTRAST = 4.5;
         const MAX_AUTO_SURFACE_TINT = 0.35;
@@ -62,6 +88,8 @@
         let pollTimer = null;
         let displayMode = 'translation';
         let showSourceLanguage = false;
+        let nightMode = false;
+        let showChatBubbles = true;
         let uiStrings = {};
         let dashboardTestMessagesVisible = false;
         const messagesById = new Map();
@@ -97,6 +125,8 @@
             document.getElementById('dashboard-subtitle').textContent = uiStrings.subtitle || '';
             document.getElementById('display-mode-label').textContent = uiStrings.displayMode || '';
             document.getElementById('show-source-language-label').textContent = uiStrings.showSourceLanguage || '';
+            document.getElementById('night-mode-label').textContent = uiStrings.nightMode || 'Night mode';
+            document.getElementById('show-chat-bubbles-label').textContent = uiStrings.showChatBubbles || 'Show chat bubble backgrounds';
             document.getElementById('empty-state').textContent = uiStrings.emptyState || '';
             document.getElementById('control-bar').setAttribute('aria-label', uiStrings.controlsAriaLabel || '');
             document.getElementById('chat-container').setAttribute('aria-label', uiStrings.chatAriaLabel || '');
@@ -105,6 +135,7 @@
             document.getElementById('display-mode-option-original').textContent = uiStrings.displayOriginal || '';
             document.getElementById('display-mode-option-translationWithOriginal').textContent = uiStrings.displayTranslationAndOriginal || '';
             document.getElementById('display-mode-button').setAttribute('aria-label', uiStrings.displayMode || '');
+            updateGameStatus(0, '');
         }
 
         function getDisplayModeLabel(value) {
@@ -216,9 +247,20 @@
             const storedDisplayMode = readStorage(DISPLAY_MODE_STORAGE_KEY, 'translation');
             displayMode = DISPLAY_MODES.has(storedDisplayMode) ? storedDisplayMode : 'translation';
             showSourceLanguage = readStorage(SHOW_SOURCE_LANGUAGE_STORAGE_KEY, 'false') === 'true';
+            const storedNightMode = readStorage(NIGHT_MODE_STORAGE_KEY, null);
+            const hasManualThemePreference = storedNightMode === 'true' || storedNightMode === 'false';
+            nightMode = hasManualThemePreference
+                ? storedNightMode === 'true'
+                : Boolean(systemThemeQuery && systemThemeQuery.matches);
+            showChatBubbles = readStorage(SHOW_CHAT_BUBBLES_STORAGE_KEY, 'true') !== 'false';
 
             const showSourceLanguageCheckbox = document.getElementById('show-source-language');
+            const nightModeCheckbox = document.getElementById('night-mode');
+            const showChatBubblesCheckbox = document.getElementById('show-chat-bubbles');
             showSourceLanguageCheckbox.checked = showSourceLanguage;
+            nightModeCheckbox.checked = nightMode;
+            showChatBubblesCheckbox.checked = showChatBubbles;
+            applyAppearancePreferences();
             updateDisplayModeControl();
             initializeDisplayModeControl();
 
@@ -227,6 +269,81 @@
                 writeStorage(SHOW_SOURCE_LANGUAGE_STORAGE_KEY, String(showSourceLanguage));
                 renderAllMessages();
             });
+
+            nightModeCheckbox.addEventListener('change', () => {
+                nightMode = nightModeCheckbox.checked;
+                writeStorage(NIGHT_MODE_STORAGE_KEY, String(nightMode));
+                applyAppearancePreferences();
+            });
+
+            if (systemThemeQuery) {
+                const handleSystemThemeChange = (event) => {
+                    const storedNightMode = readStorage(NIGHT_MODE_STORAGE_KEY, null);
+                    if (storedNightMode === 'true' || storedNightMode === 'false') {
+                        return;
+                    }
+
+                    nightMode = event.matches;
+                    nightModeCheckbox.checked = nightMode;
+                    applyAppearancePreferences();
+                };
+
+                if (typeof systemThemeQuery.addEventListener === 'function') {
+                    systemThemeQuery.addEventListener('change', handleSystemThemeChange);
+                } else if (typeof systemThemeQuery.addListener === 'function') {
+                    systemThemeQuery.addListener(handleSystemThemeChange);
+                }
+            }
+
+            showChatBubblesCheckbox.addEventListener('change', () => {
+                showChatBubbles = showChatBubblesCheckbox.checked;
+                writeStorage(SHOW_CHAT_BUBBLES_STORAGE_KEY, String(showChatBubbles));
+                applyAppearancePreferences();
+            });
+        }
+
+        function applyAppearancePreferences() {
+            document.documentElement.classList.toggle('night-mode', nightMode);
+            document.documentElement.classList.toggle('no-chat-bubbles', !showChatBubbles);
+            const icon = document.getElementById('theme-mode-icon');
+            if (icon) icon.textContent = nightMode ? '☀' : '☾';
+        }
+
+        function updateGameStatus(pid, startTimeUtc) {
+            const status = document.getElementById('game-status');
+            const statusText = document.getElementById('game-status-text');
+            const tooltip = document.getElementById('game-status-tooltip');
+            if (!status || !statusText || !tooltip) {
+                return;
+            }
+
+            const isRunning = Number.isInteger(pid) && pid > 0;
+            status.classList.toggle('running', isRunning);
+
+            if (!isRunning) {
+                const stoppedText = uiStrings.gameStopped || 'Game is not running';
+                statusText.textContent = stoppedText;
+                status.setAttribute('aria-label', stoppedText);
+                tooltip.textContent = stoppedText;
+                return;
+            }
+
+            const runningText = uiStrings.gameRunning || 'Game is running';
+            statusText.textContent = runningText;
+            const pidLabel = uiStrings.gamePid || 'PID';
+            const startLabel = uiStrings.gameStartTime || 'Started';
+            let formattedStartTime = startTimeUtc || '—';
+            const parsedStartTime = startTimeUtc ? new Date(startTimeUtc) : null;
+            if (parsedStartTime && !Number.isNaN(parsedStartTime.getTime())) {
+                formattedStartTime = new Intl.DateTimeFormat(document.documentElement.lang || undefined, {
+                    dateStyle: 'medium',
+                    timeStyle: 'medium'
+                }).format(parsedStartTime);
+            }
+
+            const details = `${runningText}\n${pidLabel}: ${pid}\n${startLabel}: ${formattedStartTime}`;
+            status.setAttribute('aria-label', details.replaceAll('\n', ', '));
+            tooltip.textContent = details;
         }
 
         async function fetchChatData() {
@@ -242,6 +359,9 @@
                 }
 
                 const responseGeneration = Number(response.headers.get('X-Game-Process-Generation') || response.headers.get('X-Game-Session') || '0');
+                const gamePid = Number(response.headers.get('X-Game-Pid') || '0');
+                const gameStartTime = response.headers.get('X-Game-Start-Time') || '';
+                updateGameStatus(Number.isFinite(gamePid) ? Math.trunc(gamePid) : 0, gameStartTime);
                 const configuredInterval = Number(response.headers.get('X-Web-Poll-Interval-Ms') || '4000');
                 if (Number.isFinite(configuredInterval) && configuredInterval >= 1000) {
                     webPollIntervalMs = configuredInterval;

@@ -108,6 +108,15 @@ namespace WarThunderChatTranslator.Services
 
         public int CurrentGamePid => Volatile.Read(ref _currentGamePid);
 
+        public DateTime? CurrentGameStartTimeUtc
+        {
+            get
+            {
+                var ticks = Interlocked.Read(ref _currentGameStartTicks);
+                return ticks > 0 ? new DateTime(ticks, DateTimeKind.Utc) : null;
+            }
+        }
+
         public int LastGameChatId => Volatile.Read(ref _lastGameChatId);
 
         public long ProcessGeneration => Interlocked.Read(ref _processGeneration);
@@ -141,6 +150,9 @@ namespace WarThunderChatTranslator.Services
             var gameProcess = FindRunningGameProcess();
             if (gameProcess is null)
             {
+                Interlocked.Exchange(ref _currentGamePid, 0);
+                Interlocked.Exchange(ref _currentGameStartTicks, 0);
+
                 if (_gameProcessWasVisible)
                 {
                     Logger.Info("未检测到 aces.exe 或 aces-min-cpu.exe，暂停游戏聊天请求");
