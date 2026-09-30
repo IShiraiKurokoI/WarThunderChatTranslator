@@ -392,7 +392,9 @@ button, select, input {
     padding: 11px 13px;
     border-radius: 10px;
     border: 1px solid transparent;
+    font-family: var(--app-font-family), Arial, sans-serif;
     font-size: var(--app-font-size);
+    font-weight: var(--app-font-weight);
     line-height: 1.55;
     overflow-wrap: anywhere;
 }

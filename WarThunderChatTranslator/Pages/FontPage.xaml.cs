@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using WarThunderChatTranslator.Configurations;
 using WarThunderChatTranslator.Dialogs;
 using WarThunderChatTranslator.Helpers;
 using Windows.UI;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Shapes;
 
 namespace WarThunderChatTranslator.Pages
 {
     public sealed partial class FontPage : Page
     {
-        public Color FontColor { get; set; }
+        private bool _settingsInitialized;
+
         public Brush AllyPreviewBrush { get; set; }
         public Brush EnemyPreviewBrush { get; set; }
         public Brush SystemPreviewBrush { get; set; }
@@ -32,31 +33,43 @@ namespace WarThunderChatTranslator.Pages
 
         private void InitializeFontColors()
         {
-            AllyPreviewBrush = new SolidColorBrush(GetFontColor("AllyFontColor"));
-            EnemyPreviewBrush = new SolidColorBrush(GetFontColor("EnemyFontColor"));
-            SystemPreviewBrush = new SolidColorBrush(GetFontColor("SystemFontColor"));
+            AllyPreviewBrush = new SolidColorBrush(GetFontColor("AllyFontColor", "#FF5BC0DE"));
+            EnemyPreviewBrush = new SolidColorBrush(GetFontColor("EnemyFontColor", "#FFD9534F"));
+            SystemPreviewBrush = new SolidColorBrush(GetFontColor("SystemFontColor", "#FF856404"));
         }
 
-        private Color GetFontColor(string settingKey)
+        private static Color GetFontColor(string settingKey, string fallback)
         {
-            string colorString = ApplicationConfig.GetSettings(settingKey);
-            return ToColor(colorString);
+            var colorString = ApplicationConfig.GetSettings(settingKey);
+            return TryToColor(colorString, out var color)
+                ? color
+                : ToColor(fallback);
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            FontSizePanel.Value = double.Parse(ApplicationConfig.GetSettings("FontSize"));
+            _settingsInitialized = false;
+
+            var rawFontSize = ApplicationConfig.GetSettings("FontSize");
+            if (!double.TryParse(rawFontSize, NumberStyles.Float, CultureInfo.InvariantCulture, out var fontSize) &&
+                !double.TryParse(rawFontSize, NumberStyles.Float, CultureInfo.CurrentCulture, out fontSize))
+            {
+                fontSize = 14;
+            }
+
+            FontSizePanel.Value = Math.Clamp(fontSize, 1, 200);
             FontStylePanel.SelectedIndex = GetFontStyleIndex(ApplicationConfig.GetSettings("FontStyle"));
+            _settingsInitialized = true;
         }
 
-        private int GetFontStyleIndex(string fontStyle)
+        private static int GetFontStyleIndex(string fontStyle)
         {
             return fontStyle switch
             {
                 "lighter" => 0,
                 "normal" => 1,
                 "bold" => 2,
-                "bolder" => 2,
+                "bolder" => 3,
                 _ => 1,
             };
         }
@@ -76,7 +89,7 @@ namespace WarThunderChatTranslator.Pages
 
         private void FontFamilyPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (FontFamilyPanel.SelectedValue is FontFamily selectedFontFamily)
+            if (_settingsInitialized && FontFamilyPanel.SelectedValue is FontFamily selectedFontFamily)
             {
                 ApplicationConfig.SaveSettings("FontFamily", selectedFontFamily.Source);
             }
@@ -84,61 +97,93 @@ namespace WarThunderChatTranslator.Pages
 
         private void FontSizePanel_TextChanged(object sender, NumberBoxValueChangedEventArgs e)
         {
-            ApplicationConfig.SaveSettings("FontSize", FontSizePanel.Value.ToString());
+            if (!_settingsInitialized || double.IsNaN(e.NewValue) || double.IsInfinity(e.NewValue))
+            {
+                return;
+            }
+
+            var fontSize = Math.Clamp(e.NewValue, 1, 200);
+            ApplicationConfig.SaveSettings("FontSize", fontSize.ToString("0.##", CultureInfo.InvariantCulture));
         }
 
         private void FontStylePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (FontStylePanel.SelectedItem is ComboBoxItem selectedItem)
+            if (_settingsInitialized && FontStylePanel.SelectedItem is ComboBoxItem selectedItem)
             {
-                ApplicationConfig.SaveSettings("FontStyle", selectedItem.Tag.ToString());
+                ApplicationConfig.SaveSettings("FontStyle", selectedItem.Tag?.ToString() ?? "normal");
             }
         }
 
         public static Color ToColor(string color)
         {
-            color = Regex.Replace(color.TrimStart('#').ToLower(), "[g-z]", "");
-            int alpha = Convert.ToInt32(color.Substring(0, 2), 16);
-            int red = Convert.ToInt32(color.Substring(2, 2), 16);
-            int green = Convert.ToInt32(color.Substring(4, 2), 16);
-            int blue = Convert.ToInt32(color.Substring(6, 2), 16);
-            return Color.FromArgb((byte)alpha, (byte)red, (byte)green, (byte)blue);
+            if (TryToColor(color, out var parsed))
+            {
+                return parsed;
+            }
+
+            throw new FormatException($"Invalid ARGB color value: {color}");
         }
 
-        private async void OnColorButtonClick(string settingKey, Brush previewBrush, Shape colorPreview)
+        private static bool TryToColor(string color, out Color parsed)
         {
-            var colorPickerDialog = new ColorPickerDialog(FontColor)
+            parsed = default;
+            if (string.IsNullOrWhiteSpace(color))
             {
-                XamlRoot = this.XamlRoot,
+                return false;
+            }
+
+            var normalized = color.Trim();
+            if (normalized.StartsWith('#'))
+            {
+                normalized = normalized[1..];
+            }
+
+            if (normalized.Length != 8 || !uint.TryParse(normalized, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var argb))
+            {
+                return false;
+            }
+
+            parsed = Color.FromArgb(
+                (byte)(argb >> 24),
+                (byte)(argb >> 16),
+                (byte)(argb >> 8),
+                (byte)argb);
+            return true;
+        }
+
+        private async Task SelectColorAsync(string settingKey, Shape colorPreview, string fallback)
+        {
+            var currentColor = GetFontColor(settingKey, fallback);
+            var colorPickerDialog = new ColorPickerDialog(currentColor)
+            {
+                XamlRoot = XamlRoot,
                 Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style
             };
+
             var result = await colorPickerDialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
+            if (result != ContentDialogResult.Primary)
             {
-                FontColor = colorPickerDialog.pickerColor;
-                ApplicationConfig.SaveSettings(settingKey, FontColor.ToString());
-                previewBrush = new SolidColorBrush(FontColor);
-                colorPreview.Fill = previewBrush;
+                return;
             }
+
+            var selectedColor = colorPickerDialog.pickerColor;
+            ApplicationConfig.SaveSettings(settingKey, selectedColor.ToString());
+            colorPreview.Fill = new SolidColorBrush(selectedColor);
         }
 
-        private void Ally_Button_Click(object sender, RoutedEventArgs e)
+        private async void Ally_Button_Click(object sender, RoutedEventArgs e)
         {
-            OnColorButtonClick("AllyFontColor", AllyPreviewBrush, AllyColorPreview);
-            AllyPreviewBrush = new SolidColorBrush(FontColor); // Update the reference after the async operation
+            await SelectColorAsync("AllyFontColor", AllyColorPreview, "#FF5BC0DE");
         }
 
-        private void Enemy_Button_Click(object sender, RoutedEventArgs e)
+        private async void Enemy_Button_Click(object sender, RoutedEventArgs e)
         {
-            OnColorButtonClick("EnemyFontColor", EnemyPreviewBrush, EnemyColorPreview);
-            EnemyPreviewBrush = new SolidColorBrush(FontColor); // Update the reference after the async operation
+            await SelectColorAsync("EnemyFontColor", EnemyColorPreview, "#FFD9534F");
         }
 
-        private void System_Button_Click(object sender, RoutedEventArgs e)
+        private async void System_Button_Click(object sender, RoutedEventArgs e)
         {
-            OnColorButtonClick("SystemFontColor", SystemPreviewBrush, SystemColorPreview);
-            SystemPreviewBrush = new SolidColorBrush(FontColor); // Update the reference after the async operation
+            await SelectColorAsync("SystemFontColor", SystemColorPreview, "#FF856404");
         }
-
     }
 }

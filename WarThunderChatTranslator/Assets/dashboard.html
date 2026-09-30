@@ -7,6 +7,7 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/user-styles.css">
+    <style id="dashboard-user-style"></style>
 </head>
 <body>
     <main class="dashboard-shell">
@@ -80,6 +81,8 @@
         const MIN_MESSAGE_CONTRAST = 4.5;
         const MAX_AUTO_SURFACE_TINT = 0.35;
         const AUTO_BORDER_TINT = 0.28;
+        const DASHBOARD_STYLE_SYNC_INTERVAL_MS = 1000;
+        const DASHBOARD_STYLE_ERROR_LOG_INTERVAL_MS = 10000;
 
         let lastId = 0;
         let processGeneration = 0;
@@ -92,6 +95,10 @@
         let showChatBubbles = true;
         let uiStrings = {};
         let dashboardTestMessagesVisible = false;
+        let dashboardStyleVersion = null;
+        let dashboardStyleSyncInProgress = false;
+        let dashboardStyleSyncTimer = null;
+        let lastDashboardStyleErrorLogAt = 0;
         const messagesById = new Map();
 
         function readStorage(key, fallbackValue) {
@@ -109,6 +116,108 @@
             } catch {
                 // The dashboard keeps working when browser storage is unavailable.
             }
+        }
+
+        function applyDashboardStyle(style) {
+            const root = document.documentElement;
+            const version = Number(style?.version);
+            const fontFamilyCss = typeof style?.fontFamilyCss === 'string' && style.fontFamilyCss.length > 0
+                ? style.fontFamilyCss
+                : '"Segoe UI"';
+            const fontSize = Number(style?.fontSize);
+            const fontWeight = typeof style?.fontWeight === 'string' ? style.fontWeight : 'normal';
+            const allyColor = typeof style?.allyColor === 'string' ? style.allyColor : 'rgba(91, 192, 222, 1)';
+            const enemyColor = typeof style?.enemyColor === 'string' ? style.enemyColor : 'rgba(217, 83, 79, 1)';
+            const systemColor = typeof style?.systemColor === 'string' ? style.systemColor : 'rgba(133, 100, 4, 1)';
+
+            root.style.setProperty('--app-font-family', fontFamilyCss);
+            root.style.setProperty('--app-font-weight', fontWeight);
+            root.style.setProperty('--app-font-size', `${Number.isFinite(fontSize) ? Math.min(200, Math.max(1, fontSize)) : 14}px`);
+            root.style.setProperty('--ally-color', allyColor);
+            root.style.setProperty('--enemy-color', enemyColor);
+            root.style.setProperty('--system-color', systemColor);
+
+            const userStyleElement = document.getElementById('dashboard-user-style');
+            if (userStyleElement) {
+                const backgroundCss = typeof style?.backgroundCss === 'string' ? style.backgroundCss : '';
+                userStyleElement.textContent = `body { ${backgroundCss} }`;
+            }
+
+            if (document.body && Number.isFinite(version)) {
+                document.body.dataset.dashboardStyleVersion = String(version);
+            }
+
+            dashboardStyleVersion = Number.isFinite(version) ? version : dashboardStyleVersion;
+
+            requestAnimationFrame(() => {
+                updateAutomaticMessageSurfaces();
+                if (document.fonts && typeof document.fonts.load === 'function') {
+                    const requestedFont = `${Number.isFinite(fontSize) ? fontSize : 14}px ${fontFamilyCss}`;
+                    document.fonts.load(requestedFont).catch(() => {
+                        // System font availability is best-effort; CSS fallback remains active.
+                    });
+                }
+            });
+        }
+
+        async function syncDashboardStyle(force = false) {
+            if (dashboardStyleSyncInProgress) {
+                return false;
+            }
+
+            dashboardStyleSyncInProgress = true;
+            try {
+                const response = await fetch('/api/dashboard-style', {
+                    cache: 'no-store',
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const style = await response.json();
+                const version = Number(style?.version);
+                if (force || dashboardStyleVersion === null || !Number.isFinite(version) || version !== dashboardStyleVersion) {
+                    applyDashboardStyle(style);
+                    return true;
+                }
+
+                return false;
+            } catch (error) {
+                const now = Date.now();
+                if (now - lastDashboardStyleErrorLogAt >= DASHBOARD_STYLE_ERROR_LOG_INTERVAL_MS) {
+                    console.warn('Failed to synchronize dashboard style:', error);
+                    lastDashboardStyleErrorLogAt = now;
+                }
+                return false;
+            } finally {
+                dashboardStyleSyncInProgress = false;
+            }
+        }
+
+        function scheduleDashboardStyleSync(delay = DASHBOARD_STYLE_SYNC_INTERVAL_MS) {
+            if (dashboardStyleSyncTimer !== null) {
+                clearTimeout(dashboardStyleSyncTimer);
+            }
+
+            dashboardStyleSyncTimer = setTimeout(async () => {
+                await syncDashboardStyle(false);
+                scheduleDashboardStyleSync();
+            }, delay);
+        }
+
+        function initializeDashboardStyleSync() {
+            scheduleDashboardStyleSync();
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    void syncDashboardStyle(false);
+                }
+            });
+
+            window.addEventListener('focus', () => {
+                void syncDashboardStyle(false);
+            });
         }
 
         async function loadDashboardLocalization() {
@@ -365,6 +474,11 @@
                 const configuredInterval = Number(response.headers.get('X-Web-Poll-Interval-Ms') || '4000');
                 if (Number.isFinite(configuredInterval) && configuredInterval >= 1000) {
                     webPollIntervalMs = configuredInterval;
+                }
+
+                const serverStyleVersion = Number(response.headers.get('X-Dashboard-Style-Version'));
+                if (Number.isFinite(serverStyleVersion) && dashboardStyleVersion !== null && serverStyleVersion !== dashboardStyleVersion) {
+                    void syncDashboardStyle(false);
                 }
 
                 const chatMessages = await response.json();
@@ -758,6 +872,7 @@
         window.wtctTest = showDashboardTestMessages;
         window.wtctTestClear = clearDashboardTestMessages;
         window.wtctTestColors = getDashboardColorConfiguration;
+        window.wtctRefreshStyle = () => syncDashboardStyle(true);
         window.WTCTDashboardTest = Object.freeze({
             show: showDashboardTestMessages,
             clear: clearDashboardTestMessages,
@@ -771,6 +886,8 @@
         async function initializeDashboard() {
             try {
                 await loadDashboardLocalization();
+                await syncDashboardStyle(true);
+                initializeDashboardStyleSync();
                 initializePreferences();
                 updateAutomaticMessageSurfaces();
                 updateEmptyState();

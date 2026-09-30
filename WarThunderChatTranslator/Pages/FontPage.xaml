@@ -55,6 +55,7 @@
                                 <NumberBox
                                     x:Name="FontSizePanel"
                                     LargeChange="10"
+                                    Maximum="200"
                                     Minimum="1"
                                     SmallChange="2"
                                     SpinButtonPlacementMode="Compact"

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using Windows.Storage;
 
 namespace WarThunderChatTranslator.Configurations
@@ -7,6 +9,19 @@ namespace WarThunderChatTranslator.Configurations
     static class ApplicationConfig
     {
         private static readonly ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
+        private static readonly object SettingsLock = new();
+        private static long _dashboardStyleVersion;
+
+        private static readonly HashSet<string> DashboardStyleKeys = new(StringComparer.Ordinal)
+        {
+            "FontFamily",
+            "FontSize",
+            "FontStyle",
+            "AllyFontColor",
+            "EnemyFontColor",
+            "SystemFontColor",
+            "BackgroundCSS"
+        };
 
         public const string GamePollingIntervalSecondsKey = "GamePollingIntervalSeconds";
         public const string WebPollingIntervalSecondsKey = "WebPollingIntervalSeconds";
@@ -17,12 +32,50 @@ namespace WarThunderChatTranslator.Configurations
 
         public static void SaveSettings(string key, string value)
         {
-            LocalSettings.Values[key] = value;
+            lock (SettingsLock)
+            {
+                var existingValue = LocalSettings.Values[key] as string;
+                if (string.Equals(existingValue, value, StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                LocalSettings.Values[key] = value;
+                if (DashboardStyleKeys.Contains(key))
+                {
+                    Interlocked.Increment(ref _dashboardStyleVersion);
+                }
+            }
         }
 
         public static string GetSettings(string key)
         {
-            return LocalSettings.Values[key] as string;
+            lock (SettingsLock)
+            {
+                return LocalSettings.Values[key] as string;
+            }
+        }
+
+        public static IReadOnlyDictionary<string, string> GetSettingsSnapshot(params string[] keys)
+        {
+            var snapshot = new Dictionary<string, string>(keys.Length, StringComparer.Ordinal);
+            lock (SettingsLock)
+            {
+                foreach (var key in keys)
+                {
+                    if (LocalSettings.Values[key] is string value)
+                    {
+                        snapshot[key] = value;
+                    }
+                }
+            }
+
+            return snapshot;
+        }
+
+        public static long GetDashboardStyleVersion()
+        {
+            return Interlocked.Read(ref _dashboardStyleVersion);
         }
 
         public static int GetPollingIntervalSeconds(string key)
