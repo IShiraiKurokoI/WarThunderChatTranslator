@@ -26,6 +26,15 @@ namespace WarThunderChatTranslator.Configurations
         public const string GamePollingIntervalSecondsKey = "GamePollingIntervalSeconds";
         public const string WebPollingIntervalSecondsKey = "WebPollingIntervalSeconds";
 
+        public const string OverlayDisplayModeKey = "OverlayDisplayMode";
+        public const string OverlayShowSourceLanguageKey = "OverlayShowSourceLanguage";
+        public const string OverlayMonitorDeviceKey = "OverlayMonitorDevice";
+        public const string OverlayXKey = "OverlayX";
+        public const string OverlayYKey = "OverlayY";
+        public const string OverlayWidthKey = "OverlayWidth";
+        public const string OverlayHeightKey = "OverlayHeight";
+        public const string OverlayOpacityPercentKey = "OverlayOpacityPercent";
+
         public const int DefaultPollingIntervalSeconds = 4;
         public const int MinPollingIntervalSeconds = 1;
         public const int MaxPollingIntervalSeconds = 60;

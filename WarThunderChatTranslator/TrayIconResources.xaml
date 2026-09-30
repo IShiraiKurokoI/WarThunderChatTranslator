@@ -6,6 +6,14 @@
     xmlns:local="using:WarThunderChatTranslator"
     xmlns:tb="using:H.NotifyIcon">
     <XamlUICommand
+        x:Key="OpenOverlayCommand"
+        Description="{helpers:Loc Key=TrayOverlayDescription}"
+        Label="{helpers:Loc Key=TrayOverlay}">
+        <XamlUICommand.IconSource>
+            <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7C2;" />
+        </XamlUICommand.IconSource>
+    </XamlUICommand>
+    <XamlUICommand
         x:Key="OpenDashboardCommand"
         Description="{helpers:Loc Key=TrayDashboardDescription}"
         Label="{helpers:Loc Key=TrayDashboard}">
@@ -39,7 +47,8 @@
         Visibility="Visible">
         <tb:TaskbarIcon.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Command="{StaticResource OpenDashboardCommand}" MinWidth="180" />
+                <MenuFlyoutItem Command="{StaticResource OpenOverlayCommand}" MinWidth="180" />
+                <MenuFlyoutItem Command="{StaticResource OpenDashboardCommand}" />
                 <MenuFlyoutItem Command="{StaticResource ShowHideWindowCommand}" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem Command="{StaticResource ExitApplicationCommand}" />

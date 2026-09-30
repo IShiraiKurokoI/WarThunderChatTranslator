@@ -31,6 +31,7 @@ namespace WarThunderChatTranslator
         private readonly CancellationTokenSource _shutdownCts = new();
         private GameChatPollingService _gameChatPollingService;
         private LocalHttpServer _localHttpServer;
+        internal OverlayWindowManager OverlayManager { get; private set; }
         private Task _gamePollingTask;
         private DispatcherQueue _dispatcherQueue;
         private int _servicesStopped;
@@ -62,6 +63,7 @@ namespace WarThunderChatTranslator
         {
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
             InitializeAppSettings();
+            OverlayManager = new OverlayWindowManager(() => _gameChatPollingService);
             InitializeTrayIcon();
             _ = StartBackgroundServicesAsync();
         }
@@ -102,6 +104,11 @@ namespace WarThunderChatTranslator
                 { "BackgroundCSS", "background-color: #f4f4f4;" },
                 { ApplicationConfig.GamePollingIntervalSecondsKey, ApplicationConfig.DefaultPollingIntervalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { ApplicationConfig.WebPollingIntervalSecondsKey, ApplicationConfig.DefaultPollingIntervalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ApplicationConfig.OverlayDisplayModeKey, "translation" },
+                { ApplicationConfig.OverlayShowSourceLanguageKey, "false" },
+                { ApplicationConfig.OverlayOpacityPercentKey, "90" },
+                { ApplicationConfig.OverlayWidthKey, OverlayWindow.DefaultWidth.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ApplicationConfig.OverlayHeightKey, OverlayWindow.DefaultHeight.ToString(System.Globalization.CultureInfo.InvariantCulture) },
             };
 
             foreach (var setting in defaultSettings)
@@ -137,6 +144,9 @@ namespace WarThunderChatTranslator
                 });
             };
 
+            var openOverlayCommand = (XamlUICommand)Resources["OpenOverlayCommand"];
+            openOverlayCommand.ExecuteRequested += (sender, args) => EnqueueOnUiThread(() => OverlayManager?.Toggle());
+
             var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
             showHideWindowCommand.ExecuteRequested += (sender, args) => EnqueueOnUiThread(ToggleMainWindowVisibility);
 
@@ -164,7 +174,7 @@ namespace WarThunderChatTranslator
                 return;
             }
 
-            var menuKeys = new[] { "TrayDashboard", "TraySettings", "TrayExit" };
+            var menuKeys = new[] { "TrayOverlay", "TrayDashboard", "TraySettings", "TrayExit" };
             var widestText = 0.0;
             foreach (var key in menuKeys)
             {
@@ -293,6 +303,15 @@ namespace WarThunderChatTranslator
             catch (Exception ex)
             {
                 logger.Error(ex, "An error occurred while disposing the tray icon.");
+            }
+
+            try
+            {
+                OverlayManager?.Close();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occurred while closing the overlay window.");
             }
 
             try

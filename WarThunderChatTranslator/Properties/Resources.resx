@@ -294,4 +294,22 @@
   <data name="TranslationTestSuccessTitle" xml:space="preserve"><value>Translation test succeeded</value></data>
   <data name="TranslationTestFailureTitle" xml:space="preserve"><value>Translation test failed</value></data>
   <data name="TranslationTestResultFormat" xml:space="preserve"><value>Translation result&#10;Original text: {0}&#10;Translated text: {1}&#10;Service: {9}&#10;&#10;Dashboard mapping&#10;OriginalMessage: {0}&#10;TranslatedMessage: {1}&#10;SourceLanguageIsoCode: {2}&#10;&#10;Language details&#10;SourceLanguage.Name: {3}&#10;SourceLanguage.ISO6391: {4}&#10;SourceLanguage.ISO6393: {5}&#10;TargetLanguage.Name: {6}&#10;TargetLanguage.ISO6391: {7}&#10;TargetLanguage.ISO6393: {8}</value></data>
+  <data name="TrayOverlay" xml:space="preserve"><value>Overlay</value></data>
+  <data name="TrayOverlayDescription" xml:space="preserve"><value>Show or hide the in-game chat overlay</value></data>
+  <data name="OverlayTitle" xml:space="preserve"><value>Live chat</value></data>
+  <data name="OverlaySettingsTitle" xml:space="preserve"><value>Overlay settings</value></data>
+  <data name="OverlayHandleToolTip" xml:space="preserve"><value>Drag to move. Double-click to enable or disable resize mode.</value></data>
+  <data name="LocationTitle" xml:space="preserve"><value>Position and size</value></data>
+  <data name="LocationMonitor" xml:space="preserve"><value>Overlay display</value></data>
+  <data name="LocationMonitorDescription" xml:space="preserve"><value>Select and remember the display used by the overlay.</value></data>
+  <data name="LocationPosition" xml:space="preserve"><value>Overlay position</value></data>
+  <data name="LocationPositionDescription" xml:space="preserve"><value>Desktop pixel coordinates. Dragging the overlay updates these values automatically.</value></data>
+  <data name="LocationSize" xml:space="preserve"><value>Overlay size</value></data>
+  <data name="LocationSizeDescription" xml:space="preserve"><value>Double-click the overlay move handle to enable mouse resizing.</value></data>
+  <data name="LocationWidth" xml:space="preserve"><value>Width</value></data>
+  <data name="LocationHeight" xml:space="preserve"><value>Height</value></data>
+  <data name="LocationApply" xml:space="preserve"><value>Apply</value></data>
+  <data name="LocationCenter" xml:space="preserve"><value>Center on selected display</value></data>
+  <data name="OverlayOpacity" xml:space="preserve"><value>Overlay opacity</value></data>
+  <data name="OverlayOpacityDescription" xml:space="preserve"><value>Adjust the translucency of the overlay background.</value></data>
 </root>

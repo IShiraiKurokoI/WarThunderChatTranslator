@@ -79,21 +79,20 @@
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="{helpers:Loc Key=NavInteraction}"
-                            IsEnabled="False"
-                            Tag="InteractPage">
+                            Content="{helpers:Loc Key=NavLayout}"
+                            Tag="LocationPage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico" />
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Size.ico" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
 
                         <NavigationViewItem
                             Margin="0,0,12,0"
-                            Content="{helpers:Loc Key=NavLayout}"
+                            Content="{helpers:Loc Key=NavInteraction}"
                             IsEnabled="False"
-                            Tag="LocationPage">
+                            Tag="InteractPage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Size.ico" />
+                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                     </NavigationViewItem.MenuItems>

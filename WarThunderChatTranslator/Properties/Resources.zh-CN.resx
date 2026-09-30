@@ -181,4 +181,22 @@
   <data name="TranslationTestSuccessTitle" xml:space="preserve"><value>翻译测试成功</value></data>
   <data name="TranslationTestFailureTitle" xml:space="preserve"><value>翻译测试失败</value></data>
   <data name="TranslationTestResultFormat" xml:space="preserve"><value>翻译结果&#10;原文：{0}&#10;译文：{1}&#10;翻译服务：{9}&#10;&#10;Dashboard 映射&#10;OriginalMessage：{0}&#10;TranslatedMessage：{1}&#10;SourceLanguageIsoCode：{2}&#10;&#10;语言信息&#10;SourceLanguage.Name：{3}&#10;SourceLanguage.ISO6391：{4}&#10;SourceLanguage.ISO6393：{5}&#10;TargetLanguage.Name：{6}&#10;TargetLanguage.ISO6391：{7}&#10;TargetLanguage.ISO6393：{8}</value></data>
+  <data name="TrayOverlay" xml:space="preserve"><value>悬浮窗</value></data>
+  <data name="TrayOverlayDescription" xml:space="preserve"><value>显示或隐藏游戏聊天悬浮窗</value></data>
+  <data name="OverlayTitle" xml:space="preserve"><value>实时聊天</value></data>
+  <data name="OverlaySettingsTitle" xml:space="preserve"><value>悬浮窗设置</value></data>
+  <data name="OverlayHandleToolTip" xml:space="preserve"><value>按住拖动调整位置；双击切换可调整大小/鼠标透传状态。</value></data>
+  <data name="LocationTitle" xml:space="preserve"><value>位置和大小</value></data>
+  <data name="LocationMonitor" xml:space="preserve"><value>悬浮窗显示器</value></data>
+  <data name="LocationMonitorDescription" xml:space="preserve"><value>选择并记忆悬浮窗使用的显示器。</value></data>
+  <data name="LocationPosition" xml:space="preserve"><value>悬浮窗位置</value></data>
+  <data name="LocationPositionDescription" xml:space="preserve"><value>使用桌面像素坐标；拖动悬浮窗后会自动同步这里的数值。</value></data>
+  <data name="LocationSize" xml:space="preserve"><value>悬浮窗大小</value></data>
+  <data name="LocationSizeDescription" xml:space="preserve"><value>双击悬浮窗移动图标后，可直接用鼠标拖动窗口边缘调整大小。</value></data>
+  <data name="LocationWidth" xml:space="preserve"><value>宽度</value></data>
+  <data name="LocationHeight" xml:space="preserve"><value>高度</value></data>
+  <data name="LocationApply" xml:space="preserve"><value>应用</value></data>
+  <data name="LocationCenter" xml:space="preserve"><value>在所选显示器居中</value></data>
+  <data name="OverlayOpacity" xml:space="preserve"><value>半透明透明度</value></data>
+  <data name="OverlayOpacityDescription" xml:space="preserve"><value>调整悬浮窗背景的半透明程度。</value></data>
 </root>

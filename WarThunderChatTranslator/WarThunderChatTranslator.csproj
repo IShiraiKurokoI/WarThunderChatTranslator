@@ -30,10 +30,10 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-    <Version>1.0.7.1</Version>
-    <AssemblyVersion>1.0.7.1</AssemblyVersion>
-    <FileVersion>1.0.7.1</FileVersion>
-    <InformationalVersion>1.0.7.1</InformationalVersion>
+    <Version>1.0.8.0</Version>
+    <AssemblyVersion>1.0.8.0</AssemblyVersion>
+    <FileVersion>1.0.8.0</FileVersion>
+    <InformationalVersion>1.0.8.0</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
@@ -124,6 +124,7 @@
     <None Remove="Pages\ThemePage.xaml" />
     <None Remove="Pages\UpdatePage.xaml" />
     <None Remove="TrayIconResources.xaml" />
+    <None Remove="OverlayWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -221,6 +222,9 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <Page Update="TrayIconResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="OverlayWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
