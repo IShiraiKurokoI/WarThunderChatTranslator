@@ -81,6 +81,7 @@ namespace WarThunderChatTranslator
         private ResizeEdge _resizeEdge;
         private uint _lastForegroundPid;
         private bool _lastForegroundWasGame;
+        private bool _scrollToBottomPending;
 
         [Flags]
         private enum ResizeEdge
@@ -306,7 +307,34 @@ namespace WarThunderChatTranslator
                 MessagePanel.Children.Add(CreateMessageElement(message));
             }
 
-            _ = DispatcherQueue.TryEnqueue(() => MessageScrollViewer.ChangeView(null, MessageScrollViewer.ScrollableHeight, null, true));
+            QueueScrollToBottomAfterLayout();
+        }
+
+        private void QueueScrollToBottomAfterLayout()
+        {
+            if (_scrollToBottomPending)
+            {
+                return;
+            }
+
+            _scrollToBottomPending = true;
+            MessagePanel.LayoutUpdated += MessagePanel_LayoutUpdated;
+        }
+
+        private void MessagePanel_LayoutUpdated(object sender, object e)
+        {
+            MessagePanel.LayoutUpdated -= MessagePanel_LayoutUpdated;
+            _scrollToBottomPending = false;
+
+            if (_isClosed)
+            {
+                return;
+            }
+
+            // ScrollableHeight is only reliable after the new message elements have
+            // completed a layout pass. Reading it immediately after Children.Add can
+            // return the previous extent, leaving the newest row just below the viewport.
+            MessageScrollViewer.ChangeView(null, MessageScrollViewer.ScrollableHeight, null, true);
         }
 
         private FrameworkElement CreateMessageElement(ChatMessage message)
@@ -752,6 +780,17 @@ namespace WarThunderChatTranslator
         {
             var gameFocused = IsGameForeground();
             var shouldClickThrough = !_adjustmentMode && gameFocused;
+            var messageScrollingInteractive = !shouldClickThrough;
+
+            // Keep the overlay completely passive while War Thunder owns the mouse, but
+            // expose normal scrolling (including the scrollbar) whenever the overlay is
+            // interactive/focused. The native WS_EX_TRANSPARENT flag still provides the
+            // actual click-through behavior while the game is foreground.
+            MessageScrollViewer.IsHitTestVisible = messageScrollingInteractive;
+            MessageScrollViewer.VerticalScrollBarVisibility = messageScrollingInteractive
+                ? ScrollBarVisibility.Auto
+                : ScrollBarVisibility.Hidden;
+
             if (!force && shouldClickThrough == _clickThroughApplied)
             {
                 return;
@@ -937,6 +976,11 @@ namespace WarThunderChatTranslator
             _refreshTimer.Tick -= RefreshTimer_Tick;
             _foregroundTimer.Tick -= ForegroundTimer_Tick;
             _placementSaveTimer.Tick -= PlacementSaveTimer_Tick;
+            if (_scrollToBottomPending)
+            {
+                MessagePanel.LayoutUpdated -= MessagePanel_LayoutUpdated;
+                _scrollToBottomPending = false;
+            }
             _appWindow.Changed -= AppWindow_Changed;
             Localization.CultureChanged -= Localization_CultureChanged;
             _manager.NotifyWindowClosed(this);

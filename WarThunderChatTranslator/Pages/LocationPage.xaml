@@ -34,7 +34,7 @@
                     </labs:SettingsCard.HeaderIcon>
                     <ComboBox
                         x:Name="MonitorComboBox"
-                        MinWidth="260"
+                        Width="288"
                         SelectionChanged="MonitorComboBox_SelectionChanged" />
                 </labs:SettingsCard>
 
@@ -48,12 +48,12 @@
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <NumberBox
                             x:Name="XBox"
-                            Width="120"
+                            Width="140"
                             Header="X"
                             SpinButtonPlacementMode="Compact" />
                         <NumberBox
                             x:Name="YBox"
-                            Width="120"
+                            Width="140"
                             Header="Y"
                             SpinButtonPlacementMode="Compact" />
                     </StackPanel>

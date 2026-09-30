@@ -99,6 +99,7 @@
         let dashboardStyleSyncInProgress = false;
         let dashboardStyleSyncTimer = null;
         let lastDashboardStyleErrorLogAt = 0;
+        let scrollToBottomAnimationFrame = null;
         const messagesById = new Map();
 
         function readStorage(key, fallbackValue) {
@@ -119,6 +120,7 @@
         }
 
         function applyDashboardStyle(style) {
+            const shouldStickToBottom = isChatNearBottom();
             const root = document.documentElement;
             const version = Number(style?.version);
             const fontFamilyCss = typeof style?.fontFamilyCss === 'string' && style.fontFamilyCss.length > 0
@@ -151,11 +153,23 @@
 
             requestAnimationFrame(() => {
                 updateAutomaticMessageSurfaces();
+                if (shouldStickToBottom) {
+                    scheduleChatScrollToBottom();
+                }
+
                 if (document.fonts && typeof document.fonts.load === 'function') {
                     const requestedFont = `${Number.isFinite(fontSize) ? fontSize : 14}px ${fontFamilyCss}`;
-                    document.fonts.load(requestedFont).catch(() => {
-                        // System font availability is best-effort; CSS fallback remains active.
-                    });
+                    document.fonts.load(requestedFont)
+                        .then(() => {
+                            // A late font swap can change wrapped message heights after the
+                            // first layout pass. Preserve the user's bottom position in that case.
+                            if (shouldStickToBottom) {
+                                scheduleChatScrollToBottom();
+                            }
+                        })
+                        .catch(() => {
+                            // System font availability is best-effort; CSS fallback remains active.
+                        });
                 }
             });
         }
@@ -511,6 +525,33 @@
             pollTimer = setTimeout(fetchChatData, webPollIntervalMs);
         }
 
+        function isChatNearBottom(threshold = 48) {
+            const chatContainer = document.getElementById('chat-container');
+            if (!chatContainer) {
+                return true;
+            }
+
+            return chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < threshold;
+        }
+
+        function scheduleChatScrollToBottom() {
+            if (scrollToBottomAnimationFrame !== null) {
+                cancelAnimationFrame(scrollToBottomAnimationFrame);
+            }
+
+            // Two animation frames let DOM insertion, wrapping, and CSS/font metrics settle
+            // before scrollHeight is sampled. This avoids stopping one row short.
+            scrollToBottomAnimationFrame = requestAnimationFrame(() => {
+                scrollToBottomAnimationFrame = requestAnimationFrame(() => {
+                    const chatContainer = document.getElementById('chat-container');
+                    if (chatContainer) {
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }
+                    scrollToBottomAnimationFrame = null;
+                });
+            });
+        }
+
         function appendChatMessages(chatMessages) {
             if (!Array.isArray(chatMessages) || chatMessages.length === 0) {
                 renderDashboardTestMessages();
@@ -529,12 +570,12 @@
             chatContainer.appendChild(fragment);
             renderDashboardTestMessages();
             updateEmptyState();
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            scheduleChatScrollToBottom();
         }
 
         function renderAllMessages() {
             const chatContainer = document.getElementById('chat-container');
-            const shouldStickToBottom = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < 48;
+            const shouldStickToBottom = isChatNearBottom();
             clearRenderedMessages();
 
             const fragment = document.createDocumentFragment();
@@ -547,7 +588,7 @@
             updateEmptyState();
 
             if (shouldStickToBottom) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+                scheduleChatScrollToBottom();
             }
         }
 
