@@ -4,9 +4,10 @@
     x:Class="WarThunderChatTranslator.Dialogs.InputDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="输入要翻译的文字"
-    PrimaryButtonText="确定"
-    CloseButtonText="取消">
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
+    Title="{helpers:Loc Key=DialogTranslateInputTitle}"
+    PrimaryButtonText="{helpers:Loc Key=CommonConfirm}"
+    CloseButtonText="{helpers:Loc Key=CommonCancel}">
 
     <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <TextBox x:Name="Input" Text="{x:Bind text,Mode=TwoWay}"/>

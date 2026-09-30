@@ -34,6 +34,15 @@
 
                 <NavigationViewItem
                     Margin="0,0,12,0"
+                    Content="{helpers:Loc Key=NavAiTranslation}"
+                    Tag="AITranslationPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8C1;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
                     Content="{helpers:Loc Key=NavNetwork}"
                     Tag="NetworkPage">
                     <NavigationViewItem.Icon>

@@ -123,4 +123,62 @@
   <data name="DashboardGameStartTime" xml:space="preserve"><value>启动时间</value></data>
   <data name="DashboardNightMode" xml:space="preserve"><value>深夜模式</value></data>
   <data name="DashboardShowChatBubbles" xml:space="preserve"><value>显示聊天气泡背景</value></data>
+  <data name="NavAiTranslation" xml:space="preserve"><value>AI 翻译模型</value></data>
+  <data name="ApiAI" xml:space="preserve"><value>AI 翻译（自定义）</value></data>
+  <data name="AiPageTitle" xml:space="preserve"><value>AI 翻译模型</value></data>
+  <data name="AiPageDescription" xml:space="preserve"><value>管理你自己的 AI 翻译接口。支持 OpenAI Responses、OpenAI 兼容 Chat Completions 与 Anthropic Messages API；“AI 翻译（自定义）”会调用当前选中的模型。</value></data>
+  <data name="AiConnectionsTitle" xml:space="preserve"><value>AI 模型接口</value></data>
+  <data name="AiAddDescription" xml:space="preserve"><value>添加、编辑、测试、选择或删除 AI 翻译模型。</value></data>
+  <data name="AiAddProvider" xml:space="preserve"><value>添加模型</value></data>
+  <data name="AiEmptyTitle" xml:space="preserve"><value>尚未配置 AI 翻译模型</value></data>
+  <data name="AiEmptyDescription" xml:space="preserve"><value>先添加一个 API 接口并将其选中，即可用于 AI 翻译。API Key 仅保存在本应用的本地设置中。</value></data>
+  <data name="AiSelected" xml:space="preserve"><value>当前使用</value></data>
+  <data name="AiUse" xml:space="preserve"><value>使用</value></data>
+  <data name="AiTest" xml:space="preserve"><value>测试</value></data>
+  <data name="AiEdit" xml:space="preserve"><value>编辑</value></data>
+  <data name="AiDelete" xml:space="preserve"><value>删除</value></data>
+  <data name="AiProviderTypeOpenAIResponses" xml:space="preserve"><value>OpenAI Responses</value></data>
+  <data name="AiProviderTypeOpenAIChatCompletions" xml:space="preserve"><value>OpenAI 兼容 Chat Completions</value></data>
+  <data name="AiProviderTypeAnthropic" xml:space="preserve"><value>Anthropic Messages</value></data>
+  <data name="AiModelLabel" xml:space="preserve"><value>模型</value></data>
+  <data name="AiEndpointLabel" xml:space="preserve"><value>接口</value></data>
+  <data name="AiPromptLabel" xml:space="preserve"><value>提示词</value></data>
+  <data name="AiPromptDefault" xml:space="preserve"><value>提示词：使用默认翻译指令</value></data>
+  <data name="AiAddDialogTitle" xml:space="preserve"><value>添加 AI 翻译模型</value></data>
+  <data name="AiEditDialogTitle" xml:space="preserve"><value>编辑 AI 翻译模型</value></data>
+  <data name="AiName" xml:space="preserve"><value>显示名称</value></data>
+  <data name="AiNamePlaceholder" xml:space="preserve"><value>例如：OpenAI / 本地 LLM</value></data>
+  <data name="AiApiType" xml:space="preserve"><value>API 类型</value></data>
+  <data name="AiBaseUrl" xml:space="preserve"><value>Base URL</value></data>
+  <data name="AiApiKey" xml:space="preserve"><value>API Key</value></data>
+  <data name="AiApiKeyPlaceholder" xml:space="preserve"><value>本地接口可留空</value></data>
+  <data name="AiApiKeyDescription" xml:space="preserve"><value>密钥保存在本应用的本地设置中，模型列表不会显示明文；无需鉴权的本地接口可留空。</value></data>
+  <data name="AiModel" xml:space="preserve"><value>模型</value></data>
+  <data name="AiTemperatureEnabled" xml:space="preserve"><value>发送 temperature</value></data>
+  <data name="AiTemperature" xml:space="preserve"><value>Temperature</value></data>
+  <data name="AiTemperatureOmitted" xml:space="preserve"><value>不发送</value></data>
+  <data name="AiTemperatureDescription" xml:space="preserve"><value>可选采样参数。关闭时请求体不会发送 temperature。OpenAI 范围为 0–2；Anthropic 的旧模型范围为 0–1，当前 Claude 4.7+ 模型可能拒绝非默认 temperature，因此除非所选模型明确支持，否则建议保持关闭。</value></data>
+  <data name="AiTemperatureRangeError" xml:space="preserve"><value>当前 API 类型的 Temperature 必须在 0 到 {0} 之间。</value></data>
+  <data name="AiCustomPrompt" xml:space="preserve"><value>自定义提示词</value></data>
+  <data name="AiCustomPromptPlaceholder" xml:space="preserve"><value>可选：术语、风格或翻译规则</value></data>
+  <data name="AiCustomPromptDescription" xml:space="preserve"><value>可选占位符：{text}、{target_language}、{target_language_name}、{source_language}。强制 JSON 返回格式会始终追加。</value></data>
+  <data name="AiSave" xml:space="preserve"><value>保存</value></data>
+  <data name="AiValidationRequired" xml:space="preserve"><value>显示名称、有效的 HTTP(S) Base URL 和模型名称不能为空。</value></data>
+  <data name="AiDeleteDialogTitle" xml:space="preserve"><value>删除 AI 翻译模型？</value></data>
+  <data name="AiDeleteDialogMessage" xml:space="preserve"><value>确定删除“{0}”吗？此操作无法撤销。</value></data>
+  <data name="AiDeleteConfirm" xml:space="preserve"><value>删除</value></data>
+  <data name="AiNoProviderError" xml:space="preserve"><value>尚未选中 AI 翻译模型。请先在“AI 翻译模型”页面添加并选择一个模型。</value></data>
+  <data name="AiEndpointRequiredError" xml:space="preserve"><value>当前 AI 翻译模型未配置 Base URL。</value></data>
+  <data name="AiModelRequiredError" xml:space="preserve"><value>当前 AI 翻译模型未配置模型名称。</value></data>
+  <data name="AiInvalidResponseError" xml:space="preserve"><value>AI API 返回内容缺少必要的翻译字段。</value></data>
+  <data name="AiInvalidJsonError" xml:space="preserve"><value>AI 模型未返回有效的 JSON 翻译对象。</value></data>
+  <data name="AiApiErrorFormat" xml:space="preserve"><value>AI API 请求失败（HTTP {0}）：{1}</value></data>
+  <data name="AiEmptyApiError" xml:space="preserve"><value>服务器未返回错误详情。</value></data>
+  <data name="DialogTranslateInputTitle" xml:space="preserve"><value>输入要翻译的文字</value></data>
+  <data name="CommonConfirm" xml:space="preserve"><value>确定</value></data>
+  <data name="CommonCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="CommonClose" xml:space="preserve"><value>关闭</value></data>
+  <data name="TranslationTestSuccessTitle" xml:space="preserve"><value>翻译测试成功</value></data>
+  <data name="TranslationTestFailureTitle" xml:space="preserve"><value>翻译测试失败</value></data>
+  <data name="TranslationTestResultFormat" xml:space="preserve"><value>翻译结果&#10;原文：{0}&#10;译文：{1}&#10;翻译服务：{9}&#10;&#10;Dashboard 映射&#10;OriginalMessage：{0}&#10;TranslatedMessage：{1}&#10;SourceLanguageIsoCode：{2}&#10;&#10;语言信息&#10;SourceLanguage.Name：{3}&#10;SourceLanguage.ISO6391：{4}&#10;SourceLanguage.ISO6393：{5}&#10;TargetLanguage.Name：{6}&#10;TargetLanguage.ISO6391：{7}&#10;TargetLanguage.ISO6393：{8}</value></data>
 </root>

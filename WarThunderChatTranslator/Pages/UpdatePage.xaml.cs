@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -19,7 +19,7 @@ namespace WarThunderChatTranslator.Pages
         public UpdatePage()
         {
             _logger = LogManager.GetCurrentClassLogger();
-            _logger.Info("�򿪲�������ҳ��");
+            _logger.Info("Update page opened.");
             InitializeComponent();
         }
 
@@ -67,7 +67,7 @@ namespace WarThunderChatTranslator.Pages
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                _logger.Error(ex, "Failed to check for application updates.");
                 dispatcherQueue.TryEnqueue(() => ShowToast($"{Localization.GetString("UpdateCheckFailed")}: {ex.Message}"));
             }
             finally
@@ -78,7 +78,7 @@ namespace WarThunderChatTranslator.Pages
 
         private async Task ShowUpdateDialogAsync(IReadOnlyList<Windows.Services.Store.StorePackageUpdate> updates)
         {
-            _logger.Info("Microsoft Store 中有可用更新");
+            _logger.Info("An update is available in Microsoft Store.");
             var dialog = new ContentDialog
             {
                 XamlRoot = this.XamlRoot,

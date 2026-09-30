@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
@@ -30,10 +30,10 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-    <Version>1.0.6.0</Version>
-    <AssemblyVersion>1.0.6.0</AssemblyVersion>
-    <FileVersion>1.0.6.0</FileVersion>
-    <InformationalVersion>1.0.6.0</InformationalVersion>
+    <Version>1.0.7.0</Version>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
+    <InformationalVersion>1.0.7.0</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
@@ -116,6 +116,7 @@
     <None Remove="Dialogs\InputDialog.xaml" />
     <None Remove="Pages\AboutPage.xaml" />
     <None Remove="Pages\APIPage.xaml" />
+    <None Remove="Pages\AITranslationPage.xaml" />
     <None Remove="Pages\FontPage.xaml" />
     <None Remove="Pages\InteractPage.xaml" />
     <None Remove="Pages\LocationPage.xaml" />
@@ -196,6 +197,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\APIPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\AITranslationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\UpdatePage.xaml">

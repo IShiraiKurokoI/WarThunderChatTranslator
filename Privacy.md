@@ -1,4 +1,4 @@
-# WarThunderChatTranslator 隐私政策
+﻿# WarThunderChatTranslator 隐私政策
 
 *更新日期：2024年8月14日*
 
