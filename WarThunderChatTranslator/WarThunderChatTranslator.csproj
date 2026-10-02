@@ -250,6 +250,7 @@
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
 
+
   <ItemGroup>
     <None Remove="Assets\SpeechModels\**\*" />
     <Content Include="Assets\SpeechModels\**\*">

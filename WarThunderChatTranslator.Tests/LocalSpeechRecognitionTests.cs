@@ -10,12 +10,10 @@ public sealed class LocalSpeechRecognitionTests
     private const string ModelFolder = "sherpa-onnx-paraformer-zh-small-2024-03-09";
 
     [DataTestMethod]
-    [DataRow("zh_short.wav")]
-    [DataRow("zh_game.wav")]
-    [DataRow("zh_long.wav")]
-    [DataRow("en_short.wav")]
-    [DataRow("en_game.wav")]
-    [DataRow("en_mixed.wav")]
+    [DataRow("en_human_hello.wav")]
+    [DataRow("en_human_intro.wav")]
+    [DataRow("en_human_chicago.wav")]
+    [DataRow("en_human_yankee.wav")]
     public void ParaformerRecognizesBundledTestAudio(string fileName)
     {
         var modelDirectory = FindModelDirectory();

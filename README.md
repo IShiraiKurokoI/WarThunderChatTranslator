@@ -36,7 +36,7 @@
 
 录音开始、录音结束、翻译成功和翻译失败四类提示音均支持系统提示音、Windows TTS、自定义音频。录音开始时机可选择“提示音开始播放时立即录音”或“提示音播放结束后开始录音”，默认采用前者。TTS 可分别设置提示文本、系统已安装的 Microsoft 音色和语速，并按提示文本、音色与语速自动缓存；自定义音频支持 WAV、MP3、M4A、WMA。
 
-`WarThunderChatTranslator.Tests/TestAudio` 中包含中英文 PCM WAV 测试音频，可直接导入 Soundpad 做端到端麦克风/虚拟设备测试。模型存在时，测试项目还会使用这些音频执行 Paraformer 本地识别测试；模型缺失时该项测试标记为 Inconclusive。
+`WarThunderChatTranslator.Tests/TestAudio` 中包含多段 **真实英文人声** PCM WAV，可直接导入 Soundpad 做端到端麦克风/虚拟设备测试。音频来自 pyannote.audio 随包提供的人类对话样本，并附上游 MIT License。模型存在时，测试项目还会使用这些音频执行 Paraformer 本地识别测试；模型缺失时该项测试标记为 Inconclusive。
 
 ## Todos
 
@@ -64,7 +64,7 @@
 - 新增录音开始、录音结束、翻译成功、翻译失败四组独立声音反馈；每组均支持系统提示音、Windows TTS、自定义音频。
 - 保留“开始录音时机”设置：默认提示音开始播放时开始录音，也可等待提示音播放结束后再录音。
 - TTS 支持独立提示文本、音色、语速及自动缓存。
-- `WarThunderChatTranslator.Tests/TestAudio` 提供中英文 Soundpad 测试 WAV，并增加可选的 Paraformer 识别测试。
+- `WarThunderChatTranslator.Tests/TestAudio` 提供真实英文人声 Soundpad 测试 WAV，并增加可选的 Paraformer 识别测试。
 - 包版本、程序集版本和文件版本统一为 `1.0.9.0`。
 
 ### v1.0.8.0
@@ -92,4 +92,5 @@
 - 轮询间隔设置支持持久化保存，并同步补充对应 I18n 文案。
 
 ### WinUI XAML generated-code cache after upgrading
-If a source upgrade reports `CS1061` from `obj/.../Pages/InteractPage.g.cs` for controls/events that no longer exist in `Pages/InteractPage.xaml`, close Visual Studio and run `CleanBuildArtifacts.cmd`, then reopen the solution and use **Build > Rebuild Solution**. These errors are caused by stale generated XAML files left in `obj` when newer source files are copied over an existing checkout.
+
+如果从旧源码目录覆盖升级后遇到 XAML 生成代码残留，请在 Visual Studio 中手动执行 Clean/Rebuild；项目文件不会自动删除 `obj` 中间文件。

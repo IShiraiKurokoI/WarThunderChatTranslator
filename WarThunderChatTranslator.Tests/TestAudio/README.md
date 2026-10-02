@@ -1,15 +1,18 @@
-# Quick Translation Test Audio
+# Quick Translation Human Speech Test Audio
 
-These synthetic WAV files are intended for repeatable microphone/STT testing with Soundpad or a virtual audio input.
-All files are PCM signed 16-bit little-endian, mono, 16 kHz.
+These WAV files contain **real human speech**, not synthesized/TTS audio. They are intended for repeatable Soundpad, virtual-cable, microphone-capture, and local-ASR tests.
 
-| File | Language | Expected text |
-|---|---|---|
-| `zh_short.wav` | Chinese | 敌人在右边。 |
-| `zh_game.wav` | Chinese | 敌方坦克在右边山后面，我需要A点支援。 |
-| `zh_long.wav` | Chinese | 注意侧翼，两辆敌方坦克正在推进B点，请掩护左侧。 |
-| `en_short.wav` | English | Enemy on the right side. |
-| `en_game.wav` | English | Enemy tank behind the hill on the right. I need backup at point A. |
-| `en_mixed.wav` | English | Attention team. Two enemies are pushing point B. Cover the left flank. |
+All clips are PCM signed 16-bit little-endian, mono, 16 kHz.
 
-The voices are synthetic and intentionally consistent; real microphone speech may produce different ASR accuracy.
+| File | Approx. spoken content | Duration |
+|---|---|---:|
+| `en_human_hello.wav` | Hello? Hello? Oh, hello. I didn't know you were there. Neither did I. | 4.20 s |
+| `en_human_intro.wav` | This is Diane in New Jersey. And I'm Sheila in Texas, originally from Chicago. | 5.33 s |
+| `en_human_chicago.wav` | Oh, I'm originally from Chicago also. I'm in New Jersey now though. | 3.79 s |
+| `en_human_yankee.wav` | Well, there isn't that much difference. At least you know, they all call me a Yankee down here, so what can I say? | 6.60 s |
+
+## Source and license
+
+The clips were cut from `pyannote.audio`'s bundled `sample/sample.wav` human conversation recording (package version 4.0.4). The upstream package is distributed under the MIT License; a copy is included as `LICENSE-pyannote.audio.txt` in this directory.
+
+The clips are intentionally kept as real conversational speech so they are more useful than deterministic synthetic voices when testing microphone routing and ASR behavior.
