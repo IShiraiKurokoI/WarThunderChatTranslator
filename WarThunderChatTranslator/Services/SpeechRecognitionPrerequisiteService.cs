@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +27,7 @@ namespace WarThunderChatTranslator.Services
     }
 
     /// <summary>
-    /// Checks only local-ASR prerequisites: microphone permission/device and packaged Paraformer model.
+    /// Checks only local-ASR prerequisites: microphone permission/device and packaged SenseVoice model.
     /// Windows Online speech recognition is intentionally not required.
     /// </summary>
     public sealed class SpeechRecognitionPrerequisiteService

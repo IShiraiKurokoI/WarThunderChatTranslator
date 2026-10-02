@@ -7,14 +7,17 @@ namespace WarThunderChatTranslator.Tests;
 [TestClass]
 public sealed class LocalSpeechRecognitionTests
 {
-    private const string ModelFolder = "sherpa-onnx-paraformer-zh-small-2024-03-09";
+    private const string ModelFolder = "sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17";
 
     [DataTestMethod]
-    [DataRow("en_human_hello.wav")]
-    [DataRow("en_human_intro.wav")]
-    [DataRow("en_human_chicago.wav")]
-    [DataRow("en_human_yankee.wav")]
-    public void ParaformerRecognizesBundledTestAudio(string fileName)
+    [DataRow("en_human_hello.wav", "hello")]
+    [DataRow("en_human_intro.wav", "jersey|texas|chicago")]
+    [DataRow("en_human_chicago.wav", "chicago|jersey")]
+    [DataRow("en_human_yankee.wav", "yankee")]
+    [DataRow("zh_human_nihao.wav", "你好")]
+    [DataRow("zh_human_kebukeyi.wav", "可不可以")]
+    [DataRow("zh_human_zhongguocai.wav", "中国菜")]
+    public void SenseVoiceRecognizesBundledHumanTestAudio(string fileName, string expectedAnchors)
     {
         var modelDirectory = FindModelDirectory();
         var modelPath = Path.Combine(modelDirectory, "model.int8.onnx");
@@ -26,17 +29,27 @@ public sealed class LocalSpeechRecognitionTests
         }
 
         var audioPath = Path.Combine(AppContext.BaseDirectory, "TestAudio", fileName);
-        Assert.IsTrue(File.Exists(audioPath), $"Missing test audio: {audioPath}");
+        if (!File.Exists(audioPath))
+        {
+            Assert.Inconclusive($"Human test audio is not present. Re-run DownloadSpeechModel.ps1 to fetch the Mandarin human samples. Expected: {audioPath}");
+        }
+
         var (sampleRate, samples) = ReadPcm16MonoWave(audioPath);
+        if (sampleRate != 16000)
+        {
+            samples = ResampleLinear(samples, sampleRate, 16000);
+            sampleRate = 16000;
+        }
 
         var config = new OfflineRecognizerConfig();
         config.FeatConfig.SampleRate = 16000;
         config.FeatConfig.FeatureDim = 80;
         config.ModelConfig.Tokens = tokensPath;
-        config.ModelConfig.Paraformer.Model = modelPath;
+        config.ModelConfig.SenseVoice.Model = modelPath;
+        config.ModelConfig.SenseVoice.Language = "auto";
+        config.ModelConfig.SenseVoice.UseInverseTextNormalization = 1;
         config.ModelConfig.NumThreads = 1;
         config.ModelConfig.Provider = "cpu";
-        config.ModelConfig.ModelType = "paraformer";
         config.DecodingMethod = "greedy_search";
 
         using var recognizer = new OfflineRecognizer(config);
@@ -47,6 +60,45 @@ public sealed class LocalSpeechRecognitionTests
         var text = stream.Result.Text?.Trim();
         Assert.IsFalse(string.IsNullOrWhiteSpace(text), $"No ASR result for {fileName}.");
         TestContext.WriteLine($"{fileName}: {text}");
+
+        var normalized = NormalizeForAnchorCheck(text);
+        var anchors = expectedAnchors.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var matched = anchors.Count(anchor => normalized.Contains(NormalizeForAnchorCheck(anchor), StringComparison.OrdinalIgnoreCase));
+        var minimumMatches = anchors.Length >= 3 ? 2 : 1;
+        Assert.IsTrue(
+            matched >= minimumMatches,
+            $"ASR output for {fileName} did not contain enough expected anchors. Expected at least {minimumMatches} of [{string.Join(", ", anchors)}], actual: {text}");
+    }
+
+    private static string NormalizeForAnchorCheck(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+        var buffer = new StringBuilder(value.Length);
+        foreach (var ch in value.ToLowerInvariant())
+        {
+            if (char.IsLetterOrDigit(ch) || ch >= 0x4E00)
+            {
+                buffer.Append(ch);
+            }
+        }
+        return buffer.ToString();
+    }
+
+    private static float[] ResampleLinear(float[] input, int sourceRate, int targetRate)
+    {
+        if (input.Length == 0 || sourceRate == targetRate) return input;
+        var outputLength = Math.Max(1, (int)Math.Round(input.Length * (double)targetRate / sourceRate));
+        var output = new float[outputLength];
+        var scale = (double)sourceRate / targetRate;
+        for (var i = 0; i < outputLength; i++)
+        {
+            var sourcePosition = i * scale;
+            var left = Math.Min((int)sourcePosition, input.Length - 1);
+            var right = Math.Min(left + 1, input.Length - 1);
+            var fraction = sourcePosition - left;
+            output[i] = (float)(input[left] + (input[right] - input[left]) * fraction);
+        }
+        return output;
     }
 
     public TestContext TestContext { get; set; }

@@ -10,7 +10,7 @@ namespace WarThunderChatTranslator.Services
 {
     /// <summary>
     /// Hotkey-driven voice translation pipeline:
-    /// WASAPI capture -> local Paraformer ASR -> GTranslate -> clipboard -> cue.
+    /// WASAPI capture -> local SenseVoice ASR -> GTranslate -> clipboard -> cue.
     /// Recording and model loading are independent so microphone capture can start immediately.
     /// </summary>
     public sealed class QuickTranslationService : IDisposable

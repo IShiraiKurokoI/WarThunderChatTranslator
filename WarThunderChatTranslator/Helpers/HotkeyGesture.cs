@@ -68,7 +68,14 @@ namespace WarThunderChatTranslator.Helpers
             var parts = value.Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (parts.Length < 2)
             {
-                error = Localization.GetString("QuickTranslationHotkeyErrorFormatExample");
+                if (parts.Length == 1 && TryGetVirtualKey(parts[0], out _, out _))
+                {
+                    error = Localization.GetString("QuickTranslationHotkeyErrorModifierRequired");
+                }
+                else
+                {
+                    error = Localization.GetString("QuickTranslationHotkeyErrorFormatExample");
+                }
                 return false;
             }
 

@@ -32,16 +32,16 @@ namespace WarThunderChatTranslator.Services
     }
 
     /// <summary>
-    /// Local, non-streaming Paraformer ASR. The model is loaded once and kept alive;
+    /// Local, non-streaming SenseVoice ASR. The model is loaded once and kept alive;
     /// microphone capture is handled separately and inference only runs after recording stops.
     /// </summary>
     public sealed class SpeechRecognitionService : IDisposable
     {
-        public const string ModelFolderName = "sherpa-onnx-paraformer-zh-small-2024-03-09";
+        public const string ModelFolderName = "sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17";
         public const string ModelFileName = "model.int8.onnx";
         public const string TokensFileName = "tokens.txt";
-        public const string ModelDisplayName = "Paraformer zh-en small INT8";
-        public const string ModelSha256 = "3ef6c19369b912f7caf3cef8e545c5ccd1a33d9d7ec792a46668dc41c4b229ec";
+        public const string ModelDisplayName = "SenseVoice zh-en-ja-ko-yue INT8";
+        public const string ModelSha256 = "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51";
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly object _stateLock = new();
@@ -63,11 +63,11 @@ namespace WarThunderChatTranslator.Services
             {
                 try
                 {
-                    // Reject placeholders/partial downloads without hashing 81.8 MB on every UI check.
+                    // Reject placeholders/partial downloads without hashing the 228 MiB model on every UI check.
                     return File.Exists(ModelPath)
                         && File.Exists(TokensPath)
-                        && new FileInfo(ModelPath).Length > 70L * 1024 * 1024
-                        && new FileInfo(TokensPath).Length > 50L * 1024;
+                        && new FileInfo(ModelPath).Length > 220L * 1024 * 1024
+                        && new FileInfo(TokensPath).Length > 250L * 1024;
                 }
                 catch
                 {
@@ -87,7 +87,7 @@ namespace WarThunderChatTranslator.Services
         }
 
         // Kept for compatibility with the existing status/logging surface.
-        public string CurrentLanguageTag => "zh-en-local";
+        public string CurrentLanguageTag => "auto-local";
         public bool IsRecognitionActive => State is SpeechRecognitionServiceState.Recording or SpeechRecognitionServiceState.Recognizing;
 
         public void PrepareForRecognition()
@@ -138,11 +138,12 @@ namespace WarThunderChatTranslator.Services
                     config.FeatConfig.SampleRate = 16000;
                     config.FeatConfig.FeatureDim = 80;
                     config.ModelConfig.Tokens = TokensPath;
-                    config.ModelConfig.Paraformer.Model = ModelPath;
+                    config.ModelConfig.SenseVoice.Model = ModelPath;
+                    config.ModelConfig.SenseVoice.Language = "auto";
+                    config.ModelConfig.SenseVoice.UseInverseTextNormalization = 1;
                     config.ModelConfig.NumThreads = 1;
                     config.ModelConfig.Provider = "cpu";
                     config.ModelConfig.Debug = 0;
-                    config.ModelConfig.ModelType = "paraformer";
                     config.DecodingMethod = "greedy_search";
                     return new OfflineRecognizer(config);
                 }, cancellationToken);

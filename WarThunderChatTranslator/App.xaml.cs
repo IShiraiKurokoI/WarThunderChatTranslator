@@ -720,7 +720,7 @@ namespace WarThunderChatTranslator
                 logger.Error(ex, "Failed to stop the global hotkey service.");
             }
 
-            // Local quick translation owns WASAPI capture and the Paraformer recognizer.
+            // Local quick translation owns WASAPI capture and the SenseVoice recognizer.
             // Dispose them after unregistering hotkeys so no new capture can start during shutdown.
             try
             {

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:schema id="root">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -936,7 +936,7 @@ TargetLanguage.ISO6393: {8}</value>
     <value>Local speech recognition status</value>
   </data>
   <data name="QuickTranslationSpeechStateDescription" xml:space="preserve">
-    <value>Shows the current state of the packaged Paraformer speech-recognition model.</value>
+    <value>Shows the current state of the packaged SenseVoice speech-recognition model.</value>
   </data>
   <data name="QuickTranslationSpeechStateNotInitialized" xml:space="preserve">
     <value>Not initialized</value>
