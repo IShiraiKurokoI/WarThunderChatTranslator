@@ -130,6 +130,16 @@
                                         Content="H.NotifyIcon"
                                         FontSize="18"
                                         NavigateUri="https://github.com/HavenDV/H.NotifyIcon" />
+                                    <HyperlinkButton
+                                        Margin="5"
+                                        Content="NAudio"
+                                        FontSize="18"
+                                        NavigateUri="https://github.com/naudio/NAudio" />
+                                    <HyperlinkButton
+                                        Margin="5"
+                                        Content="sherpa-onnx"
+                                        FontSize="18"
+                                        NavigateUri="https://github.com/k2-fsa/sherpa-onnx" />
                                 </StackPanel>
                             </controls:SettingsCard.Description>
                         </controls:SettingsCard>
