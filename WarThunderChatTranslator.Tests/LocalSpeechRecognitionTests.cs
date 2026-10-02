@@ -9,14 +9,14 @@ public sealed class LocalSpeechRecognitionTests
 {
     private const string ModelFolder = "sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17";
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("en_human_hello.wav", "hello")]
     [DataRow("en_human_intro.wav", "jersey|texas|chicago")]
     [DataRow("en_human_chicago.wav", "chicago|jersey")]
     [DataRow("en_human_yankee.wav", "yankee")]
     [DataRow("zh_human_nihao.wav", "你好")]
     [DataRow("zh_human_kebukeyi.wav", "可不可以")]
-    [DataRow("zh_human_zhongguocai.wav", "中国菜")]
+    [DataRow("zh_test.wav", "生活就像海洋|只有意志坚强的人才能到达彼岸")]
     public void SenseVoiceRecognizesBundledHumanTestAudio(string fileName, string expectedAnchors)
     {
         var modelDirectory = FindModelDirectory();
@@ -25,13 +25,13 @@ public sealed class LocalSpeechRecognitionTests
         if (!File.Exists(modelPath) || !File.Exists(tokensPath))
         {
             Assert.Inconclusive(
-                $"Local ASR model is not present. Run DownloadSpeechModel.ps1 before this test. Expected: {modelDirectory}");
+                $"Local ASR model is not present. Ensure the Git LFS model files are available before running this test. Expected: {modelDirectory}");
         }
 
         var audioPath = Path.Combine(AppContext.BaseDirectory, "TestAudio", fileName);
         if (!File.Exists(audioPath))
         {
-            Assert.Inconclusive($"Human test audio is not present. Re-run DownloadSpeechModel.ps1 to fetch the Mandarin human samples. Expected: {audioPath}");
+            Assert.Inconclusive($"Human test audio is not present in the test project. Expected: {audioPath}");
         }
 
         var (sampleRate, samples) = ReadPcm16MonoWave(audioPath);

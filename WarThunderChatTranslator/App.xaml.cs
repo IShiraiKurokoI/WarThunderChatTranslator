@@ -40,6 +40,8 @@ namespace WarThunderChatTranslator
         private int _servicesStopped;
         private int _exitStarted;
         private bool _quickTranslationHotkeysSuspended;
+        private readonly object _quickTranslationTasksLock = new();
+        private readonly HashSet<Task> _quickTranslationTasks = new();
 
         private static Mutex mutex; // Defines the process-wide mutex used for single-instance enforcement.
 
@@ -81,9 +83,55 @@ namespace WarThunderChatTranslator
 
         private void RegisterGlobalExceptionHandlers()
         {
-            TaskScheduler.UnobservedTaskException += (sender, e) => HandleException(e.Exception);
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) => HandleException(e.ExceptionObject as Exception);
-            App.Current.UnhandledException += (sender, e) => HandleException(e.Exception);
+            TaskScheduler.UnobservedTaskException += (sender, e) =>
+            {
+                if (!IsExpectedShutdownCancellation(e.Exception))
+                {
+                    HandleException(e.Exception);
+                }
+
+                e.SetObserved();
+            };
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                if (e.ExceptionObject is Exception ex && !IsExpectedShutdownCancellation(ex))
+                {
+                    HandleException(ex);
+                }
+            };
+
+            App.Current.UnhandledException += (sender, e) =>
+            {
+                if (IsExpectedShutdownCancellation(e.Exception))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                HandleException(e.Exception);
+            };
+        }
+
+        private bool IsExpectedShutdownCancellation(Exception exception)
+        {
+            if (!_shutdownCts.IsCancellationRequested || exception == null)
+            {
+                return false;
+            }
+
+            if (exception is OperationCanceledException)
+            {
+                return true;
+            }
+
+            if (exception is AggregateException aggregate)
+            {
+                return aggregate.Flatten().InnerExceptions.All(inner =>
+                    inner is OperationCanceledException);
+            }
+
+            return false;
         }
 
         private void InitializeAppSettings()
@@ -488,7 +536,72 @@ namespace WarThunderChatTranslator
                 return;
             }
 
-            EnqueueOnUiThread(() => _ = RunQuickTranslationAsync(binding));
+            EnqueueOnUiThread(() => TrackQuickTranslationTask(RunQuickTranslationAsync(binding)));
+        }
+
+        private void TrackQuickTranslationTask(Task task)
+        {
+            if (task == null)
+            {
+                return;
+            }
+
+            lock (_quickTranslationTasksLock)
+            {
+                _quickTranslationTasks.Add(task);
+            }
+
+            _ = RemoveQuickTranslationTaskWhenCompletedAsync(task);
+        }
+
+        private async Task RemoveQuickTranslationTaskWhenCompletedAsync(Task task)
+        {
+            try
+            {
+                await task;
+            }
+            catch
+            {
+                // RunQuickTranslationAsync already logs/handles pipeline failures.
+            }
+            finally
+            {
+                lock (_quickTranslationTasksLock)
+                {
+                    _quickTranslationTasks.Remove(task);
+                }
+            }
+        }
+
+        private async Task WaitForQuickTranslationTasksAsync(TimeSpan timeout)
+        {
+            Task[] tasks;
+            lock (_quickTranslationTasksLock)
+            {
+                tasks = _quickTranslationTasks.Where(task => !task.IsCompleted).ToArray();
+            }
+
+            if (tasks.Length == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                await Task.WhenAll(tasks).WaitAsync(timeout);
+            }
+            catch (TimeoutException)
+            {
+                logger.Warn("Timed out waiting for {0} quick translation task(s) during shutdown.", tasks.Length);
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when the application shutdown token cancels an active pipeline.
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "A quick translation task ended with an error during shutdown.");
+            }
         }
 
         private async Task RunQuickTranslationAsync(WarThunderChatTranslator.Entities.QuickTranslationHotkey binding)
@@ -700,11 +813,7 @@ namespace WarThunderChatTranslator
                 return;
             }
 
-            _shutdownCts.Cancel();
-
-            // Stop Kestrel asynchronously so shutdown never blocks the UI thread.
-            // The polling cancellation token interrupts delays and in-flight game HTTP requests.
-
+            // Prevent any new quick-translation pipeline before cancellation begins.
             try
             {
                 if (_globalHotkeyService != null)
@@ -720,19 +829,50 @@ namespace WarThunderChatTranslator
                 logger.Error(ex, "Failed to stop the global hotkey service.");
             }
 
-            // Local quick translation owns WASAPI capture and the SenseVoice recognizer.
-            // Dispose them after unregistering hotkeys so no new capture can start during shutdown.
+            _shutdownCts.Cancel();
+
+            // Let any in-flight hotkey invocation observe cancellation and leave its normal
+            // finally path before native audio/ASR resources are disposed. This prevents
+            // a shutdown race between SenseVoice decode, WASAPI capture and service disposal.
+            await WaitForQuickTranslationTasksAsync(TimeSpan.FromSeconds(5));
+
+            var quickTranslationService = _quickTranslationService;
+            _quickTranslationService = null;
+            if (quickTranslationService != null)
+            {
+                try
+                {
+                    var disposeTask = quickTranslationService.DisposeAsync().AsTask();
+                    var completed = await Task.WhenAny(disposeTask, Task.Delay(TimeSpan.FromSeconds(8), CancellationToken.None));
+                    if (completed == disposeTask)
+                    {
+                        await disposeTask;
+                    }
+                    else
+                    {
+                        logger.Warn("Timed out disposing quick translation services during shutdown; continuing application exit.");
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // Shutdown cleanup itself must never block process exit because of cancellation.
+                }
+                catch (Exception ex)
+                {
+                    logger.Debug(ex, "Quick translation services did not dispose cleanly during shutdown.");
+                }
+            }
+
+            var successAudioService = _successAudioService;
+            _successAudioService = null;
             try
             {
-                _quickTranslationService?.Dispose();
-                _successAudioService?.Dispose();
+                successAudioService?.Dispose();
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Quick translation services did not dispose cleanly during shutdown.");
+                logger.Debug(ex, "Quick translation audio service did not dispose cleanly during shutdown.");
             }
-            _quickTranslationService = null;
-            _successAudioService = null;
 
             try
             {
@@ -742,6 +882,10 @@ namespace WarThunderChatTranslator
                     _localHttpServer = null;
                 }
             }
+            catch (OperationCanceledException)
+            {
+                // Expected if Kestrel observes the shutdown cancellation token.
+            }
             catch (Exception ex)
             {
                 logger.Error(ex, "Failed to stop the local HTTP server.");
@@ -749,6 +893,27 @@ namespace WarThunderChatTranslator
 
             _gameChatPollingService?.Dispose();
             _gameChatPollingService = null;
+
+            // Observe the polling task so cancellation is not left as an unobserved TaskCanceledException.
+            if (_gamePollingTask != null)
+            {
+                try
+                {
+                    await _gamePollingTask;
+                }
+                catch (OperationCanceledException)
+                {
+                }
+                catch (Exception ex)
+                {
+                    logger.Debug(ex, "Game chat polling task ended with an error during shutdown.");
+                }
+                finally
+                {
+                    _gamePollingTask = null;
+                }
+            }
         }
+
     }
 }

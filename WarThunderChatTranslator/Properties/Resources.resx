@@ -981,7 +981,7 @@ TargetLanguage.ISO6393: {8}</value>
     <value>The selected recording device is unavailable. Choose another device or use the system default.</value>
   </data>
   <data name="QuickTranslationLocalModelUnavailable" xml:space="preserve">
-    <value>The local speech-recognition model is missing or unavailable. Run DownloadSpeechModel.cmd, then restart the app.</value>
+    <value>The local speech-recognition model is missing or unavailable. Ensure the Git LFS speech model files are present, then restart the app.</value>
   </data>
   <data name="QuickTranslationLocalModelMissingFormat" xml:space="preserve">
     <value>Local speech model files were not found in: {0}</value>

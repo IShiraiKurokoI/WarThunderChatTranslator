@@ -11,7 +11,7 @@ English clips already stored in the repository:
 | `en_human_chicago.wav` | Oh, I'm originally from Chicago also. I'm in New Jersey now though. | 3.79 s |
 | `en_human_yankee.wav` | Well, there isn't that much difference... they all call me a Yankee down here... | 6.60 s |
 
-Mandarin human clips are downloaded by `DownloadSpeechModel.ps1` into this same directory:
+Mandarin human clips expected in this same directory:
 
 | File | Spoken content | Source |
 |---|---|---|

@@ -13,7 +13,7 @@ namespace WarThunderChatTranslator.Services
     /// WASAPI capture -> local SenseVoice ASR -> GTranslate -> clipboard -> cue.
     /// Recording and model loading are independent so microphone capture can start immediately.
     /// </summary>
-    public sealed class QuickTranslationService : IDisposable
+    public sealed class QuickTranslationService : IDisposable, IAsyncDisposable
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly SpeechRecognitionService _speechRecognitionService = new();
@@ -61,8 +61,8 @@ namespace WarThunderChatTranslator.Services
             }
 
             pendingCapture?.TrySetCanceled();
-            await _audioCaptureService.AbortAsync();
-            await _speechRecognitionService.ReleaseAsync(cancellationToken);
+            await _audioCaptureService.AbortAsync().ConfigureAwait(false);
+            await _speechRecognitionService.ReleaseAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task ExecuteAsync(QuickTranslationHotkey binding, CancellationToken cancellationToken = default)
@@ -235,7 +235,7 @@ namespace WarThunderChatTranslator.Services
 
             try
             {
-                var audio = await _audioCaptureService.StopAsync(cancellationToken);
+                var audio = await _audioCaptureService.StopAsync(cancellationToken).ConfigureAwait(false);
                 completion.TrySetResult(audio);
                 _logger.Info("Quick translation microphone capture stopped. DurationMs={0:0}", audio.Duration.TotalMilliseconds);
                 await PlayRecordingEndCueOnceAsync(cancellationToken);
@@ -262,7 +262,9 @@ namespace WarThunderChatTranslator.Services
                     targetLanguage,
                     recognizedText);
 
+                cancellationToken.ThrowIfCancellationRequested();
                 var result = await TranslationHelper.TranslateAsync(recognizedText, targetLanguage);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (string.IsNullOrWhiteSpace(result?.Translation))
                 {
                     throw new InvalidOperationException(Localization.GetString("QuickTranslationEmptyTranslationResult"));
@@ -325,7 +327,7 @@ namespace WarThunderChatTranslator.Services
             }
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
             if (_disposed)
             {
@@ -333,8 +335,42 @@ namespace WarThunderChatTranslator.Services
             }
 
             _disposed = true;
-            try { _audioCaptureService.Dispose(); } catch { }
-            try { _speechRecognitionService.Dispose(); } catch { }
+
+            TaskCompletionSource<CapturedAudio> pendingCapture;
+            lock (_stateLock)
+            {
+                pendingCapture = _captureCompletion;
+                _activeBinding = null;
+                _captureCompletion = null;
+                _stopRequested = false;
+                _recordingEndCuePlayed = false;
+            }
+
+            // Wake any ExecuteAsync invocation that is waiting for the second hotkey press.
+            pendingCapture?.TrySetCanceled();
+
+            try
+            {
+                await _audioCaptureService.DisposeAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug(ex, "Audio capture service did not dispose cleanly during shutdown.");
+            }
+
+            try
+            {
+                await _speechRecognitionService.DisposeAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug(ex, "Local speech recognition service did not dispose cleanly during shutdown.");
+            }
+        }
+
+        public void Dispose()
+        {
+            DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
     }
 }

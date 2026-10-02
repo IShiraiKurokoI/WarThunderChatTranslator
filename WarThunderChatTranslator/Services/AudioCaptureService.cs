@@ -43,7 +43,7 @@ namespace WarThunderChatTranslator.Services
     /// Shared-mode WASAPI performs the required format conversion, keeping capture work
     /// lightweight while the game is running. Recognition happens only after capture stops.
     /// </summary>
-    public sealed class AudioCaptureService : IDisposable
+    public sealed class AudioCaptureService : IDisposable, IAsyncDisposable
     {
         private const int SampleRate = 16000;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -193,7 +193,7 @@ namespace WarThunderChatTranslator.Services
             try
             {
                 recorder.StopRecording();
-                var stopped = await stoppedTcs.Task.WaitAsync(TimeSpan.FromSeconds(3), cancellationToken);
+                var stopped = await stoppedTcs.Task.WaitAsync(TimeSpan.FromSeconds(3), cancellationToken).ConfigureAwait(false);
                 if (stopped?.Exception != null)
                 {
                     throw new InvalidOperationException(
@@ -216,7 +216,7 @@ namespace WarThunderChatTranslator.Services
 
                 try
                 {
-                    await recorder.DisposeAsync();
+                    await recorder.DisposeAsync().ConfigureAwait(false);
                 }
                 catch
                 {
@@ -254,7 +254,7 @@ namespace WarThunderChatTranslator.Services
             if (recorder != null)
             {
                 try { recorder.StopRecording(); } catch { }
-                try { await recorder.DisposeAsync(); } catch { try { recorder.Dispose(); } catch { } }
+                try { await recorder.DisposeAsync().ConfigureAwait(false); } catch { try { recorder.Dispose(); } catch { } }
             }
 
             buffer?.Dispose();
@@ -263,7 +263,7 @@ namespace WarThunderChatTranslator.Services
             LevelChanged?.Invoke(this, 0f);
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
             if (_disposed)
             {
@@ -271,7 +271,19 @@ namespace WarThunderChatTranslator.Services
             }
 
             _disposed = true;
-            try { AbortAsync().GetAwaiter().GetResult(); } catch { }
+            try
+            {
+                await AbortAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug(ex, "WASAPI capture did not dispose cleanly.");
+            }
+        }
+
+        public void Dispose()
+        {
+            DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
     }
 }

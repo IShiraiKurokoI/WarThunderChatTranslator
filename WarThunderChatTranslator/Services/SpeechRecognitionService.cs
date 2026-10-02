@@ -35,7 +35,7 @@ namespace WarThunderChatTranslator.Services
     /// Local, non-streaming SenseVoice ASR. The model is loaded once and kept alive;
     /// microphone capture is handled separately and inference only runs after recording stops.
     /// </summary>
-    public sealed class SpeechRecognitionService : IDisposable
+    public sealed class SpeechRecognitionService : IDisposable, IAsyncDisposable
     {
         public const string ModelFolderName = "sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17";
         public const string ModelFileName = "model.int8.onnx";
@@ -112,7 +112,7 @@ namespace WarThunderChatTranslator.Services
                 return;
             }
 
-            await _lifecycleLock.WaitAsync(cancellationToken);
+            await _lifecycleLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 if (_recognizer != null)
@@ -146,7 +146,7 @@ namespace WarThunderChatTranslator.Services
                     config.ModelConfig.Debug = 0;
                     config.DecodingMethod = "greedy_search";
                     return new OfflineRecognizer(config);
-                }, cancellationToken);
+                }, cancellationToken).ConfigureAwait(false);
 
                 _recognizer = recognizer;
                 if (State != SpeechRecognitionServiceState.Recording)
@@ -183,8 +183,8 @@ namespace WarThunderChatTranslator.Services
 
         public async Task ReinitializeAsync(CancellationToken cancellationToken = default)
         {
-            await ReleaseAsync(cancellationToken);
-            await WarmUpAsync(cancellationToken);
+            await ReleaseAsync(cancellationToken).ConfigureAwait(false);
+            await WarmUpAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public void MarkRecording()
@@ -210,8 +210,8 @@ namespace WarThunderChatTranslator.Services
                 throw new InvalidOperationException(Localization.GetString("QuickTranslationNoAudioCaptured"));
             }
 
-            await WarmUpAsync(cancellationToken);
-            await _decodeLock.WaitAsync(cancellationToken);
+            await WarmUpAsync(cancellationToken).ConfigureAwait(false);
+            await _decodeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 var recognizer = _recognizer ?? throw new InvalidOperationException(Localization.GetString("QuickTranslationSpeechUnavailable"));
@@ -227,7 +227,7 @@ namespace WarThunderChatTranslator.Services
                     stream.AcceptWaveform(audio.SampleRate, samples);
                     recognizer.Decode(stream);
                     return stream.Result.Text?.Trim() ?? string.Empty;
-                }, cancellationToken);
+                }, cancellationToken).ConfigureAwait(false);
                 stopwatch.Stop();
 
                 _logger.Info(
@@ -268,16 +268,28 @@ namespace WarThunderChatTranslator.Services
                 return;
             }
 
-            await _lifecycleLock.WaitAsync(cancellationToken);
+            await _lifecycleLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                var recognizer = _recognizer;
-                _recognizer = null;
-                if (recognizer != null)
+                // Never dispose the native recognizer while a decode is still using it.
+                await _decodeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+                try
                 {
-                    await Task.Run(recognizer.Dispose, cancellationToken);
+                    var recognizer = _recognizer;
+                    _recognizer = null;
+                    if (recognizer != null)
+                    {
+                        // Do not pass the shutdown token to native disposal once we own both locks.
+                        // Cancellation here could leave the native recognizer alive during process exit.
+                        await Task.Run(recognizer.Dispose, CancellationToken.None).ConfigureAwait(false);
+                    }
+
+                    SetState(SpeechRecognitionServiceState.NotInitialized, null);
                 }
-                SetState(SpeechRecognitionServiceState.NotInitialized, null);
+                finally
+                {
+                    _decodeLock.Release();
+                }
             }
             finally
             {
@@ -298,17 +310,30 @@ namespace WarThunderChatTranslator.Services
             handler?.Invoke(this, new SpeechRecognitionStateChangedEventArgs(state, detail));
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
             if (_disposed)
             {
                 return;
             }
 
-            try { ReleaseAsync().GetAwaiter().GetResult(); } catch { }
-            _disposed = true;
-            _lifecycleLock.Dispose();
-            _decodeLock.Dispose();
+            try
+            {
+                await ReleaseAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            finally
+            {
+                _disposed = true;
+                _lifecycleLock.Dispose();
+                _decodeLock.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            // Kept for non-async callers. All internal awaits use ConfigureAwait(false),
+            // so this wrapper does not require the WinUI dispatcher to make progress.
+            DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
     }
 }
