@@ -1,22 +1,14 @@
-﻿<!--  Copyright (c) Microsoft Corporation and Contributors.  -->
-<!--  Licensed under the MIT License.  -->
-
-<Page
+﻿<Page
     x:Class="WarThunderChatTranslator.Pages.NetworkPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:DevWinUI"
-    xmlns:converters="using:WarThunderChatTranslator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:WarThunderChatTranslator.Helpers"
-    xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="Transparent"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
-    <Page.Resources>
-        <converters:NullBoolConverter x:Key="NullBoolConverter" />
-    </Page.Resources>
+    <!-- This page intentionally contains proxy settings only. Runtime/polling settings live in RunSettingsPage. -->
     <Grid Padding="20,0,0,0" RowSpacing="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -26,146 +18,61 @@
         <TextBlock
             x:Name="Header"
             Margin="0,44,0,0"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
             AutomationProperties.HeadingLevel="1"
             Style="{StaticResource TitleTextBlockStyle}"
             Text="{helpers:Loc Key=NetworkTitle}" />
 
         <ScrollViewer Grid.Row="1">
-            <Grid Padding="0,0,20,48" RowSpacing="0">
+            <StackPanel Padding="0,0,20,48">
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=NetworkDescription}"
+                    TextWrapping="Wrap" />
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+                <TextBlock
+                    Margin="0,20,0,0"
+                    FontSize="20"
+                    Text="{helpers:Loc Key=ProxyMode}" />
+                <StackPanel x:Name="ProxyPanel" Margin="0,10,0,10">
+                    <RadioButton Checked="RadioButton_Checked" Content="{helpers:Loc Key=ProxyDefault}" Tag="Default" />
+                    <RadioButton Checked="RadioButton_Checked" Content="{helpers:Loc Key=ProxySystem}" Tag="System" />
+                    <RadioButton
+                        x:Name="CustomProxy"
+                        Checked="RadioButton_Checked"
+                        Content="{helpers:Loc Key=ProxyCustom}"
+                        Tag="Custom" />
+                </StackPanel>
 
-                <!--  Top panel  -->
-                <Grid ColumnSpacing="16">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel>
-                        <TextBlock
-                            x:Name="AboutDescription"
-                            VerticalAlignment="Center"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            Text="{helpers:Loc Key=NetworkDescription}"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </Grid>
-
-                <!--  Content panel  -->
-                <ContentPresenter
-                    x:Name="ModuleContentPresenter"
-                    Grid.Row="1"
-                    Margin="0,8,0,0">
-                    <ContentPresenter.Content>
-                        <StackPanel>
-                            <TextBlock FontSize="20" Text="{helpers:Loc Key=ProxyMode}" />
-                            <StackPanel x:Name="ProxyPanel" Margin="0,10,0,10">
-                                <RadioButton
-                                    Checked="RadioButton_Checked"
-                                    Content="{helpers:Loc Key=ProxyDefault}"
-                                    Tag="Default" />
-                                <RadioButton
-                                    Checked="RadioButton_Checked"
-                                    Content="{helpers:Loc Key=ProxySystem}"
-                                    Tag="System" />
-                                <RadioButton
-                                    x:Name="CustomProxy"
-                                    Checked="RadioButton_Checked"
-                                    Content="{helpers:Loc Key=ProxyCustom}"
-                                    Tag="Custom" />
-                            </StackPanel>
-                            <TextBlock
-                                FontSize="20"
-                                Text="{helpers:Loc Key=ProxyCustomSettings}"
-                                Visibility="{Binding IsChecked, ElementName=CustomProxy, Converter={StaticResource BoolToVisibilityConverter}}" />
-                            <StackPanel
-                                Margin="0,10,0,0"
-                                Orientation="Horizontal"
-                                Visibility="{Binding IsChecked, ElementName=CustomProxy, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <TextBox
-                                    x:Name="ProxyAddress"
-                                    Width="180"
-                                    Header="{helpers:Loc Key=ProxyAddress}"
-                                    PlaceholderText="{helpers:Loc Key=ProxyAddressPlaceholder}"
-                                    TextChanged="ProxyAddress_TextChanged" />
-                                <TextBox
-                                    x:Name="ProxyAccount"
-                                    Margin="20,0,0,0"
-                                    Header="{helpers:Loc Key=ProxyAccount}"
-                                    InputScope="Number"
-                                    PlaceholderText="{helpers:Loc Key=ProxyAccountPlaceholder}"
-                                    TextChanged="ProxyAccount_TextChanged" />
-                                <TextBox
-                                    x:Name="ProxyPassword"
-                                    Margin="20,0,0,0"
-                                    Header="{helpers:Loc Key=ProxyPassword}"
-                                    InputScope="Number"
-                                    PlaceholderText="{helpers:Loc Key=ProxyPasswordPlaceholder}"
-                                    TextChanged="ProxyPassword_TextChanged" />
-                            </StackPanel>
-
-                            <StackPanel Margin="0,32,0,0">
-                                <TextBlock FontSize="20" Text="{helpers:Loc Key=PollingSettings}" />
-                                <TextBlock
-                                    Margin="0,6,0,0"
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Text="{helpers:Loc Key=PollingSettingsDescription}"
-                                    TextWrapping="Wrap" />
-
-                                <Grid Margin="0,16,0,0" ColumnSpacing="24">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <StackPanel>
-                                        <NumberBox
-                                            x:Name="GamePollingInterval"
-                                            Header="{helpers:Loc Key=GamePollingInterval}"
-                                            Maximum="60"
-                                            Minimum="1"
-                                            SmallChange="1"
-                                            SpinButtonPlacementMode="Inline"
-                                            ValueChanged="GamePollingInterval_ValueChanged" />
-                                        <TextBlock
-                                            Margin="0,6,0,0"
-                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                            Text="{helpers:Loc Key=GamePollingIntervalDescription}"
-                                            TextWrapping="Wrap" />
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Column="1">
-                                        <NumberBox
-                                            x:Name="WebPollingInterval"
-                                            Header="{helpers:Loc Key=WebPollingInterval}"
-                                            Maximum="60"
-                                            Minimum="1"
-                                            SmallChange="1"
-                                            SpinButtonPlacementMode="Inline"
-                                            ValueChanged="WebPollingInterval_ValueChanged" />
-                                        <TextBlock
-                                            Margin="0,6,0,0"
-                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                            Text="{helpers:Loc Key=WebPollingIntervalDescription}"
-                                            TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <TextBlock
-                                    Margin="0,10,0,0"
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Text="{helpers:Loc Key=PollingIntervalRange}"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                        </StackPanel>
-                    </ContentPresenter.Content>
-                </ContentPresenter>
-            </Grid>
+                <TextBlock
+                    FontSize="20"
+                    Text="{helpers:Loc Key=ProxyCustomSettings}"
+                    Visibility="{Binding IsChecked, ElementName=CustomProxy, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <StackPanel
+                    Margin="0,10,0,0"
+                    Orientation="Horizontal"
+                    Visibility="{Binding IsChecked, ElementName=CustomProxy, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBox
+                        x:Name="ProxyAddress"
+                        Width="180"
+                        Header="{helpers:Loc Key=ProxyAddress}"
+                        PlaceholderText="{helpers:Loc Key=ProxyAddressPlaceholder}"
+                        TextChanged="ProxyAddress_TextChanged" />
+                    <TextBox
+                        x:Name="ProxyAccount"
+                        Margin="20,0,0,0"
+                        Header="{helpers:Loc Key=ProxyAccount}"
+                        InputScope="Number"
+                        PlaceholderText="{helpers:Loc Key=ProxyAccountPlaceholder}"
+                        TextChanged="ProxyAccount_TextChanged" />
+                    <TextBox
+                        x:Name="ProxyPassword"
+                        Margin="20,0,0,0"
+                        Header="{helpers:Loc Key=ProxyPassword}"
+                        InputScope="Number"
+                        PlaceholderText="{helpers:Loc Key=ProxyPasswordPlaceholder}"
+                        TextChanged="ProxyPassword_TextChanged" />
+                </StackPanel>
+            </StackPanel>
         </ScrollViewer>
     </Grid>
 </Page>

@@ -35,10 +35,10 @@ namespace WarThunderChatTranslator.Helpers
 
         public static void UpdateHttpClient()
         {
-            var networkProxyMode = ApplicationConfig.GetSettings("NetworkProxyMode");
-            var proxyAddress = ApplicationConfig.GetSettings("ProxyAddress");
-            var proxyAccount = ApplicationConfig.GetSettings("ProxyAccount");
-            var proxyPassword = ApplicationConfig.GetSettings("ProxyPassword");
+            var networkProxyMode = ApplicationConfig.GetSettings(ApplicationConfig.NetworkProxyModeKey);
+            var proxyAddress = ApplicationConfig.GetSettings(ApplicationConfig.ProxyAddressKey);
+            var proxyAccount = ApplicationConfig.GetSettings(ApplicationConfig.ProxyAccountKey);
+            var proxyPassword = ApplicationConfig.GetSettings(ApplicationConfig.ProxyPasswordKey);
 
             switch (networkProxyMode)
             {
@@ -99,7 +99,7 @@ namespace WarThunderChatTranslator.Helpers
         public static void UpdateTranslator()
         {
             client ??= new HttpClient();
-            var selectedApi = ApplicationConfig.GetSettings("TranslateAPI") ?? "Microsoft";
+            var selectedApi = ApplicationConfig.GetSettings(ApplicationConfig.TranslateApiKey) ?? "Microsoft";
             Logger.Info($"Selected translator: {selectedApi}.");
 
             translator = selectedApi switch
@@ -115,7 +115,7 @@ namespace WarThunderChatTranslator.Helpers
         {
             return await TranslateAsync(
                 text,
-                ApplicationConfig.GetSettings("TargetLanguage") ?? "zh-CN");
+                ApplicationConfig.GetSettings(ApplicationConfig.TargetLanguageKey) ?? "zh-CN");
         }
 
         public static async Task<ITranslationResult> TranslateAsync(string text, string targetLanguage)
@@ -140,7 +140,7 @@ namespace WarThunderChatTranslator.Helpers
             var aiTranslator = new AiTranslator(client, provider);
             return await aiTranslator.TranslateAsync(
                 text,
-                ApplicationConfig.GetSettings("TargetLanguage") ?? "zh-CN");
+                ApplicationConfig.GetSettings(ApplicationConfig.TargetLanguageKey) ?? "zh-CN");
         }
     }
 }

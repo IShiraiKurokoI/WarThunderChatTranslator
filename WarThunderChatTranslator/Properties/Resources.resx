@@ -1,51 +1,110 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="resheader">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -116,34 +175,34 @@
     <value>War Thunder Chat Translator</value>
   </data>
   <data name="NavApi" xml:space="preserve">
-    <value>Translation API</value>
+    <value>Translation settings</value>
   </data>
   <data name="NavNetwork" xml:space="preserve">
-    <value>Network</value>
+    <value>Proxy settings</value>
   </data>
   <data name="NavAppearance" xml:space="preserve">
     <value>Appearance</value>
   </data>
   <data name="NavFont" xml:space="preserve">
-    <value>Fonts and styles</value>
+    <value>Chat styles</value>
   </data>
   <data name="NavTheme" xml:space="preserve">
-    <value>Theme and background</value>
+    <value>Interface settings</value>
   </data>
   <data name="NavInteraction" xml:space="preserve">
-    <value>Interaction and actions</value>
+    <value>Quick voice translation</value>
   </data>
   <data name="NavLayout" xml:space="preserve">
-    <value>Position and layout</value>
+    <value>Overlay</value>
   </data>
   <data name="NavUpdate" xml:space="preserve">
-    <value>Updates</value>
+    <value>Check for updates</value>
   </data>
   <data name="NavAbout" xml:space="preserve">
     <value>About</value>
   </data>
   <data name="ApiTitle" xml:space="preserve">
-    <value>Translation API</value>
+    <value>Translation settings</value>
   </data>
   <data name="ApiProviderDescription" xml:space="preserve">
     <value>Select the translation provider used by the translator.</value>
@@ -167,7 +226,7 @@
     <value>Test translation</value>
   </data>
   <data name="FontTitle" xml:space="preserve">
-    <value>Font settings</value>
+    <value>Chat styles</value>
   </data>
   <data name="FontFamily" xml:space="preserve">
     <value>Font</value>
@@ -203,10 +262,10 @@
     <value>Select color</value>
   </data>
   <data name="NetworkTitle" xml:space="preserve">
-    <value>Network settings</value>
+    <value>Network proxy settings</value>
   </data>
   <data name="NetworkDescription" xml:space="preserve">
-    <value>Configure the translator network proxy and polling intervals.</value>
+    <value>Configure the network proxy used by the translator.</value>
   </data>
   <data name="ProxyMode" xml:space="preserve">
     <value>Network proxy mode</value>
@@ -299,7 +358,7 @@
     <value>Open-source projects used by this app</value>
   </data>
   <data name="UpdateTitle" xml:space="preserve">
-    <value>Updates</value>
+    <value>Translator updates</value>
   </data>
   <data name="UpdateLastChecked" xml:space="preserve">
     <value>Last checked: </value>
@@ -407,7 +466,7 @@
     <value>Show chat bubble backgrounds</value>
   </data>
   <data name="NavAiTranslation" xml:space="preserve">
-    <value>AI translation models</value>
+    <value>AI models</value>
   </data>
   <data name="ApiAI" xml:space="preserve">
     <value>AI translation (custom)</value>
@@ -612,7 +671,7 @@ TargetLanguage.ISO6393: {8}</value>
     <value>Drag to move. Double-click to enable or disable resize mode.</value>
   </data>
   <data name="LocationTitle" xml:space="preserve">
-    <value>Position and size</value>
+    <value>Overlay layout</value>
   </data>
   <data name="LocationMonitor" xml:space="preserve">
     <value>Overlay display</value>
@@ -1000,5 +1059,71 @@ TargetLanguage.ISO6393: {8}</value>
   </data>
   <data name="QuickTranslationSavedMicrophoneUnavailable" xml:space="preserve">
     <value>Saved microphone (unavailable)</value>
+  </data>
+  <data name="ChatCacheSettings" xml:space="preserve">
+    <value>Battle chat cache</value>
+  </data>
+  <data name="ChatCacheSettingsDescription" xml:space="preserve">
+    <value>Manage translated chat behavior between War Thunder battles and limit in-memory cache growth.</value>
+  </data>
+  <data name="ClearBattleChatCache" xml:space="preserve">
+    <value>Clear chat after each battle</value>
+  </data>
+  <data name="ClearBattleChatCacheDescription" xml:space="preserve">
+    <value>Legacy compatibility setting for battle-end chat cleanup.</value>
+  </data>
+  <data name="BattleChatClearMode" xml:space="preserve">
+    <value>Battle-end cleanup mode</value>
+  </data>
+  <data name="BattleChatClearModeDescription" xml:space="preserve">
+    <value>No cleanup keeps history visible. Logical cleanup hides history after a battle while retaining it in memory, so switching back to No cleanup restores it. Switching to Physical cleanup immediately deletes history from battles before the current one, and future battle ends also delete chat and translation caches. </value>
+  </data>
+  <data name="BattleChatClearModeNone" xml:space="preserve">
+    <value>No cleanup</value>
+  </data>
+  <data name="BattleChatClearModeLogical" xml:space="preserve">
+    <value>Logical cleanup</value>
+  </data>
+  <data name="BattleChatClearModePhysical" xml:space="preserve">
+    <value>Physical cleanup</value>
+  </data>
+  <data name="PhysicalChatCacheLimit" xml:space="preserve">
+    <value>Maximum physical cache entries</value>
+  </data>
+  <data name="PhysicalChatCacheLimitDescription" xml:space="preserve">
+    <value>Hard limit for in-memory chat and translation cache entries, including history retained by logical cleanup. Oldest entries are evicted first. Default: 400.</value>
+  </data>
+  <data name="StartupSettings" xml:space="preserve">
+    <value>Startup behavior</value>
+  </data>
+  <data name="StartupSettingsDescription" xml:space="preserve">
+    <value>Choose which chat views open automatically after the local service starts.</value>
+  </data>
+  <data name="OpenOverlayOnStartup" xml:space="preserve">
+    <value>Open overlay on startup</value>
+  </data>
+  <data name="OpenOverlayOnStartupDescription" xml:space="preserve">
+    <value>Show the in-game chat translation overlay automatically when the application starts.</value>
+  </data>
+  <data name="OpenDashboardOnStartup" xml:space="preserve">
+    <value>Open Dashboard on startup</value>
+  </data>
+  <data name="OpenDashboardOnStartupDescription" xml:space="preserve">
+    <value>Open the local Dashboard in your default browser automatically when the application starts.</value>
+  </data>
+  <data name="NavQuickVoiceTranslation" xml:space="preserve">
+    <value>Voice translation</value>
+  </data>
+  <data name="NavRunSettings" xml:space="preserve">
+    <value>Runtime settings</value>
+  </data>
+  <data name="RunSettingsTitle" xml:space="preserve">
+    <value>Runtime settings</value>
+  </data>
+  <data name="ThemePageTitle" xml:space="preserve">
+    <value>Interface settings</value>
+  </data>
+  <data name="ApiProviderTitle" xml:space="preserve">
+    <value>Translation service</value>
   </data>
 </root>

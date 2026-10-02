@@ -1,5 +1,110 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -70,34 +175,34 @@
     <value>战争雷霆聊天翻译器</value>
   </data>
   <data name="NavApi" xml:space="preserve">
-    <value>翻译API</value>
+    <value>翻译设置</value>
   </data>
   <data name="NavNetwork" xml:space="preserve">
-    <value>网络</value>
+    <value>代理设置</value>
   </data>
   <data name="NavAppearance" xml:space="preserve">
     <value>外观</value>
   </data>
   <data name="NavFont" xml:space="preserve">
-    <value>字体和样式</value>
+    <value>聊天样式</value>
   </data>
   <data name="NavTheme" xml:space="preserve">
-    <value>主题和背景</value>
+    <value>界面设置</value>
   </data>
   <data name="NavInteraction" xml:space="preserve">
-    <value>互动和操作</value>
+    <value>语音快捷译</value>
   </data>
   <data name="NavLayout" xml:space="preserve">
-    <value>位置和布局</value>
+    <value>悬浮窗</value>
   </data>
   <data name="NavUpdate" xml:space="preserve">
-    <value>翻译器更新</value>
+    <value>检查更新</value>
   </data>
   <data name="NavAbout" xml:space="preserve">
     <value>关于</value>
   </data>
   <data name="ApiTitle" xml:space="preserve">
-    <value>翻译器 API</value>
+    <value>翻译设置</value>
   </data>
   <data name="ApiProviderDescription" xml:space="preserve">
     <value>选择翻译器使用的翻译提供方。</value>
@@ -121,7 +226,7 @@
     <value>测试翻译功能</value>
   </data>
   <data name="FontTitle" xml:space="preserve">
-    <value>字体设置</value>
+    <value>聊天样式</value>
   </data>
   <data name="FontFamily" xml:space="preserve">
     <value>字体</value>
@@ -157,10 +262,10 @@
     <value>选择颜色</value>
   </data>
   <data name="NetworkTitle" xml:space="preserve">
-    <value>网络设置</value>
+    <value>网络代理设置</value>
   </data>
   <data name="NetworkDescription" xml:space="preserve">
-    <value>设置翻译器使用的网络代理与数据轮询间隔。</value>
+    <value>设置翻译器使用的网络代理。</value>
   </data>
   <data name="ProxyMode" xml:space="preserve">
     <value>网络代理模式</value>
@@ -361,7 +466,7 @@
     <value>显示聊天气泡背景</value>
   </data>
   <data name="NavAiTranslation" xml:space="preserve">
-    <value>AI 翻译模型</value>
+    <value>AI 模型</value>
   </data>
   <data name="ApiAI" xml:space="preserve">
     <value>AI 翻译（自定义）</value>
@@ -566,7 +671,7 @@ TargetLanguage.ISO6393：{8}</value>
     <value>按住拖动调整位置；双击切换可调整大小/鼠标透传状态。</value>
   </data>
   <data name="LocationTitle" xml:space="preserve">
-    <value>位置和大小</value>
+    <value>悬浮窗布局</value>
   </data>
   <data name="LocationMonitor" xml:space="preserve">
     <value>悬浮窗显示器</value>
@@ -954,5 +1059,71 @@ TargetLanguage.ISO6393：{8}</value>
   </data>
   <data name="QuickTranslationSavedMicrophoneUnavailable" xml:space="preserve">
     <value>已保存的麦克风（当前不可用）</value>
+  </data>
+  <data name="ChatCacheSettings" xml:space="preserve">
+    <value>对局聊天缓存</value>
+  </data>
+  <data name="ChatCacheSettingsDescription" xml:space="preserve">
+    <value>设置战争雷霆每局之间的聊天翻译缓存行为，并限制内存缓存增长。</value>
+  </data>
+  <data name="ClearBattleChatCache" xml:space="preserve">
+    <value>每局结束后清理聊天翻译缓存</value>
+  </data>
+  <data name="ClearBattleChatCacheDescription" xml:space="preserve">
+    <value>用于兼容旧版本的对局结束聊天清理设置。</value>
+  </data>
+  <data name="BattleChatClearMode" xml:space="preserve">
+    <value>对局结束清理方式</value>
+  </data>
+  <data name="BattleChatClearModeDescription" xml:space="preserve">
+    <value>不清理会保留并显示历史记录；逻辑清理仅在对局结束后隐藏历史记录，缓存仍保留，切回“不清理”可恢复显示；切换到物理清理时会立即删除当前对局之前的历史记录，之后每次对局结束也会直接删除聊天与翻译缓存。</value>
+  </data>
+  <data name="BattleChatClearModeNone" xml:space="preserve">
+    <value>不清理</value>
+  </data>
+  <data name="BattleChatClearModeLogical" xml:space="preserve">
+    <value>逻辑清理</value>
+  </data>
+  <data name="BattleChatClearModePhysical" xml:space="preserve">
+    <value>物理清理</value>
+  </data>
+  <data name="PhysicalChatCacheLimit" xml:space="preserve">
+    <value>最大物理缓存条数</value>
+  </data>
+  <data name="PhysicalChatCacheLimitDescription" xml:space="preserve">
+    <value>聊天与翻译内存缓存的硬上限，超过后自动淘汰最旧缓存；逻辑清理隐藏的历史也受此上限约束。默认 400 条。</value>
+  </data>
+  <data name="StartupSettings" xml:space="preserve">
+    <value>启动行为</value>
+  </data>
+  <data name="StartupSettingsDescription" xml:space="preserve">
+    <value>设置本地服务启动完成后需要自动打开的聊天界面。</value>
+  </data>
+  <data name="OpenOverlayOnStartup" xml:space="preserve">
+    <value>应用启动时打开悬浮窗</value>
+  </data>
+  <data name="OpenOverlayOnStartupDescription" xml:space="preserve">
+    <value>应用启动后自动显示游戏内聊天翻译悬浮窗。</value>
+  </data>
+  <data name="OpenDashboardOnStartup" xml:space="preserve">
+    <value>应用启动时打开 Dashboard</value>
+  </data>
+  <data name="OpenDashboardOnStartupDescription" xml:space="preserve">
+    <value>应用启动后自动使用默认浏览器打开本地 Dashboard。</value>
+  </data>
+  <data name="NavQuickVoiceTranslation" xml:space="preserve">
+    <value>语音翻译</value>
+  </data>
+  <data name="NavRunSettings" xml:space="preserve">
+    <value>运行设置</value>
+  </data>
+  <data name="RunSettingsTitle" xml:space="preserve">
+    <value>运行设置</value>
+  </data>
+  <data name="ThemePageTitle" xml:space="preserve">
+    <value>界面设置</value>
+  </data>
+  <data name="ApiProviderTitle" xml:space="preserve">
+    <value>翻译服务</value>
   </data>
 </root>

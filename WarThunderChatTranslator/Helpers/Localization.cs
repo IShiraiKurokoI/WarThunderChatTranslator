@@ -30,7 +30,7 @@ namespace WarThunderChatTranslator.Helpers
             CultureInfo.DefaultThreadCurrentUICulture = culture;
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
-            ApplicationConfig.SaveSettings("ApplicationLanguage", CurrentLanguage);
+            ApplicationConfig.SaveSettings(ApplicationConfig.ApplicationLanguageKey, CurrentLanguage);
 
             if (updateWindowsPreference)
             {

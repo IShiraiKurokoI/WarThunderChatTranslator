@@ -457,7 +457,7 @@ namespace WarThunderChatTranslator.Pages
 
         private static void RefreshAiTranslatorIfNeeded()
         {
-            if (ApplicationConfig.GetSettings("TranslateAPI") == "AI")
+            if (ApplicationConfig.GetSettings(ApplicationConfig.TranslateApiKey) == "AI")
             {
                 TranslationHelper.UpdateTranslator();
             }

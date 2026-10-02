@@ -64,27 +64,38 @@ namespace WarThunderChatTranslator.Services
 
             var app = builder.Build();
 
-            app.MapGet("/gamechat", (HttpContext context, int? lastId, long? session) =>
+            app.MapGet("/gamechat", (HttpContext context, int? lastId, long? session, long? display) =>
             {
+                var currentBattleGeneration = _gameChatService.BattleGeneration;
+                var currentDisplayGeneration = _gameChatService.DisplayGeneration;
                 var currentProcessGeneration = _gameChatService.ProcessGeneration;
                 var currentPid = _gameChatService.CurrentGamePid;
                 var currentStartTimeUtc = _gameChatService.CurrentGameStartTimeUtc;
-                var sameProcessGeneration = session.HasValue && session.Value == currentProcessGeneration;
+                var sameBattleGeneration = session.HasValue && session.Value == currentBattleGeneration;
+                var sameDisplayGeneration = display.HasValue && display.Value == currentDisplayGeneration;
 
-                // Keep X-Game-Session for backward compatibility. Its value represents the game process generation, not an individual battle.
-                context.Response.Headers["X-Game-Session"] = currentProcessGeneration.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                context.Response.Headers["X-Game-Process-Generation"] = currentProcessGeneration.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                context.Response.Headers["X-Game-Pid"] = currentPid.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                context.Response.Headers["X-Game-Start-Time"] = currentStartTimeUtc?.ToString("O", System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
-                context.Response.Headers["X-Game-Last-Id"] = _gameChatService.LastGameChatId.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                // X-Game-Session is the battle cursor generation used for incremental reads.
+                // X-Game-Display-Generation changes whenever the visible history snapshot must be rebuilt.
+                context.Response.Headers["X-Game-Session"] = currentBattleGeneration.ToString(CultureInfo.InvariantCulture);
+                context.Response.Headers["X-Game-Battle-Generation"] = currentBattleGeneration.ToString(CultureInfo.InvariantCulture);
+                context.Response.Headers["X-Game-Display-Generation"] = currentDisplayGeneration.ToString(CultureInfo.InvariantCulture);
+                context.Response.Headers["X-Game-Process-Generation"] = currentProcessGeneration.ToString(CultureInfo.InvariantCulture);
+                context.Response.Headers["X-Game-Battle-Running"] = _gameChatService.IsBattleRunning ? "true" : "false";
+                context.Response.Headers["X-Game-Pid"] = currentPid.ToString(CultureInfo.InvariantCulture);
+                context.Response.Headers["X-Game-Start-Time"] = currentStartTimeUtc?.ToString("O", CultureInfo.InvariantCulture) ?? string.Empty;
+                context.Response.Headers["X-Game-Last-Id"] = _gameChatService.LastGameChatId.ToString(CultureInfo.InvariantCulture);
                 context.Response.Headers["X-Web-Poll-Interval-Ms"] = ApplicationConfig.GetWebPollingIntervalMilliseconds().ToString(CultureInfo.InvariantCulture);
                 context.Response.Headers["X-Dashboard-Style-Version"] = ApplicationConfig.GetDashboardStyleVersion().ToString(CultureInfo.InvariantCulture);
                 context.Response.Headers.CacheControl = "no-store";
 
-                // Legacy clients without query parameters still receive the full array. The dashboard uses the process-generation token (sent through the legacy session parameter) plus lastId for incremental reads.
-                var messages = sameProcessGeneration
-                    ? _gameChatService.GetMessagesAfter(lastId.GetValueOrDefault())
-                    : _gameChatService.GetCurrentMessages();
+                // A display-generation change means the client's visible history policy changed
+                // (for example Logical -> No cleanup). Return a full visible snapshot so the
+                // dashboard can rebuild and restore retained history immediately.
+                var messages = !session.HasValue || !sameDisplayGeneration
+                    ? _gameChatService.GetCurrentMessages()
+                    : sameBattleGeneration
+                        ? _gameChatService.GetCurrentBattleMessagesAfter(lastId.GetValueOrDefault())
+                        : _gameChatService.GetCurrentBattleMessages();
 
                 return Results.Json(messages, JsonOptions);
             });
@@ -217,13 +228,13 @@ namespace WarThunderChatTranslator.Services
             {
                 var versionBefore = ApplicationConfig.GetDashboardStyleVersion();
                 settings = ApplicationConfig.GetSettingsSnapshot(
-                    "FontFamily",
-                    "FontSize",
-                    "FontStyle",
-                    "AllyFontColor",
-                    "EnemyFontColor",
-                    "SystemFontColor",
-                    "BackgroundCSS");
+                    ApplicationConfig.FontFamilyKey,
+                    ApplicationConfig.FontSizeKey,
+                    ApplicationConfig.FontStyleKey,
+                    ApplicationConfig.AllyFontColorKey,
+                    ApplicationConfig.EnemyFontColorKey,
+                    ApplicationConfig.SystemFontColorKey,
+                    ApplicationConfig.BackgroundCssKey);
                 var versionAfter = ApplicationConfig.GetDashboardStyleVersion();
 
                 if (versionBefore == versionAfter)
@@ -233,18 +244,18 @@ namespace WarThunderChatTranslator.Services
                 }
             }
 
-            var fontFamily = GetSetting(settings, "FontFamily", "Segoe UI").Trim();
+            var fontFamily = GetSetting(settings, ApplicationConfig.FontFamilyKey, "Segoe UI").Trim();
             if (fontFamily.Length == 0)
             {
                 fontFamily = "Segoe UI";
             }
 
-            var fontSize = NormalizeFontSize(GetSetting(settings, "FontSize", "14"));
-            var fontWeight = NormalizeFontWeight(GetSetting(settings, "FontStyle", "normal"));
-            var allyFontColor = ToRgba(GetSetting(settings, "AllyFontColor", "#FF5BC0DE"), "rgba(91, 192, 222, 1)");
-            var enemyFontColor = ToRgba(GetSetting(settings, "EnemyFontColor", "#FFD9534F"), "rgba(217, 83, 79, 1)");
-            var systemFontColor = ToRgba(GetSetting(settings, "SystemFontColor", "#FF856404"), "rgba(133, 100, 4, 1)");
-            var bodyCss = GetSetting(settings, "BackgroundCSS", "background-color: #f4f4f4;");
+            var fontSize = NormalizeFontSize(GetSetting(settings, ApplicationConfig.FontSizeKey, "14"));
+            var fontWeight = NormalizeFontWeight(GetSetting(settings, ApplicationConfig.FontStyleKey, "normal"));
+            var allyFontColor = ToRgba(GetSetting(settings, ApplicationConfig.AllyFontColorKey, "#FF5BC0DE"), "rgba(91, 192, 222, 1)");
+            var enemyFontColor = ToRgba(GetSetting(settings, ApplicationConfig.EnemyFontColorKey, "#FFD9534F"), "rgba(217, 83, 79, 1)");
+            var systemFontColor = ToRgba(GetSetting(settings, ApplicationConfig.SystemFontColorKey, "#FF856404"), "rgba(133, 100, 4, 1)");
+            var bodyCss = GetSetting(settings, ApplicationConfig.BackgroundCssKey, "background-color: #f4f4f4;");
 
             return new DashboardStyleSnapshot(
                 fontFamily,

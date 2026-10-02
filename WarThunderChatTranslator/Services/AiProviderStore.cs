@@ -10,9 +10,6 @@ namespace WarThunderChatTranslator.Services
 {
     public static class AiProviderStore
     {
-        private const string ProvidersKey = "AiTranslationProviders";
-        private const string SelectedProviderIdKey = "AiSelectedProviderId";
-
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -22,7 +19,7 @@ namespace WarThunderChatTranslator.Services
 
         public static IReadOnlyList<AiProviderConfig> GetProviders()
         {
-            var raw = ApplicationConfig.GetSettings(ProvidersKey);
+            var raw = ApplicationConfig.GetSettings(ApplicationConfig.AiTranslationProvidersKey);
             if (string.IsNullOrWhiteSpace(raw))
             {
                 return Array.Empty<AiProviderConfig>();
@@ -41,13 +38,13 @@ namespace WarThunderChatTranslator.Services
         public static AiProviderConfig GetSelectedProvider()
         {
             var providers = GetProviders();
-            var selectedId = ApplicationConfig.GetSettings(SelectedProviderIdKey);
+            var selectedId = ApplicationConfig.GetSettings(ApplicationConfig.AiSelectedProviderIdKey);
             return providers.FirstOrDefault(provider => provider.Id == selectedId);
         }
 
         public static string GetSelectedProviderId()
         {
-            return ApplicationConfig.GetSettings(SelectedProviderIdKey) ?? string.Empty;
+            return ApplicationConfig.GetSettings(ApplicationConfig.AiSelectedProviderIdKey) ?? string.Empty;
         }
 
         public static void SetSelectedProvider(string providerId)
@@ -58,7 +55,7 @@ namespace WarThunderChatTranslator.Services
                 return;
             }
 
-            ApplicationConfig.SaveSettings(SelectedProviderIdKey, providerId);
+            ApplicationConfig.SaveSettings(ApplicationConfig.AiSelectedProviderIdKey, providerId);
         }
 
         public static void SaveProvider(AiProviderConfig provider)
@@ -78,7 +75,7 @@ namespace WarThunderChatTranslator.Services
 
             if (string.IsNullOrWhiteSpace(GetSelectedProviderId()))
             {
-                ApplicationConfig.SaveSettings(SelectedProviderIdKey, provider.Id);
+                ApplicationConfig.SaveSettings(ApplicationConfig.AiSelectedProviderIdKey, provider.Id);
             }
         }
 
@@ -89,7 +86,7 @@ namespace WarThunderChatTranslator.Services
 
             if (GetSelectedProviderId() == providerId)
             {
-                ApplicationConfig.SaveSettings(SelectedProviderIdKey, providers.FirstOrDefault()?.Id ?? string.Empty);
+                ApplicationConfig.SaveSettings(ApplicationConfig.AiSelectedProviderIdKey, providers.FirstOrDefault()?.Id ?? string.Empty);
             }
         }
 
@@ -124,7 +121,7 @@ namespace WarThunderChatTranslator.Services
 
         private static void SaveProviders(IReadOnlyCollection<AiProviderConfig> providers)
         {
-            ApplicationConfig.SaveSettings(ProvidersKey, JsonSerializer.Serialize(providers, JsonOptions));
+            ApplicationConfig.SaveSettings(ApplicationConfig.AiTranslationProvidersKey, JsonSerializer.Serialize(providers, JsonOptions));
         }
     }
 }

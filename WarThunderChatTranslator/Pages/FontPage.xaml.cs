@@ -33,9 +33,9 @@ namespace WarThunderChatTranslator.Pages
 
         private void InitializeFontColors()
         {
-            AllyPreviewBrush = new SolidColorBrush(GetFontColor("AllyFontColor", "#FF5BC0DE"));
-            EnemyPreviewBrush = new SolidColorBrush(GetFontColor("EnemyFontColor", "#FFD9534F"));
-            SystemPreviewBrush = new SolidColorBrush(GetFontColor("SystemFontColor", "#FF856404"));
+            AllyPreviewBrush = new SolidColorBrush(GetFontColor(ApplicationConfig.AllyFontColorKey, "#FF5BC0DE"));
+            EnemyPreviewBrush = new SolidColorBrush(GetFontColor(ApplicationConfig.EnemyFontColorKey, "#FFD9534F"));
+            SystemPreviewBrush = new SolidColorBrush(GetFontColor(ApplicationConfig.SystemFontColorKey, "#FF856404"));
         }
 
         private static Color GetFontColor(string settingKey, string fallback)
@@ -50,7 +50,7 @@ namespace WarThunderChatTranslator.Pages
         {
             _settingsInitialized = false;
 
-            var rawFontSize = ApplicationConfig.GetSettings("FontSize");
+            var rawFontSize = ApplicationConfig.GetSettings(ApplicationConfig.FontSizeKey);
             if (!double.TryParse(rawFontSize, NumberStyles.Float, CultureInfo.InvariantCulture, out var fontSize) &&
                 !double.TryParse(rawFontSize, NumberStyles.Float, CultureInfo.CurrentCulture, out fontSize))
             {
@@ -58,7 +58,7 @@ namespace WarThunderChatTranslator.Pages
             }
 
             FontSizePanel.Value = Math.Clamp(fontSize, 1, 200);
-            FontStylePanel.SelectedIndex = GetFontStyleIndex(ApplicationConfig.GetSettings("FontStyle"));
+            FontStylePanel.SelectedIndex = GetFontStyleIndex(ApplicationConfig.GetSettings(ApplicationConfig.FontStyleKey));
             _settingsInitialized = true;
         }
 
@@ -80,7 +80,7 @@ namespace WarThunderChatTranslator.Pages
                 .Select(fontFamily => new Tuple<string, FontFamily>(fontFamily.Source, fontFamily))
                 .ToList();
 
-            string fontFamilySetting = ApplicationConfig.GetSettings("FontFamily");
+            string fontFamilySetting = ApplicationConfig.GetSettings(ApplicationConfig.FontFamilyKey);
             if (fontFamilySetting != null)
             {
                 FontFamilyPanel.SelectedIndex = Fonts.FindIndex(f => f.Item1 == fontFamilySetting);
@@ -91,7 +91,7 @@ namespace WarThunderChatTranslator.Pages
         {
             if (_settingsInitialized && FontFamilyPanel.SelectedValue is FontFamily selectedFontFamily)
             {
-                ApplicationConfig.SaveSettings("FontFamily", selectedFontFamily.Source);
+                ApplicationConfig.SaveSettings(ApplicationConfig.FontFamilyKey, selectedFontFamily.Source);
             }
         }
 
@@ -103,14 +103,14 @@ namespace WarThunderChatTranslator.Pages
             }
 
             var fontSize = Math.Clamp(e.NewValue, 1, 200);
-            ApplicationConfig.SaveSettings("FontSize", fontSize.ToString("0.##", CultureInfo.InvariantCulture));
+            ApplicationConfig.SaveSettings(ApplicationConfig.FontSizeKey, fontSize.ToString("0.##", CultureInfo.InvariantCulture));
         }
 
         private void FontStylePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_settingsInitialized && FontStylePanel.SelectedItem is ComboBoxItem selectedItem)
             {
-                ApplicationConfig.SaveSettings("FontStyle", selectedItem.Tag?.ToString() ?? "normal");
+                ApplicationConfig.SaveSettings(ApplicationConfig.FontStyleKey, selectedItem.Tag?.ToString() ?? "normal");
             }
         }
 
@@ -173,17 +173,17 @@ namespace WarThunderChatTranslator.Pages
 
         private async void Ally_Button_Click(object sender, RoutedEventArgs e)
         {
-            await SelectColorAsync("AllyFontColor", AllyColorPreview, "#FF5BC0DE");
+            await SelectColorAsync(ApplicationConfig.AllyFontColorKey, AllyColorPreview, "#FF5BC0DE");
         }
 
         private async void Enemy_Button_Click(object sender, RoutedEventArgs e)
         {
-            await SelectColorAsync("EnemyFontColor", EnemyColorPreview, "#FFD9534F");
+            await SelectColorAsync(ApplicationConfig.EnemyFontColorKey, EnemyColorPreview, "#FFD9534F");
         }
 
         private async void System_Button_Click(object sender, RoutedEventArgs e)
         {
-            await SelectColorAsync("SystemFontColor", SystemColorPreview, "#FF856404");
+            await SelectColorAsync(ApplicationConfig.SystemFontColorKey, SystemColorPreview, "#FF856404");
         }
     }
 }

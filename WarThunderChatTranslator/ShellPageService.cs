@@ -16,6 +16,7 @@ namespace WarThunderChatTranslator
             _pageKeyToTypeMap = new Dictionary<string, Type>
             {
                 { "NetworkPage", typeof(NetworkPage) },
+                { "RunSettingsPage", typeof(RunSettingsPage) },
                 { "FontPage", typeof(FontPage) },
                 { "ThemePage", typeof(ThemePage) },
                 { "LocationPage", typeof(LocationPage) },

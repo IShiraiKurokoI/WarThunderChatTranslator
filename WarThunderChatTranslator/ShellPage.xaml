@@ -22,13 +22,14 @@
 
             <NavigationView.MenuItems>
 
+                <!-- Core translation features -->
                 <NavigationViewItem
                     Margin="0,0,12,0"
                     Content="{helpers:Loc Key=NavApi}"
                     IsSelected="True"
                     Tag="APIPage">
                     <NavigationViewItem.Icon>
-                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/API.ico" />
+                        <SymbolIcon Symbol="World" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -37,7 +38,28 @@
                     Content="{helpers:Loc Key=NavAiTranslation}"
                     Tag="AITranslationPage">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE8C1;" />
+                        <SymbolIcon Symbol="Character" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="{helpers:Loc Key=NavQuickVoiceTranslation}"
+                    Tag="InteractPage">
+                    <NavigationViewItem.Icon>
+                        <SymbolIcon Symbol="Microphone" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItemSeparator />
+
+                <!-- Application settings -->
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="{helpers:Loc Key=NavRunSettings}"
+                    Tag="RunSettingsPage">
+                    <NavigationViewItem.Icon>
+                        <SymbolIcon Symbol="Setting" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -46,34 +68,30 @@
                     Content="{helpers:Loc Key=NavNetwork}"
                     Tag="NetworkPage">
                     <NavigationViewItem.Icon>
-                        <BitmapIcon
-                            MinWidth="60"
-                            MinHeight="60"
-                            ShowAsMonochrome="False"
-                            UriSource="ms-appx:///Assets/FluentIcons/Network.png" />
+                        <SymbolIcon Symbol="Globe" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
                 <NavigationViewItem Margin="0,0,12,0" Content="{helpers:Loc Key=NavAppearance}">
                     <NavigationViewItem.Icon>
-                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Windows.ico" />
+                        <SymbolIcon Symbol="View" />
                     </NavigationViewItem.Icon>
                     <NavigationViewItem.MenuItems>
-                        <NavigationViewItem
-                            Margin="0,0,12,0"
-                            Content="{helpers:Loc Key=NavFont}"
-                            Tag="FontPage">
-                            <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Font.ico" />
-                            </NavigationViewItem.Icon>
-                        </NavigationViewItem>
-
                         <NavigationViewItem
                             Margin="0,0,12,0"
                             Content="{helpers:Loc Key=NavTheme}"
                             Tag="ThemePage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Theme.ico" />
+                                <SymbolIcon Symbol="FontColor" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+
+                        <NavigationViewItem
+                            Margin="0,0,12,0"
+                            Content="{helpers:Loc Key=NavFont}"
+                            Tag="FontPage">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="Message" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
 
@@ -82,27 +100,21 @@
                             Content="{helpers:Loc Key=NavLayout}"
                             Tag="LocationPage">
                             <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Size.ico" />
-                            </NavigationViewItem.Icon>
-                        </NavigationViewItem>
-
-                        <NavigationViewItem
-                            Margin="0,0,12,0"
-                            Content="{helpers:Loc Key=NavInteraction}"
-                            Tag="InteractPage">
-                            <NavigationViewItem.Icon>
-                                <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico" />
+                                <SymbolIcon Symbol="FullScreen" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                     </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
 
+                <NavigationViewItemSeparator />
+
+                <!-- Maintenance -->
                 <NavigationViewItem
                     Margin="0,0,12,0"
                     Content="{helpers:Loc Key=NavUpdate}"
                     Tag="UpdatePage">
                     <NavigationViewItem.Icon>
-                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Update.png" />
+                        <SymbolIcon Symbol="Sync" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -111,7 +123,7 @@
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem Content="{helpers:Loc Key=NavAbout}" Tag="AboutPage">
                     <NavigationViewItem.Icon>
-                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/About.ico" />
+                        <SymbolIcon Symbol="Help" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>

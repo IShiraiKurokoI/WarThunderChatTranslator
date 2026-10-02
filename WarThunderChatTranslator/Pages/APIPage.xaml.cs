@@ -25,7 +25,7 @@ namespace WarThunderChatTranslator.Pages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var selectedAPI = ApplicationConfig.GetSettings("TranslateAPI") ?? "Microsoft";
+            var selectedAPI = ApplicationConfig.GetSettings(ApplicationConfig.TranslateApiKey) ?? "Microsoft";
             InitializeAPIPanel(selectedAPI);
             LoadLanguages();
             UpdateLanguageSupport(selectedAPI);
@@ -46,7 +46,7 @@ namespace WarThunderChatTranslator.Pages
         private void LoadLanguages()
         {
             var languageDictionary = GTranslate.Language.LanguageDictionary;
-            var savedLanguage = ApplicationConfig.GetSettings("TargetLanguage");
+            var savedLanguage = ApplicationConfig.GetSettings(ApplicationConfig.TargetLanguageKey);
 
             foreach (var language in languageDictionary.Values)
             {
@@ -67,7 +67,7 @@ namespace WarThunderChatTranslator.Pages
             var selectedTag = ((ComboBoxItem)APIPanel.SelectedItem)?.Tag?.ToString();
             if (string.IsNullOrEmpty(selectedTag)) return;
 
-            ApplicationConfig.SaveSettings("TranslateAPI", selectedTag);
+            ApplicationConfig.SaveSettings(ApplicationConfig.TranslateApiKey, selectedTag);
             TranslationHelper.UpdateTranslator();
             UpdateLanguageSupport(selectedTag);
         }
@@ -136,7 +136,7 @@ namespace WarThunderChatTranslator.Pages
         {
             if (_loaded && TargetLanguage.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag is Language selectedLanguage)
             {
-                ApplicationConfig.SaveSettings("TargetLanguage", selectedLanguage.ISO6391);
+                ApplicationConfig.SaveSettings(ApplicationConfig.TargetLanguageKey, selectedLanguage.ISO6391);
                 _logger.Debug($"Target language set to {selectedLanguage.ISO6391}.");
             }
         }

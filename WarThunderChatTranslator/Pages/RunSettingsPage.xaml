@@ -1,0 +1,152 @@
+<Page
+    x:Class="WarThunderChatTranslator.Pages.RunSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
+    xmlns:labs="using:DevWinUI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
+
+    <Grid Padding="20,0,0,0" RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Margin="0,44,0,0"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="{helpers:Loc Key=RunSettingsTitle}" />
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Padding="0,0,20,48">
+                <TextBlock
+                    Margin="0,0,0,8"
+                    FontSize="20"
+                    Text="{helpers:Loc Key=PollingSettings}" />
+                <TextBlock
+                    Margin="0,0,0,10"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=PollingSettingsDescription}"
+                    TextWrapping="Wrap" />
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=GamePollingIntervalDescription}"
+                    Header="{helpers:Loc Key=GamePollingInterval}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE774;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <NumberBox
+                        x:Name="GamePollingInterval"
+                        Width="160"
+                        Maximum="60"
+                        Minimum="1"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline"
+                        ValueChanged="GamePollingInterval_ValueChanged" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=WebPollingIntervalDescription}"
+                    Header="{helpers:Loc Key=WebPollingInterval}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE968;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <NumberBox
+                        x:Name="WebPollingInterval"
+                        Width="160"
+                        Maximum="60"
+                        Minimum="1"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline"
+                        ValueChanged="WebPollingInterval_ValueChanged" />
+                </labs:SettingsCard>
+
+                <TextBlock
+                    Margin="0,6,0,24"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=PollingIntervalRange}"
+                    TextWrapping="Wrap" />
+
+                <TextBlock
+                    Margin="0,0,0,8"
+                    FontSize="20"
+                    Text="{helpers:Loc Key=ChatCacheSettings}" />
+                <TextBlock
+                    Margin="0,0,0,10"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=ChatCacheSettingsDescription}"
+                    TextWrapping="Wrap" />
+
+                <labs:SettingsCard
+                    x:Name="BattleChatClearModeCard"
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=BattleChatClearModeDescription}"
+                    Header="{helpers:Loc Key=BattleChatClearMode}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D4;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox x:Name="BattleChatClearMode" SelectionChanged="BattleChatClearMode_SelectionChanged">
+                        <ComboBoxItem Content="{helpers:Loc Key=BattleChatClearModeNone}" Tag="None" />
+                        <ComboBoxItem Content="{helpers:Loc Key=BattleChatClearModeLogical}" Tag="Logical" />
+                        <ComboBoxItem Content="{helpers:Loc Key=BattleChatClearModePhysical}" Tag="Physical" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    x:Name="PhysicalChatCacheLimitCard"
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=PhysicalChatCacheLimitDescription}"
+                    Header="{helpers:Loc Key=PhysicalChatCacheLimit}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE950;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <NumberBox
+                        x:Name="PhysicalChatCacheLimit"
+                        Width="160"
+                        Maximum="5000"
+                        Minimum="50"
+                        SmallChange="50"
+                        SpinButtonPlacementMode="Inline"
+                        ValueChanged="PhysicalChatCacheLimit_ValueChanged" />
+                </labs:SettingsCard>
+
+                <TextBlock
+                    Margin="0,24,0,8"
+                    FontSize="20"
+                    Text="{helpers:Loc Key=StartupSettings}" />
+                <TextBlock
+                    Margin="0,0,0,10"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=StartupSettingsDescription}"
+                    TextWrapping="Wrap" />
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=OpenOverlayOnStartupDescription}"
+                    Header="{helpers:Loc Key=OpenOverlayOnStartup}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7F4;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="OpenOverlayOnStartup" Toggled="OpenOverlayOnStartup_Toggled" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=OpenDashboardOnStartupDescription}"
+                    Header="{helpers:Loc Key=OpenDashboardOnStartup}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE80F;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="OpenDashboardOnStartup" Toggled="OpenDashboardOnStartup_Toggled" />
+                </labs:SettingsCard>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -43,13 +43,13 @@ namespace WarThunderChatTranslator.Pages
         }
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            ThemePanel.SelectedIndex = (ApplicationConfig.GetSettings("Theme") ?? "Default") switch
+            ThemePanel.SelectedIndex = (ApplicationConfig.GetSettings(ApplicationConfig.ThemeKey) ?? "Default") switch
             {
                 "Light" => 0,
                 "Dark" => 1,
                 _ => 2,
             };
-            BackgroundCSS.Text = ApplicationConfig.GetSettings("BackgroundCSS");
+            BackgroundCSS.Text = ApplicationConfig.GetSettings(ApplicationConfig.BackgroundCssKey);
             ThemeInitilized = true;
             LanguagePanel.SelectedIndex = Localization.CurrentLanguage == "zh-CN" ? 0 : 1;
             LanguageInitialized = true;
@@ -60,7 +60,7 @@ namespace WarThunderChatTranslator.Pages
             if (ThemeInitilized)
             {
                 var theme = ((ComboBoxItem)ThemePanel.SelectedItem).Tag.ToString();
-                ApplicationConfig.SaveSettings("Theme", theme);
+                ApplicationConfig.SaveSettings(ApplicationConfig.ThemeKey, theme);
                 App.ApplyTheme(theme switch
                 {
                     "Light" => ElementTheme.Light,
@@ -79,7 +79,7 @@ namespace WarThunderChatTranslator.Pages
         {
             if (ThemeInitilized)
             {
-                ApplicationConfig.SaveSettings("BackgroundCSS", BackgroundCSS.Text);
+                ApplicationConfig.SaveSettings(ApplicationConfig.BackgroundCssKey, BackgroundCSS.Text);
             }
         }
 

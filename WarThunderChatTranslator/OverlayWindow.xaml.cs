@@ -70,7 +70,7 @@ namespace WarThunderChatTranslator
         private UIElement _resizeCaptureElement;
         private bool _applyingPlacement;
         private bool _clickThroughApplied;
-        private long _lastProcessGeneration = long.MinValue;
+        private long _lastDisplayGeneration = long.MinValue;
         private int _lastMessageId = int.MinValue;
         private long _lastStyleVersion = long.MinValue;
         private NativePoint _dragStartCursor;
@@ -280,14 +280,14 @@ namespace WarThunderChatTranslator
                 return;
             }
 
-            var generation = service.ProcessGeneration;
+            var generation = service.DisplayGeneration;
             var lastId = service.LastGameChatId;
-            if (!force && generation == _lastProcessGeneration && lastId == _lastMessageId)
+            if (!force && generation == _lastDisplayGeneration && lastId == _lastMessageId)
             {
                 return;
             }
 
-            _lastProcessGeneration = generation;
+            _lastDisplayGeneration = generation;
             _lastMessageId = lastId;
             RenderMessages(service.GetCurrentMessages());
         }
@@ -343,9 +343,9 @@ namespace WarThunderChatTranslator
             {
                 Text = FormatMessage(message),
                 TextWrapping = TextWrapping.Wrap,
-                FontFamily = new FontFamily(ApplicationConfig.GetSettings("FontFamily") ?? "Segoe UI"),
-                FontSize = ReadDouble("FontSize", 14),
-                FontWeight = GetFontWeight(ApplicationConfig.GetSettings("FontStyle")),
+                FontFamily = new FontFamily(ApplicationConfig.GetSettings(ApplicationConfig.FontFamilyKey) ?? "Segoe UI"),
+                FontSize = ReadDouble(ApplicationConfig.FontSizeKey, 14),
+                FontWeight = GetFontWeight(ApplicationConfig.GetSettings(ApplicationConfig.FontStyleKey)),
                 Foreground = new SolidColorBrush(GetMessageColor(message)),
                 Margin = new Thickness(2, 1, 2, 1)
             };
@@ -384,12 +384,12 @@ namespace WarThunderChatTranslator
         private static Color GetMessageColor(ChatMessage message)
         {
             var key = string.IsNullOrWhiteSpace(message.Sender)
-                ? "SystemFontColor"
-                : message.Enemy ? "EnemyFontColor" : "AllyFontColor";
+                ? ApplicationConfig.SystemFontColorKey
+                : message.Enemy ? ApplicationConfig.EnemyFontColorKey : ApplicationConfig.AllyFontColorKey;
             var fallback = key switch
             {
-                "EnemyFontColor" => "#FFD9534F",
-                "SystemFontColor" => "#FF856404",
+                ApplicationConfig.EnemyFontColorKey => "#FFD9534F",
+                ApplicationConfig.SystemFontColorKey => "#FF856404",
                 _ => "#FF5BC0DE"
             };
 

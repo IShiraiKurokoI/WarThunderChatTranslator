@@ -30,11 +30,13 @@ public sealed partial class ShellPage : Page
         var navigationKeys = new[]
         {
             "NavApi",
+            "NavAiTranslation",
+            "NavQuickVoiceTranslation",
             "NavNetwork",
+            "NavRunSettings",
             "NavAppearance",
-            "NavFont",
             "NavTheme",
-            "NavInteraction",
+            "NavFont",
             "NavLayout",
             "NavUpdate",
             "NavAbout"

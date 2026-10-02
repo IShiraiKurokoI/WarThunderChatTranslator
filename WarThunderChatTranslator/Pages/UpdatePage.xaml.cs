@@ -25,7 +25,7 @@ namespace WarThunderChatTranslator.Pages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var lastUpdateCheckDate = ApplicationConfig.GetSettings("LastUpdateCheckDate");
+            var lastUpdateCheckDate = ApplicationConfig.GetSettings(ApplicationConfig.LastUpdateCheckDateKey);
             LastUpdateCheckDate.Text = lastUpdateCheckDate is null or "Never" or "从未"
                 ? Localization.GetString("UpdateNever")
                 : lastUpdateCheckDate;
@@ -62,7 +62,7 @@ namespace WarThunderChatTranslator.Pages
                 dispatcherQueue.TryEnqueue(() =>
                 {
                     LastUpdateCheckDate.Text = DateTime.Now.ToString("g");
-                    ApplicationConfig.SaveSettings("LastUpdateCheckDate", LastUpdateCheckDate.Text);
+                    ApplicationConfig.SaveSettings(ApplicationConfig.LastUpdateCheckDateKey, LastUpdateCheckDate.Text);
                 });
             }
             catch (Exception ex)

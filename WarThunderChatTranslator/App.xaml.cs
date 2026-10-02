@@ -138,28 +138,33 @@ namespace WarThunderChatTranslator
         {
             // Initialize UI culture before creating localized default values such as
             // the quick-translation TTS prompt text.
-            Localization.Initialize(ApplicationConfig.GetSettings("ApplicationLanguage"));
+            Localization.Initialize(ApplicationConfig.GetSettings(ApplicationConfig.ApplicationLanguageKey));
 
             var defaultSettings = new Dictionary<string, string>
             {
-                { "NetworkProxyMode", "Default" },
-                { "ProxyAddress", "" },
-                { "ProxyAccount", "" },
-                { "ProxyPassword", "" },
-                { "LastUpdateCheckDate", "Never" },
-                { "TranslateAPI", "Microsoft" },
-                { "AiSelectedProviderId", "" },
-                { "TargetLanguage", "zh-CN" },
-                { "FontFamily", "Segoe UI" },
-                { "FontSize", "14" },
-                { "FontStyle", "normal" },
-                { "AllyFontColor", "#FF5BC0DE" },
-                { "EnemyFontColor", "#FFD9534F" },
-                { "SystemFontColor", "#FF856404" },
-                { "Theme", "Default" },
-                { "BackgroundCSS", "background-color: #f4f4f4;" },
+                { ApplicationConfig.NetworkProxyModeKey, "Default" },
+                { ApplicationConfig.ProxyAddressKey, "" },
+                { ApplicationConfig.ProxyAccountKey, "" },
+                { ApplicationConfig.ProxyPasswordKey, "" },
+                { ApplicationConfig.LastUpdateCheckDateKey, "Never" },
+                { ApplicationConfig.TranslateApiKey, "Microsoft" },
+                { ApplicationConfig.AiSelectedProviderIdKey, "" },
+                { ApplicationConfig.TargetLanguageKey, "zh-CN" },
+                { ApplicationConfig.FontFamilyKey, "Segoe UI" },
+                { ApplicationConfig.FontSizeKey, "14" },
+                { ApplicationConfig.FontStyleKey, "normal" },
+                { ApplicationConfig.AllyFontColorKey, "#FF5BC0DE" },
+                { ApplicationConfig.EnemyFontColorKey, "#FFD9534F" },
+                { ApplicationConfig.SystemFontColorKey, "#FF856404" },
+                { ApplicationConfig.ThemeKey, "Default" },
+                { ApplicationConfig.BackgroundCssKey, "background-color: #f4f4f4;" },
                 { ApplicationConfig.GamePollingIntervalSecondsKey, ApplicationConfig.DefaultPollingIntervalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { ApplicationConfig.WebPollingIntervalSecondsKey, ApplicationConfig.DefaultPollingIntervalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ApplicationConfig.ClearBattleChatCacheKey, "true" },
+                { ApplicationConfig.BattleChatClearModeKey, ApplicationConfig.BattleChatClearModeLogical },
+                { ApplicationConfig.PhysicalChatCacheLimitKey, ApplicationConfig.DefaultPhysicalChatCacheLimit.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ApplicationConfig.OpenOverlayOnStartupKey, "false" },
+                { ApplicationConfig.OpenDashboardOnStartupKey, "false" },
                 { ApplicationConfig.OverlayDisplayModeKey, "translation" },
                 { ApplicationConfig.OverlayShowSourceLanguageKey, "false" },
                 { ApplicationConfig.OverlayOpacityPercentKey, "90" },
@@ -308,7 +313,7 @@ namespace WarThunderChatTranslator
         {
             m_window = new MainWindow();
 
-            var theme = ApplicationConfig.GetSettings("Theme") ?? "Default";
+            var theme = ApplicationConfig.GetSettings(ApplicationConfig.ThemeKey) ?? "Default";
             ElementTheme SettingsTheme = theme switch
             {
                 "Light" => ElementTheme.Light,
@@ -316,7 +321,7 @@ namespace WarThunderChatTranslator
                 _ => ElementTheme.Default,
             };
 
-            ApplicationConfig.SaveSettings("Theme", theme);
+            ApplicationConfig.SaveSettings(ApplicationConfig.ThemeKey, theme);
 
             m_window.SystemBackdrop = new DesktopAcrylicBackdrop();
             ApplyTheme(SettingsTheme);
@@ -473,6 +478,7 @@ namespace WarThunderChatTranslator
                 _ = ObserveBackgroundTaskAsync(_gamePollingTask, "game chat polling");
 
                 InitializeQuickTranslationServices();
+                OpenConfiguredStartupViews();
             }
             catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
             {
@@ -489,6 +495,30 @@ namespace WarThunderChatTranslator
                 ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
 
                 await ExitApplicationAsync();
+            }
+        }
+
+
+        private void OpenConfiguredStartupViews()
+        {
+            if (ApplicationConfig.GetBooleanSetting(ApplicationConfig.OpenOverlayOnStartupKey))
+            {
+                EnqueueOnUiThread(() => OverlayManager?.Show());
+            }
+
+            if (ApplicationConfig.GetBooleanSetting(ApplicationConfig.OpenDashboardOnStartupKey))
+            {
+                EnqueueOnUiThread(async () =>
+                {
+                    try
+                    {
+                        await Windows.System.Launcher.LaunchUriAsync(new Uri("http://localhost:8100"));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "Failed to open the chat dashboard during application startup.");
+                    }
+                });
             }
         }
 

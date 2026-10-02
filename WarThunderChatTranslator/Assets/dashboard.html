@@ -85,7 +85,8 @@
         const DASHBOARD_STYLE_ERROR_LOG_INTERVAL_MS = 10000;
 
         let lastId = 0;
-        let processGeneration = 0;
+        let battleGeneration = 0;
+        let displayGeneration = -1;
         let fetchInProgress = false;
         let webPollIntervalMs = 4000;
         let pollTimer = null;
@@ -476,12 +477,13 @@
 
             fetchInProgress = true;
             try {
-                const response = await fetch(`/gamechat?lastId=${lastId}&session=${processGeneration}`, { cache: 'no-store' });
+                const response = await fetch(`/gamechat?lastId=${lastId}&session=${battleGeneration}&display=${displayGeneration}`, { cache: 'no-store' });
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
 
-                const responseGeneration = Number(response.headers.get('X-Game-Process-Generation') || response.headers.get('X-Game-Session') || '0');
+                const responseGeneration = Number(response.headers.get('X-Game-Session') || response.headers.get('X-Game-Battle-Generation') || '0');
+                const responseDisplayGeneration = Number(response.headers.get('X-Game-Display-Generation') || '0');
                 const gamePid = Number(response.headers.get('X-Game-Pid') || '0');
                 const gameStartTime = response.headers.get('X-Game-Start-Time') || '';
                 updateGameStatus(Number.isFinite(gamePid) ? Math.trunc(gamePid) : 0, gameStartTime);
@@ -497,15 +499,26 @@
 
                 const chatMessages = await response.json();
 
-                // The generation changes only when the monitored game process instance changes. It does not identify individual battles within the same process.
-                if (responseGeneration !== processGeneration) {
-                    processGeneration = responseGeneration;
-                    lastId = 0;
+                const battleChanged = responseGeneration !== battleGeneration;
+                const displayChanged = responseDisplayGeneration !== displayGeneration;
+
+                if (displayChanged) {
+                    displayGeneration = responseDisplayGeneration;
                     messagesById.clear();
                     clearRenderedMessages();
                 }
 
-                appendChatMessages(chatMessages);
+                if (battleChanged) {
+                    battleGeneration = responseGeneration;
+                    lastId = 0;
+                }
+
+                if (battleChanged && !displayChanged) {
+                    chatMessages.forEach(message => messagesById.set(message.Id, message));
+                    renderAllMessages();
+                } else {
+                    appendChatMessages(chatMessages);
+                }
 
                 if (chatMessages.length > 0) {
                     lastId = Math.max(lastId, ...chatMessages.map(message => message.Id));
