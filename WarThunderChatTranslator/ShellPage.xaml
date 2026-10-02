@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="WarThunderChatTranslator.ShellPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,6 +6,7 @@
     xmlns:helpers="using:WarThunderChatTranslator.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+
     <Grid>
         <NavigationView
             x:Name="navigationView"
@@ -29,7 +30,7 @@
                     IsSelected="True"
                     Tag="APIPage">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="World" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/ApiTranslation.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -38,7 +39,7 @@
                     Content="{helpers:Loc Key=NavAiTranslation}"
                     Tag="AITranslationPage">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Character" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/AITranslation.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -47,7 +48,7 @@
                     Content="{helpers:Loc Key=NavQuickVoiceTranslation}"
                     Tag="InteractPage">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Microphone" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/Microphone.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -59,7 +60,7 @@
                     Content="{helpers:Loc Key=NavRunSettings}"
                     Tag="RunSettingsPage">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Setting" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/RunSettings.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -68,21 +69,24 @@
                     Content="{helpers:Loc Key=NavNetwork}"
                     Tag="NetworkPage">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Globe" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/Network.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Margin="0,0,12,0" Content="{helpers:Loc Key=NavAppearance}">
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="{helpers:Loc Key=NavAppearance}">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="View" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/Appearance.svg" />
                     </NavigationViewItem.Icon>
+
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem
                             Margin="0,0,12,0"
                             Content="{helpers:Loc Key=NavTheme}"
                             Tag="ThemePage">
                             <NavigationViewItem.Icon>
-                                <SymbolIcon Symbol="FontColor" />
+                                <ImageIcon Source="ms-appx:///Assets/Icons/Theme.svg" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
 
@@ -91,7 +95,7 @@
                             Content="{helpers:Loc Key=NavFont}"
                             Tag="FontPage">
                             <NavigationViewItem.Icon>
-                                <SymbolIcon Symbol="Message" />
+                                <ImageIcon Source="ms-appx:///Assets/Icons/Font.svg" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
 
@@ -100,7 +104,7 @@
                             Content="{helpers:Loc Key=NavLayout}"
                             Tag="LocationPage">
                             <NavigationViewItem.Icon>
-                                <SymbolIcon Symbol="FullScreen" />
+                                <ImageIcon Source="ms-appx:///Assets/Icons/Layout.svg" />
                             </NavigationViewItem.Icon>
                         </NavigationViewItem>
                     </NavigationViewItem.MenuItems>
@@ -114,16 +118,18 @@
                     Content="{helpers:Loc Key=NavUpdate}"
                     Tag="UpdatePage">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Sync" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/Update.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="{helpers:Loc Key=NavAbout}" Tag="AboutPage">
+                <NavigationViewItem
+                    Content="{helpers:Loc Key=NavAbout}"
+                    Tag="AboutPage">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Help" />
+                        <ImageIcon Source="ms-appx:///Assets/Icons/About.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>

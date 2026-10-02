@@ -12,12 +12,13 @@
         <ScrollViewer>
             <StackPanel Padding="20,24,20,0">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,14">
                         <Image
                             Width="40"
                             Height="40"
                             Source="ms-appx:///Assets/favicon.png" />
                         <TextBlock
+                            Margin="16,0,0,0"
                             VerticalAlignment="Center"
                             FontSize="30"
                             Text="{helpers:Loc Key=AboutAppName}" />

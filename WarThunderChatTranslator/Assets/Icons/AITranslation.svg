@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <!-- chip-like outline -->
+  <rect x="5" y="5" width="14" height="14" rx="3" stroke="#646DE2" stroke-width="1.4"/>
+  <!-- chip pins -->
+  <path d="M8 3.9v1.1M12 3.9v1.1M16 3.9v1.1M8 19v1.1M12 19v1.1M16 19v1.1M3.9 8H5M3.9 12H5M3.9 16H5M19 8h1.1M19 12h1.1M19 16h1.1"
+        stroke="#4D82E8" stroke-width="1.15" stroke-linecap="round"/>
+  <!-- centered AI letters, clearly separated -->
+  <path d="M8.15 15.55 9.75 9.35h.9l1.6 6.2M8.75 13.55h2.05"
+        stroke="#646DE2" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M13.9 9.35v6.2M13 9.35h1.8M13 15.55h1.8"
+        stroke="#646DE2" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

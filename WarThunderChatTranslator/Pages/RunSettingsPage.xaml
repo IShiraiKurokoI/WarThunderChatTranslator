@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="WarThunderChatTranslator.Pages.RunSettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -24,8 +24,39 @@
 
         <ScrollViewer Grid.Row="1">
             <StackPanel Padding="0,0,20,48">
+
                 <TextBlock
                     Margin="0,0,0,8"
+                    FontSize="20"
+                    Text="{helpers:Loc Key=StartupSettings}" />
+                <TextBlock
+                    Margin="0,0,0,10"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=StartupSettingsDescription}"
+                    TextWrapping="Wrap" />
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=OpenOverlayOnStartupDescription}"
+                    Header="{helpers:Loc Key=OpenOverlayOnStartup}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7F4;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="OpenOverlayOnStartup" Toggled="OpenOverlayOnStartup_Toggled" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=OpenDashboardOnStartupDescription}"
+                    Header="{helpers:Loc Key=OpenDashboardOnStartup}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE80F;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="OpenDashboardOnStartup" Toggled="OpenDashboardOnStartup_Toggled" />
+                </labs:SettingsCard>
+
+                <TextBlock
+                    Margin="0,24,0,8"
                     FontSize="20"
                     Text="{helpers:Loc Key=PollingSettings}" />
                 <TextBlock
@@ -115,36 +146,6 @@
                         SmallChange="50"
                         SpinButtonPlacementMode="Inline"
                         ValueChanged="PhysicalChatCacheLimit_ValueChanged" />
-                </labs:SettingsCard>
-
-                <TextBlock
-                    Margin="0,24,0,8"
-                    FontSize="20"
-                    Text="{helpers:Loc Key=StartupSettings}" />
-                <TextBlock
-                    Margin="0,0,0,10"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Text="{helpers:Loc Key=StartupSettingsDescription}"
-                    TextWrapping="Wrap" />
-
-                <labs:SettingsCard
-                    MaxWidth="2000"
-                    Description="{helpers:Loc Key=OpenOverlayOnStartupDescription}"
-                    Header="{helpers:Loc Key=OpenOverlayOnStartup}">
-                    <labs:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE7F4;" />
-                    </labs:SettingsCard.HeaderIcon>
-                    <ToggleSwitch x:Name="OpenOverlayOnStartup" Toggled="OpenOverlayOnStartup_Toggled" />
-                </labs:SettingsCard>
-
-                <labs:SettingsCard
-                    MaxWidth="2000"
-                    Description="{helpers:Loc Key=OpenDashboardOnStartupDescription}"
-                    Header="{helpers:Loc Key=OpenDashboardOnStartup}">
-                    <labs:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE80F;" />
-                    </labs:SettingsCard.HeaderIcon>
-                    <ToggleSwitch x:Name="OpenDashboardOnStartup" Toggled="OpenDashboardOnStartup_Toggled" />
                 </labs:SettingsCard>
             </StackPanel>
         </ScrollViewer>
