@@ -18,7 +18,8 @@ namespace WarThunderChatTranslator.Configurations
     public static class QuickTranslationConfig
     {
         public const string EnabledKey = "QuickTranslationEnabled";
-        public const string RecognitionLanguageKey = "QuickTranslationRecognitionLanguage";
+        public const string RecognitionLanguageKey = "QuickTranslationRecognitionLanguage"; // legacy, kept for migration
+        public const string MicrophoneDeviceIdKey = "QuickTranslationMicrophoneDeviceId";
         public const string HotkeysKey = "QuickTranslationHotkeys";
         public const string RecordingStartTimingKey = "QuickTranslationRecordingStartTiming";
         public const string RecordingStartTimingOnPlaybackStart = "OnPlaybackStart";

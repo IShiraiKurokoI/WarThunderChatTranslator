@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="GTranslate" Version="2.4.0" />
+    <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.4.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.4.1" />
@@ -22,4 +23,14 @@
     <Compile Include="..\WarThunderChatTranslator\Helpers\HotkeyGesture.cs" Link="Source\HotkeyGesture.cs" />
     <Compile Include="..\WarThunderChatTranslator\Helpers\TtsCacheKey.cs" Link="Source\TtsCacheKey.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestAudio\*.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestAudio\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -8,13 +8,20 @@ using WarThunderChatTranslator.Helpers;
 
 namespace WarThunderChatTranslator.Services
 {
+    /// <summary>
+    /// Hotkey-driven voice translation pipeline:
+    /// WASAPI capture -> local Paraformer ASR -> GTranslate -> clipboard -> cue.
+    /// Recording and model loading are independent so microphone capture can start immediately.
+    /// </summary>
     public sealed class QuickTranslationService : IDisposable
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly SpeechRecognitionService _speechRecognitionService = new();
+        private readonly AudioCaptureService _audioCaptureService = new();
         private readonly object _stateLock = new();
 
         private QuickTranslationHotkey _activeBinding;
+        private TaskCompletionSource<CapturedAudio> _captureCompletion;
         private bool _stopRequested;
         private bool _recordingEndCuePlayed;
         private bool _disposed;
@@ -25,9 +32,9 @@ namespace WarThunderChatTranslator.Services
         }
 
         public SuccessAudioService SuccessAudioService { get; }
-
         public SpeechRecognitionServiceState SpeechState => _speechRecognitionService.State;
         public string SpeechStateDetail => _speechRecognitionService.StateDetail;
+        public string SpeechLanguageTag => _speechRecognitionService.CurrentLanguageTag;
 
         public event EventHandler<SpeechRecognitionStateChangedEventArgs> SpeechStateChanged
         {
@@ -35,14 +42,28 @@ namespace WarThunderChatTranslator.Services
             remove => _speechRecognitionService.StateChanged -= value;
         }
 
-        public Task WarmUpSpeechAsync(string languageTag, CancellationToken cancellationToken = default)
-            => _speechRecognitionService.WarmUpAsync(languageTag, cancellationToken);
+        public Task WarmUpSpeechAsync(string ignoredLanguageTag, CancellationToken cancellationToken = default)
+            => _speechRecognitionService.WarmUpAsync(cancellationToken);
 
-        public Task ReinitializeSpeechAsync(string languageTag, CancellationToken cancellationToken = default)
-            => _speechRecognitionService.ReinitializeAsync(languageTag, cancellationToken);
+        public Task ReinitializeSpeechAsync(string ignoredLanguageTag, CancellationToken cancellationToken = default)
+            => _speechRecognitionService.ReinitializeAsync(cancellationToken);
 
-        public Task ReleaseSpeechAsync(CancellationToken cancellationToken = default)
-            => _speechRecognitionService.ReleaseAsync(cancellationToken);
+        public async Task ReleaseSpeechAsync(CancellationToken cancellationToken = default)
+        {
+            TaskCompletionSource<CapturedAudio> pendingCapture;
+            lock (_stateLock)
+            {
+                pendingCapture = _captureCompletion;
+                _activeBinding = null;
+                _captureCompletion = null;
+                _stopRequested = false;
+                _recordingEndCuePlayed = false;
+            }
+
+            pendingCapture?.TrySetCanceled();
+            await _audioCaptureService.AbortAsync();
+            await _speechRecognitionService.ReleaseAsync(cancellationToken);
+        }
 
         public async Task ExecuteAsync(QuickTranslationHotkey binding, CancellationToken cancellationToken = default)
         {
@@ -54,75 +75,77 @@ namespace WarThunderChatTranslator.Services
                 return;
             }
 
-            bool shouldRequestStop = false;
+            bool isStopPress;
+            TaskCompletionSource<CapturedAudio> captureCompletion;
             lock (_stateLock)
             {
                 if (_activeBinding != null)
                 {
-                    if (_activeBinding.Id == binding.Id)
-                    {
-                        if (!_stopRequested)
-                        {
-                            _stopRequested = true;
-                            shouldRequestStop = true;
-                        }
-                    }
-                    else
+                    if (_activeBinding.Id != binding.Id)
                     {
                         _logger.Debug(
                             "Ignored quick translation hotkey {0} because {1} is currently recording.",
                             binding.Shortcut,
                             _activeBinding.Shortcut);
+                        return;
                     }
+
+                    if (_stopRequested)
+                    {
+                        return;
+                    }
+
+                    _stopRequested = true;
+                    isStopPress = true;
+                    captureCompletion = _captureCompletion;
                 }
                 else
                 {
                     _activeBinding = binding.Clone();
                     _stopRequested = false;
                     _recordingEndCuePlayed = false;
+                    _captureCompletion = new TaskCompletionSource<CapturedAudio>(TaskCreationOptions.RunContinuationsAsynchronously);
+                    captureCompletion = _captureCompletion;
+                    isStopPress = false;
                 }
             }
 
-            if (shouldRequestStop)
+            if (isStopPress)
             {
-                _logger.Debug("Quick translation stop requested by hotkey {0}.", binding.Shortcut);
-
-                // Audible stop feedback should be immediate even though Windows may need a short
-                // moment to flush the last pending recognition result.
-                _ = PlayRecordingEndCueOnceAsync(cancellationToken);
-                _ = StopRecognitionSafeAsync(cancellationToken);
+                _logger.Debug("Quick translation recording stop requested by hotkey {0}.", binding.Shortcut);
+                await StopCaptureAndPublishAsync(captureCompletion, cancellationToken);
                 return;
-            }
-
-            lock (_stateLock)
-            {
-                if (_activeBinding == null || _activeBinding.Id != binding.Id || _stopRequested)
-                {
-                    return;
-                }
             }
 
             try
             {
-                string recognizedText;
-                var recognitionLanguage = ApplicationConfig.GetSettings(QuickTranslationConfig.RecognitionLanguageKey);
+                // Do not await model loading here. It is normally preloaded at application start,
+                // but if not, loading runs concurrently while the user is speaking.
+                var modelWarmupTask = _speechRecognitionService.WarmUpAsync(cancellationToken);
 
                 try
                 {
-                    _speechRecognitionService.PrepareForRecognition();
-                    _logger.Debug(
-                        "Starting quick speech recognition with prewarmed recognizer. Shortcut={0}, Language={1}, State={2}",
-                        binding.Shortcut,
-                        string.IsNullOrWhiteSpace(recognitionLanguage) ? "system" : recognitionLanguage,
-                        _speechRecognitionService.State);
+                    await StartCaptureAsync(cancellationToken);
 
-                    recognizedText = await _speechRecognitionService.RecognizeOnceAsync(
-                        recognitionLanguage,
-                        cancellationToken,
-                        PlayRecordingStartBeforeSessionAsync);
+                    bool stopAlreadyRequested;
+                    lock (_stateLock)
+                    {
+                        stopAlreadyRequested = _stopRequested;
+                    }
 
+                    if (stopAlreadyRequested)
+                    {
+                        await StopCaptureAndPublishAsync(captureCompletion, cancellationToken);
+                    }
+
+                    var audio = await captureCompletion.Task.WaitAsync(cancellationToken);
                     await PlayRecordingEndCueOnceAsync(cancellationToken);
-                    _logger.Info("Quick speech recognition succeeded. Characters={0}", recognizedText.Length);
+
+                    await modelWarmupTask;
+                    var recognizedText = await _speechRecognitionService.RecognizeAsync(audio, cancellationToken);
+                    _logger.Info("Local quick speech recognition succeeded. Characters={0}", recognizedText.Length);
+
+                    await TranslateAndCopyAsync(recognizedText, binding.TargetLanguage, cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -130,67 +153,8 @@ namespace WarThunderChatTranslator.Services
                 }
                 catch (Exception ex)
                 {
-                    await PlayRecordingEndCueOnceAsync(cancellationToken);
-                    _logger.Warn(ex, "Quick speech recognition failed.");
+                    _logger.Warn(ex, "Quick speech capture/recognition failed.");
                     SuccessAudioService.PlayRecognitionFailure();
-                    return;
-                }
-
-                try
-                {
-                    _logger.Debug(
-                        "Starting quick translation. Characters={0}, Target={1}.",
-                        recognizedText.Length,
-                        binding.TargetLanguage);
-
-                    var result = await TranslationHelper.TranslateAsync(recognizedText, binding.TargetLanguage);
-                    if (string.IsNullOrWhiteSpace(result?.Translation))
-                    {
-                        throw new InvalidOperationException(Localization.GetString("QuickTranslationEmptyTranslationResult"));
-                    }
-
-                    await ClipboardService.SetTextAsync(result.Translation, cancellationToken);
-                    _logger.Info(
-                        "Quick translation copied to clipboard. Target={0}, Translator={1}",
-                        binding.TargetLanguage,
-                        result.Service);
-
-                    try
-                    {
-                        await SuccessAudioService.PlaySuccessAsync(cancellationToken);
-                    }
-                    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-                    {
-                        throw;
-                    }
-                    catch (Exception audioEx)
-                    {
-                        _logger.Warn(
-                            audioEx,
-                            "Quick translation succeeded, but the configured success audio failed. Falling back to the system sound.");
-                        SuccessAudioService.PlaySystemSuccess();
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    _logger.Warn(ex, "Quick translation or clipboard operation failed. Target={0}", binding.TargetLanguage);
-                    try
-                    {
-                        await SuccessAudioService.PlayTranslationFailureAsync(cancellationToken);
-                    }
-                    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-                    {
-                        throw;
-                    }
-                    catch (Exception audioEx)
-                    {
-                        _logger.Warn(audioEx, "Configured translation-failure audio failed. Falling back to the system sound.");
-                        SuccessAudioService.PlayTranslationFailure();
-                    }
                 }
             }
             finally
@@ -200,66 +164,142 @@ namespace WarThunderChatTranslator.Services
                     if (_activeBinding?.Id == binding.Id)
                     {
                         _activeBinding = null;
+                        _captureCompletion = null;
                         _stopRequested = false;
                         _recordingEndCuePlayed = false;
                     }
                 }
+
+                if (!_disposed)
+                {
+                    _speechRecognitionService.MarkReady();
+                }
             }
         }
 
-        private async Task PlayRecordingStartBeforeSessionAsync(CancellationToken cancellationToken)
+        private async Task StartCaptureAsync(CancellationToken cancellationToken)
         {
-            try
+            var timing = QuickTranslationConfig.GetRecordingStartTiming();
+            var deviceId = ApplicationConfig.GetSettings(QuickTranslationConfig.MicrophoneDeviceIdKey) ?? string.Empty;
+
+            if (string.Equals(timing, QuickTranslationConfig.RecordingStartTimingAfterPlayback, StringComparison.OrdinalIgnoreCase))
             {
-                var timing = QuickTranslationConfig.GetRecordingStartTiming();
-                if (string.Equals(
-                        timing,
-                        QuickTranslationConfig.RecordingStartTimingAfterPlayback,
-                        StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    _logger.Debug("Playing recording-start cue to completion before starting speech capture.");
+                    _logger.Debug("Playing recording-start cue before local microphone capture.");
                     await SuccessAudioService.PlayRecordingStartAndWaitAsync(cancellationToken);
                 }
-                else
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    // Default game-friendly mode: begin playing the cue and immediately call
-                    // SpeechContinuousRecognitionSession.StartAsync. The recognizer has already
-                    // been compiled in the background, so these occur effectively together.
-                    _logger.Debug("Playing recording-start cue and starting speech capture immediately.");
+                    _logger.Warn(ex, "Recording-start audio failed; microphone capture will still start.");
+                }
+
+                await _audioCaptureService.StartAsync(deviceId, cancellationToken);
+            }
+            else
+            {
+                // Default game-friendly mode. Start the cue, then open capture immediately;
+                // PlayRecordingStartAsync returns once playback has been started, not when it ends.
+                try
+                {
+                    _logger.Debug("Starting recording-start cue and local microphone capture immediately.");
                     await SuccessAudioService.PlayRecordingStartAsync(cancellationToken);
                 }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    _logger.Warn(ex, "Recording-start audio failed; microphone capture will still start.");
+                }
+
+                await _audioCaptureService.StartAsync(deviceId, cancellationToken);
             }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception audioEx)
-            {
-                _logger.Warn(audioEx, "Recording-start audio failed. Speech recognition will continue.");
-            }
+
+            _speechRecognitionService.MarkRecording();
+            _logger.Info("Quick translation microphone capture started. Device={0}",
+                string.IsNullOrWhiteSpace(deviceId) ? "default" : deviceId);
         }
 
-        private async Task StopRecognitionSafeAsync(CancellationToken cancellationToken)
+        private async Task StopCaptureAndPublishAsync(
+            TaskCompletionSource<CapturedAudio> completion,
+            CancellationToken cancellationToken)
         {
+            if (completion == null || completion.Task.IsCompleted)
+            {
+                return;
+            }
+
+            // A very fast second press can arrive while the first invocation is still starting capture.
+            if (!_audioCaptureService.IsRecording)
+            {
+                return;
+            }
+
             try
             {
-                var stopped = await _speechRecognitionService.StopActiveRecognitionAsync(cancellationToken);
-                if (stopped)
-                {
-                    _logger.Debug("Active quick speech recognition stop request completed.");
-                }
-                else
-                {
-                    _logger.Warn("Active quick speech recognition required the stop fallback path.");
-                }
+                var audio = await _audioCaptureService.StopAsync(cancellationToken);
+                completion.TrySetResult(audio);
+                _logger.Info("Quick translation microphone capture stopped. DurationMs={0:0}", audio.Duration.TotalMilliseconds);
+                await PlayRecordingEndCueOnceAsync(cancellationToken);
             }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            catch (OperationCanceledException)
             {
-                // Normal application shutdown.
+                completion.TrySetCanceled(cancellationToken);
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.Warn(ex, "Unable to stop the active quick speech recognition session.");
+                completion.TrySetException(ex);
+                _logger.Warn(ex, "Failed to stop quick translation microphone capture.");
+            }
+        }
+
+        private async Task TranslateAndCopyAsync(string recognizedText, string targetLanguage, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.Debug(
+                    "Starting quick translation. Characters={0}, Target={1}, Text={2}",
+                    recognizedText.Length,
+                    targetLanguage,
+                    recognizedText);
+
+                var result = await TranslationHelper.TranslateAsync(recognizedText, targetLanguage);
+                if (string.IsNullOrWhiteSpace(result?.Translation))
+                {
+                    throw new InvalidOperationException(Localization.GetString("QuickTranslationEmptyTranslationResult"));
+                }
+
+                await ClipboardService.SetTextAsync(result.Translation, cancellationToken);
+                _logger.Info(
+                    "Quick translation copied to clipboard. Target={0}, Translator={1}",
+                    targetLanguage,
+                    result.Service);
+
+                try
+                {
+                    await SuccessAudioService.PlaySuccessAsync(cancellationToken);
+                }
+                catch (Exception audioEx) when (audioEx is not OperationCanceledException)
+                {
+                    _logger.Warn(audioEx, "Configured success audio failed. Falling back to system sound.");
+                    SuccessAudioService.PlaySystemSuccess();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex, "Quick translation or clipboard operation failed. Target={0}", targetLanguage);
+                try
+                {
+                    await SuccessAudioService.PlayTranslationFailureAsync(cancellationToken);
+                }
+                catch (Exception audioEx) when (audioEx is not OperationCanceledException)
+                {
+                    _logger.Warn(audioEx, "Configured translation-failure audio failed. Falling back to system sound.");
+                    SuccessAudioService.PlayTranslationFailure();
+                }
             }
         }
 
@@ -279,11 +319,7 @@ namespace WarThunderChatTranslator.Services
             {
                 await SuccessAudioService.PlayRecordingEndAsync(cancellationToken);
             }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception audioEx)
+            catch (Exception audioEx) when (audioEx is not OperationCanceledException)
             {
                 _logger.Warn(audioEx, "Recording-end audio failed.");
             }
@@ -297,7 +333,8 @@ namespace WarThunderChatTranslator.Services
             }
 
             _disposed = true;
-            _speechRecognitionService.Dispose();
+            try { _audioCaptureService.Dispose(); } catch { }
+            try { _speechRecognitionService.Dispose(); } catch { }
         }
     }
 }

@@ -15,7 +15,6 @@ using WarThunderChatTranslator.Configurations;
 using WarThunderChatTranslator.Entities;
 using WarThunderChatTranslator.Helpers;
 using WarThunderChatTranslator.Services;
-using Windows.Media.SpeechRecognition;
 using Windows.Media.SpeechSynthesis;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -28,6 +27,8 @@ namespace WarThunderChatTranslator.Pages
         private readonly SpeechRecognitionPrerequisiteService _prerequisiteService = new();
         private List<QuickTranslationHotkey> _hotkeys = new();
         private IReadOnlyList<VoiceInformation> _voices = Array.Empty<VoiceInformation>();
+        private IReadOnlyList<AudioInputDeviceInfo> _microphoneDevices = Array.Empty<AudioInputDeviceInfo>();
+        private DispatcherTimer _microphoneLevelTimer;
         private bool _loaded;
         private bool _rebuildingHotkeyList;
         private bool _updatingEnableToggle;
@@ -51,10 +52,11 @@ namespace WarThunderChatTranslator.Pages
                 return;
             }
 
-            LoadRecognitionLanguages();
+            LoadMicrophoneDevices();
             LoadVoices();
             LoadSettings();
             _loaded = true;
+            StartMicrophoneLevelTimer();
             AttachSpeechRecognitionState();
 
             var status = await CheckSpeechPrerequisitesAsync(requestMicrophonePermission: false);
@@ -75,38 +77,99 @@ namespace WarThunderChatTranslator.Pages
             }
         }
 
-        private void LoadRecognitionLanguages()
+        private void LoadMicrophoneDevices()
         {
-            RecognitionLanguage.Items.Clear();
+            var savedDeviceId = ApplicationConfig.GetSettings(QuickTranslationConfig.MicrophoneDeviceIdKey) ?? string.Empty;
+            _microphoneDevices = AudioDeviceService.GetCaptureDevices();
 
-            var saved = ApplicationConfig.GetSettings(QuickTranslationConfig.RecognitionLanguageKey);
-            var systemLanguage = SpeechRecognizer.SystemSpeechLanguage ?? new Windows.Globalization.Language("en-US");
-
-            RecognitionLanguage.Items.Add(new ComboBoxItem
+            MicrophoneDevice.Items.Clear();
+            MicrophoneDevice.Items.Add(new ComboBoxItem
             {
-                Content = string.Format(
-                    Localization.GetString("QuickTranslationSystemLanguageFormat"),
-                    systemLanguage.NativeName,
-                    systemLanguage.LanguageTag),
-                Tag = string.Empty,
-                IsSelected = string.IsNullOrWhiteSpace(saved)
+                Content = Localization.GetString("QuickTranslationSystemDefaultMicrophone"),
+                Tag = string.Empty
             });
 
-            foreach (var language in SpeechRecognizer.SupportedTopicLanguages
-                         .OrderBy(item => item.NativeName, StringComparer.CurrentCultureIgnoreCase))
+            foreach (var device in _microphoneDevices)
             {
-                RecognitionLanguage.Items.Add(new ComboBoxItem
+                var displayName = device.IsDefault
+                    ? $"{device.Name} ({Localization.GetString("QuickTranslationDefaultDeviceSuffix")})"
+                    : device.Name;
+                MicrophoneDevice.Items.Add(new ComboBoxItem
                 {
-                    Content = $"{language.NativeName} ({language.LanguageTag})",
-                    Tag = language.LanguageTag,
-                    IsSelected = string.Equals(saved, language.LanguageTag, StringComparison.OrdinalIgnoreCase)
+                    Content = displayName,
+                    Tag = device.Id
                 });
             }
 
-            if (RecognitionLanguage.SelectedIndex < 0)
+            var selected = MicrophoneDevice.Items
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(item => string.Equals(item.Tag?.ToString() ?? string.Empty, savedDeviceId, StringComparison.OrdinalIgnoreCase));
+
+            // Preserve a saved endpoint that is currently missing instead of silently
+            // falling back to the default device. This lets the prerequisite InfoBar
+            // accurately tell the user that the configured microphone is unavailable.
+            if (selected == null && !string.IsNullOrWhiteSpace(savedDeviceId))
             {
-                RecognitionLanguage.SelectedIndex = 0;
+                selected = new ComboBoxItem
+                {
+                    Content = Localization.GetString("QuickTranslationSavedMicrophoneUnavailable"),
+                    Tag = savedDeviceId
+                };
+                MicrophoneDevice.Items.Add(selected);
             }
+
+            MicrophoneDevice.SelectedItem = selected ?? MicrophoneDevice.Items.OfType<ComboBoxItem>().FirstOrDefault();
+        }
+
+        private string GetSelectedMicrophoneDeviceId()
+        {
+            return MicrophoneDevice?.SelectedItem is ComboBoxItem item
+                ? item.Tag?.ToString() ?? string.Empty
+                : ApplicationConfig.GetSettings(QuickTranslationConfig.MicrophoneDeviceIdKey) ?? string.Empty;
+        }
+
+        private void StartMicrophoneLevelTimer()
+        {
+            _microphoneLevelTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120) };
+            _microphoneLevelTimer.Tick -= MicrophoneLevelTimer_Tick;
+            _microphoneLevelTimer.Tick += MicrophoneLevelTimer_Tick;
+            _microphoneLevelTimer.Start();
+        }
+
+        private void StopMicrophoneLevelTimer()
+        {
+            if (_microphoneLevelTimer == null)
+            {
+                return;
+            }
+
+            _microphoneLevelTimer.Stop();
+            _microphoneLevelTimer.Tick -= MicrophoneLevelTimer_Tick;
+        }
+
+        private void MicrophoneLevelTimer_Tick(object sender, object e)
+        {
+            var peak = AudioDeviceService.GetPeakLevel(GetSelectedMicrophoneDeviceId());
+            var percent = Math.Clamp(peak * 100d, 0d, 100d);
+            MicrophoneLevelBar.Value = percent;
+            MicrophoneLevelValue.Text = $"{percent:0}%";
+        }
+
+        private async void RefreshMicrophones_Click(object sender, RoutedEventArgs e)
+        {
+            LoadMicrophoneDevices();
+            await RefreshSpeechPrerequisiteWarningAsync(requestMicrophonePermission: false);
+        }
+
+        private async void MicrophoneDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_loaded)
+            {
+                return;
+            }
+
+            ApplicationConfig.SaveSettings(QuickTranslationConfig.MicrophoneDeviceIdKey, GetSelectedMicrophoneDeviceId());
+            await RefreshSpeechPrerequisiteWarningAsync(requestMicrophonePermission: false);
         }
 
         private void LoadVoices()
@@ -476,27 +539,6 @@ namespace WarThunderChatTranslator.Pages
                 AttachSpeechRecognitionState();
                 UpdateSpeechRecognitionStateDisplay();
             }
-        }
-
-        private async void RecognitionLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!_loaded || RecognitionLanguage.SelectedItem is not ComboBoxItem item)
-            {
-                return;
-            }
-
-            ApplicationConfig.SaveSettings(
-                QuickTranslationConfig.RecognitionLanguageKey,
-                item.Tag?.ToString() ?? string.Empty);
-
-            if (QuickTranslationConfig.IsEnabled() && Application.Current is App app)
-            {
-                await app.ReinitializeQuickTranslationSpeechAsync();
-                AttachSpeechRecognitionState();
-                UpdateSpeechRecognitionStateDisplay();
-            }
-
-            await RefreshSpeechPrerequisiteWarningAsync(requestMicrophonePermission: false);
         }
 
         private async void CaptureHotkey_Click(object sender, RoutedEventArgs e)
@@ -1000,6 +1042,7 @@ namespace WarThunderChatTranslator.Pages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             CancelHotkeyCapture();
+            StopMicrophoneLevelTimer();
             DetachSpeechRecognitionState();
         }
 
@@ -1050,7 +1093,7 @@ namespace WarThunderChatTranslator.Pages
                 SpeechRecognitionServiceState.WarmingUp => Localization.GetString("QuickTranslationSpeechStateWarmingUp"),
                 SpeechRecognitionServiceState.Ready => Localization.GetString("QuickTranslationSpeechStateReady"),
                 SpeechRecognitionServiceState.Recording => Localization.GetString("QuickTranslationSpeechStateRecording"),
-                SpeechRecognitionServiceState.Stopping => Localization.GetString("QuickTranslationSpeechStateStopping"),
+                SpeechRecognitionServiceState.Recognizing => Localization.GetString("QuickTranslationSpeechStateRecognizing"),
                 SpeechRecognitionServiceState.Unavailable => Localization.GetString("QuickTranslationSpeechStateUnavailable"),
                 _ => Localization.GetString("QuickTranslationSpeechStateNotInitialized")
             };
@@ -1071,13 +1114,10 @@ namespace WarThunderChatTranslator.Pages
         {
             try
             {
-                var languageTag = RecognitionLanguage.SelectedItem is ComboBoxItem item
-                    ? item.Tag?.ToString() ?? string.Empty
-                    : ApplicationConfig.GetSettings(QuickTranslationConfig.RecognitionLanguageKey) ?? string.Empty;
-
+                var deviceId = GetSelectedMicrophoneDeviceId();
                 using var timeoutCts = new CancellationTokenSource(requestMicrophonePermission ? TimeSpan.FromMinutes(1) : TimeSpan.FromSeconds(12));
                 return await _prerequisiteService.CheckAsync(
-                    languageTag,
+                    deviceId,
                     requestMicrophonePermission,
                     timeoutCts.Token);
             }
@@ -1087,17 +1127,17 @@ namespace WarThunderChatTranslator.Pages
                 {
                     Detail = Localization.GetString("QuickTranslationPrerequisiteCheckTimeout")
                 };
-                status.Problems.Add(SpeechPrerequisiteProblem.SpeechRecognitionUnavailable);
+                status.Problems.Add(SpeechPrerequisiteProblem.LocalModelUnavailable);
                 return status;
             }
             catch (Exception ex)
             {
-                _logger.Warn(ex, "Failed to check quick translation speech prerequisites.");
+                _logger.Warn(ex, "Failed to check quick translation local speech prerequisites.");
                 var status = new SpeechPrerequisiteStatus
                 {
                     Detail = ex.Message
                 };
-                status.Problems.Add(SpeechPrerequisiteProblem.SpeechRecognitionUnavailable);
+                status.Problems.Add(SpeechPrerequisiteProblem.LocalModelUnavailable);
                 return status;
             }
         }
@@ -1134,10 +1174,10 @@ namespace WarThunderChatTranslator.Pages
                         Localization.GetString("QuickTranslationMicrophoneCapabilityMissing"),
                     SpeechPrerequisiteProblem.MicrophoneUnavailable =>
                         Localization.GetString("QuickTranslationMicrophoneUnavailable"),
-                    SpeechPrerequisiteProblem.OnlineSpeechRecognitionDisabled =>
-                        Localization.GetString("QuickTranslationOnlineSpeechDisabled"),
-                    SpeechPrerequisiteProblem.SpeechRecognitionUnavailable =>
-                        Localization.GetString("QuickTranslationSpeechUnavailable"),
+                    SpeechPrerequisiteProblem.SelectedMicrophoneUnavailable =>
+                        Localization.GetString("QuickTranslationSelectedMicrophoneUnavailable"),
+                    SpeechPrerequisiteProblem.LocalModelUnavailable =>
+                        Localization.GetString("QuickTranslationLocalModelUnavailable"),
                     _ => string.Empty
                 })
                 .Where(message => !string.IsNullOrWhiteSpace(message))
@@ -1163,16 +1203,10 @@ namespace WarThunderChatTranslator.Pages
                     SpeechPrerequisiteProblem.MicrophonePermissionRequired or
                     SpeechPrerequisiteProblem.MicrophonePermissionDenied or
                     SpeechPrerequisiteProblem.MicrophoneCapabilityMissing or
-                    SpeechPrerequisiteProblem.MicrophoneUnavailable))
+                    SpeechPrerequisiteProblem.MicrophoneUnavailable or
+                    SpeechPrerequisiteProblem.SelectedMicrophoneUnavailable))
             {
                 return "ms-settings:privacy-microphone";
-            }
-
-            if (status.Problems.Any(problem => problem is
-                    SpeechPrerequisiteProblem.OnlineSpeechRecognitionDisabled or
-                    SpeechPrerequisiteProblem.SpeechRecognitionUnavailable))
-            {
-                return "ms-settings:privacy-speech";
             }
 
             return null;
@@ -1196,7 +1230,7 @@ namespace WarThunderChatTranslator.Pages
             }
             catch (Exception ex)
             {
-                _logger.Warn(ex, "Failed to open Windows speech/microphone privacy settings.");
+                _logger.Warn(ex, "Failed to open Windows microphone privacy settings.");
             }
         }
 

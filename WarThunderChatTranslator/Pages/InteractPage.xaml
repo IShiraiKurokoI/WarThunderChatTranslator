@@ -51,12 +51,57 @@
 
                 <labs:SettingsCard
                     MaxWidth="2000"
-                    Description="{helpers:Loc Key=QuickTranslationRecognitionDescription}"
-                    Header="{helpers:Loc Key=QuickTranslationRecognitionLanguage}">
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationMicrophoneDeviceDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationMicrophoneDevice}">
                     <labs:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xE720;" />
                     </labs:SettingsCard.HeaderIcon>
-                    <ComboBox x:Name="RecognitionLanguage" MinWidth="240" SelectionChanged="RecognitionLanguage_SelectionChanged" />
+                    <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox
+                            x:Name="MicrophoneDevice"
+                            Grid.Column="0"
+                            MinWidth="0"
+                            HorizontalAlignment="Stretch"
+                            SelectionChanged="MicrophoneDevice_SelectionChanged" />
+                        <Button
+                            Grid.Column="1"
+                            Click="RefreshMicrophones_Click"
+                            Content="{helpers:Loc Key=QuickTranslationRefreshMicrophones}" />
+                    </Grid>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationMicrophoneLevelDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationMicrophoneLevel}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE9D9;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="56" />
+                        </Grid.ColumnDefinitions>
+                        <ProgressBar
+                            x:Name="MicrophoneLevelBar"
+                            Grid.Column="0"
+                            Height="8"
+                            Minimum="0"
+                            Maximum="100"
+                            VerticalAlignment="Center" />
+                        <TextBlock
+                            x:Name="MicrophoneLevelValue"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="0%" />
+                    </Grid>
                 </labs:SettingsCard>
 
                 <labs:SettingsCard

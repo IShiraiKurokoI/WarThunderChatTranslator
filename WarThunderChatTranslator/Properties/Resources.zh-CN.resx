@@ -722,16 +722,16 @@ TargetLanguage.ISO6393：{8}</value>
     <value>删除快捷键</value>
   </data>
   <data name="QuickTranslationPrerequisiteWarningTitle" xml:space="preserve">
-    <value>语音识别设置未就绪</value>
+    <value>本地语音识别设置未就绪</value>
   </data>
   <data name="QuickTranslationOpenSettings" xml:space="preserve">
     <value>打开 Windows 设置</value>
   </data>
   <data name="QuickTranslationPrerequisiteDialogTitle" xml:space="preserve">
-    <value>快捷语音翻译暂不可用</value>
+    <value>本地语音识别尚未就绪</value>
   </data>
   <data name="QuickTranslationPrerequisiteCheckTimeout" xml:space="preserve">
-    <value>语音识别环境检查超时。</value>
+    <value>本地语音识别环境检查超时。</value>
   </data>
   <data name="QuickTranslationMicrophonePermissionRequired" xml:space="preserve">
     <value>需要麦克风权限。开启快捷语音翻译时会请求允许当前应用使用麦克风。</value>
@@ -749,7 +749,7 @@ TargetLanguage.ISO6393：{8}</value>
     <value>Windows 联机语音识别未启用，请在“隐私和安全性 &gt; 语音”中开启联机语音识别。</value>
   </data>
   <data name="QuickTranslationSpeechUnavailable" xml:space="preserve">
-    <value>当前所选语言或系统配置下 Windows 语音识别不可用。</value>
+    <value>本地语音识别运行环境不可用。</value>
   </data>
   <data name="QuickTranslationRecordingStartSound" xml:space="preserve">
     <value>录音开始提示音</value>
@@ -887,27 +887,81 @@ TargetLanguage.ISO6393：{8}</value>
     <value>试听翻译失败</value>
   </data>
   <data name="QuickTranslationSpeechState" xml:space="preserve">
-    <value>语音识别状态</value>
+    <value>本地语音识别状态</value>
   </data>
   <data name="QuickTranslationSpeechStateDescription" xml:space="preserve">
-    <value>显示在线语音识别器当前是否正在预热、已就绪、录音中、正在停止或不可用。</value>
+    <value>显示内置 Paraformer 本地语音识别模型的当前状态。</value>
   </data>
   <data name="QuickTranslationSpeechStateNotInitialized" xml:space="preserve">
     <value>未初始化</value>
   </data>
   <data name="QuickTranslationSpeechStateWarmingUp" xml:space="preserve">
-    <value>正在预热...</value>
+    <value>正在加载模型…</value>
   </data>
   <data name="QuickTranslationSpeechStateReady" xml:space="preserve">
-    <value>已就绪</value>
+    <value>已就绪（本地）</value>
   </data>
   <data name="QuickTranslationSpeechStateRecording" xml:space="preserve">
-    <value>正在录音</value>
+    <value>正在录音…</value>
   </data>
   <data name="QuickTranslationSpeechStateStopping" xml:space="preserve">
     <value>正在停止...</value>
   </data>
   <data name="QuickTranslationSpeechStateUnavailable" xml:space="preserve">
     <value>不可用</value>
+  </data>
+  <data name="QuickTranslationMicrophoneDevice" xml:space="preserve">
+    <value>录音设备</value>
+  </data>
+  <data name="QuickTranslationMicrophoneDeviceDescription" xml:space="preserve">
+    <value>选择快捷语音翻译使用的麦克风或虚拟录音设备。</value>
+  </data>
+  <data name="QuickTranslationSystemDefaultMicrophone" xml:space="preserve">
+    <value>系统默认</value>
+  </data>
+  <data name="QuickTranslationDefaultDeviceSuffix" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="QuickTranslationRefreshMicrophones" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="QuickTranslationMicrophoneLevel" xml:space="preserve">
+    <value>输入音量</value>
+  </data>
+  <data name="QuickTranslationMicrophoneLevelDescription" xml:space="preserve">
+    <value>显示当前所选录音设备的实时输入音量。</value>
+  </data>
+  <data name="QuickTranslationSelectedMicrophoneUnavailable" xml:space="preserve">
+    <value>所选录音设备不可用，请选择其他设备或使用系统默认设备。</value>
+  </data>
+  <data name="QuickTranslationLocalModelUnavailable" xml:space="preserve">
+    <value>本地语音识别模型缺失或不可用。请运行 DownloadSpeechModel.cmd 后重新启动应用。</value>
+  </data>
+  <data name="QuickTranslationLocalModelMissingFormat" xml:space="preserve">
+    <value>未在以下目录找到本地语音模型文件：{0}</value>
+  </data>
+  <data name="QuickTranslationLocalModelLoadFailedFormat" xml:space="preserve">
+    <value>加载本地语音模型失败：{0}</value>
+  </data>
+  <data name="QuickTranslationNoAudioCaptured" xml:space="preserve">
+    <value>没有采集到麦克风音频。</value>
+  </data>
+  <data name="QuickTranslationLocalRecognizingDetailFormat" xml:space="preserve">
+    <value>正在本地识别 {0:0.0} 秒录音…</value>
+  </data>
+  <data name="QuickTranslationAlreadyRecording" xml:space="preserve">
+    <value>麦克风录音已经在进行中。</value>
+  </data>
+  <data name="QuickTranslationNotRecording" xml:space="preserve">
+    <value>当前没有正在进行的麦克风录音。</value>
+  </data>
+  <data name="QuickTranslationMicrophoneCaptureFailed" xml:space="preserve">
+    <value>麦克风录音失败。</value>
+  </data>
+  <data name="QuickTranslationSpeechStateRecognizing" xml:space="preserve">
+    <value>正在识别…</value>
+  </data>
+  <data name="QuickTranslationSavedMicrophoneUnavailable" xml:space="preserve">
+    <value>已保存的麦克风（当前不可用）</value>
   </data>
 </root>

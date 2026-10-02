@@ -119,6 +119,7 @@ namespace WarThunderChatTranslator
                 { ApplicationConfig.OverlayHeightKey, OverlayWindow.DefaultHeight.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { QuickTranslationConfig.EnabledKey, "false" },
                 { QuickTranslationConfig.RecognitionLanguageKey, "" },
+                { QuickTranslationConfig.MicrophoneDeviceIdKey, "" },
                 { QuickTranslationConfig.RecordingStartTimingKey, QuickTranslationConfig.RecordingStartTimingOnPlaybackStart },
                 { QuickTranslationConfig.RecordingStartSoundModeKey, QuickTranslationConfig.SoundModeSystem },
                 { QuickTranslationConfig.RecordingStartPromptTextKey, QuickTranslationConfig.GetDefaultPromptText(QuickTranslationAudioCue.RecordingStart) },
@@ -563,11 +564,9 @@ namespace WarThunderChatTranslator
 
             try
             {
-                var languageTag = ApplicationConfig.GetSettings(QuickTranslationConfig.RecognitionLanguageKey);
-                logger.Debug("Prewarming quick speech recognizer. Language={0}",
-                    string.IsNullOrWhiteSpace(languageTag) ? "system" : languageTag);
-                await service.WarmUpSpeechAsync(languageTag, _shutdownCts.Token);
-                logger.Info("Quick speech recognizer prewarm completed. State={0}", service.SpeechState);
+                logger.Debug("Preloading local quick speech recognition model. Model={0}", SpeechRecognitionService.ModelDisplayName);
+                await service.WarmUpSpeechAsync(null, _shutdownCts.Token);
+                logger.Info("Local quick speech model preload completed. State={0}, Model={1}", service.SpeechState, SpeechRecognitionService.ModelDisplayName);
             }
             catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
             {
@@ -589,10 +588,8 @@ namespace WarThunderChatTranslator
 
             try
             {
-                var languageTag = ApplicationConfig.GetSettings(QuickTranslationConfig.RecognitionLanguageKey);
-                logger.Debug("Reinitializing quick speech recognizer. Language={0}",
-                    string.IsNullOrWhiteSpace(languageTag) ? "system" : languageTag);
-                await service.ReinitializeSpeechAsync(languageTag, _shutdownCts.Token);
+                logger.Debug("Reloading local quick speech recognition model. Model={0}", SpeechRecognitionService.ModelDisplayName);
+                await service.ReinitializeSpeechAsync(null, _shutdownCts.Token);
             }
             catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
             {
@@ -723,10 +720,17 @@ namespace WarThunderChatTranslator
                 logger.Error(ex, "Failed to stop the global hotkey service.");
             }
 
-            // Quick translation uses a continuous recognition session so a second press of the
-            // same shortcut can stop recording and flush pending speech results. During shutdown,
-            // cancellation stops the active session; avoid disposing shared audio objects while an
-            // in-flight operation may still be unwinding.
+            // Local quick translation owns WASAPI capture and the Paraformer recognizer.
+            // Dispose them after unregistering hotkeys so no new capture can start during shutdown.
+            try
+            {
+                _quickTranslationService?.Dispose();
+                _successAudioService?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Quick translation services did not dispose cleanly during shutdown.");
+            }
             _quickTranslationService = null;
             _successAudioService = null;
 

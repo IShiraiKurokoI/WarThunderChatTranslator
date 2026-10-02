@@ -768,16 +768,16 @@ TargetLanguage.ISO6393: {8}</value>
     <value>Remove shortcut</value>
   </data>
   <data name="QuickTranslationPrerequisiteWarningTitle" xml:space="preserve">
-    <value>Speech recognition setup required</value>
+    <value>Local speech recognition setup required</value>
   </data>
   <data name="QuickTranslationOpenSettings" xml:space="preserve">
     <value>Open Windows settings</value>
   </data>
   <data name="QuickTranslationPrerequisiteDialogTitle" xml:space="preserve">
-    <value>Quick voice translation is not ready</value>
+    <value>Local speech recognition is not ready</value>
   </data>
   <data name="QuickTranslationPrerequisiteCheckTimeout" xml:space="preserve">
-    <value>The speech recognition prerequisite check timed out.</value>
+    <value>The local speech-recognition environment check timed out.</value>
   </data>
   <data name="QuickTranslationMicrophonePermissionRequired" xml:space="preserve">
     <value>Microphone permission is required. Turn on quick voice translation again to allow microphone access.</value>
@@ -795,7 +795,7 @@ TargetLanguage.ISO6393: {8}</value>
     <value>Windows Online speech recognition is disabled. Enable it in Privacy &amp; security &gt; Speech.</value>
   </data>
   <data name="QuickTranslationSpeechUnavailable" xml:space="preserve">
-    <value>Windows speech recognition is unavailable for the selected language or current system configuration.</value>
+    <value>The local speech-recognition runtime is unavailable.</value>
   </data>
   <data name="QuickTranslationRecordingStartSound" xml:space="preserve">
     <value>Recording start sound</value>
@@ -933,27 +933,81 @@ TargetLanguage.ISO6393: {8}</value>
     <value>Preview failure</value>
   </data>
   <data name="QuickTranslationSpeechState" xml:space="preserve">
-    <value>Speech recognition status</value>
+    <value>Local speech recognition status</value>
   </data>
   <data name="QuickTranslationSpeechStateDescription" xml:space="preserve">
-    <value>Shows whether the online speech recognizer is prewarming, ready, recording, stopping, or unavailable.</value>
+    <value>Shows the current state of the packaged Paraformer speech-recognition model.</value>
   </data>
   <data name="QuickTranslationSpeechStateNotInitialized" xml:space="preserve">
     <value>Not initialized</value>
   </data>
   <data name="QuickTranslationSpeechStateWarmingUp" xml:space="preserve">
-    <value>Prewarming...</value>
+    <value>Loading model…</value>
   </data>
   <data name="QuickTranslationSpeechStateReady" xml:space="preserve">
-    <value>Ready</value>
+    <value>Ready (local)</value>
   </data>
   <data name="QuickTranslationSpeechStateRecording" xml:space="preserve">
-    <value>Recording</value>
+    <value>Recording…</value>
   </data>
   <data name="QuickTranslationSpeechStateStopping" xml:space="preserve">
     <value>Stopping...</value>
   </data>
   <data name="QuickTranslationSpeechStateUnavailable" xml:space="preserve">
     <value>Unavailable</value>
+  </data>
+  <data name="QuickTranslationMicrophoneDevice" xml:space="preserve">
+    <value>Recording device</value>
+  </data>
+  <data name="QuickTranslationMicrophoneDeviceDescription" xml:space="preserve">
+    <value>Choose the microphone or virtual capture device used for quick voice translation.</value>
+  </data>
+  <data name="QuickTranslationSystemDefaultMicrophone" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="QuickTranslationDefaultDeviceSuffix" xml:space="preserve">
+    <value>default</value>
+  </data>
+  <data name="QuickTranslationRefreshMicrophones" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="QuickTranslationMicrophoneLevel" xml:space="preserve">
+    <value>Input level</value>
+  </data>
+  <data name="QuickTranslationMicrophoneLevelDescription" xml:space="preserve">
+    <value>Shows the current input level of the selected capture device.</value>
+  </data>
+  <data name="QuickTranslationSelectedMicrophoneUnavailable" xml:space="preserve">
+    <value>The selected recording device is unavailable. Choose another device or use the system default.</value>
+  </data>
+  <data name="QuickTranslationLocalModelUnavailable" xml:space="preserve">
+    <value>The local speech-recognition model is missing or unavailable. Run DownloadSpeechModel.cmd, then restart the app.</value>
+  </data>
+  <data name="QuickTranslationLocalModelMissingFormat" xml:space="preserve">
+    <value>Local speech model files were not found in: {0}</value>
+  </data>
+  <data name="QuickTranslationLocalModelLoadFailedFormat" xml:space="preserve">
+    <value>Failed to load the local speech model: {0}</value>
+  </data>
+  <data name="QuickTranslationNoAudioCaptured" xml:space="preserve">
+    <value>No microphone audio was captured.</value>
+  </data>
+  <data name="QuickTranslationLocalRecognizingDetailFormat" xml:space="preserve">
+    <value>Recognizing {0:0.0} s of recorded audio locally…</value>
+  </data>
+  <data name="QuickTranslationAlreadyRecording" xml:space="preserve">
+    <value>Microphone capture is already running.</value>
+  </data>
+  <data name="QuickTranslationNotRecording" xml:space="preserve">
+    <value>Microphone capture is not running.</value>
+  </data>
+  <data name="QuickTranslationMicrophoneCaptureFailed" xml:space="preserve">
+    <value>Microphone capture failed.</value>
+  </data>
+  <data name="QuickTranslationSpeechStateRecognizing" xml:space="preserve">
+    <value>Recognizing…</value>
+  </data>
+  <data name="QuickTranslationSavedMicrophoneUnavailable" xml:space="preserve">
+    <value>Saved microphone (unavailable)</value>
   </data>
 </root>

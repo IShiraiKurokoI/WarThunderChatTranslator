@@ -1,12 +1,11 @@
 ﻿using NLog;
+using SherpaOnnx;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Helpers;
-using Windows.Globalization;
-using Windows.Media.SpeechRecognition;
 
 namespace WarThunderChatTranslator.Services
 {
@@ -16,7 +15,7 @@ namespace WarThunderChatTranslator.Services
         WarmingUp,
         Ready,
         Recording,
-        Stopping,
+        Recognizing,
         Unavailable
     }
 
@@ -32,109 +31,145 @@ namespace WarThunderChatTranslator.Services
         public string Detail { get; }
     }
 
+    /// <summary>
+    /// Local, non-streaming Paraformer ASR. The model is loaded once and kept alive;
+    /// microphone capture is handled separately and inference only runs after recording stops.
+    /// </summary>
     public sealed class SpeechRecognitionService : IDisposable
     {
-        private sealed class SessionStartException : Exception
-        {
-            public SessionStartException(Exception innerException)
-                : base(innerException?.Message, innerException)
-            {
-            }
-        }
-
-        private static readonly TimeSpan AutoStopSilenceTimeout = TimeSpan.FromSeconds(2);
-        private static readonly TimeSpan ManualStopTimeout = TimeSpan.FromSeconds(4);
+        public const string ModelFolderName = "sherpa-onnx-paraformer-zh-small-2024-03-09";
+        public const string ModelFileName = "model.int8.onnx";
+        public const string TokensFileName = "tokens.txt";
+        public const string ModelDisplayName = "Paraformer zh-en small INT8";
+        public const string ModelSha256 = "3ef6c19369b912f7caf3cef8e545c5ccd1a33d9d7ec792a46668dc41c4b229ec";
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
         private readonly object _stateLock = new();
         private readonly SemaphoreSlim _lifecycleLock = new(1, 1);
-        private SpeechRecognizer _recognizer;
-        private string _recognizerLanguageTag;
-        private SpeechContinuousRecognitionSession _activeSession;
-        private TaskCompletionSource<SpeechRecognitionResultStatus> _activeCompletion;
-        private bool _stopInProgress;
-        private bool _pendingStopRequested;
+        private readonly SemaphoreSlim _decodeLock = new(1, 1);
+        private OfflineRecognizer _recognizer;
         private bool _disposed;
         private SpeechRecognitionServiceState _state = SpeechRecognitionServiceState.NotInitialized;
         private string _stateDetail;
 
         public event EventHandler<SpeechRecognitionStateChangedEventArgs> StateChanged;
 
-        public SpeechRecognitionServiceState State
+        public static string ModelDirectory => Path.Combine(AppContext.BaseDirectory, "Assets", "SpeechModels", ModelFolderName);
+        public static string ModelPath => Path.Combine(ModelDirectory, ModelFileName);
+        public static string TokensPath => Path.Combine(ModelDirectory, TokensFileName);
+        public static bool ModelFilesAvailable
         {
             get
             {
-                lock (_stateLock)
+                try
                 {
-                    return _state;
+                    // Reject placeholders/partial downloads without hashing 81.8 MB on every UI check.
+                    return File.Exists(ModelPath)
+                        && File.Exists(TokensPath)
+                        && new FileInfo(ModelPath).Length > 70L * 1024 * 1024
+                        && new FileInfo(TokensPath).Length > 50L * 1024;
+                }
+                catch
+                {
+                    return false;
                 }
             }
+        }
+
+        public SpeechRecognitionServiceState State
+        {
+            get { lock (_stateLock) return _state; }
         }
 
         public string StateDetail
         {
-            get
-            {
-                lock (_stateLock)
-                {
-                    return _stateDetail;
-                }
-            }
+            get { lock (_stateLock) return _stateDetail; }
         }
 
-        public bool IsRecognitionActive
-        {
-            get
-            {
-                lock (_stateLock)
-                {
-                    return _activeSession != null;
-                }
-            }
-        }
+        // Kept for compatibility with the existing status/logging surface.
+        public string CurrentLanguageTag => "zh-en-local";
+        public bool IsRecognitionActive => State is SpeechRecognitionServiceState.Recording or SpeechRecognitionServiceState.Recognizing;
 
         public void PrepareForRecognition()
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            lock (_stateLock)
-            {
-                if (_activeSession == null)
-                {
-                    _pendingStopRequested = false;
-                    _stopInProgress = false;
-                }
-            }
         }
 
-        public async Task WarmUpAsync(string languageTag, CancellationToken cancellationToken = default)
+        public Task WarmUpAsync(string ignoredLanguageTag, CancellationToken cancellationToken = default)
+            => WarmUpAsync(cancellationToken);
+
+        public async Task WarmUpAsync(CancellationToken cancellationToken = default)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
             cancellationToken.ThrowIfCancellationRequested();
 
-            var selectedLanguage = ResolveLanguage(languageTag);
-            var effectiveLanguageTag = selectedLanguage?.LanguageTag ?? SpeechRecognizer.SystemSpeechLanguage?.LanguageTag ?? string.Empty;
+            if (_recognizer != null)
+            {
+                if (State is not SpeechRecognitionServiceState.Recording and not SpeechRecognitionServiceState.Recognizing)
+                {
+                    SetState(SpeechRecognitionServiceState.Ready, ModelDisplayName);
+                }
+                return;
+            }
 
             await _lifecycleLock.WaitAsync(cancellationToken);
             try
             {
-                ObjectDisposedException.ThrowIf(_disposed, this);
-
-                if (_recognizer != null &&
-                    string.Equals(_recognizerLanguageTag, effectiveLanguageTag, StringComparison.OrdinalIgnoreCase) &&
-                    State is SpeechRecognitionServiceState.Ready or SpeechRecognitionServiceState.Recording or SpeechRecognitionServiceState.Stopping)
+                if (_recognizer != null)
                 {
+                    SetState(SpeechRecognitionServiceState.Ready, ModelDisplayName);
                     return;
                 }
 
-                if (IsRecognitionActive)
+                if (!ModelFilesAvailable)
                 {
-                    // Reconfiguration is intentionally deferred until the current recording finishes.
-                    // The caller can await this method again after the active session completes.
-                    return;
+                    var detail = string.Format(Localization.GetString("QuickTranslationLocalModelMissingFormat"), ModelDirectory);
+                    SetState(SpeechRecognitionServiceState.Unavailable, detail);
+                    throw new FileNotFoundException(detail, !File.Exists(ModelPath) ? ModelPath : TokensPath);
                 }
 
-                await BuildRecognizerCoreAsync(selectedLanguage, effectiveLanguageTag, cancellationToken);
+                SetState(SpeechRecognitionServiceState.WarmingUp, ModelDisplayName);
+                _logger.Info("Loading local quick-translation ASR model. Model={0}", ModelPath);
+
+                var recognizer = await Task.Run(() =>
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var config = new OfflineRecognizerConfig();
+                    config.FeatConfig.SampleRate = 16000;
+                    config.FeatConfig.FeatureDim = 80;
+                    config.ModelConfig.Tokens = TokensPath;
+                    config.ModelConfig.Paraformer.Model = ModelPath;
+                    config.ModelConfig.NumThreads = 1;
+                    config.ModelConfig.Provider = "cpu";
+                    config.ModelConfig.Debug = 0;
+                    config.ModelConfig.ModelType = "paraformer";
+                    config.DecodingMethod = "greedy_search";
+                    return new OfflineRecognizer(config);
+                }, cancellationToken);
+
+                _recognizer = recognizer;
+                if (State != SpeechRecognitionServiceState.Recording)
+                {
+                    SetState(SpeechRecognitionServiceState.Ready, ModelDisplayName);
+                }
+                _logger.Info("Local quick-translation ASR model loaded. Model={0}, Threads=1", ModelDisplayName);
+            }
+            catch (OperationCanceledException)
+            {
+                if (_recognizer == null)
+                {
+                    SetState(SpeechRecognitionServiceState.NotInitialized, null);
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (_recognizer == null)
+                {
+                    SetState(SpeechRecognitionServiceState.Unavailable,
+                        string.Format(Localization.GetString("QuickTranslationLocalModelLoadFailedFormat"), ex.Message));
+                }
+                throw;
             }
             finally
             {
@@ -142,65 +177,105 @@ namespace WarThunderChatTranslator.Services
             }
         }
 
-        public async Task ReinitializeAsync(string languageTag, CancellationToken cancellationToken = default)
+        public Task ReinitializeAsync(string ignoredLanguageTag, CancellationToken cancellationToken = default)
+            => ReinitializeAsync(cancellationToken);
+
+        public async Task ReinitializeAsync(CancellationToken cancellationToken = default)
+        {
+            await ReleaseAsync(cancellationToken);
+            await WarmUpAsync(cancellationToken);
+        }
+
+        public void MarkRecording()
+            => SetState(SpeechRecognitionServiceState.Recording, ModelDisplayName);
+
+        public void MarkReady()
+        {
+            if (_recognizer != null)
+            {
+                SetState(SpeechRecognitionServiceState.Ready, ModelDisplayName);
+            }
+            else if (State != SpeechRecognitionServiceState.Unavailable)
+            {
+                SetState(SpeechRecognitionServiceState.NotInitialized, null);
+            }
+        }
+
+        public async Task<string> RecognizeAsync(CapturedAudio audio, CancellationToken cancellationToken = default)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            cancellationToken.ThrowIfCancellationRequested();
+            if (audio == null || audio.Pcm16.Length < 320)
+            {
+                throw new InvalidOperationException(Localization.GetString("QuickTranslationNoAudioCaptured"));
+            }
 
-            var selectedLanguage = ResolveLanguage(languageTag);
-            var effectiveLanguageTag = selectedLanguage?.LanguageTag ?? SpeechRecognizer.SystemSpeechLanguage?.LanguageTag ?? string.Empty;
-
-            await _lifecycleLock.WaitAsync(cancellationToken);
+            await WarmUpAsync(cancellationToken);
+            await _decodeLock.WaitAsync(cancellationToken);
             try
             {
-                ObjectDisposedException.ThrowIf(_disposed, this);
+                var recognizer = _recognizer ?? throw new InvalidOperationException(Localization.GetString("QuickTranslationSpeechUnavailable"));
+                SetState(SpeechRecognitionServiceState.Recognizing,
+                    string.Format(Localization.GetString("QuickTranslationLocalRecognizingDetailFormat"), audio.Duration.TotalSeconds));
 
-                if (IsRecognitionActive)
+                var samples = audio.ToFloatSamples();
+                var stopwatch = Stopwatch.StartNew();
+                var text = await Task.Run(() =>
                 {
-                    return;
+                    cancellationToken.ThrowIfCancellationRequested();
+                    using var stream = recognizer.CreateStream();
+                    stream.AcceptWaveform(audio.SampleRate, samples);
+                    recognizer.Decode(stream);
+                    return stream.Result.Text?.Trim() ?? string.Empty;
+                }, cancellationToken);
+                stopwatch.Stop();
+
+                _logger.Info(
+                    "Local speech recognition completed. AudioMs={0:0}, DecodeMs={1:0}, Characters={2}",
+                    audio.Duration.TotalMilliseconds,
+                    stopwatch.Elapsed.TotalMilliseconds,
+                    text.Length);
+
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    throw new InvalidOperationException(Localization.GetString("QuickTranslationSpeechNoText"));
                 }
 
-                DisposePreparedRecognizer();
-                await BuildRecognizerCoreAsync(selectedLanguage, effectiveLanguageTag, cancellationToken);
+                return text;
             }
             finally
             {
-                _lifecycleLock.Release();
+                _decodeLock.Release();
+                MarkReady();
             }
         }
+
+        // Legacy method name retained so older call sites fail gracefully if any remain.
+        public Task<string> RecognizeOnceAsync(
+            string languageTag,
+            CancellationToken cancellationToken = default,
+            Func<CancellationToken, Task> beforeRecognitionStartAsync = null,
+            Func<CancellationToken, Task> afterRecognitionStartedAsync = null)
+            => throw new NotSupportedException("Local ASR requires captured PCM. Use RecognizeAsync(CapturedAudio, ...).");
+
+        public Task<bool> StopActiveRecognitionAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(true);
 
         public async Task ReleaseAsync(CancellationToken cancellationToken = default)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (IsRecognitionActive)
+            if (_disposed)
             {
-                await StopActiveRecognitionAsync(cancellationToken);
+                return;
             }
 
             await _lifecycleLock.WaitAsync(cancellationToken);
             try
             {
-                SpeechContinuousRecognitionSession session;
-                lock (_stateLock)
+                var recognizer = _recognizer;
+                _recognizer = null;
+                if (recognizer != null)
                 {
-                    session = _activeSession;
+                    await Task.Run(recognizer.Dispose, cancellationToken);
                 }
-
-                if (session != null)
-                {
-                    try
-                    {
-                        await session.CancelAsync();
-                    }
-                    catch
-                    {
-                        // Best effort. The active recognition task will clean up its handlers.
-                    }
-                }
-
-                DisposePreparedRecognizer();
                 SetState(SpeechRecognitionServiceState.NotInitialized, null);
             }
             finally
@@ -209,468 +284,17 @@ namespace WarThunderChatTranslator.Services
             }
         }
 
-        public async Task<string> RecognizeOnceAsync(
-            string languageTag,
-            CancellationToken cancellationToken = default,
-            Func<CancellationToken, Task> beforeSessionStartAsync = null)
-        {
-            ObjectDisposedException.ThrowIf(_disposed, this);
-            cancellationToken.ThrowIfCancellationRequested();
-
-            // In the normal path this is a no-op because the recognizer was already warmed up
-            // when the feature was enabled or when the app started.
-            await WarmUpAsync(languageTag, cancellationToken);
-
-            var cueInvoked = false;
-            for (var attempt = 0; attempt < 2; attempt++)
-            {
-                try
-                {
-                    return await RecognizePreparedAsync(
-                        cancellationToken,
-                        !cueInvoked ? beforeSessionStartAsync : null,
-                        () => cueInvoked = true);
-                }
-                catch (SessionStartException) when (attempt == 0 && !cancellationToken.IsCancellationRequested)
-                {
-                    // A long-lived recognizer can become invalid after audio-device changes,
-                    // suspend/resume, or Windows speech-service restarts. Rebuild it once and retry.
-                    await ReinitializeAsync(languageTag, cancellationToken);
-                }
-            }
-
-            throw new InvalidOperationException(Localization.GetString("QuickTranslationSpeechUnavailable"));
-        }
-
-        private async Task<string> RecognizePreparedAsync(
-            CancellationToken cancellationToken,
-            Func<CancellationToken, Task> beforeSessionStartAsync,
-            Action cueInvoked)
-        {
-            await _lifecycleLock.WaitAsync(cancellationToken);
-            try
-            {
-                ObjectDisposedException.ThrowIf(_disposed, this);
-                var recognizer = _recognizer;
-                if (recognizer == null)
-                {
-                    throw new SessionStartException(new InvalidOperationException(
-                        Localization.GetString("QuickTranslationSpeechUnavailable")));
-                }
-
-                var session = recognizer.ContinuousRecognitionSession;
-                session.AutoStopSilenceTimeout = AutoStopSilenceTimeout;
-
-                var results = new List<string>();
-                var resultsLock = new object();
-                var completedTcs = new TaskCompletionSource<SpeechRecognitionResultStatus>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
-
-                void OnResultGenerated(
-                    SpeechContinuousRecognitionSession sender,
-                    SpeechContinuousRecognitionResultGeneratedEventArgs args)
-                {
-                    var result = args.Result;
-                    if (result?.Status != SpeechRecognitionResultStatus.Success || string.IsNullOrWhiteSpace(result.Text))
-                    {
-                        return;
-                    }
-
-                    lock (resultsLock)
-                    {
-                        results.Add(result.Text.Trim());
-                    }
-                }
-
-                string latestHypothesis = null;
-
-                void OnHypothesisGenerated(
-                    SpeechRecognizer sender,
-                    SpeechRecognitionHypothesisGeneratedEventArgs args)
-                {
-                    var text = args?.Hypothesis?.Text;
-                    if (string.IsNullOrWhiteSpace(text))
-                    {
-                        return;
-                    }
-
-                    lock (resultsLock)
-                    {
-                        latestHypothesis = text.Trim();
-                    }
-                }
-
-                void OnCompleted(
-                    SpeechContinuousRecognitionSession sender,
-                    SpeechContinuousRecognitionCompletedEventArgs args)
-                {
-                    _logger.Debug("Continuous speech recognition Completed event. Status={0}", args.Status);
-                    completedTcs.TrySetResult(args.Status);
-                }
-
-                recognizer.HypothesisGenerated += OnHypothesisGenerated;
-                session.ResultGenerated += OnResultGenerated;
-                session.Completed += OnCompleted;
-                var sessionStarted = false;
-
-                try
-                {
-                    bool stopWasAlreadyRequested;
-                    lock (_stateLock)
-                    {
-                        stopWasAlreadyRequested = _pendingStopRequested;
-                    }
-
-                    if (!stopWasAlreadyRequested && beforeSessionStartAsync != null)
-                    {
-                        cueInvoked?.Invoke();
-                        await beforeSessionStartAsync(cancellationToken);
-                    }
-
-                    try
-                    {
-                        await session.StartAsync(SpeechContinuousRecognitionMode.Default);
-                        sessionStarted = true;
-                    }
-                    catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
-                    {
-                        SetState(SpeechRecognitionServiceState.Unavailable, ex.Message);
-                        throw new SessionStartException(ex);
-                    }
-
-                    bool stopImmediately;
-                    lock (_stateLock)
-                    {
-                        if (_disposed)
-                        {
-                            throw new ObjectDisposedException(nameof(SpeechRecognitionService));
-                        }
-
-                        _activeSession = session;
-                        _activeCompletion = completedTcs;
-                        stopImmediately = _pendingStopRequested;
-                        _stopInProgress = stopImmediately;
-                    }
-                    SetState(
-                        stopImmediately ? SpeechRecognitionServiceState.Stopping : SpeechRecognitionServiceState.Recording,
-                        null);
-
-                    if (stopImmediately)
-                    {
-                        try
-                        {
-                            var stoppedCleanly = await StopSessionWithTimeoutAsync(session, cancellationToken);
-                            _logger.Debug("Queued speech stop applied immediately after StartAsync. Clean={0}", stoppedCleanly);
-
-                            // StopAsync promises to flush pending recognition results to ResultGenerated.
-                            // Some systems do not reliably raise Completed after a manual stop, so
-                            // explicitly release the recognition waiter once the stop path completes.
-                            completedTcs.TrySetResult(SpeechRecognitionResultStatus.Success);
-                        }
-                        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-                        {
-                            throw;
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Warn(ex, "Queued speech stop failed after StartAsync.");
-                            completedTcs.TrySetResult(SpeechRecognitionResultStatus.UserCanceled);
-                        }
-                        finally
-                        {
-                            lock (_stateLock)
-                            {
-                                if (ReferenceEquals(_activeSession, session))
-                                {
-                                    _stopInProgress = false;
-                                }
-                            }
-                        }
-                    }
-
-                    using var cancellationRegistration = cancellationToken.Register(() =>
-                    {
-                        _ = CancelSessionSafeAsync(session);
-                    });
-
-                    var completedStatus = await completedTcs.Task;
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    string text;
-                    lock (resultsLock)
-                    {
-                        text = string.Join(" ", results.Where(item => !string.IsNullOrWhiteSpace(item))).Trim();
-                        if (string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(latestHypothesis))
-                        {
-                            // A very short manual recording can be stopped before Windows promotes
-                            // the current hypothesis to ResultGenerated. Prefer that hypothesis to
-                            // dropping the user's whole utterance.
-                            text = latestHypothesis;
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(text))
-                    {
-                        return text;
-                    }
-
-                    if (completedStatus != SpeechRecognitionResultStatus.Success)
-                    {
-                        throw new InvalidOperationException(string.Format(
-                            Localization.GetString("QuickTranslationSpeechRecognitionFailedFormat"),
-                            completedStatus));
-                    }
-
-                    throw new InvalidOperationException(Localization.GetString("QuickTranslationSpeechNoText"));
-                }
-                finally
-                {
-                    lock (_stateLock)
-                    {
-                        if (ReferenceEquals(_activeSession, session))
-                        {
-                            _activeSession = null;
-                            _activeCompletion = null;
-                            _stopInProgress = false;
-                            _pendingStopRequested = false;
-                        }
-                    }
-
-                    recognizer.HypothesisGenerated -= OnHypothesisGenerated;
-                    session.ResultGenerated -= OnResultGenerated;
-                    session.Completed -= OnCompleted;
-
-                    if (sessionStarted && !_disposed && _recognizer != null)
-                    {
-                        SetState(SpeechRecognitionServiceState.Ready, null);
-                    }
-                }
-            }
-            finally
-            {
-                _lifecycleLock.Release();
-            }
-        }
-
-        public async Task<bool> StopActiveRecognitionAsync(CancellationToken cancellationToken = default)
-        {
-            ObjectDisposedException.ThrowIf(_disposed, this);
-
-            SpeechContinuousRecognitionSession session;
-            TaskCompletionSource<SpeechRecognitionResultStatus> completion;
-            SpeechRecognizer recognizer;
-            lock (_stateLock)
-            {
-                _pendingStopRequested = true;
-                session = _activeSession;
-                completion = _activeCompletion;
-                recognizer = _recognizer;
-                if (session == null)
-                {
-                    // Warm-up/start may still be finishing. Keep this queued so the session is
-                    // stopped immediately after StartAsync succeeds.
-                    return true;
-                }
-
-                if (_stopInProgress)
-                {
-                    return true;
-                }
-
-                _stopInProgress = true;
-            }
-
-            // Update the UI immediately. The microphone is no longer considered an active
-            // recording from the user's point of view once the stop hotkey was accepted.
-            SetState(SpeechRecognitionServiceState.Stopping, null);
-
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                _logger.Debug(
-                    "Stopping active speech recognition. RecognizerState={0}, CompletionRegistered={1}",
-                    recognizer?.State,
-                    completion != null);
-
-                // Microsoft's guidance is to stop only while the recognizer is not Idle. If it
-                // already became Idle due to auto-stop, simply unblock the waiter below.
-                var stoppedCleanly = true;
-                if (recognizer?.State != SpeechRecognizerState.Idle)
-                {
-                    stoppedCleanly = await StopSessionWithTimeoutAsync(session, cancellationToken);
-                }
-
-                // StopAsync flushes pending results to ResultGenerated before it completes.
-                // Explicitly signal completion as a compatibility fallback because on some
-                // systems the Completed event is not observed after a manual hotkey stop.
-                completion?.TrySetResult(SpeechRecognitionResultStatus.Success);
-                _logger.Debug("Active speech recognition stop path completed. Clean={0}", stoppedCleanly);
-                return stoppedCleanly;
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.Warn(ex, "Stopping active speech recognition failed. Falling back to cancellation.");
-
-                // Never leave the UI and the first ExecuteAsync call stuck in Recording forever.
-                // Cancel as a best-effort fallback, then release the waiter. The recognition task
-                // can still use any final ResultGenerated text or the latest hypothesis captured
-                // before cancellation.
-                await CancelSessionSafeAsync(session);
-                completion?.TrySetResult(SpeechRecognitionResultStatus.Success);
-                return false;
-            }
-            finally
-            {
-                lock (_stateLock)
-                {
-                    if (ReferenceEquals(_activeSession, session))
-                    {
-                        _stopInProgress = false;
-                    }
-                }
-            }
-        }
-
-        private async Task<bool> StopSessionWithTimeoutAsync(
-            SpeechContinuousRecognitionSession session,
-            CancellationToken cancellationToken)
-        {
-            // Convert the WinRT async action into an ordinary Task so a broken/slow speech
-            // service cannot leave the quick-translation state machine stuck forever.
-            async Task AwaitStopAsync()
-            {
-                await session.StopAsync();
-            }
-
-            var stopTask = AwaitStopAsync();
-            var timeoutTask = Task.Delay(ManualStopTimeout, cancellationToken);
-            var winner = await Task.WhenAny(stopTask, timeoutTask);
-
-            if (winner == stopTask)
-            {
-                await stopTask;
-                return true;
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-            _logger.Warn(
-                "Speech recognition StopAsync did not finish within {0:F1}s. Falling back to CancelAsync.",
-                ManualStopTimeout.TotalSeconds);
-            await CancelSessionSafeAsync(session);
-            return false;
-        }
-
-        private async Task BuildRecognizerCoreAsync(
-            Language selectedLanguage,
-            string effectiveLanguageTag,
-            CancellationToken cancellationToken)
-        {
-            SetState(SpeechRecognitionServiceState.WarmingUp, null);
-
-            SpeechRecognizer newRecognizer = null;
-            try
-            {
-                newRecognizer = selectedLanguage == null
-                    ? new SpeechRecognizer()
-                    : new SpeechRecognizer(selectedLanguage);
-
-                newRecognizer.Constraints.Add(new SpeechRecognitionTopicConstraint(
-                    SpeechRecognitionScenario.Dictation,
-                    "QuickTranslationDictation"));
-
-                var compileOperation = newRecognizer.CompileConstraintsAsync();
-                using var cancellationRegistration = cancellationToken.Register(() =>
-                {
-                    try { compileOperation.Cancel(); } catch { }
-                });
-
-                var compileResult = await compileOperation;
-                cancellationToken.ThrowIfCancellationRequested();
-                if (compileResult.Status != SpeechRecognitionResultStatus.Success)
-                {
-                    throw new InvalidOperationException(string.Format(
-                        Localization.GetString("QuickTranslationSpeechInitializationFailedFormat"),
-                        compileResult.Status));
-                }
-
-                newRecognizer.ContinuousRecognitionSession.AutoStopSilenceTimeout = AutoStopSilenceTimeout;
-
-                DisposePreparedRecognizer();
-                _recognizer = newRecognizer;
-                _recognizerLanguageTag = effectiveLanguageTag;
-                newRecognizer = null;
-                SetState(SpeechRecognitionServiceState.Ready, null);
-            }
-            catch (OperationCanceledException)
-            {
-                newRecognizer?.Dispose();
-                if (!_disposed)
-                {
-                    SetState(SpeechRecognitionServiceState.NotInitialized, null);
-                }
-                throw;
-            }
-            catch (Exception ex)
-            {
-                newRecognizer?.Dispose();
-                SetState(SpeechRecognitionServiceState.Unavailable, ex.Message);
-                throw;
-            }
-        }
-
-        private void DisposePreparedRecognizer()
-        {
-            var recognizer = _recognizer;
-            _recognizer = null;
-            _recognizerLanguageTag = null;
-            recognizer?.Dispose();
-        }
-
         private void SetState(SpeechRecognitionServiceState state, string detail)
         {
             EventHandler<SpeechRecognitionStateChangedEventArgs> handler;
             lock (_stateLock)
             {
-                if (_state == state && string.Equals(_stateDetail, detail, StringComparison.Ordinal))
-                {
-                    return;
-                }
-
                 _state = state;
                 _stateDetail = detail;
                 handler = StateChanged;
             }
 
             handler?.Invoke(this, new SpeechRecognitionStateChangedEventArgs(state, detail));
-        }
-
-        private static async Task CancelSessionSafeAsync(SpeechContinuousRecognitionSession session)
-        {
-            try
-            {
-                await session.CancelAsync();
-            }
-            catch
-            {
-                // Best effort cancellation during application shutdown.
-            }
-        }
-
-        private static Language ResolveLanguage(string languageTag)
-        {
-            if (string.IsNullOrWhiteSpace(languageTag))
-            {
-                return SpeechRecognizer.SystemSpeechLanguage;
-            }
-
-            var supported = SpeechRecognizer.SupportedTopicLanguages.FirstOrDefault(language =>
-                string.Equals(language.LanguageTag, languageTag, StringComparison.OrdinalIgnoreCase));
-            return supported ?? SpeechRecognizer.SystemSpeechLanguage;
         }
 
         public void Dispose()
@@ -680,28 +304,10 @@ namespace WarThunderChatTranslator.Services
                 return;
             }
 
+            try { ReleaseAsync().GetAwaiter().GetResult(); } catch { }
             _disposed = true;
-            SpeechContinuousRecognitionSession session;
-            SpeechRecognizer recognizerToDispose = null;
-            lock (_stateLock)
-            {
-                session = _activeSession;
-                _activeSession = null;
-                _activeCompletion?.TrySetResult(SpeechRecognitionResultStatus.UserCanceled);
-                _activeCompletion = null;
-                if (session == null)
-                {
-                    recognizerToDispose = _recognizer;
-                    _recognizer = null;
-                }
-            }
-
-            if (session != null)
-            {
-                _ = CancelSessionSafeAsync(session);
-            }
-
-            recognizerToDispose?.Dispose();
+            _lifecycleLock.Dispose();
+            _decodeLock.Dispose();
         }
     }
 }
