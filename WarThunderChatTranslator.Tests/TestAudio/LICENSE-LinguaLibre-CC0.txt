@@ -1,0 +1,17 @@
+Mandarin human test recordings
+==============================
+
+Speaker/recorder: Luilui6666 (Lingua Libre)
+Source: Wikimedia Commons / Lingua Libre
+License selected for redistribution: CC0 1.0 Universal Public Domain Dedication
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Files and source pages:
+- zh_human_nihao.wav (你好)
+  https://commons.wikimedia.org/wiki/File:LL-Q9192_(cmn)-Luilui6666-你好.wav
+- zh_human_kebukeyi.wav (可不可以)
+  https://commons.wikimedia.org/wiki/File:LL-Q9192_(cmn)-Luilui6666-可不可以.wav
+- zh_human_zhongguocai.wav (中国菜)
+  https://commons.wikimedia.org/wiki/File:LL-Q9192_(cmn)-Luilui6666-中国菜.wav
+
+Each Commons file page explicitly lists both CC BY-SA 4.0 and CC0 1.0; this project uses the CC0 option.

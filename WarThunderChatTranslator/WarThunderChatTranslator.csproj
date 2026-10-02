@@ -30,10 +30,10 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-    <Version>1.0.8.2</Version>
-    <AssemblyVersion>1.0.8.2</AssemblyVersion>
-    <FileVersion>1.0.8.2</FileVersion>
-    <InformationalVersion>1.0.8.2</InformationalVersion>
+    <Version>1.0.9.0</Version>
+    <AssemblyVersion>1.0.9.0</AssemblyVersion>
+    <FileVersion>1.0.9.0</FileVersion>
+    <InformationalVersion>1.0.9.0</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\ApplicationIcons\BadgeLogo.scale-100.png" />
@@ -149,6 +149,8 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
     <PackageReference Include="NLog" Version="6.2.0" />
+    <PackageReference Include="NAudio.Wasapi" Version="3.1.0" />
+    <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
@@ -247,4 +249,20 @@
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
+
+
+  <ItemGroup>
+    <None Remove="Assets\SpeechModels\**\*" />
+    <Content Include="Assets\SpeechModels\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Update="Assets\SpeechModels\sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17\model.int8.onnx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

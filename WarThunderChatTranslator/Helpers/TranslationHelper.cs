@@ -114,10 +114,25 @@ namespace WarThunderChatTranslator.Helpers
 
         public static async Task<ITranslationResult> TranslateAsync(string text)
         {
-            var currentTranslator = getCurrentTranslator();
-            return await currentTranslator.TranslateAsync(
+            return await TranslateAsync(
                 text,
                 ApplicationConfig.GetSettings("TargetLanguage") ?? "zh-CN");
+        }
+
+        public static async Task<ITranslationResult> TranslateAsync(string text, string targetLanguage)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException("Text cannot be empty.", nameof(text));
+            }
+
+            if (string.IsNullOrWhiteSpace(targetLanguage))
+            {
+                throw new ArgumentException("Target language cannot be empty.", nameof(targetLanguage));
+            }
+
+            var currentTranslator = getCurrentTranslator();
+            return await currentTranslator.TranslateAsync(text, targetLanguage);
         }
 
         public static async Task<ITranslationResult> TestAiProviderAsync(AiProviderConfig provider, string text)

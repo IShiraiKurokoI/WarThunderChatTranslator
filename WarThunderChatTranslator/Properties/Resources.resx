@@ -1,110 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+﻿<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -117,199 +58,956 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppTitle" xml:space="preserve"><value>War Thunder Chat Translator Settings</value></data>
-  <data name="Language" xml:space="preserve"><value>Application language</value></data>
-  <data name="LanguageDescription" xml:space="preserve"><value>Changes are applied immediately and remembered.</value></data>
-  <data name="Chinese" xml:space="preserve"><value>Chinese (Simplified)</value></data>
-  <data name="English" xml:space="preserve"><value>English</value></data>
-  <data name="Theme" xml:space="preserve"><value>Theme</value></data>
-  <data name="Light" xml:space="preserve"><value>Light</value></data>
-  <data name="Dark" xml:space="preserve"><value>Dark</value></data>
-  <data name="SystemDefault" xml:space="preserve"><value>Use system setting</value></data>
-  <data name="OpenSystemTheme" xml:space="preserve"><value>Open system theme settings</value></data>
-  <data name="BackgroundCss" xml:space="preserve"><value>Page background CSS (appended to the page body CSS)</value></data>
-  <data name="BackgroundCssInfo" xml:space="preserve"><value>Background CSS reference</value></data>
-  <data name="TrayDashboard" xml:space="preserve"><value>Dashboard</value></data>
-  <data name="TrayDashboardDescription" xml:space="preserve"><value>Open chat window</value></data>
-  <data name="TraySettings" xml:space="preserve"><value>Settings</value></data>
-  <data name="TraySettingsDescription" xml:space="preserve"><value>Open translator settings</value></data>
-  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
-  <data name="TrayExitDescription" xml:space="preserve"><value>Exit translator</value></data>
-  <data name="TrayToolTip" xml:space="preserve"><value>War Thunder Chat Translator</value></data>
-  <data name="NavApi" xml:space="preserve"><value>Translation API</value></data>
-  <data name="NavNetwork" xml:space="preserve"><value>Network</value></data>
-  <data name="NavAppearance" xml:space="preserve"><value>Appearance</value></data>
-  <data name="NavFont" xml:space="preserve"><value>Fonts and styles</value></data>
-  <data name="NavTheme" xml:space="preserve"><value>Theme and background</value></data>
-  <data name="NavInteraction" xml:space="preserve"><value>Interaction and actions</value></data>
-  <data name="NavLayout" xml:space="preserve"><value>Position and layout</value></data>
-  <data name="NavUpdate" xml:space="preserve"><value>Updates</value></data>
-  <data name="NavAbout" xml:space="preserve"><value>About</value></data>
-  <data name="ApiTitle" xml:space="preserve"><value>Translation API</value></data>
-  <data name="ApiProviderDescription" xml:space="preserve"><value>Select the translation provider used by the translator.</value></data>
-  <data name="ApiBing" xml:space="preserve"><value>Bing (token required)</value></data>
-  <data name="ApiGoogle" xml:space="preserve"><value>Google (network required)</value></data>
-  <data name="ApiTargetDescription" xml:space="preserve"><value>Chat messages will be translated into this language.</value></data>
-  <data name="ApiTargetLanguage" xml:space="preserve"><value>Target language</value></data>
-  <data name="ApiTokenDescription" xml:space="preserve"><value>Enter the token required by Bing Translator.</value></data>
-  <data name="ApiToken" xml:space="preserve"><value>Translator API token</value></data>
-  <data name="ApiTestDescription" xml:space="preserve"><value>Test the translation feature.</value></data>
-  <data name="ApiTest" xml:space="preserve"><value>Test</value></data>
-  <data name="ApiTestButton" xml:space="preserve"><value>Test translation</value></data>
-  <data name="FontTitle" xml:space="preserve"><value>Font settings</value></data>
-  <data name="FontFamily" xml:space="preserve"><value>Font</value></data>
-  <data name="FontSize" xml:space="preserve"><value>Text size</value></data>
-  <data name="FontStyle" xml:space="preserve"><value>Text style</value></data>
-  <data name="FontLighter" xml:space="preserve"><value>Lighter</value></data>
-  <data name="FontNormal" xml:space="preserve"><value>Normal</value></data>
-  <data name="FontBold" xml:space="preserve"><value>Bold</value></data>
-  <data name="FontBolder" xml:space="preserve"><value>Bolder</value></data>
-  <data name="FontAllyColor" xml:space="preserve"><value>Ally text color</value></data>
-  <data name="FontEnemyColor" xml:space="preserve"><value>Enemy text color</value></data>
-  <data name="FontSystemColor" xml:space="preserve"><value>System text color</value></data>
-  <data name="SelectColor" xml:space="preserve"><value>Select color</value></data>
-  <data name="NetworkTitle" xml:space="preserve"><value>Network settings</value></data>
-  <data name="NetworkDescription" xml:space="preserve"><value>Configure the translator network proxy and polling intervals.</value></data>
-  <data name="ProxyMode" xml:space="preserve"><value>Network proxy mode</value></data>
-  <data name="ProxyDefault" xml:space="preserve"><value>Do not use a proxy</value></data>
-  <data name="ProxySystem" xml:space="preserve"><value>Use system proxy</value></data>
-  <data name="ProxyCustom" xml:space="preserve"><value>Custom</value></data>
-  <data name="ProxyCustomSettings" xml:space="preserve"><value>Custom proxy settings</value></data>
-  <data name="ProxyAddress" xml:space="preserve"><value>Proxy address</value></data>
-  <data name="ProxyAddressPlaceholder" xml:space="preserve"><value>Example: http://127.0.0.1:7890</value></data>
-  <data name="ProxyAccount" xml:space="preserve"><value>Account (optional)</value></data>
-  <data name="ProxyAccountPlaceholder" xml:space="preserve"><value>Proxy account</value></data>
-  <data name="ProxyPassword" xml:space="preserve"><value>Password (optional)</value></data>
-  <data name="ProxyPasswordPlaceholder" xml:space="preserve"><value>Proxy password</value></data>
-  <data name="PollingSettings" xml:space="preserve"><value>Polling intervals</value></data>
-  <data name="PollingSettingsDescription" xml:space="preserve"><value>Configure how often the app requests game chat data and how often the dashboard reads the local translated cache. Changes are saved automatically.</value></data>
-  <data name="GamePollingInterval" xml:space="preserve"><value>Game polling interval (seconds)</value></data>
-  <data name="GamePollingIntervalDescription" xml:space="preserve"><value>Interval for incremental requests to the game's port 8111. Default: 4 seconds.</value></data>
-  <data name="WebPollingInterval" xml:space="preserve"><value>Dashboard polling interval (seconds)</value></data>
-  <data name="WebPollingIntervalDescription" xml:space="preserve"><value>Interval for the dashboard to read translated data from the local server. Default: 4 seconds.</value></data>
-  <data name="PollingIntervalRange" xml:space="preserve"><value>Allowed range: 1-60 seconds. Settings take effect automatically without restarting the app.</value></data>
-  <data name="AboutAppName" xml:space="preserve"><value>War Thunder Chat Translator</value></data>
-  <data name="AboutAuthor" xml:space="preserve"><value>Author</value></data>
-  <data name="AboutGitHub" xml:space="preserve"><value>GitHub profile</value></data>
-  <data name="AboutBilibili" xml:space="preserve"><value>BiliBili profile</value></data>
-  <data name="AboutCopyLinkDescription" xml:space="preserve"><value>Copy the project link to share it with friends</value></data>
-  <data name="AboutCopyLink" xml:space="preserve"><value>Copy link</value></data>
-  <data name="AboutOpenProject" xml:space="preserve"><value>Open project page</value></data>
-  <data name="AboutProjectDescription" xml:space="preserve"><value>Open this translator's project page.</value></data>
-  <data name="AboutProject" xml:space="preserve"><value>Project page</value></data>
-  <data name="AboutCopySuccess" xml:space="preserve"><value>Copied successfully</value></data>
-  <data name="AboutCopySuccessDescription" xml:space="preserve"><value>Share the GitHub link with your friends.</value></data>
-  <data name="AboutOpenSourceThanks" xml:space="preserve"><value>Open-source projects used by this app</value></data>
-  <data name="UpdateTitle" xml:space="preserve"><value>Updates</value></data>
-  <data name="UpdateLastChecked" xml:space="preserve"><value>Last checked: </value></data>
-  <data name="UpdateNever" xml:space="preserve"><value>Never</value></data>
-  <data name="UpdateReleaseNotes" xml:space="preserve"><value>Release notes</value></data>
-  <data name="UpdateCheck" xml:space="preserve"><value>Check for updates</value></data>
-  <data name="UpdateLatest" xml:space="preserve"><value>You are using the latest version.</value></data>
-  <data name="UpdateCheckFailed" xml:space="preserve"><value>Update check failed</value></data>
-  <data name="UpdateAvailable" xml:space="preserve"><value>New version available</value></data>
-  <data name="UpdateDownload" xml:space="preserve"><value>Download</value></data>
-  <data name="UpdateLater" xml:space="preserve"><value>Later</value></data>
-  <data name="UpdateAvailableContent" xml:space="preserve"><value>A Microsoft Store update is available.</value></data>
-  <data name="DashboardTitle" xml:space="preserve"><value>Real-time Chat</value></data>
-  <data name="DashboardSubtitle" xml:space="preserve"><value>War Thunder translated chat</value></data>
-  <data name="DashboardDisplayMode" xml:space="preserve"><value>Message display</value></data>
-  <data name="DashboardDisplayTranslation" xml:space="preserve"><value>Translation</value></data>
-  <data name="DashboardDisplayOriginal" xml:space="preserve"><value>Original</value></data>
-  <data name="DashboardDisplayTranslationAndOriginal" xml:space="preserve"><value>Translation (Original)</value></data>
-  <data name="DashboardShowSourceLanguage" xml:space="preserve"><value>Show source language code</value></data>
-  <data name="DashboardSystemSender" xml:space="preserve"><value>System</value></data>
-  <data name="DashboardEmptyState" xml:space="preserve"><value>Waiting for chat messages…</value></data>
-  <data name="DashboardControlsAriaLabel" xml:space="preserve"><value>Chat display options</value></data>
-  <data name="DashboardChatAriaLabel" xml:space="preserve"><value>Translated chat messages</value></data>
-  <data name="DashboardTestAllySender" xml:space="preserve"><value>Test Ally</value></data>
-  <data name="DashboardTestEnemySender" xml:space="preserve"><value>Test Enemy</value></data>
-  <data name="DashboardTestAllyOriginal" xml:space="preserve"><value>Hello team, this is an ally color preview.</value></data>
-  <data name="DashboardTestAllyTranslation" xml:space="preserve"><value>Ally translation and color preview.</value></data>
-  <data name="DashboardTestEnemyOriginal" xml:space="preserve"><value>Противник обнаружен. Проверка цвета противника.</value></data>
-  <data name="DashboardTestEnemyTranslation" xml:space="preserve"><value>Enemy translation and color preview.</value></data>
-  <data name="DashboardTestSystemOriginal" xml:space="preserve"><value>システムメッセージの色テストです。</value></data>
-  <data name="DashboardTestSystemTranslation" xml:space="preserve"><value>System message color preview.</value></data>
-  <data name="DashboardGameRunning" xml:space="preserve"><value>Game is running</value></data>
-  <data name="DashboardGameStopped" xml:space="preserve"><value>Game is not running</value></data>
-  <data name="DashboardGamePid" xml:space="preserve"><value>PID</value></data>
-  <data name="DashboardGameStartTime" xml:space="preserve"><value>Started</value></data>
-  <data name="DashboardNightMode" xml:space="preserve"><value>Night mode</value></data>
-  <data name="DashboardShowChatBubbles" xml:space="preserve"><value>Show chat bubble backgrounds</value></data>
-  <data name="NavAiTranslation" xml:space="preserve"><value>AI translation models</value></data>
-  <data name="ApiAI" xml:space="preserve"><value>AI translation (custom)</value></data>
-  <data name="AiPageTitle" xml:space="preserve"><value>AI translation models</value></data>
-  <data name="AiPageDescription" xml:space="preserve"><value>Manage your own AI translation endpoints. OpenAI Responses, OpenAI-compatible Chat Completions, and Anthropic Messages APIs are supported; the selected model is used by “AI translation (custom)”.</value></data>
-  <data name="AiConnectionsTitle" xml:space="preserve"><value>AI model connections</value></data>
-  <data name="AiAddDescription" xml:space="preserve"><value>Add, edit, test, select, and remove AI translation models.</value></data>
-  <data name="AiAddProvider" xml:space="preserve"><value>Add model</value></data>
-  <data name="AiEmptyTitle" xml:space="preserve"><value>No AI translation models configured</value></data>
-  <data name="AiEmptyDescription" xml:space="preserve"><value>Add an API connection, then select it for AI translation. API keys stay in this app’s local settings.</value></data>
-  <data name="AiSelected" xml:space="preserve"><value>Selected</value></data>
-  <data name="AiUse" xml:space="preserve"><value>Use</value></data>
-  <data name="AiTest" xml:space="preserve"><value>Test</value></data>
-  <data name="AiEdit" xml:space="preserve"><value>Edit</value></data>
-  <data name="AiDelete" xml:space="preserve"><value>Delete</value></data>
-  <data name="AiProviderTypeOpenAIResponses" xml:space="preserve"><value>OpenAI Responses</value></data>
-  <data name="AiProviderTypeOpenAIChatCompletions" xml:space="preserve"><value>OpenAI-compatible Chat Completions</value></data>
-  <data name="AiProviderTypeAnthropic" xml:space="preserve"><value>Anthropic Messages</value></data>
-  <data name="AiModelLabel" xml:space="preserve"><value>Model</value></data>
-  <data name="AiEndpointLabel" xml:space="preserve"><value>Endpoint</value></data>
-  <data name="AiPromptLabel" xml:space="preserve"><value>Prompt</value></data>
-  <data name="AiPromptDefault" xml:space="preserve"><value>Prompt: default translation instructions</value></data>
-  <data name="AiAddDialogTitle" xml:space="preserve"><value>Add AI translation model</value></data>
-  <data name="AiEditDialogTitle" xml:space="preserve"><value>Edit AI translation model</value></data>
-  <data name="AiName" xml:space="preserve"><value>Display name</value></data>
-  <data name="AiNamePlaceholder" xml:space="preserve"><value>For example: OpenAI / Local LLM</value></data>
-  <data name="AiApiType" xml:space="preserve"><value>API type</value></data>
-  <data name="AiBaseUrl" xml:space="preserve"><value>Base URL</value></data>
-  <data name="AiApiKey" xml:space="preserve"><value>API key</value></data>
-  <data name="AiApiKeyPlaceholder" xml:space="preserve"><value>Optional for local endpoints</value></data>
-  <data name="AiApiKeyDescription" xml:space="preserve"><value>The key is stored in the app’s local settings and is never shown in the model list. Leave it empty for endpoints that do not require authentication.</value></data>
-  <data name="AiModel" xml:space="preserve"><value>Model</value></data>
-  <data name="AiTemperatureEnabled" xml:space="preserve"><value>Send temperature</value></data>
-  <data name="AiTemperature" xml:space="preserve"><value>Temperature</value></data>
-  <data name="AiTemperatureOmitted" xml:space="preserve"><value>not sent</value></data>
-  <data name="AiTemperatureDescription" xml:space="preserve"><value>Optional sampling parameter. When disabled, temperature is omitted from the request. OpenAI accepts 0–2. Anthropic accepts 0–1 on older supported models; current Claude 4.7+ models may reject non-default temperature, so leave it disabled unless the selected model supports it.</value></data>
-  <data name="AiTemperatureRangeError" xml:space="preserve"><value>Temperature must be between 0 and {0} for the selected API type.</value></data>
-  <data name="AiCustomPrompt" xml:space="preserve"><value>Custom prompt</value></data>
-  <data name="AiCustomPromptPlaceholder" xml:space="preserve"><value>Optional: terminology, style, or translation rules</value></data>
-  <data name="AiCustomPromptDescription" xml:space="preserve"><value>Optional placeholders: {text}, {target_language}, {target_language_name}, {source_language}. The mandatory JSON response contract is always appended.</value></data>
-  <data name="AiSave" xml:space="preserve"><value>Save</value></data>
-  <data name="AiValidationRequired" xml:space="preserve"><value>Display name, a valid HTTP(S) Base URL, and model are required.</value></data>
-  <data name="AiDeleteDialogTitle" xml:space="preserve"><value>Delete AI translation model?</value></data>
-  <data name="AiDeleteDialogMessage" xml:space="preserve"><value>Delete “{0}”? This cannot be undone.</value></data>
-  <data name="AiDeleteConfirm" xml:space="preserve"><value>Delete</value></data>
-  <data name="AiNoProviderError" xml:space="preserve"><value>No AI translation model is selected. Add and select one on the AI translation models page.</value></data>
-  <data name="AiEndpointRequiredError" xml:space="preserve"><value>The selected AI translation model has no Base URL.</value></data>
-  <data name="AiModelRequiredError" xml:space="preserve"><value>The selected AI translation model has no model name.</value></data>
-  <data name="AiInvalidResponseError" xml:space="preserve"><value>The AI API response is missing required translation fields.</value></data>
-  <data name="AiInvalidJsonError" xml:space="preserve"><value>The AI model did not return a valid JSON translation object.</value></data>
-  <data name="AiApiErrorFormat" xml:space="preserve"><value>AI API request failed (HTTP {0}): {1}</value></data>
-  <data name="AiEmptyApiError" xml:space="preserve"><value>The server returned no error details.</value></data>
-  <data name="DialogTranslateInputTitle" xml:space="preserve"><value>Enter text to translate</value></data>
-  <data name="CommonConfirm" xml:space="preserve"><value>Confirm</value></data>
-  <data name="CommonCancel" xml:space="preserve"><value>Cancel</value></data>
-  <data name="CommonClose" xml:space="preserve"><value>Close</value></data>
-  <data name="TranslationTestSuccessTitle" xml:space="preserve"><value>Translation test succeeded</value></data>
-  <data name="TranslationTestFailureTitle" xml:space="preserve"><value>Translation test failed</value></data>
-  <data name="TranslationTestResultFormat" xml:space="preserve"><value>Translation result&#10;Original text: {0}&#10;Translated text: {1}&#10;Service: {9}&#10;&#10;Dashboard mapping&#10;OriginalMessage: {0}&#10;TranslatedMessage: {1}&#10;SourceLanguageIsoCode: {2}&#10;&#10;Language details&#10;SourceLanguage.Name: {3}&#10;SourceLanguage.ISO6391: {4}&#10;SourceLanguage.ISO6393: {5}&#10;TargetLanguage.Name: {6}&#10;TargetLanguage.ISO6391: {7}&#10;TargetLanguage.ISO6393: {8}</value></data>
-  <data name="TrayOverlay" xml:space="preserve"><value>Overlay</value></data>
-  <data name="TrayOverlayDescription" xml:space="preserve"><value>Show or hide the in-game chat overlay</value></data>
-  <data name="OverlayTitle" xml:space="preserve"><value>Live chat</value></data>
-  <data name="OverlaySettingsTitle" xml:space="preserve"><value>Overlay settings</value></data>
-  <data name="OverlayHandleToolTip" xml:space="preserve"><value>Drag to move. Double-click to enable or disable resize mode.</value></data>
-  <data name="LocationTitle" xml:space="preserve"><value>Position and size</value></data>
-  <data name="LocationMonitor" xml:space="preserve"><value>Overlay display</value></data>
-  <data name="LocationMonitorDescription" xml:space="preserve"><value>Select and remember the display used by the overlay.</value></data>
-  <data name="LocationPosition" xml:space="preserve"><value>Overlay position</value></data>
-  <data name="LocationPositionDescription" xml:space="preserve"><value>Desktop pixel coordinates. Dragging the overlay updates these values automatically.</value></data>
-  <data name="LocationSize" xml:space="preserve"><value>Overlay size</value></data>
-  <data name="LocationSizeDescription" xml:space="preserve"><value>Double-click the overlay move handle to enable mouse resizing.</value></data>
-  <data name="LocationWidth" xml:space="preserve"><value>Width</value></data>
-  <data name="LocationHeight" xml:space="preserve"><value>Height</value></data>
-  <data name="LocationApply" xml:space="preserve"><value>Apply</value></data>
-  <data name="LocationCenter" xml:space="preserve"><value>Center on selected display</value></data>
-  <data name="OverlayOpacity" xml:space="preserve"><value>Overlay opacity</value></data>
-  <data name="OverlayOpacityDescription" xml:space="preserve"><value>Adjust the translucency of the overlay background.</value></data>
+  <data name="AppTitle" xml:space="preserve">
+    <value>War Thunder Chat Translator Settings</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Application language</value>
+  </data>
+  <data name="LanguageDescription" xml:space="preserve">
+    <value>Changes are applied immediately and remembered.</value>
+  </data>
+  <data name="Chinese" xml:space="preserve">
+    <value>Chinese (Simplified)</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="SystemDefault" xml:space="preserve">
+    <value>Use system setting</value>
+  </data>
+  <data name="OpenSystemTheme" xml:space="preserve">
+    <value>Open system theme settings</value>
+  </data>
+  <data name="BackgroundCss" xml:space="preserve">
+    <value>Page background CSS (appended to the page body CSS)</value>
+  </data>
+  <data name="BackgroundCssInfo" xml:space="preserve">
+    <value>Background CSS reference</value>
+  </data>
+  <data name="TrayDashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="TrayDashboardDescription" xml:space="preserve">
+    <value>Open chat window</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="TraySettingsDescription" xml:space="preserve">
+    <value>Open translator settings</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="TrayExitDescription" xml:space="preserve">
+    <value>Exit translator</value>
+  </data>
+  <data name="TrayToolTip" xml:space="preserve">
+    <value>War Thunder Chat Translator</value>
+  </data>
+  <data name="NavApi" xml:space="preserve">
+    <value>Translation API</value>
+  </data>
+  <data name="NavNetwork" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="NavAppearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="NavFont" xml:space="preserve">
+    <value>Fonts and styles</value>
+  </data>
+  <data name="NavTheme" xml:space="preserve">
+    <value>Theme and background</value>
+  </data>
+  <data name="NavInteraction" xml:space="preserve">
+    <value>Interaction and actions</value>
+  </data>
+  <data name="NavLayout" xml:space="preserve">
+    <value>Position and layout</value>
+  </data>
+  <data name="NavUpdate" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="ApiTitle" xml:space="preserve">
+    <value>Translation API</value>
+  </data>
+  <data name="ApiProviderDescription" xml:space="preserve">
+    <value>Select the translation provider used by the translator.</value>
+  </data>
+  <data name="ApiBing" xml:space="preserve">
+    <value>Bing (token required)</value>
+  </data>
+  <data name="ApiGoogle" xml:space="preserve">
+    <value>Google (network required)</value>
+  </data>
+  <data name="ApiTargetDescription" xml:space="preserve">
+    <value>Chat messages will be translated into this language.</value>
+  </data>
+  <data name="ApiTargetLanguage" xml:space="preserve">
+    <value>Target language</value>
+  </data>
+  <data name="ApiTokenDescription" xml:space="preserve">
+    <value>Enter the token required by Bing Translator.</value>
+  </data>
+  <data name="ApiToken" xml:space="preserve">
+    <value>Translator API token</value>
+  </data>
+  <data name="ApiTestDescription" xml:space="preserve">
+    <value>Test the translation feature.</value>
+  </data>
+  <data name="ApiTest" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="ApiTestButton" xml:space="preserve">
+    <value>Test translation</value>
+  </data>
+  <data name="FontTitle" xml:space="preserve">
+    <value>Font settings</value>
+  </data>
+  <data name="FontFamily" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="FontSize" xml:space="preserve">
+    <value>Text size</value>
+  </data>
+  <data name="FontStyle" xml:space="preserve">
+    <value>Text style</value>
+  </data>
+  <data name="FontLighter" xml:space="preserve">
+    <value>Lighter</value>
+  </data>
+  <data name="FontNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="FontBold" xml:space="preserve">
+    <value>Bold</value>
+  </data>
+  <data name="FontBolder" xml:space="preserve">
+    <value>Bolder</value>
+  </data>
+  <data name="FontAllyColor" xml:space="preserve">
+    <value>Ally text color</value>
+  </data>
+  <data name="FontEnemyColor" xml:space="preserve">
+    <value>Enemy text color</value>
+  </data>
+  <data name="FontSystemColor" xml:space="preserve">
+    <value>System text color</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Select color</value>
+  </data>
+  <data name="NetworkTitle" xml:space="preserve">
+    <value>Network settings</value>
+  </data>
+  <data name="NetworkDescription" xml:space="preserve">
+    <value>Configure the translator network proxy and polling intervals.</value>
+  </data>
+  <data name="ProxyMode" xml:space="preserve">
+    <value>Network proxy mode</value>
+  </data>
+  <data name="ProxyDefault" xml:space="preserve">
+    <value>Do not use a proxy</value>
+  </data>
+  <data name="ProxySystem" xml:space="preserve">
+    <value>Use system proxy</value>
+  </data>
+  <data name="ProxyCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="ProxyCustomSettings" xml:space="preserve">
+    <value>Custom proxy settings</value>
+  </data>
+  <data name="ProxyAddress" xml:space="preserve">
+    <value>Proxy address</value>
+  </data>
+  <data name="ProxyAddressPlaceholder" xml:space="preserve">
+    <value>Example: http://127.0.0.1:7890</value>
+  </data>
+  <data name="ProxyAccount" xml:space="preserve">
+    <value>Account (optional)</value>
+  </data>
+  <data name="ProxyAccountPlaceholder" xml:space="preserve">
+    <value>Proxy account</value>
+  </data>
+  <data name="ProxyPassword" xml:space="preserve">
+    <value>Password (optional)</value>
+  </data>
+  <data name="ProxyPasswordPlaceholder" xml:space="preserve">
+    <value>Proxy password</value>
+  </data>
+  <data name="PollingSettings" xml:space="preserve">
+    <value>Polling intervals</value>
+  </data>
+  <data name="PollingSettingsDescription" xml:space="preserve">
+    <value>Configure how often the app requests game chat data and how often the dashboard reads the local translated cache. Changes are saved automatically.</value>
+  </data>
+  <data name="GamePollingInterval" xml:space="preserve">
+    <value>Game polling interval (seconds)</value>
+  </data>
+  <data name="GamePollingIntervalDescription" xml:space="preserve">
+    <value>Interval for incremental requests to the game's port 8111. Default: 4 seconds.</value>
+  </data>
+  <data name="WebPollingInterval" xml:space="preserve">
+    <value>Dashboard polling interval (seconds)</value>
+  </data>
+  <data name="WebPollingIntervalDescription" xml:space="preserve">
+    <value>Interval for the dashboard to read translated data from the local server. Default: 4 seconds.</value>
+  </data>
+  <data name="PollingIntervalRange" xml:space="preserve">
+    <value>Allowed range: 1-60 seconds. Settings take effect automatically without restarting the app.</value>
+  </data>
+  <data name="AboutAppName" xml:space="preserve">
+    <value>War Thunder Chat Translator</value>
+  </data>
+  <data name="AboutAuthor" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="AboutGitHub" xml:space="preserve">
+    <value>GitHub profile</value>
+  </data>
+  <data name="AboutBilibili" xml:space="preserve">
+    <value>BiliBili profile</value>
+  </data>
+  <data name="AboutCopyLinkDescription" xml:space="preserve">
+    <value>Copy the project link to share it with friends</value>
+  </data>
+  <data name="AboutCopyLink" xml:space="preserve">
+    <value>Copy link</value>
+  </data>
+  <data name="AboutOpenProject" xml:space="preserve">
+    <value>Open project page</value>
+  </data>
+  <data name="AboutProjectDescription" xml:space="preserve">
+    <value>Open this translator's project page.</value>
+  </data>
+  <data name="AboutProject" xml:space="preserve">
+    <value>Project page</value>
+  </data>
+  <data name="AboutCopySuccess" xml:space="preserve">
+    <value>Copied successfully</value>
+  </data>
+  <data name="AboutCopySuccessDescription" xml:space="preserve">
+    <value>Share the GitHub link with your friends.</value>
+  </data>
+  <data name="AboutOpenSourceThanks" xml:space="preserve">
+    <value>Open-source projects used by this app</value>
+  </data>
+  <data name="UpdateTitle" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="UpdateLastChecked" xml:space="preserve">
+    <value>Last checked: </value>
+  </data>
+  <data name="UpdateNever" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="UpdateReleaseNotes" xml:space="preserve">
+    <value>Release notes</value>
+  </data>
+  <data name="UpdateCheck" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="UpdateLatest" xml:space="preserve">
+    <value>You are using the latest version.</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>Update check failed</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>New version available</value>
+  </data>
+  <data name="UpdateDownload" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="UpdateLater" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="UpdateAvailableContent" xml:space="preserve">
+    <value>A Microsoft Store update is available.</value>
+  </data>
+  <data name="DashboardTitle" xml:space="preserve">
+    <value>Real-time Chat</value>
+  </data>
+  <data name="DashboardSubtitle" xml:space="preserve">
+    <value>War Thunder translated chat</value>
+  </data>
+  <data name="DashboardDisplayMode" xml:space="preserve">
+    <value>Message display</value>
+  </data>
+  <data name="DashboardDisplayTranslation" xml:space="preserve">
+    <value>Translation</value>
+  </data>
+  <data name="DashboardDisplayOriginal" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="DashboardDisplayTranslationAndOriginal" xml:space="preserve">
+    <value>Translation (Original)</value>
+  </data>
+  <data name="DashboardShowSourceLanguage" xml:space="preserve">
+    <value>Show source language code</value>
+  </data>
+  <data name="DashboardSystemSender" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="DashboardEmptyState" xml:space="preserve">
+    <value>Waiting for chat messages…</value>
+  </data>
+  <data name="DashboardControlsAriaLabel" xml:space="preserve">
+    <value>Chat display options</value>
+  </data>
+  <data name="DashboardChatAriaLabel" xml:space="preserve">
+    <value>Translated chat messages</value>
+  </data>
+  <data name="DashboardTestAllySender" xml:space="preserve">
+    <value>Test Ally</value>
+  </data>
+  <data name="DashboardTestEnemySender" xml:space="preserve">
+    <value>Test Enemy</value>
+  </data>
+  <data name="DashboardTestAllyOriginal" xml:space="preserve">
+    <value>Hello team, this is an ally color preview.</value>
+  </data>
+  <data name="DashboardTestAllyTranslation" xml:space="preserve">
+    <value>Ally translation and color preview.</value>
+  </data>
+  <data name="DashboardTestEnemyOriginal" xml:space="preserve">
+    <value>Противник обнаружен. Проверка цвета противника.</value>
+  </data>
+  <data name="DashboardTestEnemyTranslation" xml:space="preserve">
+    <value>Enemy translation and color preview.</value>
+  </data>
+  <data name="DashboardTestSystemOriginal" xml:space="preserve">
+    <value>システムメッセージの色テストです。</value>
+  </data>
+  <data name="DashboardTestSystemTranslation" xml:space="preserve">
+    <value>System message color preview.</value>
+  </data>
+  <data name="DashboardGameRunning" xml:space="preserve">
+    <value>Game is running</value>
+  </data>
+  <data name="DashboardGameStopped" xml:space="preserve">
+    <value>Game is not running</value>
+  </data>
+  <data name="DashboardGamePid" xml:space="preserve">
+    <value>PID</value>
+  </data>
+  <data name="DashboardGameStartTime" xml:space="preserve">
+    <value>Started</value>
+  </data>
+  <data name="DashboardNightMode" xml:space="preserve">
+    <value>Night mode</value>
+  </data>
+  <data name="DashboardShowChatBubbles" xml:space="preserve">
+    <value>Show chat bubble backgrounds</value>
+  </data>
+  <data name="NavAiTranslation" xml:space="preserve">
+    <value>AI translation models</value>
+  </data>
+  <data name="ApiAI" xml:space="preserve">
+    <value>AI translation (custom)</value>
+  </data>
+  <data name="AiPageTitle" xml:space="preserve">
+    <value>AI translation models</value>
+  </data>
+  <data name="AiPageDescription" xml:space="preserve">
+    <value>Manage your own AI translation endpoints. OpenAI Responses, OpenAI-compatible Chat Completions, and Anthropic Messages APIs are supported; the selected model is used by “AI translation (custom)”.</value>
+  </data>
+  <data name="AiConnectionsTitle" xml:space="preserve">
+    <value>AI model connections</value>
+  </data>
+  <data name="AiAddDescription" xml:space="preserve">
+    <value>Add, edit, test, select, and remove AI translation models.</value>
+  </data>
+  <data name="AiAddProvider" xml:space="preserve">
+    <value>Add model</value>
+  </data>
+  <data name="AiEmptyTitle" xml:space="preserve">
+    <value>No AI translation models configured</value>
+  </data>
+  <data name="AiEmptyDescription" xml:space="preserve">
+    <value>Add an API connection, then select it for AI translation. API keys stay in this app’s local settings.</value>
+  </data>
+  <data name="AiSelected" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="AiUse" xml:space="preserve">
+    <value>Use</value>
+  </data>
+  <data name="AiTest" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="AiEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="AiDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="AiProviderTypeOpenAIResponses" xml:space="preserve">
+    <value>OpenAI Responses</value>
+  </data>
+  <data name="AiProviderTypeOpenAIChatCompletions" xml:space="preserve">
+    <value>OpenAI-compatible Chat Completions</value>
+  </data>
+  <data name="AiProviderTypeAnthropic" xml:space="preserve">
+    <value>Anthropic Messages</value>
+  </data>
+  <data name="AiModelLabel" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="AiEndpointLabel" xml:space="preserve">
+    <value>Endpoint</value>
+  </data>
+  <data name="AiPromptLabel" xml:space="preserve">
+    <value>Prompt</value>
+  </data>
+  <data name="AiPromptDefault" xml:space="preserve">
+    <value>Prompt: default translation instructions</value>
+  </data>
+  <data name="AiAddDialogTitle" xml:space="preserve">
+    <value>Add AI translation model</value>
+  </data>
+  <data name="AiEditDialogTitle" xml:space="preserve">
+    <value>Edit AI translation model</value>
+  </data>
+  <data name="AiName" xml:space="preserve">
+    <value>Display name</value>
+  </data>
+  <data name="AiNamePlaceholder" xml:space="preserve">
+    <value>For example: OpenAI / Local LLM</value>
+  </data>
+  <data name="AiApiType" xml:space="preserve">
+    <value>API type</value>
+  </data>
+  <data name="AiBaseUrl" xml:space="preserve">
+    <value>Base URL</value>
+  </data>
+  <data name="AiApiKey" xml:space="preserve">
+    <value>API key</value>
+  </data>
+  <data name="AiApiKeyPlaceholder" xml:space="preserve">
+    <value>Optional for local endpoints</value>
+  </data>
+  <data name="AiApiKeyDescription" xml:space="preserve">
+    <value>The key is stored in the app’s local settings and is never shown in the model list. Leave it empty for endpoints that do not require authentication.</value>
+  </data>
+  <data name="AiModel" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="AiTemperatureEnabled" xml:space="preserve">
+    <value>Send temperature</value>
+  </data>
+  <data name="AiTemperature" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
+  <data name="AiTemperatureOmitted" xml:space="preserve">
+    <value>not sent</value>
+  </data>
+  <data name="AiTemperatureDescription" xml:space="preserve">
+    <value>Optional sampling parameter. When disabled, temperature is omitted from the request. OpenAI accepts 0–2. Anthropic accepts 0–1 on older supported models; current Claude 4.7+ models may reject non-default temperature, so leave it disabled unless the selected model supports it.</value>
+  </data>
+  <data name="AiTemperatureRangeError" xml:space="preserve">
+    <value>Temperature must be between 0 and {0} for the selected API type.</value>
+  </data>
+  <data name="AiCustomPrompt" xml:space="preserve">
+    <value>Custom prompt</value>
+  </data>
+  <data name="AiCustomPromptPlaceholder" xml:space="preserve">
+    <value>Optional: terminology, style, or translation rules</value>
+  </data>
+  <data name="AiCustomPromptDescription" xml:space="preserve">
+    <value>Optional placeholders: {text}, {target_language}, {target_language_name}, {source_language}. The mandatory JSON response contract is always appended.</value>
+  </data>
+  <data name="AiSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="AiValidationRequired" xml:space="preserve">
+    <value>Display name, a valid HTTP(S) Base URL, and model are required.</value>
+  </data>
+  <data name="AiDeleteDialogTitle" xml:space="preserve">
+    <value>Delete AI translation model?</value>
+  </data>
+  <data name="AiDeleteDialogMessage" xml:space="preserve">
+    <value>Delete “{0}”? This cannot be undone.</value>
+  </data>
+  <data name="AiDeleteConfirm" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="AiNoProviderError" xml:space="preserve">
+    <value>No AI translation model is selected. Add and select one on the AI translation models page.</value>
+  </data>
+  <data name="AiEndpointRequiredError" xml:space="preserve">
+    <value>The selected AI translation model has no Base URL.</value>
+  </data>
+  <data name="AiModelRequiredError" xml:space="preserve">
+    <value>The selected AI translation model has no model name.</value>
+  </data>
+  <data name="AiInvalidResponseError" xml:space="preserve">
+    <value>The AI API response is missing required translation fields.</value>
+  </data>
+  <data name="AiInvalidJsonError" xml:space="preserve">
+    <value>The AI model did not return a valid JSON translation object.</value>
+  </data>
+  <data name="AiApiErrorFormat" xml:space="preserve">
+    <value>AI API request failed (HTTP {0}): {1}</value>
+  </data>
+  <data name="AiEmptyApiError" xml:space="preserve">
+    <value>The server returned no error details.</value>
+  </data>
+  <data name="DialogTranslateInputTitle" xml:space="preserve">
+    <value>Enter text to translate</value>
+  </data>
+  <data name="CommonConfirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="CommonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CommonClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="TranslationTestSuccessTitle" xml:space="preserve">
+    <value>Translation test succeeded</value>
+  </data>
+  <data name="TranslationTestFailureTitle" xml:space="preserve">
+    <value>Translation test failed</value>
+  </data>
+  <data name="TranslationTestResultFormat" xml:space="preserve">
+    <value>Translation result
+Original text: {0}
+Translated text: {1}
+Service: {9}
+
+Dashboard mapping
+OriginalMessage: {0}
+TranslatedMessage: {1}
+SourceLanguageIsoCode: {2}
+
+Language details
+SourceLanguage.Name: {3}
+SourceLanguage.ISO6391: {4}
+SourceLanguage.ISO6393: {5}
+TargetLanguage.Name: {6}
+TargetLanguage.ISO6391: {7}
+TargetLanguage.ISO6393: {8}</value>
+  </data>
+  <data name="TrayOverlay" xml:space="preserve">
+    <value>Overlay</value>
+  </data>
+  <data name="TrayOverlayDescription" xml:space="preserve">
+    <value>Show or hide the in-game chat overlay</value>
+  </data>
+  <data name="OverlayTitle" xml:space="preserve">
+    <value>Live chat</value>
+  </data>
+  <data name="OverlaySettingsTitle" xml:space="preserve">
+    <value>Overlay settings</value>
+  </data>
+  <data name="OverlayHandleToolTip" xml:space="preserve">
+    <value>Drag to move. Double-click to enable or disable resize mode.</value>
+  </data>
+  <data name="LocationTitle" xml:space="preserve">
+    <value>Position and size</value>
+  </data>
+  <data name="LocationMonitor" xml:space="preserve">
+    <value>Overlay display</value>
+  </data>
+  <data name="LocationMonitorDescription" xml:space="preserve">
+    <value>Select and remember the display used by the overlay.</value>
+  </data>
+  <data name="LocationPosition" xml:space="preserve">
+    <value>Overlay position</value>
+  </data>
+  <data name="LocationPositionDescription" xml:space="preserve">
+    <value>Desktop pixel coordinates. Dragging the overlay updates these values automatically.</value>
+  </data>
+  <data name="LocationSize" xml:space="preserve">
+    <value>Overlay size</value>
+  </data>
+  <data name="LocationSizeDescription" xml:space="preserve">
+    <value>Double-click the overlay move handle to enable mouse resizing.</value>
+  </data>
+  <data name="LocationWidth" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="LocationHeight" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="LocationApply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="LocationCenter" xml:space="preserve">
+    <value>Center on selected display</value>
+  </data>
+  <data name="OverlayOpacity" xml:space="preserve">
+    <value>Overlay opacity</value>
+  </data>
+  <data name="OverlayOpacityDescription" xml:space="preserve">
+    <value>Adjust the translucency of the overlay background.</value>
+  </data>
+  <data name="QuickTranslationTitle" xml:space="preserve">
+    <value>Quick voice translation</value>
+  </data>
+  <data name="QuickTranslationEnable" xml:space="preserve">
+    <value>Enable quick voice translation</value>
+  </data>
+  <data name="QuickTranslationEnableDescription" xml:space="preserve">
+    <value>Register system-wide shortcuts that recognize one spoken phrase, translate it to the selected language, and copy the result to the clipboard.</value>
+  </data>
+  <data name="QuickTranslationRecognitionLanguage" xml:space="preserve">
+    <value>Speech recognition language</value>
+  </data>
+  <data name="QuickTranslationRecognitionDescription" xml:space="preserve">
+    <value>Choose the language you will speak. Windows online speech recognition may need to be enabled for dictation.</value>
+  </data>
+  <data name="QuickTranslationHotkeys" xml:space="preserve">
+    <value>Shortcut language mappings</value>
+  </data>
+  <data name="QuickTranslationHotkeysDescription" xml:space="preserve">
+    <value>Five mappings are provided by default. Click Record, press the desired key combination, then click Finish to save it. Press a shortcut once to start recording and press the same shortcut again to stop immediately and translate; silence can also stop recognition automatically.</value>
+  </data>
+  <data name="QuickTranslationSuccessSound" xml:space="preserve">
+    <value>Translation success sound</value>
+  </data>
+  <data name="QuickTranslationSoundDescription" xml:space="preserve">
+    <value>Play a sound after the translated text has been copied to the clipboard.</value>
+  </data>
+  <data name="QuickTranslationSoundSystem" xml:space="preserve">
+    <value>System notification sound</value>
+  </data>
+  <data name="QuickTranslationSoundTts" xml:space="preserve">
+    <value>TTS prompt</value>
+  </data>
+  <data name="QuickTranslationSoundCustom" xml:space="preserve">
+    <value>Custom audio</value>
+  </data>
+  <data name="QuickTranslationTtsSettings" xml:space="preserve">
+    <value>TTS prompt settings</value>
+  </data>
+  <data name="QuickTranslationTtsDescription" xml:space="preserve">
+    <value>The generated speech is cached by prompt text and voice, so unchanged prompts are not synthesized repeatedly.</value>
+  </data>
+  <data name="QuickTranslationPromptText" xml:space="preserve">
+    <value>Prompt text</value>
+  </data>
+  <data name="QuickTranslationVoice" xml:space="preserve">
+    <value>Voice</value>
+  </data>
+  <data name="QuickTranslationCustomAudio" xml:space="preserve">
+    <value>Custom success audio</value>
+  </data>
+  <data name="QuickTranslationCustomAudioDescription" xml:space="preserve">
+    <value>The selected audio is copied into the app data folder so it remains available if the original file is moved.</value>
+  </data>
+  <data name="QuickTranslationChooseAudio" xml:space="preserve">
+    <value>Choose audio file</value>
+  </data>
+  <data name="QuickTranslationNoCustomAudio" xml:space="preserve">
+    <value>No custom audio selected</value>
+  </data>
+  <data name="QuickTranslationVolume" xml:space="preserve">
+    <value>Prompt audio volume</value>
+  </data>
+  <data name="QuickTranslationVolumeDescription" xml:space="preserve">
+    <value>Adjust the shared playback volume for TTS and custom audio cues.</value>
+  </data>
+  <data name="QuickTranslationAudioActions" xml:space="preserve">
+    <value>Audio actions</value>
+  </data>
+  <data name="QuickTranslationAudioActionsDescription" xml:space="preserve">
+    <value>Preview recording start, recording end, translation success, or translation failure audio, or clear generated TTS cache files.</value>
+  </data>
+  <data name="QuickTranslationPreview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="QuickTranslationClearCache" xml:space="preserve">
+    <value>Clear TTS cache</value>
+  </data>
+  <data name="QuickTranslationSystemLanguageFormat" xml:space="preserve">
+    <value>System language: {0} ({1})</value>
+  </data>
+  <data name="QuickTranslationInvalidHotkey" xml:space="preserve">
+    <value>Invalid shortcut</value>
+  </data>
+  <data name="QuickTranslationDuplicateHotkey" xml:space="preserve">
+    <value>This shortcut is already assigned to another target language.</value>
+  </data>
+  <data name="QuickTranslationAudioError" xml:space="preserve">
+    <value>Audio error</value>
+  </data>
+  <data name="QuickTranslationCacheCleared" xml:space="preserve">
+    <value>TTS cache cleared</value>
+  </data>
+  <data name="QuickTranslationCacheClearedDescription" xml:space="preserve">
+    <value>Generated TTS prompt audio has been removed. It will be generated again when needed.</value>
+  </data>
+  <data name="QuickTranslationClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="QuickTranslationPreviewTimeout" xml:space="preserve">
+    <value>Preview timed out. Try another Windows TTS voice or use a custom audio file.</value>
+  </data>
+  <data name="QuickTranslationAddHotkey" xml:space="preserve">
+    <value>Add shortcut</value>
+  </data>
+  <data name="QuickTranslationRemoveHotkey" xml:space="preserve">
+    <value>Remove shortcut</value>
+  </data>
+  <data name="QuickTranslationPrerequisiteWarningTitle" xml:space="preserve">
+    <value>Local speech recognition setup required</value>
+  </data>
+  <data name="QuickTranslationOpenSettings" xml:space="preserve">
+    <value>Open Windows settings</value>
+  </data>
+  <data name="QuickTranslationPrerequisiteDialogTitle" xml:space="preserve">
+    <value>Local speech recognition is not ready</value>
+  </data>
+  <data name="QuickTranslationPrerequisiteCheckTimeout" xml:space="preserve">
+    <value>The local speech-recognition environment check timed out.</value>
+  </data>
+  <data name="QuickTranslationMicrophonePermissionRequired" xml:space="preserve">
+    <value>Microphone permission is required. Turn on quick voice translation again to allow microphone access.</value>
+  </data>
+  <data name="QuickTranslationMicrophonePermissionDenied" xml:space="preserve">
+    <value>Microphone access is not allowed for this app. Enable microphone access in Windows Privacy &amp; security settings.</value>
+  </data>
+  <data name="QuickTranslationMicrophoneCapabilityMissing" xml:space="preserve">
+    <value>The packaged app does not have microphone capability. Reinstall or rebuild the app with microphone capability enabled.</value>
+  </data>
+  <data name="QuickTranslationMicrophoneUnavailable" xml:space="preserve">
+    <value>No usable microphone is available, or Windows could not initialize the microphone.</value>
+  </data>
+  <data name="QuickTranslationOnlineSpeechDisabled" xml:space="preserve">
+    <value>Windows Online speech recognition is disabled. Enable it in Privacy &amp; security &gt; Speech.</value>
+  </data>
+  <data name="QuickTranslationSpeechUnavailable" xml:space="preserve">
+    <value>The local speech-recognition runtime is unavailable.</value>
+  </data>
+  <data name="QuickTranslationRecordingStartSound" xml:space="preserve">
+    <value>Recording start sound</value>
+  </data>
+  <data name="QuickTranslationRecordingStartSoundDescription" xml:space="preserve">
+    <value>Play a cue when speech recognition starts. By default listening begins as soon as the cue starts; this timing can be changed below.</value>
+  </data>
+  <data name="QuickTranslationRecordingStartTtsSettings" xml:space="preserve">
+    <value>Recording start TTS settings</value>
+  </data>
+  <data name="QuickTranslationRecordingStartCustomAudio" xml:space="preserve">
+    <value>Custom recording start audio</value>
+  </data>
+  <data name="QuickTranslationRecordingStartCustomAudioDescription" xml:space="preserve">
+    <value>Choose the audio used for the recording-start cue. The selected file is copied to the app data folder.</value>
+  </data>
+  <data name="QuickTranslationRecordingEndSound" xml:space="preserve">
+    <value>Recording end sound</value>
+  </data>
+  <data name="QuickTranslationRecordingEndSoundDescription" xml:space="preserve">
+    <value>Play a cue after the one-shot speech recognition session finishes.</value>
+  </data>
+  <data name="QuickTranslationRecordingEndTtsSettings" xml:space="preserve">
+    <value>Recording end TTS settings</value>
+  </data>
+  <data name="QuickTranslationRecordingEndCustomAudio" xml:space="preserve">
+    <value>Custom recording end audio</value>
+  </data>
+  <data name="QuickTranslationRecordingEndCustomAudioDescription" xml:space="preserve">
+    <value>Choose the audio played when speech recognition ends. The selected file is copied to the app data folder.</value>
+  </data>
+  <data name="QuickTranslationPreviewRecordingStart" xml:space="preserve">
+    <value>Preview start cue</value>
+  </data>
+  <data name="QuickTranslationPreviewRecordingEnd" xml:space="preserve">
+    <value>Preview end cue</value>
+  </data>
+  <data name="QuickTranslationPreviewSuccess" xml:space="preserve">
+    <value>Preview success cue</value>
+  </data>
+  <data name="QuickTranslationDefaultRecordingStartPrompt" xml:space="preserve">
+    <value>Start recording</value>
+  </data>
+  <data name="QuickTranslationDefaultRecordingEndPrompt" xml:space="preserve">
+    <value>Recording ended</value>
+  </data>
+  <data name="QuickTranslationDefaultSuccessPrompt" xml:space="preserve">
+    <value>Translation complete</value>
+  </data>
+  <data name="QuickTranslationHotkeyErrorEmpty" xml:space="preserve">
+    <value>Shortcut is empty.</value>
+  </data>
+  <data name="QuickTranslationHotkeyErrorFormatExample" xml:space="preserve">
+    <value>Use at least one modifier plus one key, for example Ctrl+Alt+1.</value>
+  </data>
+  <data name="QuickTranslationHotkeyErrorMultipleKeys" xml:space="preserve">
+    <value>A shortcut can contain only one non-modifier key.</value>
+  </data>
+  <data name="QuickTranslationHotkeyErrorModifierRequired" xml:space="preserve">
+    <value>Use at least one modifier plus one key.</value>
+  </data>
+  <data name="QuickTranslationHotkeyErrorUnsupportedKeyFormat" xml:space="preserve">
+    <value>Unsupported key: {0}.</value>
+  </data>
+  <data name="QuickTranslationTtsPromptEmpty" xml:space="preserve">
+    <value>TTS prompt text cannot be empty.</value>
+  </data>
+  <data name="QuickTranslationTtsGenerationTimeoutFormat" xml:space="preserve">
+    <value>TTS generation timed out after {0:0} seconds.</value>
+  </data>
+  <data name="QuickTranslationTtsEmptyAudio" xml:space="preserve">
+    <value>The Windows speech synthesizer returned an empty audio stream.</value>
+  </data>
+  <data name="QuickTranslationSpeechInitializationFailedFormat" xml:space="preserve">
+    <value>Speech recognition initialization failed: {0}.</value>
+  </data>
+  <data name="QuickTranslationSpeechRecognitionFailedFormat" xml:space="preserve">
+    <value>Speech recognition failed: {0}.</value>
+  </data>
+  <data name="QuickTranslationNoFreeHotkeyIds" xml:space="preserve">
+    <value>No free global shortcut ID is available.</value>
+  </data>
+  <data name="QuickTranslationEmptyTranslationResult" xml:space="preserve">
+    <value>The translation service returned an empty result.</value>
+  </data>
+  <data name="QuickTranslationSpeakingRate" xml:space="preserve">
+    <value>Speaking rate</value>
+  </data>
+  <data name="QuickTranslationRecordingStartTiming" xml:space="preserve">
+    <value>Recording start timing</value>
+  </data>
+  <data name="QuickTranslationRecordingStartTimingDescription" xml:space="preserve">
+    <value>Choose whether speech recognition starts as soon as the start cue begins playing or after the cue finishes.</value>
+  </data>
+  <data name="QuickTranslationRecordingStartTimingImmediate" xml:space="preserve">
+    <value>Start listening when the cue starts</value>
+  </data>
+  <data name="QuickTranslationRecordingStartTimingAfterCue" xml:space="preserve">
+    <value>Start listening after the cue finishes</value>
+  </data>
+  <data name="QuickTranslationSpeechNoText" xml:space="preserve">
+    <value>Speech recognition ended without returning any text to translate.</value>
+  </data>
+  <data name="QuickTranslationCaptureHotkey" xml:space="preserve">
+    <value>Record</value>
+  </data>
+  <data name="QuickTranslationFinishHotkeyCapture" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="QuickTranslationPressHotkeyPrompt" xml:space="preserve">
+    <value>Press the shortcut...</value>
+  </data>
+  <data name="QuickTranslationHotkeyCaptureNoKey" xml:space="preserve">
+    <value>Press the desired shortcut before clicking Finish.</value>
+  </data>
+  <data name="QuickTranslationTranslationFailureSound" xml:space="preserve">
+    <value>Translation failure sound</value>
+  </data>
+  <data name="QuickTranslationTranslationFailureSoundDescription" xml:space="preserve">
+    <value>Plays when translation or copying the translated text to the clipboard fails.</value>
+  </data>
+  <data name="QuickTranslationTranslationFailureTtsSettings" xml:space="preserve">
+    <value>Translation failure TTS settings</value>
+  </data>
+  <data name="QuickTranslationTranslationFailureCustomAudio" xml:space="preserve">
+    <value>Custom translation failure audio</value>
+  </data>
+  <data name="QuickTranslationTranslationFailureCustomAudioDescription" xml:space="preserve">
+    <value>Choose a custom audio file for translation failure. The file is copied into the application data folder so it keeps working if the original file is moved.</value>
+  </data>
+  <data name="QuickTranslationDefaultTranslationFailurePrompt" xml:space="preserve">
+    <value>Translation failed</value>
+  </data>
+  <data name="QuickTranslationPreviewTranslationFailure" xml:space="preserve">
+    <value>Preview failure</value>
+  </data>
+  <data name="QuickTranslationSpeechState" xml:space="preserve">
+    <value>Local speech recognition status</value>
+  </data>
+  <data name="QuickTranslationSpeechStateDescription" xml:space="preserve">
+    <value>Shows the current state of the packaged SenseVoice speech-recognition model.</value>
+  </data>
+  <data name="QuickTranslationSpeechStateNotInitialized" xml:space="preserve">
+    <value>Not initialized</value>
+  </data>
+  <data name="QuickTranslationSpeechStateWarmingUp" xml:space="preserve">
+    <value>Loading model…</value>
+  </data>
+  <data name="QuickTranslationSpeechStateReady" xml:space="preserve">
+    <value>Ready (local)</value>
+  </data>
+  <data name="QuickTranslationSpeechStateRecording" xml:space="preserve">
+    <value>Recording…</value>
+  </data>
+  <data name="QuickTranslationSpeechStateStopping" xml:space="preserve">
+    <value>Stopping...</value>
+  </data>
+  <data name="QuickTranslationSpeechStateUnavailable" xml:space="preserve">
+    <value>Unavailable</value>
+  </data>
+  <data name="QuickTranslationMicrophoneDevice" xml:space="preserve">
+    <value>Recording device</value>
+  </data>
+  <data name="QuickTranslationMicrophoneDeviceDescription" xml:space="preserve">
+    <value>Choose the microphone or virtual capture device used for quick voice translation.</value>
+  </data>
+  <data name="QuickTranslationSystemDefaultMicrophone" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="QuickTranslationDefaultDeviceSuffix" xml:space="preserve">
+    <value>default</value>
+  </data>
+  <data name="QuickTranslationRefreshMicrophones" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="QuickTranslationMicrophoneLevel" xml:space="preserve">
+    <value>Input level</value>
+  </data>
+  <data name="QuickTranslationMicrophoneLevelDescription" xml:space="preserve">
+    <value>Shows the current input level of the selected capture device.</value>
+  </data>
+  <data name="QuickTranslationSelectedMicrophoneUnavailable" xml:space="preserve">
+    <value>The selected recording device is unavailable. Choose another device or use the system default.</value>
+  </data>
+  <data name="QuickTranslationLocalModelUnavailable" xml:space="preserve">
+    <value>The local speech-recognition model is missing or unavailable. Ensure the Git LFS speech model files are present, then restart the app.</value>
+  </data>
+  <data name="QuickTranslationLocalModelMissingFormat" xml:space="preserve">
+    <value>Local speech model files were not found in: {0}</value>
+  </data>
+  <data name="QuickTranslationLocalModelLoadFailedFormat" xml:space="preserve">
+    <value>Failed to load the local speech model: {0}</value>
+  </data>
+  <data name="QuickTranslationNoAudioCaptured" xml:space="preserve">
+    <value>No microphone audio was captured.</value>
+  </data>
+  <data name="QuickTranslationLocalRecognizingDetailFormat" xml:space="preserve">
+    <value>Recognizing {0:0.0} s of recorded audio locally…</value>
+  </data>
+  <data name="QuickTranslationAlreadyRecording" xml:space="preserve">
+    <value>Microphone capture is already running.</value>
+  </data>
+  <data name="QuickTranslationNotRecording" xml:space="preserve">
+    <value>Microphone capture is not running.</value>
+  </data>
+  <data name="QuickTranslationMicrophoneCaptureFailed" xml:space="preserve">
+    <value>Microphone capture failed.</value>
+  </data>
+  <data name="QuickTranslationSpeechStateRecognizing" xml:space="preserve">
+    <value>Recognizing…</value>
+  </data>
+  <data name="QuickTranslationSavedMicrophoneUnavailable" xml:space="preserve">
+    <value>Saved microphone (unavailable)</value>
+  </data>
 </root>

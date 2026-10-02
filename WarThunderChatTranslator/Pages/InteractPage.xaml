@@ -1,19 +1,736 @@
-﻿<!-- Copyright (c) Microsoft Corporation and Contributors. -->
-<!-- Licensed under the MIT License. -->
-
-<Page
+﻿<Page
     x:Class="WarThunderChatTranslator.Pages.InteractPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WarThunderChatTranslator.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
+    xmlns:labs="using:DevWinUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:DevWinUI"
-    mc:Ignorable="d"
-    Background="Transparent">
-    <Grid
-        Padding="20,0,0,0"
-        RowSpacing="24">
+    Background="Transparent"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
+    mc:Ignorable="d">
+    <Grid Padding="20,0,0,0" RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <TextBlock
+            Margin="0,44,0,0"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="{helpers:Loc Key=QuickTranslationTitle}" />
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Padding="0,0,20,28" Spacing="0">
+                <InfoBar
+                    x:Name="SpeechPrerequisiteWarning"
+                    Margin="0,0,0,12"
+                    IsClosable="False"
+                    IsOpen="False"
+                    Severity="Warning"
+                    Title="{helpers:Loc Key=QuickTranslationPrerequisiteWarningTitle}">
+                    <InfoBar.ActionButton>
+                        <Button
+                            x:Name="SpeechPrerequisiteWarningAction"
+                            Click="SpeechPrerequisiteWarningAction_Click"
+                            Content="{helpers:Loc Key=QuickTranslationOpenSettings}" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationEnableDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationEnable}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE768;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="QuickTranslationEnabled" Toggled="QuickTranslationEnabled_Toggled" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationMicrophoneDeviceDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationMicrophoneDevice}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE720;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox
+                            x:Name="MicrophoneDevice"
+                            Grid.Column="0"
+                            MinWidth="0"
+                            HorizontalAlignment="Stretch"
+                            SelectionChanged="MicrophoneDevice_SelectionChanged" />
+                        <Button
+                            Grid.Column="1"
+                            Click="RefreshMicrophones_Click"
+                            Content="{helpers:Loc Key=QuickTranslationRefreshMicrophones}" />
+                    </Grid>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationMicrophoneLevelDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationMicrophoneLevel}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE9D9;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="56" />
+                        </Grid.ColumnDefinitions>
+                        <ProgressBar
+                            x:Name="MicrophoneLevelBar"
+                            Grid.Column="0"
+                            Height="8"
+                            Minimum="0"
+                            Maximum="100"
+                            VerticalAlignment="Center" />
+                        <TextBlock
+                            x:Name="MicrophoneLevelValue"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="0%" />
+                    </Grid>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationSpeechStateDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationSpeechState}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE895;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel
+                        MaxWidth="700"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Spacing="4">
+                        <TextBlock
+                            x:Name="SpeechRecognitionStateText"
+                            HorizontalAlignment="Right"
+                            FontWeight="SemiBold"
+                            TextAlignment="Right" />
+                        <TextBlock
+                            x:Name="SpeechRecognitionStateDetail"
+                            HorizontalAlignment="Stretch"
+                            Opacity="0.65"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis"
+                            Visibility="Collapsed" />
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <labs:SettingsExpander
+                    x:Name="HotkeySettingsExpander"
+                    MaxWidth="2000"
+                    Header="{helpers:Loc Key=QuickTranslationHotkeys}"
+                    SizeChanged="HotkeySettingsExpander_SizeChanged">
+                    <labs:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE765;" />
+                    </labs:SettingsExpander.HeaderIcon>
+                    <labs:SettingsExpander.Items>
+                        <labs:SettingsCard MaxWidth="2000" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ContentAlignment="Vertical">
+                            <Grid
+                                x:Name="HotkeyContentRoot"
+                                MinWidth="0"
+                                HorizontalAlignment="Stretch"
+                                RowSpacing="12">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    HorizontalAlignment="Stretch"
+                                    Opacity="0.65"
+                                    Text="{helpers:Loc Key=QuickTranslationHotkeysDescription}"
+                                    TextWrapping="Wrap" />
+                                <ListView
+                                    x:Name="HotkeyList"
+                                    Grid.Row="1"
+                                    MaxHeight="360"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Stretch"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    ScrollViewer.HorizontalScrollMode="Disabled"
+                                    SelectionMode="None">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="Padding" Value="0" />
+                                            <Setter Property="MinWidth" Value="0" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
+                                <Button
+                                    Grid.Row="2"
+                                    HorizontalAlignment="Right"
+                                    Click="AddHotkey_Click"
+                                    Content="{helpers:Loc Key=QuickTranslationAddHotkey}" />
+                            </Grid>
+                        </labs:SettingsCard>
+                    </labs:SettingsExpander.Items>
+                </labs:SettingsExpander>
+
+                <!-- Recording start audio -->
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationRecordingStartSoundDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationRecordingStartSound}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE720;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="RecordingStartSoundMode"
+                        MinWidth="220"
+                        Tag="RecordingStart"
+                        SelectionChanged="AudioSoundMode_SelectionChanged">
+                        <ComboBoxItem Tag="System" Content="{helpers:Loc Key=QuickTranslationSoundSystem}" />
+                        <ComboBoxItem Tag="TTS" Content="{helpers:Loc Key=QuickTranslationSoundTts}" />
+                        <ComboBoxItem Tag="Custom" Content="{helpers:Loc Key=QuickTranslationSoundCustom}" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationRecordingStartTimingDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationRecordingStartTiming}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE823;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="RecordingStartTiming"
+                        MinWidth="280"
+                        SelectionChanged="RecordingStartTiming_SelectionChanged">
+                        <ComboBoxItem
+                            Tag="OnPlaybackStart"
+                            Content="{helpers:Loc Key=QuickTranslationRecordingStartTimingImmediate}" />
+                        <ComboBoxItem
+                            Tag="AfterPlayback"
+                            Content="{helpers:Loc Key=QuickTranslationRecordingStartTimingAfterCue}" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsExpander
+                    x:Name="RecordingStartTtsSettingsExpander"
+                    MaxWidth="2000"
+                    Header="{helpers:Loc Key=QuickTranslationRecordingStartTtsSettings}">
+                    <labs:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsExpander.HeaderIcon>
+                    <labs:SettingsExpander.Items>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationPromptText}">
+                            <TextBox
+                                x:Name="RecordingStartPromptText"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="RecordingStart"
+                                TextChanged="AudioPromptText_TextChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationVoice}">
+                            <ComboBox
+                                x:Name="RecordingStartVoice"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="RecordingStart"
+                                SelectionChanged="AudioVoice_SelectionChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationSpeakingRate}">
+                            <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+                                <Slider
+                                    x:Name="RecordingStartSpeakingRate"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    Minimum="0.5"
+                                    Maximum="6"
+                                    SmallChange="0.1"
+                                    LargeChange="0.5"
+                                    StepFrequency="0.1"
+                                    Tag="RecordingStart"
+                                    ValueChanged="AudioSpeakingRate_ValueChanged" />
+                                <TextBlock
+                                    x:Name="RecordingStartSpeakingRateValue"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Right" />
+                            </Grid>
+                        </labs:SettingsCard>
+                    </labs:SettingsExpander.Items>
+                </labs:SettingsExpander>
+
+                <labs:SettingsCard
+                    x:Name="RecordingStartCustomAudioSettingsCard"
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationRecordingStartCustomAudioDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationRecordingStartCustomAudio}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel
+                        MaxWidth="700"
+                        MinWidth="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Spacing="6">
+                        <TextBlock
+                            x:Name="RecordingStartAudioFileName"
+                            HorizontalAlignment="Stretch"
+                            FontWeight="SemiBold"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            x:Name="RecordingStartAudioFilePath"
+                            HorizontalAlignment="Stretch"
+                            Opacity="0.65"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Click="ChooseCustomAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationChooseAudio}"
+                            Tag="RecordingStart" />
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <!-- Recording end audio -->
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationRecordingEndSoundDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationRecordingEndSound}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE71A;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="RecordingEndSoundMode"
+                        MinWidth="220"
+                        Tag="RecordingEnd"
+                        SelectionChanged="AudioSoundMode_SelectionChanged">
+                        <ComboBoxItem Tag="System" Content="{helpers:Loc Key=QuickTranslationSoundSystem}" />
+                        <ComboBoxItem Tag="TTS" Content="{helpers:Loc Key=QuickTranslationSoundTts}" />
+                        <ComboBoxItem Tag="Custom" Content="{helpers:Loc Key=QuickTranslationSoundCustom}" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsExpander
+                    x:Name="RecordingEndTtsSettingsExpander"
+                    MaxWidth="2000"
+                    Header="{helpers:Loc Key=QuickTranslationRecordingEndTtsSettings}">
+                    <labs:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsExpander.HeaderIcon>
+                    <labs:SettingsExpander.Items>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationPromptText}">
+                            <TextBox
+                                x:Name="RecordingEndPromptText"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="RecordingEnd"
+                                TextChanged="AudioPromptText_TextChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationVoice}">
+                            <ComboBox
+                                x:Name="RecordingEndVoice"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="RecordingEnd"
+                                SelectionChanged="AudioVoice_SelectionChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationSpeakingRate}">
+                            <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+                                <Slider
+                                    x:Name="RecordingEndSpeakingRate"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    Minimum="0.5"
+                                    Maximum="6"
+                                    SmallChange="0.1"
+                                    LargeChange="0.5"
+                                    StepFrequency="0.1"
+                                    Tag="RecordingEnd"
+                                    ValueChanged="AudioSpeakingRate_ValueChanged" />
+                                <TextBlock
+                                    x:Name="RecordingEndSpeakingRateValue"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Right" />
+                            </Grid>
+                        </labs:SettingsCard>
+                    </labs:SettingsExpander.Items>
+                </labs:SettingsExpander>
+
+                <labs:SettingsCard
+                    x:Name="RecordingEndCustomAudioSettingsCard"
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationRecordingEndCustomAudioDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationRecordingEndCustomAudio}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel
+                        MaxWidth="700"
+                        MinWidth="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Spacing="6">
+                        <TextBlock
+                            x:Name="RecordingEndAudioFileName"
+                            HorizontalAlignment="Stretch"
+                            FontWeight="SemiBold"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            x:Name="RecordingEndAudioFilePath"
+                            HorizontalAlignment="Stretch"
+                            Opacity="0.65"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Click="ChooseCustomAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationChooseAudio}"
+                            Tag="RecordingEnd" />
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <!-- Translation success audio -->
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationSoundDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationSuccessSound}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE767;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="SuccessSoundMode"
+                        MinWidth="220"
+                        Tag="Success"
+                        SelectionChanged="AudioSoundMode_SelectionChanged">
+                        <ComboBoxItem Tag="System" Content="{helpers:Loc Key=QuickTranslationSoundSystem}" />
+                        <ComboBoxItem Tag="TTS" Content="{helpers:Loc Key=QuickTranslationSoundTts}" />
+                        <ComboBoxItem Tag="Custom" Content="{helpers:Loc Key=QuickTranslationSoundCustom}" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsExpander
+                    x:Name="SuccessTtsSettingsExpander"
+                    MaxWidth="2000"
+                    Header="{helpers:Loc Key=QuickTranslationTtsSettings}">
+                    <labs:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsExpander.HeaderIcon>
+                    <labs:SettingsExpander.Items>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationPromptText}">
+                            <TextBox
+                                x:Name="SuccessPromptText"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="Success"
+                                TextChanged="AudioPromptText_TextChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationVoice}">
+                            <ComboBox
+                                x:Name="SuccessVoice"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="Success"
+                                SelectionChanged="AudioVoice_SelectionChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationSpeakingRate}">
+                            <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+                                <Slider
+                                    x:Name="SuccessSpeakingRate"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    Minimum="0.5"
+                                    Maximum="6"
+                                    SmallChange="0.1"
+                                    LargeChange="0.5"
+                                    StepFrequency="0.1"
+                                    Tag="Success"
+                                    ValueChanged="AudioSpeakingRate_ValueChanged" />
+                                <TextBlock
+                                    x:Name="SuccessSpeakingRateValue"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Right" />
+                            </Grid>
+                        </labs:SettingsCard>
+                    </labs:SettingsExpander.Items>
+                </labs:SettingsExpander>
+
+                <labs:SettingsCard
+                    x:Name="SuccessCustomAudioSettingsCard"
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationCustomAudioDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationCustomAudio}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel
+                        MaxWidth="700"
+                        MinWidth="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Spacing="6">
+                        <TextBlock
+                            x:Name="SuccessAudioFileName"
+                            HorizontalAlignment="Stretch"
+                            FontWeight="SemiBold"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            x:Name="SuccessAudioFilePath"
+                            HorizontalAlignment="Stretch"
+                            Opacity="0.65"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Click="ChooseCustomAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationChooseAudio}"
+                            Tag="Success" />
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <!-- Translation failure audio -->
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationTranslationFailureSoundDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationTranslationFailureSound}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE767;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="TranslationFailureSoundMode"
+                        MinWidth="220"
+                        Tag="TranslationFailure"
+                        SelectionChanged="AudioSoundMode_SelectionChanged">
+                        <ComboBoxItem Tag="System" Content="{helpers:Loc Key=QuickTranslationSoundSystem}" />
+                        <ComboBoxItem Tag="TTS" Content="{helpers:Loc Key=QuickTranslationSoundTts}" />
+                        <ComboBoxItem Tag="Custom" Content="{helpers:Loc Key=QuickTranslationSoundCustom}" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsExpander
+                    x:Name="TranslationFailureTtsSettingsExpander"
+                    MaxWidth="2000"
+                    Header="{helpers:Loc Key=QuickTranslationTranslationFailureTtsSettings}">
+                    <labs:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsExpander.HeaderIcon>
+                    <labs:SettingsExpander.Items>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationPromptText}">
+                            <TextBox
+                                x:Name="TranslationFailurePromptText"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="TranslationFailure"
+                                TextChanged="AudioPromptText_TextChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationVoice}">
+                            <ComboBox
+                                x:Name="TranslationFailureVoice"
+                                MaxWidth="700"
+                                HorizontalAlignment="Stretch"
+                                Tag="TranslationFailure"
+                                SelectionChanged="AudioVoice_SelectionChanged" />
+                        </labs:SettingsCard>
+                        <labs:SettingsCard
+                            MaxWidth="2000"
+                            HorizontalContentAlignment="Stretch"
+                            Header="{helpers:Loc Key=QuickTranslationSpeakingRate}">
+                            <Grid MaxWidth="700" HorizontalAlignment="Stretch" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+                                <Slider
+                                    x:Name="TranslationFailureSpeakingRate"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    Minimum="0.5"
+                                    Maximum="6"
+                                    SmallChange="0.1"
+                                    LargeChange="0.5"
+                                    StepFrequency="0.1"
+                                    Tag="TranslationFailure"
+                                    ValueChanged="AudioSpeakingRate_ValueChanged" />
+                                <TextBlock
+                                    x:Name="TranslationFailureSpeakingRateValue"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Right" />
+                            </Grid>
+                        </labs:SettingsCard>
+                    </labs:SettingsExpander.Items>
+                </labs:SettingsExpander>
+
+                <labs:SettingsCard
+                    x:Name="TranslationFailureCustomAudioSettingsCard"
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=QuickTranslationTranslationFailureCustomAudioDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationTranslationFailureCustomAudio}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel
+                        MaxWidth="700"
+                        MinWidth="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Spacing="6">
+                        <TextBlock
+                            x:Name="TranslationFailureAudioFileName"
+                            HorizontalAlignment="Stretch"
+                            FontWeight="SemiBold"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            x:Name="TranslationFailureAudioFilePath"
+                            HorizontalAlignment="Stretch"
+                            Opacity="0.65"
+                            TextAlignment="Right"
+                            TextTrimming="CharacterEllipsis" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            Click="ChooseCustomAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationChooseAudio}"
+                            Tag="TranslationFailure" />
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationVolumeDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationVolume}">
+                    <Slider
+                        x:Name="SuccessVolume"
+                        Width="260"
+                        HorizontalAlignment="Left"
+                        LargeChange="0.1"
+                        Maximum="1"
+                        Minimum="0"
+                        SmallChange="0.05"
+                        StepFrequency="0.05"
+                        ValueChanged="SuccessVolume_ValueChanged" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=QuickTranslationAudioActionsDescription}"
+                    Header="{helpers:Loc Key=QuickTranslationAudioActions}">
+                    <Grid ColumnSpacing="8" RowSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Button
+                            x:Name="PreviewRecordingStartButton"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Click="PreviewAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationPreviewRecordingStart}"
+                            Tag="RecordingStart" />
+                        <Button
+                            x:Name="PreviewRecordingEndButton"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Click="PreviewAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationPreviewRecordingEnd}"
+                            Tag="RecordingEnd" />
+                        <Button
+                            x:Name="PreviewSuccessButton"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Click="PreviewAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationPreviewSuccess}"
+                            Tag="Success" />
+                        <Button
+                            x:Name="PreviewTranslationFailureButton"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Click="PreviewAudio_Click"
+                            Content="{helpers:Loc Key=QuickTranslationPreviewTranslationFailure}"
+                            Tag="TranslationFailure" />
+                        <Button
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Click="ClearCacheButton_Click"
+                            Content="{helpers:Loc Key=QuickTranslationClearCache}" />
+                    </Grid>
+                </labs:SettingsCard>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

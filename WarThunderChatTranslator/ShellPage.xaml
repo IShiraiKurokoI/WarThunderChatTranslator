@@ -89,7 +89,6 @@
                         <NavigationViewItem
                             Margin="0,0,12,0"
                             Content="{helpers:Loc Key=NavInteraction}"
-                            IsEnabled="False"
                             Tag="InteractPage">
                             <NavigationViewItem.Icon>
                                 <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/FluentIcons/Interact.ico" />
