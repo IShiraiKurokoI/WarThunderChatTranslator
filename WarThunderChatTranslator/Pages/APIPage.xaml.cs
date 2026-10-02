@@ -37,9 +37,8 @@ namespace WarThunderChatTranslator.Pages
             APIPanel.SelectedIndex = selectedAPI switch
             {
                 "Yandex" => 1,
-                "Bing" => 2,
-                "Google" => 3,
-                "AI" => 4,
+                 "Google" => 2,
+                 "AI" => 3,
                 _ => 0
             };
         }
@@ -83,7 +82,6 @@ namespace WarThunderChatTranslator.Pages
                     {
                         "Microsoft" => language.IsServiceSupported(TranslationServices.Microsoft),
                         "Yandex" => language.IsServiceSupported(TranslationServices.Yandex),
-                        "Bing" => language.IsServiceSupported(TranslationServices.Bing),
                         "Google" => language.IsServiceSupported(TranslationServices.Google),
                         _ => true,
                     };
@@ -131,14 +129,6 @@ namespace WarThunderChatTranslator.Pages
             {
                 await TranslationTestDialogHelper.ShowFailureAsync(XamlRoot, ex.Message);
                 _logger.Debug(ex, $"Translation test failed. Translator={TranslationHelper.getCurrentTranslator().Name}, Source={text}");
-            }
-        }
-
-        private void Bing_Token_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_loaded)
-            {
-                ApplicationConfig.SaveSettings("Bing_Token", ((TextBox)sender).Text);
             }
         }
 

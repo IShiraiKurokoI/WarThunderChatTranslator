@@ -102,9 +102,6 @@
   <data name="ApiProviderDescription" xml:space="preserve">
     <value>选择翻译器使用的翻译提供方。</value>
   </data>
-  <data name="ApiBing" xml:space="preserve">
-    <value>Bing（需要 Token）</value>
-  </data>
   <data name="ApiGoogle" xml:space="preserve">
     <value>Google（需要网络环境）</value>
   </data>
@@ -113,12 +110,6 @@
   </data>
   <data name="ApiTargetLanguage" xml:space="preserve">
     <value>翻译器目标语言</value>
-  </data>
-  <data name="ApiTokenDescription" xml:space="preserve">
-    <value>输入 Bing 翻译器所需 Token。</value>
-  </data>
-  <data name="ApiToken" xml:space="preserve">
-    <value>翻译器 API Token</value>
   </data>
   <data name="ApiTestDescription" xml:space="preserve">
     <value>测试翻译功能。</value>

@@ -148,9 +148,6 @@
   <data name="ApiProviderDescription" xml:space="preserve">
     <value>Select the translation provider used by the translator.</value>
   </data>
-  <data name="ApiBing" xml:space="preserve">
-    <value>Bing (token required)</value>
-  </data>
   <data name="ApiGoogle" xml:space="preserve">
     <value>Google (network required)</value>
   </data>
@@ -159,12 +156,6 @@
   </data>
   <data name="ApiTargetLanguage" xml:space="preserve">
     <value>Target language</value>
-  </data>
-  <data name="ApiTokenDescription" xml:space="preserve">
-    <value>Enter the token required by Bing Translator.</value>
-  </data>
-  <data name="ApiToken" xml:space="preserve">
-    <value>Translator API token</value>
   </data>
   <data name="ApiTestDescription" xml:space="preserve">
     <value>Test the translation feature.</value>

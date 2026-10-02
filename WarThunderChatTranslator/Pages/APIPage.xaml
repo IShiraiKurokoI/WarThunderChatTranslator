@@ -47,7 +47,6 @@
                                 <ComboBox x:Name="APIPanel" SelectionChanged="APIPanel_SelectionChanged">
                                     <ComboBoxItem Tag="Microsoft">Microsoft Azure</ComboBoxItem>
                                     <ComboBoxItem Tag="Yandex">Yandex</ComboBoxItem>
-                                    <ComboBoxItem x:Name="Bing_Selection" Tag="Bing" IsEnabled="false" Content="{helpers:Loc Key=ApiBing}" />
                                     <ComboBoxItem Tag="Google" Content="{helpers:Loc Key=ApiGoogle}" />
                                     <ComboBoxItem Tag="AI" Content="{helpers:Loc Key=ApiAI}" />
                                 </ComboBox>
@@ -60,16 +59,6 @@
                                     <FontIcon Glyph="&#xf2b7;" />
                                 </labs:SettingsCard.HeaderIcon>
                                 <ComboBox x:Name="TargetLanguage" SelectionChanged="TargetLanguage_SelectionChanged" />
-                            </labs:SettingsCard>
-                            <labs:SettingsCard
-                                MaxWidth="2000"
-                                Description="{helpers:Loc Key=ApiTokenDescription}"
-                                Header="{helpers:Loc Key=ApiToken}"
-                                Visibility="{Binding IsSelected, ElementName=Bing_Selection, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <labs:SettingsCard.HeaderIcon>
-                                    <FontIcon Glyph="&#x0e928;" />
-                                </labs:SettingsCard.HeaderIcon>
-                                <TextBox x:Name="Bing_Token" TextChanged="Bing_Token_TextChanged" />
                             </labs:SettingsCard>
                             <labs:SettingsCard
                                 MaxWidth="2000"

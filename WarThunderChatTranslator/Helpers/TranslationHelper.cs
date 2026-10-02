@@ -105,7 +105,6 @@ namespace WarThunderChatTranslator.Helpers
             translator = selectedApi switch
             {
                 "Yandex" => new YandexTranslator(client),
-                "Bing" => new BingTranslator(client),
                 "Google" => new GoogleTranslator2(client),
                 "AI" => new AiTranslator(client, AiProviderStore.GetSelectedProvider()),
                 _ => new MicrosoftTranslator(client)
