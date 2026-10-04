@@ -451,7 +451,12 @@ namespace WarThunderChatTranslator.Pages
                 Model = provider.Model,
                 UseTemperature = provider.UseTemperature,
                 Temperature = provider.Temperature,
-                CustomPrompt = provider.CustomPrompt
+                CustomPrompt = provider.CustomPrompt,
+                MaxOutputTokens = provider.MaxOutputTokens,
+                MaxTokensField = provider.MaxTokensField,
+                TimeoutSeconds = provider.TimeoutSeconds,
+                ExtraHeaders = new System.Collections.Generic.Dictionary<string, string>(provider.ExtraHeaders ?? new(), StringComparer.OrdinalIgnoreCase),
+                UseExactBaseUrl = provider.UseExactBaseUrl
             };
         }
 

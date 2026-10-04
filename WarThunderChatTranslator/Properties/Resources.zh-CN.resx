@@ -553,7 +553,7 @@
     <value>本地接口可留空</value>
   </data>
   <data name="AiApiKeyDescription" xml:space="preserve">
-    <value>密钥保存在本应用的本地设置中，模型列表不会显示明文；无需鉴权的本地接口可留空。</value>
+    <value>密钥保存在本应用的本地配置文件中，模型列表不会显示明文；无需鉴权的本地接口可留空。</value>
   </data>
   <data name="AiModel" xml:space="preserve">
     <value>模型</value>
@@ -1126,4 +1126,101 @@ TargetLanguage.ISO6393：{8}</value>
   <data name="ApiProviderTitle" xml:space="preserve">
     <value>翻译服务</value>
   </data>
+  <data name="AiImportApply" xml:space="preserve">
+    <value>导入全部</value>
+  </data>
+  <data name="AiImportButton" xml:space="preserve">
+    <value>导入 aiservice://</value>
+  </data>
+  <data name="AiImportCancelled" xml:space="preserve">
+    <value>导入已取消或超时，配置未更改。</value>
+  </data>
+  <data name="AiImportChecksumMissing" xml:space="preserve">
+    <value>链接未提供内容校验值。</value>
+  </data>
+  <data name="AiImportChecksumPassed" xml:space="preserve">
+    <value>内容校验通过（不代表发送者身份已验证）。</value>
+  </data>
+  <data name="AiImportDescription" xml:space="preserve">
+    <value>粘贴单模型、服务或 bundle 链接。预览不联网。链接可能包含密钥，输入会隐藏且不会写入日志。</value>
+  </data>
+  <data name="AiImportDone" xml:space="preserve">
+    <value>已导入 {0} 个连接。点击模型旁的“使用”启用；缺少模型或密钥的连接可以通过“编辑”补全。</value>
+  </data>
+  <data name="AiImportHasKey" xml:space="preserve">
+    <value>凭据：已包含 API Key（隐藏）。</value>
+  </data>
+  <data name="AiImportHeaders" xml:space="preserve">
+    <value>自定义请求头数量（值隐藏）</value>
+  </data>
+  <data name="AiImportInvalid" xml:space="preserve">
+    <value>链接无效或需要尚不支持的功能，配置未更改。</value>
+  </data>
+  <data name="AiImportNotice_credential_required" xml:space="preserve">
+    <value>不会复用本机已有密钥；使用前请补全缺失凭据。</value>
+  </data>
+  <data name="AiImportNotice_discovery_credentials_needed" xml:space="preserve">
+    <value>自动发现需要 API Key，已保留服务和显式模型。</value>
+  </data>
+  <data name="AiImportNotice_discovery_failed" xml:space="preserve">
+    <value>自动发现失败，已保留服务和显式模型。</value>
+  </data>
+  <data name="AiImportNotice_discovery_incomplete" xml:space="preserve">
+    <value>模型目录不完整（存在分页或达到大小/数量限制），已保留获取到的模型。</value>
+  </data>
+  <data name="AiImportNotice_discovery_models_added" xml:space="preserve">
+    <value>已添加自动发现的模型，显式模型配置优先。</value>
+  </data>
+  <data name="AiImportNotice_discovery_no_new_models" xml:space="preserve">
+    <value>自动发现没有返回新增模型。</value>
+  </data>
+  <data name="AiImportNotice_discovery_skipped_entries" xml:space="preserve">
+    <value>已跳过无效的模型目录条目。</value>
+  </data>
+  <data name="AiImportNotice_ignored_capabilities" xml:space="preserve">
+    <value>能力声明仅用于校验；翻译使用文本输入，不会因能力声明启用额外功能。</value>
+  </data>
+  <data name="AiImportNotice_ignored_compatibility" xml:space="preserve">
+    <value>除 Chat Completions 输出 token 字段外，不应用其他兼容性开关。</value>
+  </data>
+  <data name="AiImportNotice_ignored_extensions" xml:space="preserve">
+    <value>扩展数据已忽略，不会改变应用行为。</value>
+  </data>
+  <data name="AiImportNotice_ignored_inference_reasoning" xml:space="preserve">
+    <value>尚不支持推理参数，导入后不会发送这些参数。</value>
+  </data>
+  <data name="AiImportNotice_ignored_transport_cache_retention" xml:space="preserve">
+    <value>不应用链接中的缓存保留策略。</value>
+  </data>
+  <data name="AiImportNotice_ignored_transport_mode" xml:space="preserve">
+    <value>翻译使用非流式 HTTP，不应用链接中声明的流式/传输模式。</value>
+  </data>
+  <data name="AiImportNotice_ignored_transport_retry" xml:space="preserve">
+    <value>不应用链接中的重试策略。</value>
+  </data>
+  <data name="AiImportNotice_ignored_unknown_fields" xml:space="preserve">
+    <value>未知可选字段已忽略。</value>
+  </data>
+  <data name="AiImportNotice_model_required" xml:space="preserve">
+    <value>部分服务尚未指定模型，自动发现可能补全，也可导入后编辑填写。</value>
+  </data>
+  <data name="AiImportPaste" xml:space="preserve">
+    <value>粘贴完整配置链接</value>
+  </data>
+  <data name="AiImportPreview" xml:space="preserve">
+    <value>预览导入</value>
+  </data>
+  <data name="AiImportPromptKey" xml:space="preserve">
+    <value>凭据：请通过“编辑”填写 API Key，或确认此接口无需认证。</value>
+  </data>
+  <data name="AiImportSaveFailed" xml:space="preserve">
+    <value>导入未能保存，原配置已保留。请检查代理配置和设置存储容量。</value>
+  </data>
+  <data name="AiImportTarget" xml:space="preserve">
+    <value>保存位置：本机 AI 翻译连接。全部新增为副本，同名项添加数字后缀，当前选中的模型保持不变。</value>
+  </data>
+  <data name="AiImportWorking" xml:space="preserve">
+    <value>正在发现模型并保存…保存前可以取消。</value>
+  </data>
+  <data name="AiImportNotice_timeout_client_limit" xml:space="preserve"><value>请求超时还受共享 HTTP 客户端限制（当前为 100 秒）。</value></data>
 </root>

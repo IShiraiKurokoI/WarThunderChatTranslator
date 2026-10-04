@@ -22,6 +22,7 @@ namespace WarThunderChatTranslator.Configurations
         public const string LastUpdateCheckDateKey = "LastUpdateCheckDate";
         public const string TranslateApiKey = "TranslateAPI";
         public const string AiTranslationProvidersKey = "AiTranslationProviders";
+        public static string AiProvidersFilePath => System.IO.Path.Combine(ApplicationData.Current.LocalFolder.Path, "ai-providers.json");
         public const string AiSelectedProviderIdKey = "AiSelectedProviderId";
         public const string TargetLanguageKey = "TargetLanguage";
         public const string FontFamilyKey = "FontFamily";

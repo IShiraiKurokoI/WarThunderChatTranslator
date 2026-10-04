@@ -1,5 +1,7 @@
 ﻿using System;
 
+using System.Collections.Generic;
+
 namespace WarThunderChatTranslator.Entities
 {
     public enum AiApiType
@@ -20,5 +22,11 @@ namespace WarThunderChatTranslator.Entities
         public bool UseTemperature { get; set; }
         public double Temperature { get; set; } = 0.1;
         public string CustomPrompt { get; set; } = string.Empty;
+        public int? MaxOutputTokens { get; set; }
+        public string MaxTokensField { get; set; } = "max_tokens";
+        public double? TimeoutSeconds { get; set; }
+        public Dictionary<string, string> ExtraHeaders { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        // Deeplinks supply an explicit API base, including any gateway path/version.
+        public bool UseExactBaseUrl { get; set; }
     }
 }

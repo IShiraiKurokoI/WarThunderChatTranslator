@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using WarThunderChatTranslator.Configurations;
@@ -19,15 +21,9 @@ namespace WarThunderChatTranslator.Services
 
         public static IReadOnlyList<AiProviderConfig> GetProviders()
         {
-            var raw = ApplicationConfig.GetSettings(ApplicationConfig.AiTranslationProvidersKey);
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                return Array.Empty<AiProviderConfig>();
-            }
-
             try
             {
-                return JsonSerializer.Deserialize<List<AiProviderConfig>>(raw, JsonOptions) ?? new List<AiProviderConfig>();
+                return ReadProviders();
             }
             catch
             {
@@ -60,7 +56,7 @@ namespace WarThunderChatTranslator.Services
 
         public static void SaveProvider(AiProviderConfig provider)
         {
-            var providers = GetProviders().ToList();
+            var providers = ReadProviders();
             var existingIndex = providers.FindIndex(item => item.Id == provider.Id);
             if (existingIndex >= 0)
             {
@@ -81,13 +77,34 @@ namespace WarThunderChatTranslator.Services
 
         public static void DeleteProvider(string providerId)
         {
-            var providers = GetProviders().Where(provider => provider.Id != providerId).ToList();
+            var providers = ReadProviders().Where(provider => provider.Id != providerId).ToList();
             SaveProviders(providers);
 
             if (GetSelectedProviderId() == providerId)
             {
                 ApplicationConfig.SaveSettings(ApplicationConfig.AiSelectedProviderIdKey, providers.FirstOrDefault()?.Id ?? string.Empty);
             }
+        }
+
+        public static void ImportProviders(IReadOnlyCollection<AiProviderConfig> imported)
+        {
+            var providers = ReadProviders();
+            var names = new HashSet<string>(providers.Select(item => item.Name), StringComparer.OrdinalIgnoreCase);
+            foreach (var provider in imported)
+            {
+                // Import always creates a copy; external IDs never address local settings.
+                var copy = JsonSerializer.Deserialize<AiProviderConfig>(JsonSerializer.Serialize(provider, JsonOptions), JsonOptions);
+                copy.Id = Guid.NewGuid().ToString("N");
+                var name = copy.Name;
+                for (var suffix = 2; !names.Add(copy.Name); suffix++)
+                {
+                    copy.Name = $"{name} ({suffix})";
+                }
+                providers.Add(copy);
+            }
+
+            // One atomic file replacement for the complete bundle. Selection is separate.
+            SaveProviders(providers);
         }
 
         public static AiProviderConfig CreateDefault(AiApiType apiType)
@@ -119,9 +136,34 @@ namespace WarThunderChatTranslator.Services
             };
         }
 
+        private static List<AiProviderConfig> ReadProviders()
+        {
+            var path = ApplicationConfig.AiProvidersFilePath;
+            // Migrate on the next successful save; never delete the legacy value on failure.
+            var raw = File.Exists(path) ? File.ReadAllText(path) : ApplicationConfig.GetSettings(ApplicationConfig.AiTranslationProvidersKey);
+            if (string.IsNullOrWhiteSpace(raw)) return new List<AiProviderConfig>();
+            var providers = JsonSerializer.Deserialize<List<AiProviderConfig>>(raw, JsonOptions);
+            if (providers == null || providers.Any(provider => provider == null))
+                throw new InvalidDataException("Invalid AI provider configuration.");
+            return providers;
+        }
+
         private static void SaveProviders(IReadOnlyCollection<AiProviderConfig> providers)
         {
-            ApplicationConfig.SaveSettings(ApplicationConfig.AiTranslationProvidersKey, JsonSerializer.Serialize(providers, JsonOptions));
+            var path = ApplicationConfig.AiProvidersFilePath;
+            var temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.WriteAllText(temporary, JsonSerializer.Serialize(providers, JsonOptions), new UTF8Encoding(false));
+                // Same-directory rename avoids partially written bundles and the 8 KiB
+                // ApplicationData settings-value limit. Credentials stay in app-local storage.
+                File.Move(temporary, path, overwrite: true);
+            }
+            finally
+            {
+                if (File.Exists(temporary)) File.Delete(temporary);
+            }
         }
     }
 }

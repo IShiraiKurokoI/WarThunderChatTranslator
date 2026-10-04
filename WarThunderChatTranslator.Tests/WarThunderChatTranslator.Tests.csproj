@@ -18,6 +18,9 @@
 
   <ItemGroup>
     <Compile Include="..\WarThunderChatTranslator\Entities\AiProviderConfig.cs" Link="Source\AiProviderConfig.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\AiServiceImport.cs" Link="Source\AiServiceImport.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\AiServiceDiscoveryClient.cs" Link="Source\AiServiceDiscoveryClient.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\AiProviderStore.cs" Link="Source\AiProviderStore.cs" />
     <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslationResult.cs" Link="Source\AiTranslationResult.cs" />
     <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslator.cs" Link="Source\AiTranslator.cs" />
     <Compile Include="..\WarThunderChatTranslator\Helpers\HotkeyGesture.cs" Link="Source\HotkeyGesture.cs" />
@@ -25,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestData\AiService\*.uri" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestAudio\*.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
