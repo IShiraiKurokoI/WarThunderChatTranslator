@@ -120,4 +120,101 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>War Thunder Chat Translator</value>
   </data>
+  <data name="AiImportApply" xml:space="preserve">
+    <value>Import all</value>
+  </data>
+  <data name="AiImportButton" xml:space="preserve">
+    <value>Import aiservice://</value>
+  </data>
+  <data name="AiImportCancelled" xml:space="preserve">
+    <value>Import cancelled or timed out. No settings were changed.</value>
+  </data>
+  <data name="AiImportChecksumMissing" xml:space="preserve">
+    <value>No content checksum was provided.</value>
+  </data>
+  <data name="AiImportChecksumPassed" xml:space="preserve">
+    <value>Content checksum passed (this does not verify the sender).</value>
+  </data>
+  <data name="AiImportDescription" xml:space="preserve">
+    <value>Paste a model, provider or bundle link. Preview is offline. Links may include API keys; the input is hidden and is not logged.</value>
+  </data>
+  <data name="AiImportDone" xml:space="preserve">
+    <value>Imported {0} connections. Choose Use on a model to activate it. Connections without a model or key can be completed with Edit.</value>
+  </data>
+  <data name="AiImportHasKey" xml:space="preserve">
+    <value>Credential: API key included (hidden).</value>
+  </data>
+  <data name="AiImportHeaders" xml:space="preserve">
+    <value>Custom headers (values hidden)</value>
+  </data>
+  <data name="AiImportInvalid" xml:space="preserve">
+    <value>The link is invalid or requires an unsupported feature. No settings were changed.</value>
+  </data>
+  <data name="AiImportNotice_credential_required" xml:space="preserve">
+    <value>No existing local API keys are reused. Complete missing credentials before use.</value>
+  </data>
+  <data name="AiImportNotice_discovery_credentials_needed" xml:space="preserve">
+    <value>Model discovery needs an API key. The service and explicit models were retained.</value>
+  </data>
+  <data name="AiImportNotice_discovery_failed" xml:space="preserve">
+    <value>Model discovery failed; the service and explicit models were retained.</value>
+  </data>
+  <data name="AiImportNotice_discovery_incomplete" xml:space="preserve">
+    <value>The catalog is incomplete (pagination or a size/count limit); obtained models were retained.</value>
+  </data>
+  <data name="AiImportNotice_discovery_models_added" xml:space="preserve">
+    <value>Discovered models were added; explicit model settings take precedence.</value>
+  </data>
+  <data name="AiImportNotice_discovery_no_new_models" xml:space="preserve">
+    <value>Discovery returned no additional models.</value>
+  </data>
+  <data name="AiImportNotice_discovery_skipped_entries" xml:space="preserve">
+    <value>Invalid catalog entries were skipped.</value>
+  </data>
+  <data name="AiImportNotice_ignored_capabilities" xml:space="preserve">
+    <value>Capabilities are validated only; translation uses text input. Declared capability limits do not enable runtime features.</value>
+  </data>
+  <data name="AiImportNotice_ignored_compatibility" xml:space="preserve">
+    <value>Compatibility switches other than the Chat Completions token-limit field are not applied.</value>
+  </data>
+  <data name="AiImportNotice_ignored_extensions" xml:space="preserve">
+    <value>Extension data is ignored and does not change application behavior.</value>
+  </data>
+  <data name="AiImportNotice_ignored_inference_reasoning" xml:space="preserve">
+    <value>Reasoning settings are not supported and will not be sent.</value>
+  </data>
+  <data name="AiImportNotice_ignored_transport_cache_retention" xml:space="preserve">
+    <value>The imported cache policy is not applied.</value>
+  </data>
+  <data name="AiImportNotice_ignored_transport_mode" xml:space="preserve">
+    <value>Translation uses non-streaming HTTP; the requested streaming/transport mode is not applied.</value>
+  </data>
+  <data name="AiImportNotice_ignored_transport_retry" xml:space="preserve">
+    <value>The imported retry policy is not applied.</value>
+  </data>
+  <data name="AiImportNotice_ignored_unknown_fields" xml:space="preserve">
+    <value>Unknown optional fields are ignored.</value>
+  </data>
+  <data name="AiImportNotice_model_required" xml:space="preserve">
+    <value>Some services have no model yet. Discovery may fill it; otherwise use Edit.</value>
+  </data>
+  <data name="AiImportPaste" xml:space="preserve">
+    <value>Paste the complete link</value>
+  </data>
+  <data name="AiImportPreview" xml:space="preserve">
+    <value>Preview import</value>
+  </data>
+  <data name="AiImportPromptKey" xml:space="preserve">
+    <value>Credential: enter an API key using Edit, or confirm that the endpoint needs no authentication.</value>
+  </data>
+  <data name="AiImportSaveFailed" xml:space="preserve">
+    <value>Import could not be saved. Existing settings were preserved. Check the proxy configuration and available settings storage.</value>
+  </data>
+  <data name="AiImportTarget" xml:space="preserve">
+    <value>Target: AI translation connections on this device. All entries are added as new copies; duplicate names get a numeric suffix. The active model stays selected.</value>
+  </data>
+  <data name="AiImportWorking" xml:space="preserve">
+    <value>Discovering models and saving… You can cancel before saving.</value>
+  </data>
+  <data name="AiImportNotice_timeout_client_limit" xml:space="preserve"><value>Request timeout is also bounded by the shared HTTP client (currently 100 seconds).</value></data>
 </root>

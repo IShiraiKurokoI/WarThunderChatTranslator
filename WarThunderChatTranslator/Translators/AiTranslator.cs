@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Entities;
 using WarThunderChatTranslator.Helpers;
@@ -189,7 +190,7 @@ Translate the following text to {targetLanguage.Name} ({targetLanguage.ISO6391})
 
         private async Task<string> SendOpenAiResponsesAsync(string systemPrompt, string userPrompt)
         {
-            var endpoint = BuildEndpoint(_provider.BaseUrl, "responses");
+            var endpoint = BuildEndpoint(_provider.BaseUrl, "responses", _provider.UseExactBaseUrl);
             var payload = new Dictionary<string, object>
             {
                 ["model"] = _provider.Model,
@@ -249,7 +250,7 @@ Translate the following text to {targetLanguage.Name} ({targetLanguage.ISO6391})
 
         private async Task<string> SendOpenAiChatCompletionsAsync(string systemPrompt, string userPrompt)
         {
-            var endpoint = BuildEndpoint(_provider.BaseUrl, "chat/completions");
+            var endpoint = BuildEndpoint(_provider.BaseUrl, "chat/completions", _provider.UseExactBaseUrl);
             var payload = new Dictionary<string, object>
             {
                 ["model"] = _provider.Model,
@@ -292,7 +293,7 @@ Translate the following text to {targetLanguage.Name} ({targetLanguage.ISO6391})
 
         private async Task<string> SendAnthropicAsync(string systemPrompt, string userPrompt)
         {
-            var endpoint = BuildEndpoint(_provider.BaseUrl, "messages");
+            var endpoint = BuildEndpoint(_provider.BaseUrl, "messages", _provider.UseExactBaseUrl);
             var payload = new Dictionary<string, object>
             {
                 ["model"] = _provider.Model,
@@ -366,14 +367,34 @@ Translate the following text to {targetLanguage.Name} ({targetLanguage.ISO6391})
             {
                 payload["temperature"] = _provider.Temperature;
             }
+            if (_provider.MaxOutputTokens is int limit)
+            {
+                var field = _provider.ApiType switch
+                {
+                    AiApiType.OpenAIResponses => "max_output_tokens",
+                    AiApiType.Anthropic => "max_tokens",
+                    _ => _provider.MaxTokensField == "max_completion_tokens" ? "max_completion_tokens" : "max_tokens"
+                };
+                payload[field] = limit;
+            }
         }
 
         private async Task<string> SendAndReadAsync(HttpRequestMessage request)
         {
             using (request)
-            using (var response = await _client.SendAsync(request).ConfigureAwait(false))
+            using (var timeout = new CancellationTokenSource())
             {
-                var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                foreach (var header in _provider.ExtraHeaders ?? new Dictionary<string, string>())
+                {
+                    request.Headers.Remove(header.Key);
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+                if (_provider.TimeoutSeconds is double seconds)
+                {
+                    timeout.CancelAfter(TimeSpan.FromSeconds(seconds));
+                }
+                using var response = await _client.SendAsync(request, timeout.Token).ConfigureAwait(false);
+                var body = await response.Content.ReadAsStringAsync(timeout.Token).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
                 {
                     var detail = ExtractApiError(body);
@@ -417,10 +438,17 @@ Translate the following text to {targetLanguage.Name} ({targetLanguage.ISO6391})
             return new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         }
 
-        private static Uri BuildEndpoint(string baseUrl, string operation)
+        private static Uri BuildEndpoint(string baseUrl, string operation, bool exactBase = false)
         {
             var raw = baseUrl.Trim().TrimEnd('/');
             var operationSuffix = "/" + operation.TrimStart('/');
+
+            if (exactBase)
+            {
+                if (operation == "messages" && !raw.EndsWith("/v1", StringComparison.OrdinalIgnoreCase))
+                    return new Uri(raw + "/v1" + operationSuffix, UriKind.Absolute);
+                return new Uri(raw + operationSuffix, UriKind.Absolute);
+            }
 
             if (raw.EndsWith(operationSuffix, StringComparison.OrdinalIgnoreCase))
             {

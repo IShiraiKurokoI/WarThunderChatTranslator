@@ -49,12 +49,15 @@
                     <labs:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xE710;" />
                     </labs:SettingsCard.HeaderIcon>
-                    <Button Click="AddProvider_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon FontSize="14" Glyph="&#xE710;" />
-                            <TextBlock Text="{helpers:Loc Key=AiAddProvider}" />
-                        </StackPanel>
-                    </Button>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="ImportAiService_Click" Content="{helpers:Loc Key=AiImportButton}" />
+                        <Button Click="AddProvider_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon FontSize="14" Glyph="&#xE710;" />
+                                <TextBlock Text="{helpers:Loc Key=AiAddProvider}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                 </labs:SettingsCard>
 
                 <Border
