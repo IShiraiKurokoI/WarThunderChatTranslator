@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
@@ -19,7 +19,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <!-- Keep every language in the main MSIX package for the in-app language switcher. -->
     <AppxBundleAutoResourcePackageQualifiers>Scale|DXFeatureLevel</AppxBundleAutoResourcePackageQualifiers>
-    <AppxDefaultResourceQualifiers>Language=en-US;zh-CN;zh-TW;zh-Hans;zh-Hant;zh-Hans-CN;zh-SG;zh-MY;zh-HK;zh-MO</AppxDefaultResourceQualifiers>
+    <AppxDefaultResourceQualifiers>Language=en-US;zh-CN;zh-TW;zh-Hans;zh-Hant;zh-Hans-CN;zh-SG;zh-HK;zh-MO</AppxDefaultResourceQualifiers>
     <UseWPF>False</UseWPF>
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <ApplicationManifest>app.manifest</ApplicationManifest>
