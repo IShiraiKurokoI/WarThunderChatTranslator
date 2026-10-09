@@ -4,6 +4,12 @@
 
 [<img src="https://get.microsoft.com/images/zh-cn%20dark.svg" alt="从 Microsoft Store 下载" height="72">](https://apps.microsoft.com/store/detail/9PJ8K0V3KZHF)
 
+## UI 操作手册（GitHub Wiki）
+
+- **[简体中文 · 分页目录](wiki/zh-Hans-Home.md)**
+- **[繁體中文 · 分頁目錄](wiki/zh-Hant-Home.md)**
+- **[English · Topic Index](wiki/en-Home.md)**
+
 ## 主要功能
 
 - **实时聊天翻译**：持续读取 War Thunder 聊天消息，可显示译文、原文或两者同时显示，并支持来源语言提示。

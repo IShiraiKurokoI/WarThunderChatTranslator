@@ -16,6 +16,10 @@
     <PackageIcon></PackageIcon>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <DefaultLanguage>en-US</DefaultLanguage>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <!-- Keep every language in the main MSIX package for the in-app language switcher. -->
+    <AppxBundleAutoResourcePackageQualifiers>Scale|DXFeatureLevel</AppxBundleAutoResourcePackageQualifiers>
+    <AppxDefaultResourceQualifiers>Language=en-US;zh-CN;zh-TW;zh-Hans;zh-Hant;zh-Hans-CN;zh-SG;zh-MY;zh-HK;zh-MO</AppxDefaultResourceQualifiers>
     <UseWPF>False</UseWPF>
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <ApplicationManifest>app.manifest</ApplicationManifest>
