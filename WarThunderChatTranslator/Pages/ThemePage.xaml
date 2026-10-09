@@ -44,6 +44,7 @@
                                 </controls:SettingsCard.HeaderIcon>
                                 <ComboBox x:Name="LanguagePanel" SelectionChanged="LanguagePanel_SelectionChanged">
                                     <ComboBoxItem Content="{helpers:Loc Key=Chinese}" Tag="zh-CN" />
+                                    <ComboBoxItem Content="{helpers:Loc Key=TraditionalChinese}" Tag="zh-TW" />
                                     <ComboBoxItem Content="{helpers:Loc Key=English}" Tag="en-US" />
                                 </ComboBox>
                             </controls:SettingsCard>

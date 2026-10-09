@@ -51,7 +51,12 @@ namespace WarThunderChatTranslator.Pages
             };
             BackgroundCSS.Text = ApplicationConfig.GetSettings(ApplicationConfig.BackgroundCssKey);
             ThemeInitilized = true;
-            LanguagePanel.SelectedIndex = Localization.CurrentLanguage == "zh-CN" ? 0 : 1;
+            LanguagePanel.SelectedIndex = Localization.CurrentLanguage switch
+            {
+                StartupLanguage.SimplifiedChinese => 0,
+                StartupLanguage.TraditionalChinese => 1,
+                _ => 2
+            };
             LanguageInitialized = true;
         }
 

@@ -15,6 +15,7 @@ namespace WarThunderChatTranslator.Configurations
         private static long _dashboardStyleVersion;
 
         public const string ApplicationLanguageKey = "ApplicationLanguage";
+        public const string UnsupportedSystemLanguageNoticeKeyPrefix = "UnsupportedSystemLanguageNotice.";
         public const string NetworkProxyModeKey = "NetworkProxyMode";
         public const string ProxyAddressKey = "ProxyAddress";
         public const string ProxyAccountKey = "ProxyAccount";

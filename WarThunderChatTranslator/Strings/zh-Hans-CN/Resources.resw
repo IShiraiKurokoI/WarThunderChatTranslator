@@ -120,4 +120,10 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>战争雷霆聊天翻译器</value>
   </data>
+  <data name="AppShortName" xml:space="preserve">
+    <value>战争雷霆聊天翻译器</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>实时翻译《战争雷霆》游戏内聊天。</value>
+  </data>
 </root>

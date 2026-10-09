@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +9,9 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -27,14 +30,30 @@ namespace WarThunderChatTranslator.Services
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.General);
 
+        public const int PreferredPort = 8100;
+
         private readonly GameChatPollingService _gameChatService;
-        private readonly string _listenUrl;
+        private readonly bool _listenOnLan;
         private WebApplication? _webApplication;
+        private int _boundPort;
+
+        // The port is only published once Kestrel is accepting connections.
+        public int Port => Volatile.Read(ref _boundPort);
+
+        public Uri? DashboardUri
+        {
+            get
+            {
+                var port = Port;
+                // Always open the local IPv4 loopback address, even when listening on all interfaces.
+                return port > 0 ? new Uri($"http://127.0.0.1:{port}/dashboard") : null;
+            }
+        }
 
         public LocalHttpServer(GameChatPollingService gameChatService, bool listenOnLan)
         {
             _gameChatService = gameChatService;
-            _listenUrl = listenOnLan ? "http://0.0.0.0:8100" : "http://localhost:8100";
+            _listenOnLan = listenOnLan;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -44,6 +63,26 @@ namespace WarThunderChatTranslator.Services
                 return;
             }
 
+            try
+            {
+                await StartOnPortAsync(PreferredPort, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (!cancellationToken.IsCancellationRequested && IsAddressInUse(ex))
+            {
+                Logger.Warn(ex, "Dashboard port {0} is occupied; requesting an available port from the OS.", PreferredPort);
+                // Port zero is allocated atomically by the socket bind (no free-port probe race).
+                await StartOnPortAsync(0, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private async Task StartOnPortAsync(int requestedPort, CancellationToken cancellationToken)
+        {
+            // Kestrel cannot bind localhost:0, so the dynamic-port fallback uses an IP address.
+            // Keep the existing localhost/IPv4+IPv6 behavior for the preferred port.
+            var listenUrl = _listenOnLan
+                ? $"http://0.0.0.0:{requestedPort}"
+                : requestedPort == 0 ? "http://127.0.0.1:0" : $"http://localhost:{requestedPort}";
+
             var options = new WebApplicationOptions
             {
                 Args = [],
@@ -52,10 +91,9 @@ namespace WarThunderChatTranslator.Services
                 EnvironmentName = Environments.Production
             };
 
-            // CreateSlimBuilder enables only the ASP.NET Core features needed by the Minimal API, reducing host overhead.
             var builder = WebApplication.CreateSlimBuilder(options);
             builder.Logging.ClearProviders();
-            builder.WebHost.UseUrls(_listenUrl);
+            builder.WebHost.UseUrls(listenUrl);
             builder.WebHost.ConfigureKestrel(kestrel =>
             {
                 kestrel.AddServerHeader = false;
@@ -166,9 +204,61 @@ namespace WarThunderChatTranslator.Services
             app.MapGet("/", () => Results.Redirect("/dashboard"));
             app.MapFallback(() => Results.NotFound("404 Not Found"));
 
-            _webApplication = app;
-            await app.StartAsync(cancellationToken).ConfigureAwait(false);
-            Logger.Info($"Kestrel HTTP server started and is listening on {_listenUrl}.");
+            try
+            {
+                await app.StartAsync(cancellationToken).ConfigureAwait(false);
+                var port = GetBoundPort(app.Urls);
+                _webApplication = app;
+                Volatile.Write(ref _boundPort, port);
+            }
+            catch
+            {
+                // A failed bind leaves the host unusable. Dispose it before retrying.
+                try { await app.DisposeAsync().ConfigureAwait(false); }
+                catch (Exception disposeError) { Logger.Warn(disposeError, "Could not dispose a failed Dashboard host."); }
+                throw;
+            }
+
+            Logger.Info("Kestrel HTTP server bound to port {0}; dashboard: {1}.", Port, DashboardUri);
+        }
+
+        private static int GetBoundPort(IEnumerable<string> addresses)
+        {
+            foreach (var address in addresses)
+            {
+                if (Uri.TryCreate(address, UriKind.Absolute, out var uri) &&
+                    uri.Scheme == Uri.UriSchemeHttp && uri.Port > 0)
+                {
+                    return uri.Port;
+                }
+            }
+
+            throw new InvalidOperationException("Kestrel started without reporting a valid bound HTTP port.");
+        }
+
+        private static bool IsAddressInUse(Exception exception)
+        {
+            for (Exception? current = exception; current is not null; current = current.InnerException)
+            {
+                if (current is AddressInUseException ||
+                    current is SocketException socket && socket.SocketErrorCode == SocketError.AddressAlreadyInUse)
+                {
+                    return true;
+                }
+
+                if (current is AggregateException aggregate)
+                {
+                    foreach (var inner in aggregate.InnerExceptions)
+                    {
+                        if (IsAddressInUse(inner))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         private static object BuildDashboardLocalization()
@@ -351,19 +441,22 @@ namespace WarThunderChatTranslator.Services
 
         public async ValueTask DisposeAsync()
         {
-            if (_webApplication is null)
+            var app = _webApplication;
+            if (app is null)
             {
                 return;
             }
 
+            // Do not allow tray actions to reopen a port that is being shut down.
+            _webApplication = null;
+            Volatile.Write(ref _boundPort, 0);
             try
             {
-                await _webApplication.StopAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
+                await app.StopAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
             }
             finally
             {
-                await _webApplication.DisposeAsync().ConfigureAwait(false);
-                _webApplication = null;
+                await app.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -118,1042 +118,1042 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppTitle" xml:space="preserve">
-    <value>War Thunder Chat Translator Settings</value>
+    <value>戰爭雷霆聊天翻譯器設定介面</value>
   </data>
   <data name="Language" xml:space="preserve">
-    <value>Application language</value>
+    <value>應用程式語言</value>
   </data>
   <data name="LanguageDescription" xml:space="preserve">
-    <value>Changes are applied immediately and remembered.</value>
+    <value>切換後立即生效，並會記住這項選擇。</value>
   </data>
   <data name="Chinese" xml:space="preserve">
-    <value>Chinese (Simplified)</value>
+    <value>中文（簡體）</value>
   </data>
   <data name="English" xml:space="preserve">
     <value>English</value>
   </data>
   <data name="Theme" xml:space="preserve">
-    <value>Theme</value>
+    <value>全局主題模式</value>
   </data>
   <data name="Light" xml:space="preserve">
-    <value>Light</value>
+    <value>淺色</value>
   </data>
   <data name="Dark" xml:space="preserve">
-    <value>Dark</value>
+    <value>深色</value>
   </data>
   <data name="SystemDefault" xml:space="preserve">
-    <value>Use system setting</value>
+    <value>跟隨系統</value>
   </data>
   <data name="OpenSystemTheme" xml:space="preserve">
-    <value>Open system theme settings</value>
+    <value>點此打開系統主題設定</value>
   </data>
   <data name="BackgroundCss" xml:space="preserve">
-    <value>Page background CSS (appended to the page body CSS)</value>
+    <value>頁面背景CSS（附加在頁面body CSS中）</value>
   </data>
   <data name="BackgroundCssInfo" xml:space="preserve">
-    <value>Background CSS reference</value>
+    <value>背景CSS格式介紹</value>
   </data>
   <data name="TrayDashboard" xml:space="preserve">
-    <value>Dashboard</value>
+    <value>面板</value>
   </data>
   <data name="TrayDashboardDescription" xml:space="preserve">
-    <value>Open chat window</value>
+    <value>開啓聊天視窗</value>
   </data>
   <data name="TraySettings" xml:space="preserve">
-    <value>Settings</value>
+    <value>設定</value>
   </data>
   <data name="TraySettingsDescription" xml:space="preserve">
-    <value>Open translator settings</value>
+    <value>開啓翻譯器設定視窗</value>
   </data>
   <data name="TrayExit" xml:space="preserve">
-    <value>Exit</value>
+    <value>退出</value>
   </data>
   <data name="TrayExitDescription" xml:space="preserve">
-    <value>Exit translator</value>
+    <value>退出翻譯器</value>
   </data>
   <data name="TrayToolTip" xml:space="preserve">
-    <value>War Thunder Chat Translator</value>
+    <value>戰爭雷霆聊天翻譯器</value>
   </data>
   <data name="NavApi" xml:space="preserve">
-    <value>Translation settings</value>
+    <value>翻譯設定</value>
   </data>
   <data name="NavNetwork" xml:space="preserve">
-    <value>Proxy settings</value>
+    <value>代理設定</value>
   </data>
   <data name="NavAppearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>外觀</value>
   </data>
   <data name="NavFont" xml:space="preserve">
-    <value>Chat styles</value>
+    <value>聊天樣式</value>
   </data>
   <data name="NavTheme" xml:space="preserve">
-    <value>Interface settings</value>
+    <value>介面設定</value>
   </data>
   <data name="NavInteraction" xml:space="preserve">
-    <value>Quick voice translation</value>
+    <value>語音快捷譯</value>
   </data>
   <data name="NavLayout" xml:space="preserve">
-    <value>Overlay</value>
+    <value>懸浮視窗</value>
   </data>
   <data name="NavUpdate" xml:space="preserve">
-    <value>Check for updates</value>
+    <value>檢查更新</value>
   </data>
   <data name="NavAbout" xml:space="preserve">
-    <value>About</value>
+    <value>關於</value>
   </data>
   <data name="ApiTitle" xml:space="preserve">
-    <value>Translation settings</value>
+    <value>翻譯設定</value>
   </data>
   <data name="ApiProviderDescription" xml:space="preserve">
-    <value>Select the translation provider used by the translator.</value>
+    <value>選擇翻譯器使用的翻譯提供方。</value>
   </data>
   <data name="ApiGoogle" xml:space="preserve">
-    <value>Google (network required)</value>
+    <value>Google（需要網路環境）</value>
   </data>
   <data name="ApiTargetDescription" xml:space="preserve">
-    <value>Chat messages will be translated into this language.</value>
+    <value>翻譯器會將聊天內容翻譯成此語言。</value>
   </data>
   <data name="ApiTargetLanguage" xml:space="preserve">
-    <value>Target language</value>
+    <value>翻譯器目標語言</value>
   </data>
   <data name="ApiTestDescription" xml:space="preserve">
-    <value>Test the translation feature.</value>
+    <value>測試翻譯功能。</value>
   </data>
   <data name="ApiTest" xml:space="preserve">
-    <value>Test</value>
+    <value>測試</value>
   </data>
   <data name="ApiTestButton" xml:space="preserve">
-    <value>Test translation</value>
+    <value>測試翻譯功能</value>
   </data>
   <data name="FontTitle" xml:space="preserve">
-    <value>Chat styles</value>
+    <value>聊天樣式</value>
   </data>
   <data name="FontFamily" xml:space="preserve">
-    <value>Font</value>
+    <value>字體</value>
   </data>
   <data name="FontSize" xml:space="preserve">
-    <value>Text size</value>
+    <value>文字大小</value>
   </data>
   <data name="FontStyle" xml:space="preserve">
-    <value>Text style</value>
+    <value>文字樣式</value>
   </data>
   <data name="FontLighter" xml:space="preserve">
-    <value>Lighter</value>
+    <value>較細</value>
   </data>
   <data name="FontNormal" xml:space="preserve">
-    <value>Normal</value>
+    <value>正常</value>
   </data>
   <data name="FontBold" xml:space="preserve">
-    <value>Bold</value>
+    <value>粗體</value>
   </data>
   <data name="FontBolder" xml:space="preserve">
-    <value>Bolder</value>
+    <value>加粗</value>
   </data>
   <data name="FontAllyColor" xml:space="preserve">
-    <value>Ally text color</value>
+    <value>友軍文本顏色</value>
   </data>
   <data name="FontEnemyColor" xml:space="preserve">
-    <value>Enemy text color</value>
+    <value>敵軍文本顏色</value>
   </data>
   <data name="FontSystemColor" xml:space="preserve">
-    <value>System text color</value>
+    <value>系統文本顏色</value>
   </data>
   <data name="SelectColor" xml:space="preserve">
-    <value>Select color</value>
+    <value>選擇顏色</value>
   </data>
   <data name="NetworkTitle" xml:space="preserve">
-    <value>Network proxy settings</value>
+    <value>網路代理設定</value>
   </data>
   <data name="NetworkDescription" xml:space="preserve">
-    <value>Configure the network proxy used by the translator.</value>
+    <value>設定翻譯器使用的網路代理。</value>
   </data>
   <data name="ProxyMode" xml:space="preserve">
-    <value>Network proxy mode</value>
+    <value>網路代理模式</value>
   </data>
   <data name="ProxyDefault" xml:space="preserve">
-    <value>Do not use a proxy</value>
+    <value>不使用代理</value>
   </data>
   <data name="ProxySystem" xml:space="preserve">
-    <value>Use system proxy</value>
+    <value>使用系統代理</value>
   </data>
   <data name="ProxyCustom" xml:space="preserve">
-    <value>Custom</value>
+    <value>自定義</value>
   </data>
   <data name="ProxyCustomSettings" xml:space="preserve">
-    <value>Custom proxy settings</value>
+    <value>自定義代理設定</value>
   </data>
   <data name="ProxyAddress" xml:space="preserve">
-    <value>Proxy address</value>
+    <value>代理地址</value>
   </data>
   <data name="ProxyAddressPlaceholder" xml:space="preserve">
-    <value>Example: http://127.0.0.1:7890</value>
+    <value>例：http://127.0.0.1:7890</value>
   </data>
   <data name="ProxyAccount" xml:space="preserve">
-    <value>Account (optional)</value>
+    <value>賬戶名（選填）</value>
   </data>
   <data name="ProxyAccountPlaceholder" xml:space="preserve">
-    <value>Proxy account</value>
+    <value>代理賬戶名</value>
   </data>
   <data name="ProxyPassword" xml:space="preserve">
-    <value>Password (optional)</value>
+    <value>密碼（選填）</value>
   </data>
   <data name="ProxyPasswordPlaceholder" xml:space="preserve">
-    <value>Proxy password</value>
+    <value>代理密碼</value>
   </data>
   <data name="PollingSettings" xml:space="preserve">
-    <value>Polling intervals</value>
+    <value>輪詢設定</value>
   </data>
   <data name="PollingSettingsDescription" xml:space="preserve">
-    <value>Configure how often the app requests game chat data and how often the dashboard reads the local translated cache. Changes are saved automatically.</value>
+    <value>設定程式請求游戲聊天資料以及網頁讀取本機翻譯緩存的頻率，修改後自動儲存。</value>
   </data>
   <data name="GamePollingInterval" xml:space="preserve">
-    <value>Game polling interval (seconds)</value>
+    <value>游戲資料輪詢間隔（秒）</value>
   </data>
   <data name="GamePollingIntervalDescription" xml:space="preserve">
-    <value>Interval for incremental requests to the game's port 8111. Default: 4 seconds.</value>
+    <value>向游戲 8111 端口發起增量聊天請求的間隔，預設 4 秒。</value>
   </data>
   <data name="WebPollingInterval" xml:space="preserve">
-    <value>Dashboard polling interval (seconds)</value>
+    <value>網頁資料輪詢間隔（秒）</value>
   </data>
   <data name="WebPollingIntervalDescription" xml:space="preserve">
-    <value>Interval for the dashboard to read translated data from the local server. Default: 4 seconds.</value>
+    <value>Dashboard 從本機服務器讀取翻譯資料的間隔，預設 4 秒。</value>
   </data>
   <data name="PollingIntervalRange" xml:space="preserve">
-    <value>Allowed range: 1-60 seconds. Settings take effect automatically without restarting the app.</value>
+    <value>可設定範圍：1-60 秒。修改後無需重啓程式，會自動生效。</value>
   </data>
   <data name="AboutAppName" xml:space="preserve">
-    <value>War Thunder Chat Translator</value>
+    <value>戰爭雷霆聊天翻譯器</value>
   </data>
   <data name="AboutAuthor" xml:space="preserve">
-    <value>Author</value>
+    <value>作者</value>
   </data>
   <data name="AboutGitHub" xml:space="preserve">
-    <value>GitHub profile</value>
+    <value>GitHub 主頁</value>
   </data>
   <data name="AboutBilibili" xml:space="preserve">
-    <value>BiliBili profile</value>
+    <value>BiliBili 主頁</value>
   </data>
   <data name="AboutCopyLinkDescription" xml:space="preserve">
-    <value>Copy the project link to share it with friends</value>
+    <value>點此複製項目鏈接分享給好友</value>
   </data>
   <data name="AboutCopyLink" xml:space="preserve">
-    <value>Copy link</value>
+    <value>複製鏈接</value>
   </data>
   <data name="AboutOpenProject" xml:space="preserve">
-    <value>Open project page</value>
+    <value>打開項目頁面</value>
   </data>
   <data name="AboutProjectDescription" xml:space="preserve">
-    <value>Open this translator's project page.</value>
+    <value>你可以點此打開本翻譯器項目頁面。</value>
   </data>
   <data name="AboutProject" xml:space="preserve">
-    <value>Project page</value>
+    <value>項目頁面</value>
   </data>
   <data name="AboutCopySuccess" xml:space="preserve">
-    <value>Copied successfully</value>
+    <value>複製成功！</value>
   </data>
   <data name="AboutCopySuccessDescription" xml:space="preserve">
-    <value>Share the GitHub link with your friends.</value>
+    <value>快將 GitHub 鏈接分享給好友吧。</value>
   </data>
   <data name="AboutOpenSourceThanks" xml:space="preserve">
-    <value>Open-source projects used by this app</value>
+    <value>感謝以下本應用中使用的開源項目</value>
   </data>
   <data name="UpdateTitle" xml:space="preserve">
-    <value>Translator updates</value>
+    <value>翻譯器更新</value>
   </data>
   <data name="UpdateLastChecked" xml:space="preserve">
-    <value>Last checked: </value>
+    <value>上次檢查更新: </value>
   </data>
   <data name="UpdateNever" xml:space="preserve">
-    <value>Never</value>
+    <value>從未</value>
   </data>
   <data name="UpdateReleaseNotes" xml:space="preserve">
-    <value>Release notes</value>
+    <value>發行說明</value>
   </data>
   <data name="UpdateCheck" xml:space="preserve">
-    <value>Check for updates</value>
+    <value>檢查更新</value>
   </data>
   <data name="UpdateLatest" xml:space="preserve">
-    <value>You are using the latest version.</value>
+    <value>目前使用的是最新版本。</value>
   </data>
   <data name="UpdateCheckFailed" xml:space="preserve">
-    <value>Update check failed</value>
+    <value>檢查更新失敗</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>New version available</value>
+    <value>發現新版本</value>
   </data>
   <data name="UpdateDownload" xml:space="preserve">
-    <value>Download</value>
+    <value>前往下載</value>
   </data>
   <data name="UpdateLater" xml:space="preserve">
-    <value>Later</value>
+    <value>暫不更新</value>
   </data>
   <data name="UpdateAvailableContent" xml:space="preserve">
-    <value>A Microsoft Store update is available.</value>
+    <value>Microsoft Store 中有可用更新。</value>
   </data>
   <data name="DashboardTitle" xml:space="preserve">
-    <value>Real-time Chat</value>
+    <value>實時聊天消息</value>
   </data>
   <data name="DashboardSubtitle" xml:space="preserve">
-    <value>War Thunder translated chat</value>
+    <value>戰爭雷霆聊天實時翻譯</value>
   </data>
   <data name="DashboardDisplayMode" xml:space="preserve">
-    <value>Message display</value>
+    <value>消息顯示</value>
   </data>
   <data name="DashboardDisplayTranslation" xml:space="preserve">
-    <value>Translation</value>
+    <value>翻譯結果</value>
   </data>
   <data name="DashboardDisplayOriginal" xml:space="preserve">
-    <value>Original</value>
+    <value>原文</value>
   </data>
   <data name="DashboardDisplayTranslationAndOriginal" xml:space="preserve">
-    <value>Translation (Original)</value>
+    <value>翻譯結果（原文）</value>
   </data>
   <data name="DashboardShowSourceLanguage" xml:space="preserve">
-    <value>Show source language code</value>
+    <value>顯示原始語言代碼</value>
   </data>
   <data name="DashboardSystemSender" xml:space="preserve">
-    <value>System</value>
+    <value>系統</value>
   </data>
   <data name="DashboardEmptyState" xml:space="preserve">
-    <value>Waiting for chat messages…</value>
+    <value>等待聊天消息…</value>
   </data>
   <data name="DashboardControlsAriaLabel" xml:space="preserve">
-    <value>Chat display options</value>
+    <value>聊天顯示選項</value>
   </data>
   <data name="DashboardChatAriaLabel" xml:space="preserve">
-    <value>Translated chat messages</value>
+    <value>翻譯聊天消息</value>
   </data>
   <data name="DashboardTestAllySender" xml:space="preserve">
-    <value>Test Ally</value>
+    <value>測試友軍</value>
   </data>
   <data name="DashboardTestEnemySender" xml:space="preserve">
-    <value>Test Enemy</value>
+    <value>測試敵軍</value>
   </data>
   <data name="DashboardTestAllyOriginal" xml:space="preserve">
     <value>Hello team, this is an ally color preview.</value>
   </data>
   <data name="DashboardTestAllyTranslation" xml:space="preserve">
-    <value>Ally translation and color preview.</value>
+    <value>這是友軍翻譯與顏色預覽。</value>
   </data>
   <data name="DashboardTestEnemyOriginal" xml:space="preserve">
     <value>Противник обнаружен. Проверка цвета противника.</value>
   </data>
   <data name="DashboardTestEnemyTranslation" xml:space="preserve">
-    <value>Enemy translation and color preview.</value>
+    <value>這是敵軍翻譯與顏色預覽。</value>
   </data>
   <data name="DashboardTestSystemOriginal" xml:space="preserve">
     <value>システムメッセージの色テストです。</value>
   </data>
   <data name="DashboardTestSystemTranslation" xml:space="preserve">
-    <value>System message color preview.</value>
+    <value>這是系統消息顏色預覽。</value>
   </data>
   <data name="DashboardGameRunning" xml:space="preserve">
-    <value>Game is running</value>
+    <value>游戲正在運行</value>
   </data>
   <data name="DashboardGameStopped" xml:space="preserve">
-    <value>Game is not running</value>
+    <value>游戲未運行</value>
   </data>
   <data name="DashboardGamePid" xml:space="preserve">
     <value>PID</value>
   </data>
   <data name="DashboardGameStartTime" xml:space="preserve">
-    <value>Started</value>
+    <value>啓動時間</value>
   </data>
   <data name="DashboardNightMode" xml:space="preserve">
-    <value>Night mode</value>
+    <value>深夜模式</value>
   </data>
   <data name="DashboardShowChatBubbles" xml:space="preserve">
-    <value>Show chat bubble backgrounds</value>
+    <value>顯示聊天氣泡背景</value>
   </data>
   <data name="NavAiTranslation" xml:space="preserve">
-    <value>AI models</value>
+    <value>AI 模型</value>
   </data>
   <data name="ApiAI" xml:space="preserve">
-    <value>AI translation (custom)</value>
+    <value>AI 翻譯（自定義）</value>
   </data>
   <data name="AiPageTitle" xml:space="preserve">
-    <value>AI translation models</value>
+    <value>AI 翻譯模型</value>
   </data>
   <data name="AiPageDescription" xml:space="preserve">
-    <value>Manage your own AI translation endpoints. OpenAI Responses, OpenAI-compatible Chat Completions, and Anthropic Messages APIs are supported; the selected model is used by “AI translation (custom)”.</value>
+    <value>管理你自己的 AI 翻譯接口。支援 OpenAI Responses、OpenAI 兼容 Chat Completions 與 Anthropic Messages API；“AI 翻譯（自定義）”會調用目前選取的模型。</value>
   </data>
   <data name="AiConnectionsTitle" xml:space="preserve">
-    <value>AI model connections</value>
+    <value>AI 模型接口</value>
   </data>
   <data name="AiAddDescription" xml:space="preserve">
-    <value>Add, edit, test, select, and remove AI translation models.</value>
+    <value>添加、編輯、測試、選擇或刪除 AI 翻譯模型。</value>
   </data>
   <data name="AiAddProvider" xml:space="preserve">
-    <value>Add model</value>
+    <value>添加模型</value>
   </data>
   <data name="AiEmptyTitle" xml:space="preserve">
-    <value>No AI translation models configured</value>
+    <value>尚未配置 AI 翻譯模型</value>
   </data>
   <data name="AiEmptyDescription" xml:space="preserve">
-    <value>Add an API connection, then select it for AI translation. API keys stay in this app’s local settings.</value>
+    <value>先添加一個 API 接口並將其選取，即可用於 AI 翻譯。API Key 僅儲存在本應用的本機設定中。</value>
   </data>
   <data name="AiSelected" xml:space="preserve">
-    <value>Selected</value>
+    <value>目前使用</value>
   </data>
   <data name="AiUse" xml:space="preserve">
-    <value>Use</value>
+    <value>使用</value>
   </data>
   <data name="AiTest" xml:space="preserve">
-    <value>Test</value>
+    <value>測試</value>
   </data>
   <data name="AiEdit" xml:space="preserve">
-    <value>Edit</value>
+    <value>編輯</value>
   </data>
   <data name="AiDelete" xml:space="preserve">
-    <value>Delete</value>
+    <value>刪除</value>
   </data>
   <data name="AiProviderTypeOpenAIResponses" xml:space="preserve">
     <value>OpenAI Responses</value>
   </data>
   <data name="AiProviderTypeOpenAIChatCompletions" xml:space="preserve">
-    <value>OpenAI-compatible Chat Completions</value>
+    <value>OpenAI 兼容 Chat Completions</value>
   </data>
   <data name="AiProviderTypeAnthropic" xml:space="preserve">
     <value>Anthropic Messages</value>
   </data>
   <data name="AiModelLabel" xml:space="preserve">
-    <value>Model</value>
+    <value>模型</value>
   </data>
   <data name="AiEndpointLabel" xml:space="preserve">
-    <value>Endpoint</value>
+    <value>接口</value>
   </data>
   <data name="AiPromptLabel" xml:space="preserve">
-    <value>Prompt</value>
+    <value>提示詞</value>
   </data>
   <data name="AiPromptDefault" xml:space="preserve">
-    <value>Prompt: default translation instructions</value>
+    <value>提示詞：使用預設翻譯指令</value>
   </data>
   <data name="AiAddDialogTitle" xml:space="preserve">
-    <value>Add AI translation model</value>
+    <value>添加 AI 翻譯模型</value>
   </data>
   <data name="AiEditDialogTitle" xml:space="preserve">
-    <value>Edit AI translation model</value>
+    <value>編輯 AI 翻譯模型</value>
   </data>
   <data name="AiName" xml:space="preserve">
-    <value>Display name</value>
+    <value>顯示名稱</value>
   </data>
   <data name="AiNamePlaceholder" xml:space="preserve">
-    <value>For example: OpenAI / Local LLM</value>
+    <value>例如：OpenAI / 本機 LLM</value>
   </data>
   <data name="AiApiType" xml:space="preserve">
-    <value>API type</value>
+    <value>API 類型</value>
   </data>
   <data name="AiBaseUrl" xml:space="preserve">
     <value>Base URL</value>
   </data>
   <data name="AiApiKey" xml:space="preserve">
-    <value>API key</value>
+    <value>API Key</value>
   </data>
   <data name="AiApiKeyPlaceholder" xml:space="preserve">
-    <value>Optional for local endpoints</value>
+    <value>本機接口可留空</value>
   </data>
   <data name="AiApiKeyDescription" xml:space="preserve">
-    <value>The key is stored in the app’s local settings and is never shown in the model list. Leave it empty for endpoints that do not require authentication.</value>
+    <value>密鑰儲存在本應用的本機設定中，模型列表不會顯示明文；無需鑒權的本機接口可留空。</value>
   </data>
   <data name="AiModel" xml:space="preserve">
-    <value>Model</value>
+    <value>模型</value>
   </data>
   <data name="AiTemperatureEnabled" xml:space="preserve">
-    <value>Send temperature</value>
+    <value>傳送 temperature</value>
   </data>
   <data name="AiTemperature" xml:space="preserve">
     <value>Temperature</value>
   </data>
   <data name="AiTemperatureOmitted" xml:space="preserve">
-    <value>not sent</value>
+    <value>不傳送</value>
   </data>
   <data name="AiTemperatureDescription" xml:space="preserve">
-    <value>Optional sampling parameter. When disabled, temperature is omitted from the request. OpenAI accepts 0–2. Anthropic accepts 0–1 on older supported models; current Claude 4.7+ models may reject non-default temperature, so leave it disabled unless the selected model supports it.</value>
+    <value>可選採樣參數。關閉時請求體不會傳送 temperature。OpenAI 範圍為 0–2；Anthropic 的舊模型範圍為 0–1，目前 Claude 4.7+ 模型可能拒絕非預設 temperature，因此除非所選模型明確支援，否則建議保持關閉。</value>
   </data>
   <data name="AiTemperatureRangeError" xml:space="preserve">
-    <value>Temperature must be between 0 and {0} for the selected API type.</value>
+    <value>目前 API 類型的 Temperature 必須在 0 到 {0} 之間。</value>
   </data>
   <data name="AiCustomPrompt" xml:space="preserve">
-    <value>Custom prompt</value>
+    <value>自定義提示詞</value>
   </data>
   <data name="AiCustomPromptPlaceholder" xml:space="preserve">
-    <value>Optional: terminology, style, or translation rules</value>
+    <value>可選：術語、風格或翻譯規則</value>
   </data>
   <data name="AiCustomPromptDescription" xml:space="preserve">
-    <value>Optional placeholders: {text}, {target_language}, {target_language_name}, {source_language}. The mandatory JSON response contract is always appended.</value>
+    <value>可選佔位符：{text}、{target_language}、{target_language_name}、{source_language}。強制 JSON 返回格式會始終追加。</value>
   </data>
   <data name="AiSave" xml:space="preserve">
-    <value>Save</value>
+    <value>儲存</value>
   </data>
   <data name="AiValidationRequired" xml:space="preserve">
-    <value>Display name, a valid HTTP(S) Base URL, and model are required.</value>
+    <value>顯示名稱、有效的 HTTP(S) Base URL 和模型名稱不能為空。</value>
   </data>
   <data name="AiDeleteDialogTitle" xml:space="preserve">
-    <value>Delete AI translation model?</value>
+    <value>刪除 AI 翻譯模型？</value>
   </data>
   <data name="AiDeleteDialogMessage" xml:space="preserve">
-    <value>Delete “{0}”? This cannot be undone.</value>
+    <value>確定刪除“{0}”嗎？此操作無法撤銷。</value>
   </data>
   <data name="AiDeleteConfirm" xml:space="preserve">
-    <value>Delete</value>
+    <value>刪除</value>
   </data>
   <data name="AiNoProviderError" xml:space="preserve">
-    <value>No AI translation model is selected. Add and select one on the AI translation models page.</value>
+    <value>尚未選取 AI 翻譯模型。請先在“AI 翻譯模型”頁面添加並選擇一個模型。</value>
   </data>
   <data name="AiEndpointRequiredError" xml:space="preserve">
-    <value>The selected AI translation model has no Base URL.</value>
+    <value>目前 AI 翻譯模型未配置 Base URL。</value>
   </data>
   <data name="AiModelRequiredError" xml:space="preserve">
-    <value>The selected AI translation model has no model name.</value>
+    <value>目前 AI 翻譯模型未配置模型名稱。</value>
   </data>
   <data name="AiInvalidResponseError" xml:space="preserve">
-    <value>The AI API response is missing required translation fields.</value>
+    <value>AI API 返回內容缺少必要的翻譯字段。</value>
   </data>
   <data name="AiInvalidJsonError" xml:space="preserve">
-    <value>The AI model did not return a valid JSON translation object.</value>
+    <value>AI 模型未返回有效的 JSON 翻譯對象。</value>
   </data>
   <data name="AiApiErrorFormat" xml:space="preserve">
-    <value>AI API request failed (HTTP {0}): {1}</value>
+    <value>AI API 請求失敗（HTTP {0}）：{1}</value>
   </data>
   <data name="AiEmptyApiError" xml:space="preserve">
-    <value>The server returned no error details.</value>
+    <value>服務器未返回錯誤詳情。</value>
   </data>
   <data name="DialogTranslateInputTitle" xml:space="preserve">
-    <value>Enter text to translate</value>
+    <value>輸入要翻譯的文字</value>
   </data>
   <data name="CommonConfirm" xml:space="preserve">
-    <value>Confirm</value>
+    <value>確定</value>
   </data>
   <data name="CommonCancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>取消</value>
   </data>
   <data name="CommonClose" xml:space="preserve">
-    <value>Close</value>
+    <value>關閉</value>
   </data>
   <data name="TranslationTestSuccessTitle" xml:space="preserve">
-    <value>Translation test succeeded</value>
+    <value>翻譯測試成功</value>
   </data>
   <data name="TranslationTestFailureTitle" xml:space="preserve">
-    <value>Translation test failed</value>
+    <value>翻譯測試失敗</value>
   </data>
   <data name="TranslationTestResultFormat" xml:space="preserve">
-    <value>Translation result
-Original text: {0}
-Translated text: {1}
-Service: {9}
+    <value>翻譯結果
+原文：{0}
+譯文：{1}
+翻譯服務：{9}
 
-Dashboard mapping
-OriginalMessage: {0}
-TranslatedMessage: {1}
-SourceLanguageIsoCode: {2}
+Dashboard 映射
+OriginalMessage：{0}
+TranslatedMessage：{1}
+SourceLanguageIsoCode：{2}
 
-Language details
-SourceLanguage.Name: {3}
-SourceLanguage.ISO6391: {4}
-SourceLanguage.ISO6393: {5}
-TargetLanguage.Name: {6}
-TargetLanguage.ISO6391: {7}
-TargetLanguage.ISO6393: {8}</value>
+語言資訊
+SourceLanguage.Name：{3}
+SourceLanguage.ISO6391：{4}
+SourceLanguage.ISO6393：{5}
+TargetLanguage.Name：{6}
+TargetLanguage.ISO6391：{7}
+TargetLanguage.ISO6393：{8}</value>
   </data>
   <data name="TrayOverlay" xml:space="preserve">
-    <value>Show / hide overlay</value>
+    <value>顯示／隱藏懸浮視窗</value>
   </data>
   <data name="TrayOverlayDescription" xml:space="preserve">
-    <value>Show or hide the in-game chat overlay</value>
+    <value>顯示或隱藏遊戲聊天懸浮視窗</value>
   </data>
   <data name="OverlayTitle" xml:space="preserve">
-    <value>Live chat</value>
+    <value>即時聊天</value>
   </data>
   <data name="OverlaySettingsTitle" xml:space="preserve">
-    <value>Overlay settings</value>
+    <value>懸浮視窗設定</value>
   </data>
   <data name="OverlayHandleToolTip" xml:space="preserve">
-    <value>Drag to move. Double-click to enable or disable resize mode.</value>
+    <value>按住拖動調整位置；雙擊切換可調整大小/滑鼠透傳狀態。</value>
   </data>
   <data name="LocationTitle" xml:space="preserve">
-    <value>Overlay layout</value>
+    <value>懸浮視窗佈局</value>
   </data>
   <data name="LocationMonitor" xml:space="preserve">
-    <value>Overlay display</value>
+    <value>懸浮視窗顯示器</value>
   </data>
   <data name="LocationMonitorDescription" xml:space="preserve">
-    <value>Select and remember the display used by the overlay.</value>
+    <value>選擇並記憶懸浮視窗使用的顯示器。</value>
   </data>
   <data name="LocationPosition" xml:space="preserve">
-    <value>Overlay position</value>
+    <value>懸浮視窗位置</value>
   </data>
   <data name="LocationPositionDescription" xml:space="preserve">
-    <value>Desktop pixel coordinates. Dragging the overlay updates these values automatically.</value>
+    <value>使用桌面像素坐標；拖動懸浮視窗後會自動同步這裡的數值。</value>
   </data>
   <data name="LocationSize" xml:space="preserve">
-    <value>Overlay size</value>
+    <value>懸浮視窗大小</value>
   </data>
   <data name="LocationSizeDescription" xml:space="preserve">
-    <value>Double-click the overlay move handle to enable mouse resizing.</value>
+    <value>雙擊懸浮視窗移動圖示後，可直接用滑鼠拖動視窗邊緣調整大小。</value>
   </data>
   <data name="LocationWidth" xml:space="preserve">
-    <value>Width</value>
+    <value>寬度</value>
   </data>
   <data name="LocationHeight" xml:space="preserve">
-    <value>Height</value>
+    <value>高度</value>
   </data>
   <data name="LocationApply" xml:space="preserve">
-    <value>Apply</value>
+    <value>套用</value>
   </data>
   <data name="LocationCenter" xml:space="preserve">
-    <value>Center on selected display</value>
+    <value>在選取的顯示器上置中</value>
   </data>
   <data name="OverlayOpacity" xml:space="preserve">
-    <value>Overlay opacity</value>
+    <value>半透明透明度</value>
   </data>
   <data name="OverlayOpacityDescription" xml:space="preserve">
-    <value>Adjust the translucency of the overlay background.</value>
+    <value>調整懸浮視窗背景的透明程度。</value>
   </data>
   <data name="QuickTranslationTitle" xml:space="preserve">
-    <value>Quick voice translation</value>
+    <value>快捷語音翻譯</value>
   </data>
   <data name="QuickTranslationEnable" xml:space="preserve">
-    <value>Enable quick voice translation</value>
+    <value>啓用快捷語音翻譯</value>
   </data>
   <data name="QuickTranslationEnableDescription" xml:space="preserve">
-    <value>Register system-wide shortcuts that recognize one spoken phrase, translate it to the selected language, and copy the result to the clipboard.</value>
+    <value>注冊系統級快捷鍵，將一次語音識別結果翻譯為指定目標語言，並自動複製到剪貼簿。</value>
   </data>
   <data name="QuickTranslationRecognitionLanguage" xml:space="preserve">
-    <value>Speech recognition language</value>
+    <value>語音識別語言</value>
   </data>
   <data name="QuickTranslationRecognitionDescription" xml:space="preserve">
-    <value>Choose the language you will speak. Windows online speech recognition may need to be enabled for dictation.</value>
+    <value>選擇你說話時使用的語言。聽寫識別可能需要在 Windows 隱私設定中啓用聯機語音識別。</value>
   </data>
   <data name="QuickTranslationHotkeys" xml:space="preserve">
-    <value>Shortcut language mappings</value>
+    <value>快捷鍵與目標語言</value>
   </data>
   <data name="QuickTranslationHotkeysDescription" xml:space="preserve">
-    <value>Five mappings are provided by default. Click Record, press the desired key combination, then click Finish to save it. Press a shortcut once to start recording and press the same shortcut again to stop immediately and translate; silence can also stop recognition automatically.</value>
+    <value>預設提供五組快捷鍵。點擊“錄入”後按下想要的組合鍵，再點擊“完成”儲存。第一次按快捷鍵開始錄音，再按一次同一快捷鍵立即結束並翻譯；檢測到靜音時也可自動結束識別。</value>
   </data>
   <data name="QuickTranslationSuccessSound" xml:space="preserve">
-    <value>Translation success sound</value>
+    <value>翻譯成功提示音</value>
   </data>
   <data name="QuickTranslationSoundDescription" xml:space="preserve">
-    <value>Play a sound after the translated text has been copied to the clipboard.</value>
+    <value>翻譯文本成功寫入剪貼簿後播放提示音。</value>
   </data>
   <data name="QuickTranslationSoundSystem" xml:space="preserve">
-    <value>System notification sound</value>
+    <value>系統提示音</value>
   </data>
   <data name="QuickTranslationSoundTts" xml:space="preserve">
-    <value>TTS prompt</value>
+    <value>TTS 提示語</value>
   </data>
   <data name="QuickTranslationSoundCustom" xml:space="preserve">
-    <value>Custom audio</value>
+    <value>自定義音頻</value>
   </data>
   <data name="QuickTranslationTtsSettings" xml:space="preserve">
-    <value>TTS prompt settings</value>
+    <value>TTS 提示設定</value>
   </data>
   <data name="QuickTranslationTtsDescription" xml:space="preserve">
-    <value>The generated speech is cached by prompt text and voice, so unchanged prompts are not synthesized repeatedly.</value>
+    <value>TTS 音頻按提示文本和音色自動緩存；設定不變時不會重復生成。</value>
   </data>
   <data name="QuickTranslationPromptText" xml:space="preserve">
-    <value>Prompt text</value>
+    <value>提示文本</value>
   </data>
   <data name="QuickTranslationVoice" xml:space="preserve">
-    <value>Voice</value>
+    <value>音色</value>
   </data>
   <data name="QuickTranslationCustomAudio" xml:space="preserve">
-    <value>Custom success audio</value>
+    <value>自定義成功音頻</value>
   </data>
   <data name="QuickTranslationCustomAudioDescription" xml:space="preserve">
-    <value>The selected audio is copied into the app data folder so it remains available if the original file is moved.</value>
+    <value>選擇後會將音頻複製到應用資料目錄，即使原檔案被移動也能繼續使用。</value>
   </data>
   <data name="QuickTranslationChooseAudio" xml:space="preserve">
-    <value>Choose audio file</value>
+    <value>選擇音頻檔案</value>
   </data>
   <data name="QuickTranslationNoCustomAudio" xml:space="preserve">
-    <value>No custom audio selected</value>
+    <value>尚未選擇自定義音頻</value>
   </data>
   <data name="QuickTranslationVolume" xml:space="preserve">
-    <value>Prompt audio volume</value>
+    <value>提示音音量</value>
   </data>
   <data name="QuickTranslationVolumeDescription" xml:space="preserve">
-    <value>Adjust the shared playback volume for TTS and custom audio cues.</value>
+    <value>統一調整 TTS 與自定義提示音的播放音量。</value>
   </data>
   <data name="QuickTranslationAudioActions" xml:space="preserve">
-    <value>Audio actions</value>
+    <value>音頻操作</value>
   </data>
   <data name="QuickTranslationAudioActionsDescription" xml:space="preserve">
-    <value>Preview recording start, recording end, translation success, or translation failure audio, or clear generated TTS cache files.</value>
+    <value>分別試聽錄音開始、錄音結束、翻譯成功和翻譯失敗提示音，或清理已生成的 TTS 緩存。</value>
   </data>
   <data name="QuickTranslationPreview" xml:space="preserve">
-    <value>Preview</value>
+    <value>試聽</value>
   </data>
   <data name="QuickTranslationClearCache" xml:space="preserve">
-    <value>Clear TTS cache</value>
+    <value>清理 TTS 緩存</value>
   </data>
   <data name="QuickTranslationSystemLanguageFormat" xml:space="preserve">
-    <value>System language: {0} ({1})</value>
+    <value>系統語言：{0} ({1})</value>
   </data>
   <data name="QuickTranslationInvalidHotkey" xml:space="preserve">
-    <value>Invalid shortcut</value>
+    <value>快捷鍵無效</value>
   </data>
   <data name="QuickTranslationDuplicateHotkey" xml:space="preserve">
-    <value>This shortcut is already assigned to another target language.</value>
+    <value>該快捷鍵已經分配給另一種目標語言。</value>
   </data>
   <data name="QuickTranslationAudioError" xml:space="preserve">
-    <value>Audio error</value>
+    <value>音頻錯誤</value>
   </data>
   <data name="QuickTranslationCacheCleared" xml:space="preserve">
-    <value>TTS cache cleared</value>
+    <value>TTS 緩存已清理</value>
   </data>
   <data name="QuickTranslationCacheClearedDescription" xml:space="preserve">
-    <value>Generated TTS prompt audio has been removed. It will be generated again when needed.</value>
+    <value>已刪除生成的 TTS 提示音，下次使用時會重新生成。</value>
   </data>
   <data name="QuickTranslationClose" xml:space="preserve">
-    <value>Close</value>
+    <value>關閉</value>
   </data>
   <data name="QuickTranslationPreviewTimeout" xml:space="preserve">
-    <value>Preview timed out. Try another Windows TTS voice or use a custom audio file.</value>
+    <value>試聽超時。請嘗試更換 Windows TTS 音色，或改用自定義音頻。</value>
   </data>
   <data name="QuickTranslationAddHotkey" xml:space="preserve">
-    <value>Add shortcut</value>
+    <value>添加快捷鍵</value>
   </data>
   <data name="QuickTranslationRemoveHotkey" xml:space="preserve">
-    <value>Remove shortcut</value>
+    <value>刪除快捷鍵</value>
   </data>
   <data name="QuickTranslationPrerequisiteWarningTitle" xml:space="preserve">
-    <value>Local speech recognition setup required</value>
+    <value>本機語音識別設定未就緒</value>
   </data>
   <data name="QuickTranslationOpenSettings" xml:space="preserve">
-    <value>Open Windows settings</value>
+    <value>打開 Windows 設定</value>
   </data>
   <data name="QuickTranslationPrerequisiteDialogTitle" xml:space="preserve">
-    <value>Local speech recognition is not ready</value>
+    <value>本機語音識別尚未就緒</value>
   </data>
   <data name="QuickTranslationPrerequisiteCheckTimeout" xml:space="preserve">
-    <value>The local speech-recognition environment check timed out.</value>
+    <value>本機語音識別環境檢查超時。</value>
   </data>
   <data name="QuickTranslationMicrophonePermissionRequired" xml:space="preserve">
-    <value>Microphone permission is required. Turn on quick voice translation again to allow microphone access.</value>
+    <value>需要麥克風權限。開啓快捷語音翻譯時會請求允許目前應用使用麥克風。</value>
   </data>
   <data name="QuickTranslationMicrophonePermissionDenied" xml:space="preserve">
-    <value>Microphone access is not allowed for this app. Enable microphone access in Windows Privacy &amp; security settings.</value>
+    <value>目前應用沒有麥克風訪問權限，請在 Windows“隱私和安全性 &gt; 麥克風”中允許訪問。</value>
   </data>
   <data name="QuickTranslationMicrophoneCapabilityMissing" xml:space="preserve">
-    <value>The packaged app does not have microphone capability. Reinstall or rebuild the app with microphone capability enabled.</value>
+    <value>目前安裝包未聲明麥克風能力，請使用包含 microphone capability 的安裝包重新安裝。</value>
   </data>
   <data name="QuickTranslationMicrophoneUnavailable" xml:space="preserve">
-    <value>No usable microphone is available, or Windows could not initialize the microphone.</value>
+    <value>未檢測到可用麥克風，或 Windows 無法初始化麥克風設備。</value>
   </data>
   <data name="QuickTranslationOnlineSpeechDisabled" xml:space="preserve">
-    <value>Windows Online speech recognition is disabled. Enable it in Privacy &amp; security &gt; Speech.</value>
+    <value>Windows 聯機語音識別未啓用，請在“隱私和安全性 &gt; 語音”中開啓聯機語音識別。</value>
   </data>
   <data name="QuickTranslationSpeechUnavailable" xml:space="preserve">
-    <value>The local speech-recognition runtime is unavailable.</value>
+    <value>本機語音識別運行環境不可用。</value>
   </data>
   <data name="QuickTranslationRecordingStartSound" xml:space="preserve">
-    <value>Recording start sound</value>
+    <value>錄音開始提示音</value>
   </data>
   <data name="QuickTranslationRecordingStartSoundDescription" xml:space="preserve">
-    <value>Play a cue when speech recognition starts. By default listening begins as soon as the cue starts; this timing can be changed below.</value>
+    <value>語音識別開始時播放提示音。預設在提示音開始播放時立即監聽，也可在下方改為等待提示音播放結束後再錄音。</value>
   </data>
   <data name="QuickTranslationRecordingStartTtsSettings" xml:space="preserve">
-    <value>Recording start TTS settings</value>
+    <value>錄音開始 TTS 設定</value>
   </data>
   <data name="QuickTranslationRecordingStartCustomAudio" xml:space="preserve">
-    <value>Custom recording start audio</value>
+    <value>自定義錄音開始音頻</value>
   </data>
   <data name="QuickTranslationRecordingStartCustomAudioDescription" xml:space="preserve">
-    <value>Choose the audio used for the recording-start cue. The selected file is copied to the app data folder.</value>
+    <value>選擇錄音開始時使用的提示音頻；檔案會複製到應用資料目錄。</value>
   </data>
   <data name="QuickTranslationRecordingEndSound" xml:space="preserve">
-    <value>Recording end sound</value>
+    <value>錄音結束提示音</value>
   </data>
   <data name="QuickTranslationRecordingEndSoundDescription" xml:space="preserve">
-    <value>Play a cue after the one-shot speech recognition session finishes.</value>
+    <value>一次語音識別結束後播放提示音。</value>
   </data>
   <data name="QuickTranslationRecordingEndTtsSettings" xml:space="preserve">
-    <value>Recording end TTS settings</value>
+    <value>錄音結束 TTS 設定</value>
   </data>
   <data name="QuickTranslationRecordingEndCustomAudio" xml:space="preserve">
-    <value>Custom recording end audio</value>
+    <value>自定義錄音結束音頻</value>
   </data>
   <data name="QuickTranslationRecordingEndCustomAudioDescription" xml:space="preserve">
-    <value>Choose the audio played when speech recognition ends. The selected file is copied to the app data folder.</value>
+    <value>選擇語音識別結束後播放的音頻；檔案會複製到應用資料目錄。</value>
   </data>
   <data name="QuickTranslationPreviewRecordingStart" xml:space="preserve">
-    <value>Preview start cue</value>
+    <value>試聽錄音開始</value>
   </data>
   <data name="QuickTranslationPreviewRecordingEnd" xml:space="preserve">
-    <value>Preview end cue</value>
+    <value>試聽錄音結束</value>
   </data>
   <data name="QuickTranslationPreviewSuccess" xml:space="preserve">
-    <value>Preview success cue</value>
+    <value>試聽翻譯成功</value>
   </data>
   <data name="QuickTranslationDefaultRecordingStartPrompt" xml:space="preserve">
-    <value>Start recording</value>
+    <value>開始錄音</value>
   </data>
   <data name="QuickTranslationDefaultRecordingEndPrompt" xml:space="preserve">
-    <value>Recording ended</value>
+    <value>錄音結束</value>
   </data>
   <data name="QuickTranslationDefaultSuccessPrompt" xml:space="preserve">
-    <value>Translation complete</value>
+    <value>翻譯完成</value>
   </data>
   <data name="QuickTranslationHotkeyErrorEmpty" xml:space="preserve">
-    <value>Shortcut is empty.</value>
+    <value>快捷鍵不能為空。</value>
   </data>
   <data name="QuickTranslationHotkeyErrorFormatExample" xml:space="preserve">
-    <value>Use at least one modifier plus one key, for example Ctrl+Alt+1.</value>
+    <value>請至少使用一個修飾鍵加一個普通按鍵，例如 Ctrl+Alt+1。</value>
   </data>
   <data name="QuickTranslationHotkeyErrorMultipleKeys" xml:space="preserve">
-    <value>A shortcut can contain only one non-modifier key.</value>
+    <value>一個快捷鍵組合只能包含一個非修飾鍵。</value>
   </data>
   <data name="QuickTranslationHotkeyErrorModifierRequired" xml:space="preserve">
-    <value>Use at least one modifier plus one key.</value>
+    <value>請至少使用一個修飾鍵加一個普通按鍵。</value>
   </data>
   <data name="QuickTranslationHotkeyErrorUnsupportedKeyFormat" xml:space="preserve">
-    <value>Unsupported key: {0}.</value>
+    <value>不支援的按鍵：{0}。</value>
   </data>
   <data name="QuickTranslationTtsPromptEmpty" xml:space="preserve">
-    <value>TTS prompt text cannot be empty.</value>
+    <value>TTS 提示文本不能為空。</value>
   </data>
   <data name="QuickTranslationTtsGenerationTimeoutFormat" xml:space="preserve">
-    <value>TTS generation timed out after {0:0} seconds.</value>
+    <value>TTS 生成超時，已等待 {0:0} 秒。</value>
   </data>
   <data name="QuickTranslationTtsEmptyAudio" xml:space="preserve">
-    <value>The Windows speech synthesizer returned an empty audio stream.</value>
+    <value>Windows 語音合成器返回了空音頻流。</value>
   </data>
   <data name="QuickTranslationSpeechInitializationFailedFormat" xml:space="preserve">
-    <value>Speech recognition initialization failed: {0}.</value>
+    <value>語音識別初始化失敗：{0}。</value>
   </data>
   <data name="QuickTranslationSpeechRecognitionFailedFormat" xml:space="preserve">
-    <value>Speech recognition failed: {0}.</value>
+    <value>語音識別失敗：{0}。</value>
   </data>
   <data name="QuickTranslationNoFreeHotkeyIds" xml:space="preserve">
-    <value>No free global shortcut ID is available.</value>
+    <value>沒有可用的全局快捷鍵 ID。</value>
   </data>
   <data name="QuickTranslationEmptyTranslationResult" xml:space="preserve">
-    <value>The translation service returned an empty result.</value>
+    <value>翻譯服務返回了空結果。</value>
   </data>
   <data name="QuickTranslationSpeakingRate" xml:space="preserve">
-    <value>Speaking rate</value>
+    <value>語速</value>
   </data>
   <data name="QuickTranslationRecordingStartTiming" xml:space="preserve">
-    <value>Recording start timing</value>
+    <value>開始錄音時機</value>
   </data>
   <data name="QuickTranslationRecordingStartTimingDescription" xml:space="preserve">
-    <value>Choose whether speech recognition starts as soon as the start cue begins playing or after the cue finishes.</value>
+    <value>選擇提示音開始播放時立即啓動語音識別，或等待提示音播放結束後再開始監聽。</value>
   </data>
   <data name="QuickTranslationRecordingStartTimingImmediate" xml:space="preserve">
-    <value>Start listening when the cue starts</value>
+    <value>提示音開始播放時立即錄音</value>
   </data>
   <data name="QuickTranslationRecordingStartTimingAfterCue" xml:space="preserve">
-    <value>Start listening after the cue finishes</value>
+    <value>提示音播放結束後開始錄音</value>
   </data>
   <data name="QuickTranslationSpeechNoText" xml:space="preserve">
-    <value>Speech recognition ended without returning any text to translate.</value>
+    <value>語音識別已結束，但沒有獲得可翻譯的文本。</value>
   </data>
   <data name="QuickTranslationCaptureHotkey" xml:space="preserve">
-    <value>Record</value>
+    <value>錄入</value>
   </data>
   <data name="QuickTranslationFinishHotkeyCapture" xml:space="preserve">
-    <value>Finish</value>
+    <value>完成</value>
   </data>
   <data name="QuickTranslationPressHotkeyPrompt" xml:space="preserve">
-    <value>Press the shortcut...</value>
+    <value>請按下快捷鍵…</value>
   </data>
   <data name="QuickTranslationHotkeyCaptureNoKey" xml:space="preserve">
-    <value>Press the desired shortcut before clicking Finish.</value>
+    <value>請先按下需要綁定的組合鍵，再點擊“完成”。</value>
   </data>
   <data name="QuickTranslationTranslationFailureSound" xml:space="preserve">
-    <value>Translation failure sound</value>
+    <value>翻譯失敗提示音</value>
   </data>
   <data name="QuickTranslationTranslationFailureSoundDescription" xml:space="preserve">
-    <value>Plays when translation or copying the translated text to the clipboard fails.</value>
+    <value>翻譯失敗或翻譯結果寫入剪貼簿失敗時播放提示音。</value>
   </data>
   <data name="QuickTranslationTranslationFailureTtsSettings" xml:space="preserve">
-    <value>Translation failure TTS settings</value>
+    <value>翻譯失敗 TTS 設定</value>
   </data>
   <data name="QuickTranslationTranslationFailureCustomAudio" xml:space="preserve">
-    <value>Custom translation failure audio</value>
+    <value>翻譯失敗自定義音頻</value>
   </data>
   <data name="QuickTranslationTranslationFailureCustomAudioDescription" xml:space="preserve">
-    <value>Choose a custom audio file for translation failure. The file is copied into the application data folder so it keeps working if the original file is moved.</value>
+    <value>選擇翻譯失敗時使用的自定義音頻。選擇後會複製到應用資料目錄，即使原檔案被移動也能繼續使用。</value>
   </data>
   <data name="QuickTranslationDefaultTranslationFailurePrompt" xml:space="preserve">
-    <value>Translation failed</value>
+    <value>翻譯失敗</value>
   </data>
   <data name="QuickTranslationPreviewTranslationFailure" xml:space="preserve">
-    <value>Preview failure</value>
+    <value>試聽翻譯失敗</value>
   </data>
   <data name="QuickTranslationSpeechState" xml:space="preserve">
-    <value>Local speech recognition status</value>
+    <value>本機語音識別狀態</value>
   </data>
   <data name="QuickTranslationSpeechStateDescription" xml:space="preserve">
-    <value>Shows the current state of the packaged SenseVoice speech-recognition model.</value>
+    <value>顯示內置 SenseVoice 本機語音識別模型的目前狀態。</value>
   </data>
   <data name="QuickTranslationSpeechStateNotInitialized" xml:space="preserve">
-    <value>Not initialized</value>
+    <value>未初始化</value>
   </data>
   <data name="QuickTranslationSpeechStateWarmingUp" xml:space="preserve">
-    <value>Loading model…</value>
+    <value>正在載入模型…</value>
   </data>
   <data name="QuickTranslationSpeechStateReady" xml:space="preserve">
-    <value>Ready (local)</value>
+    <value>已就緒（本機）</value>
   </data>
   <data name="QuickTranslationSpeechStateRecording" xml:space="preserve">
-    <value>Recording…</value>
+    <value>正在錄音…</value>
   </data>
   <data name="QuickTranslationSpeechStateStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>正在停止...</value>
   </data>
   <data name="QuickTranslationSpeechStateUnavailable" xml:space="preserve">
-    <value>Unavailable</value>
+    <value>不可用</value>
   </data>
   <data name="QuickTranslationMicrophoneDevice" xml:space="preserve">
-    <value>Recording device</value>
+    <value>錄音設備</value>
   </data>
   <data name="QuickTranslationMicrophoneDeviceDescription" xml:space="preserve">
-    <value>Choose the microphone or virtual capture device used for quick voice translation.</value>
+    <value>選擇快捷語音翻譯使用的麥克風或虛擬錄音設備。</value>
   </data>
   <data name="QuickTranslationSystemDefaultMicrophone" xml:space="preserve">
-    <value>System default</value>
+    <value>系統預設</value>
   </data>
   <data name="QuickTranslationDefaultDeviceSuffix" xml:space="preserve">
-    <value>default</value>
+    <value>預設</value>
   </data>
   <data name="QuickTranslationRefreshMicrophones" xml:space="preserve">
-    <value>Refresh</value>
+    <value>重新整理</value>
   </data>
   <data name="QuickTranslationMicrophoneLevel" xml:space="preserve">
-    <value>Input level</value>
+    <value>輸入音量</value>
   </data>
   <data name="QuickTranslationMicrophoneLevelDescription" xml:space="preserve">
-    <value>Shows the current input level of the selected capture device.</value>
+    <value>顯示目前所選錄音設備的實時輸入音量。</value>
   </data>
   <data name="QuickTranslationSelectedMicrophoneUnavailable" xml:space="preserve">
-    <value>The selected recording device is unavailable. Choose another device or use the system default.</value>
+    <value>所選錄音設備不可用，請選擇其他設備或使用系統預設設備。</value>
   </data>
   <data name="QuickTranslationLocalModelUnavailable" xml:space="preserve">
-    <value>The local speech-recognition model is missing or unavailable. Ensure the Git LFS speech model files are present, then restart the app.</value>
+    <value>本機語音識別模型缺失或不可用。請確認 Git LFS 語音模型檔案已拉取完整，然後重新啓動應用。</value>
   </data>
   <data name="QuickTranslationLocalModelMissingFormat" xml:space="preserve">
-    <value>Local speech model files were not found in: {0}</value>
+    <value>未在以下目錄找到本機語音模型檔案：{0}</value>
   </data>
   <data name="QuickTranslationLocalModelLoadFailedFormat" xml:space="preserve">
-    <value>Failed to load the local speech model: {0}</value>
+    <value>載入本機語音模型失敗：{0}</value>
   </data>
   <data name="QuickTranslationNoAudioCaptured" xml:space="preserve">
-    <value>No microphone audio was captured.</value>
+    <value>沒有採集到麥克風音頻。</value>
   </data>
   <data name="QuickTranslationLocalRecognizingDetailFormat" xml:space="preserve">
-    <value>Recognizing {0:0.0} s of recorded audio locally…</value>
+    <value>正在本機識別 {0:0.0} 秒錄音…</value>
   </data>
   <data name="QuickTranslationAlreadyRecording" xml:space="preserve">
-    <value>Microphone capture is already running.</value>
+    <value>麥克風錄音已經在進行中。</value>
   </data>
   <data name="QuickTranslationNotRecording" xml:space="preserve">
-    <value>Microphone capture is not running.</value>
+    <value>目前沒有正在進行的麥克風錄音。</value>
   </data>
   <data name="QuickTranslationMicrophoneCaptureFailed" xml:space="preserve">
-    <value>Microphone capture failed.</value>
+    <value>麥克風錄音失敗。</value>
   </data>
   <data name="QuickTranslationSpeechStateRecognizing" xml:space="preserve">
-    <value>Recognizing…</value>
+    <value>正在識別…</value>
   </data>
   <data name="QuickTranslationSavedMicrophoneUnavailable" xml:space="preserve">
-    <value>Saved microphone (unavailable)</value>
+    <value>已儲存的麥克風（目前不可用）</value>
   </data>
   <data name="ChatCacheSettings" xml:space="preserve">
-    <value>Battle chat cache</value>
+    <value>對局聊天緩存</value>
   </data>
   <data name="ChatCacheSettingsDescription" xml:space="preserve">
-    <value>Manage translated chat behavior between War Thunder battles and limit in-memory cache growth.</value>
+    <value>設定戰爭雷霆每局之間的聊天翻譯緩存行為，並限制內存緩存增長。</value>
   </data>
   <data name="ClearBattleChatCache" xml:space="preserve">
-    <value>Clear chat after each battle</value>
+    <value>每局結束後清理聊天翻譯緩存</value>
   </data>
   <data name="ClearBattleChatCacheDescription" xml:space="preserve">
-    <value>Legacy compatibility setting for battle-end chat cleanup.</value>
+    <value>用於兼容舊版本的對局結束聊天清理設定。</value>
   </data>
   <data name="BattleChatClearMode" xml:space="preserve">
-    <value>Battle-end cleanup mode</value>
+    <value>對局結束清理方式</value>
   </data>
   <data name="BattleChatClearModeDescription" xml:space="preserve">
-    <value>No cleanup keeps history visible. Logical cleanup hides history after a battle while retaining it in memory, so switching back to No cleanup restores it. Switching to Physical cleanup immediately deletes history from battles before the current one, and future battle ends also delete chat and translation caches. </value>
+    <value>不清理會保留並顯示歷史記錄；邏輯清理僅在對局結束後隱藏歷史記錄，緩存仍保留，切回“不清理”可恢復顯示；切換到物理清理時會立即刪除目前對局之前的歷史記錄，之後每次對局結束也會直接刪除聊天與翻譯緩存。</value>
   </data>
   <data name="BattleChatClearModeNone" xml:space="preserve">
-    <value>No cleanup</value>
+    <value>不清理</value>
   </data>
   <data name="BattleChatClearModeLogical" xml:space="preserve">
-    <value>Logical cleanup</value>
+    <value>邏輯清理</value>
   </data>
   <data name="BattleChatClearModePhysical" xml:space="preserve">
-    <value>Physical cleanup</value>
+    <value>物理清理</value>
   </data>
   <data name="PhysicalChatCacheLimit" xml:space="preserve">
-    <value>Maximum physical cache entries</value>
+    <value>最大物理緩存條數</value>
   </data>
   <data name="PhysicalChatCacheLimitDescription" xml:space="preserve">
-    <value>Hard limit for in-memory chat and translation cache entries, including history retained by logical cleanup. Oldest entries are evicted first. Default: 400.</value>
+    <value>聊天與翻譯內存緩存的硬上限，超過後自動淘汰最舊緩存；邏輯清理隱藏的歷史也受此上限約束。預設 400 條。</value>
   </data>
   <data name="StartupSettings" xml:space="preserve">
-    <value>Startup behavior</value>
+    <value>啓動行為</value>
   </data>
   <data name="StartupSettingsDescription" xml:space="preserve">
-    <value>Choose which chat views open automatically after the local service starts.</value>
+    <value>設定本機服務啓動完成後需要自動打開的聊天介面。</value>
   </data>
   <data name="OpenOverlayOnStartup" xml:space="preserve">
-    <value>Open overlay on startup</value>
+    <value>啟動應用程式時顯示懸浮視窗</value>
   </data>
   <data name="OpenOverlayOnStartupDescription" xml:space="preserve">
-    <value>Show the in-game chat translation overlay automatically when the application starts.</value>
+    <value>應用程式啟動後自動顯示遊戲聊天翻譯懸浮視窗。</value>
   </data>
   <data name="OpenDashboardOnStartup" xml:space="preserve">
-    <value>Open Dashboard on startup</value>
+    <value>應用啓動時打開 Dashboard</value>
   </data>
   <data name="OpenDashboardOnStartupDescription" xml:space="preserve">
-    <value>Open the local Dashboard in your default browser automatically when the application starts.</value>
+    <value>應用啓動後自動使用預設瀏覽器打開本機 Dashboard。</value>
   </data>
   <data name="NavQuickVoiceTranslation" xml:space="preserve">
-    <value>Voice translation</value>
+    <value>語音翻譯</value>
   </data>
   <data name="NavRunSettings" xml:space="preserve">
-    <value>Runtime settings</value>
+    <value>執行設定</value>
   </data>
   <data name="RunSettingsTitle" xml:space="preserve">
-    <value>Runtime settings</value>
+    <value>執行設定</value>
   </data>
   <data name="ThemePageTitle" xml:space="preserve">
-    <value>Interface settings</value>
+    <value>介面設定</value>
   </data>
   <data name="ApiProviderTitle" xml:space="preserve">
-    <value>Translation service</value>
+    <value>翻譯服務</value>
   </data>
   <data name="StartupTrayToast" xml:space="preserve">
-    <value>War Thunder Chat Translator is running. Use its icon in the system tray to open the app.</value>
+    <value>戰爭雷霆聊天翻譯器已啟動，請透過系統匣圖示開啟程式。</value>
   </data>
   <data name="StartupAlreadyRunning" xml:space="preserve">
-    <value>War Thunder Chat Translator is already running. Open it from the system tray.</value>
+    <value>戰爭雷霆聊天翻譯器已在執行中，請透過系統匣圖示開啟，無須重複啟動。</value>
   </data>
   <data name="StartupServiceUnavailable" xml:space="preserve">
-    <value>The local dashboard could not start (check the logs). The tray application is still running.</value>
+    <value>本機 Dashboard 服務無法啟動（請查看記錄檔），系統匣程式仍會繼續執行。</value>
   </data>
   <data name="StartupTrayUnavailable" xml:space="preserve">
-    <value>The system tray icon could not be created. The settings window will be opened instead.</value>
+    <value>無法建立系統匣圖示，將改為開啟設定視窗。</value>
   </data>
   <data name="StartupSettingsWarning" xml:space="preserve">
-    <value>Some settings could not be loaded. The application is continuing with available defaults.</value>
+    <value>部分設定讀取失敗，程式將盡可能使用預設設定繼續啟動。</value>
   </data>
   <data name="StartupUnhandledError" xml:space="preserve">
-    <value>An application error occurred. See the application log for details.</value>
+    <value>程式發生異常，請查看記錄檔以了解詳情。</value>
   </data>
   <data name="TraditionalChinese" xml:space="preserve">
-    <value>Chinese (Traditional)</value>
+    <value>中文（繁體）</value>
   </data>
   <data name="OverlayHideButton" xml:space="preserve">
-    <value>Hide overlay</value>
+    <value>隱藏懸浮視窗</value>
   </data>
   <data name="StartupUnsupportedSystemLanguageTitle" xml:space="preserve">
-    <value>Unsupported system language</value>
+    <value>系統語言暫不支援</value>
   </data>
   <data name="StartupUnsupportedSystemLanguage" xml:space="preserve">
-    <value>Your Windows display language ({0}) is not currently supported. English has been selected by default. You can manually choose a different app language in Appearance settings.</value>
+    <value>你的 Windows 系統語言（{0}）目前不受支援，應用程式已預設使用英文。你可以在「介面設定」中手動選擇其他語言。</value>
   </data>
 </root>

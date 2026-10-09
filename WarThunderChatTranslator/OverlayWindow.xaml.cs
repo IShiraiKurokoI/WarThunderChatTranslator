@@ -405,6 +405,12 @@ namespace WarThunderChatTranslator
             ApplyWindowOpacity(opacityPercent);
         }
 
+        private void HideOverlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Match the tray toggle's visible -> hidden transition exactly.
+            _manager.Hide();
+        }
+
         private void DisplayModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!_settingsLoaded || DisplayModeComboBox.SelectedItem is not ComboBoxItem item)

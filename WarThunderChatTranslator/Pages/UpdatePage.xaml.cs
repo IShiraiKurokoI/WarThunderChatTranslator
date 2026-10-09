@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -6,7 +6,7 @@ using Windows.ApplicationModel;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Configurations;
 using WarThunderChatTranslator.Helpers;
-using Windows.UI.Notifications;
+using WarThunderChatTranslator.Services;
 using NLog;
 
 namespace WarThunderChatTranslator.Pages
@@ -99,11 +99,7 @@ namespace WarThunderChatTranslator.Pages
 
         private void ShowToast(string message)
         {
-            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-            var stringElements = toastXml.GetElementsByTagName("text");
-            stringElements[0].AppendChild(toastXml.CreateTextNode(message));
-            var toast = new ToastNotification(toastXml);
-            ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
+            ApplicationNotifications.Show(message);
         }
     }
 }

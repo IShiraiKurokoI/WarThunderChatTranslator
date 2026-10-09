@@ -55,7 +55,10 @@ namespace WarThunderChatTranslator
             _appWindow.Changed += AppWindow_Changed;
             Closed += MainWindow_Closed;
             _presenter = _appWindow.Presenter as OverlappedPresenter;
-            _presenter.IsAlwaysOnTop = false;
+            if (_presenter is not null)
+            {
+                _presenter.IsAlwaysOnTop = false;
+            }
         }
 
         private void UpdateNativeTitle()

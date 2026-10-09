@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\WarThunderChatTranslator\Helpers\StartupLanguage.cs" Link="Source\StartupLanguage.cs" />
     <Compile Include="..\WarThunderChatTranslator\Entities\AiProviderConfig.cs" Link="Source\AiProviderConfig.cs" />
     <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslationResult.cs" Link="Source\AiTranslationResult.cs" />
     <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslator.cs" Link="Source\AiTranslator.cs" />

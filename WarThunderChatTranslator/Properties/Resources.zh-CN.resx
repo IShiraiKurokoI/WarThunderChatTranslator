@@ -322,7 +322,7 @@
     <value>可设置范围：1-60 秒。修改后无需重启程序，会自动生效。</value>
   </data>
   <data name="AboutAppName" xml:space="preserve">
-    <value>战争雷霆聊天自动翻译器</value>
+    <value>战争雷霆聊天翻译器</value>
   </data>
   <data name="AboutAuthor" xml:space="preserve">
     <value>作者</value>
@@ -656,7 +656,7 @@ TargetLanguage.ISO6391：{7}
 TargetLanguage.ISO6393：{8}</value>
   </data>
   <data name="TrayOverlay" xml:space="preserve">
-    <value>悬浮窗</value>
+    <value>显示/隐藏悬浮窗</value>
   </data>
   <data name="TrayOverlayDescription" xml:space="preserve">
     <value>显示或隐藏游戏聊天悬浮窗</value>
@@ -1125,5 +1125,35 @@ TargetLanguage.ISO6393：{8}</value>
   </data>
   <data name="ApiProviderTitle" xml:space="preserve">
     <value>翻译服务</value>
+  </data>
+  <data name="StartupTrayToast" xml:space="preserve">
+    <value>战争雷霆聊天翻译器已启动，请通过系统托盘图标访问程序。</value>
+  </data>
+  <data name="StartupAlreadyRunning" xml:space="preserve">
+    <value>战争雷霆聊天翻译器已在运行，请通过系统托盘图标访问，无需重复启动。</value>
+  </data>
+  <data name="StartupServiceUnavailable" xml:space="preserve">
+    <value>本地 Dashboard 服务启动失败（请检查日志），托盘程序仍会保持运行。</value>
+  </data>
+  <data name="StartupTrayUnavailable" xml:space="preserve">
+    <value>无法创建系统托盘图标，将改为打开设置窗口。</value>
+  </data>
+  <data name="StartupSettingsWarning" xml:space="preserve">
+    <value>部分设置读取失败，程序将尽量使用默认设置继续启动。</value>
+  </data>
+  <data name="StartupUnhandledError" xml:space="preserve">
+    <value>程序出现异常，请查看程序日志了解详情。</value>
+  </data>
+  <data name="TraditionalChinese" xml:space="preserve">
+    <value>中文（繁体）</value>
+  </data>
+  <data name="OverlayHideButton" xml:space="preserve">
+    <value>隐藏悬浮窗</value>
+  </data>
+  <data name="StartupUnsupportedSystemLanguageTitle" xml:space="preserve">
+    <value>系统语言暂不支持</value>
+  </data>
+  <data name="StartupUnsupportedSystemLanguage" xml:space="preserve">
+    <value>你的 Windows 系统语言（{0}）暂不受支持，程序已默认使用英文。你可以在“界面设置”中手动选择其他程序语言。</value>
   </data>
 </root>

@@ -21,15 +21,19 @@ namespace WarThunderChatTranslator.Services
 
         public void Toggle()
         {
-            var window = EnsureWindow();
-            if (window.IsVisible)
+            if (IsVisible)
             {
-                window.HideOverlay();
+                Hide();
             }
             else
             {
-                window.ShowOverlay();
+                Show();
             }
+        }
+
+        public void Hide()
+        {
+            GetLiveWindow()?.HideOverlay();
         }
 
         public void Show()

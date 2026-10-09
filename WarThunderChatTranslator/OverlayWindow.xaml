@@ -129,6 +129,12 @@
                                     StepFrequency="5"
                                     ValueChanged="OpacitySlider_ValueChanged" />
                             </StackPanel>
+
+                            <Button
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Click="HideOverlayButton_Click"
+                                Content="{helpers:Loc Key=OverlayHideButton}" />
                         </StackPanel>
                     </Flyout>
                 </controls:ArrowCursorButton.Flyout>

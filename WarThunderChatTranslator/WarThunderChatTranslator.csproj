@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
@@ -11,11 +11,11 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Users\Shirai_Kuroko\source\repos\DLUTToolBoxV2\DLUTToolBoxV2\DLUTToolBox V2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
-    <Title>战争雷霆聊天翻译器</Title>
+    <Title>War Thunder Chat Translator</Title>
     <Authors>CA8D01B0-3F39-49D4-85F5-877D7B18934F</Authors>
     <PackageIcon></PackageIcon>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <DefaultLanguage>zh-Hans-CN</DefaultLanguage>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <UseWPF>False</UseWPF>
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <ApplicationManifest>app.manifest</ApplicationManifest>

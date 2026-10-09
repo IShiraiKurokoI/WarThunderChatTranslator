@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.IO;
@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
-using Windows.UI.Notifications;
+using System.Runtime.InteropServices;
 using NLog;
 using WarThunderChatTranslator.Helpers;
 using WarThunderChatTranslator.Services;
@@ -25,7 +25,7 @@ namespace WarThunderChatTranslator
 {
     public partial class App : Microsoft.UI.Xaml.Application
     {
-        public NLog.Logger logger;
+        public NLog.Logger logger = LogManager.GetCurrentClassLogger();
         private Window m_window;
         public TaskbarIcon TrayIcon { get; private set; }
         private readonly CancellationTokenSource _shutdownCts = new();
@@ -45,40 +45,201 @@ namespace WarThunderChatTranslator
 
         private static Mutex mutex; // Defines the process-wide mutex used for single-instance enforcement.
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "MessageBoxW")]
+        private static extern int ShowMessageBox(IntPtr owner, string message, string caption, uint flags);
+
         public App()
         {
-            // Create the mutex and detect whether another instance already owns the same name.
-            bool isNewInstance;
-            mutex = new Mutex(true, "WarThunderChatTranslator_Mutex", out isNewInstance);
-
-            if (!isNewInstance)
+            // Preserve the mutex name: changing it would break single-instance protection
+            // for users who already have the older version running.
+            try
             {
-                var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-                toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode("WarThunderChatTranslator 已在运行，请勿开启新实例。"));
-                var toast = new ToastNotification(toastXml);
-                ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-                Environment.Exit(0);
-                return;
+                mutex = new Mutex(true, "WarThunderChatTranslator_Mutex", out var isNewInstance);
+                if (!isNewInstance)
+                {
+                    try
+                    {
+                        var language = Localization.SystemLanguage;
+                        ShowMessageBox(IntPtr.Zero,
+                            Localization.GetStringForLanguage("StartupAlreadyRunning", language),
+                            Localization.GetStringForLanguage("AboutAppName", language), 0x40);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn(ex, "Could not display the duplicate-instance notice.");
+                    }
+                    Environment.Exit(0);
+                    return;
+                }
             }
-            this.InitializeComponent();
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "The single-instance mutex could not be created.");
+            }
+
             InitializeLogging();
             RegisterGlobalExceptionHandlers();
+            InitializeStartupLanguage();
+            try
+            {
+                // Apply the supported culture BEFORE any localized XAML is loaded.
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                logger.Fatal(ex, "Fatal error loading application XAML.");
+                try
+                {
+                    ShowMessageBox(IntPtr.Zero, ex.Message, "War Thunder Chat Translator", 0x10);
+                }
+                catch { /* Nothing else can recover from a broken App.xaml. */ }
+                Environment.Exit(1);
+            }
+        }
+
+        private void InitializeStartupLanguage()
+        {
+            string savedLanguage = null;
+            try
+            {
+                savedLanguage = ApplicationConfig.GetSettings(ApplicationConfig.ApplicationLanguageKey);
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Cannot read the saved display language; using the system language.");
+            }
+
+            try
+            {
+                Localization.Initialize(savedLanguage);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Cannot initialize localized resources. Falling back to English.");
+                try { Localization.Apply(StartupLanguage.English, updateWindowsPreference: false, savePreference: false); }
+                catch (Exception fallbackError) { logger.Error(fallbackError, "English culture fallback failed."); }
+            }
         }
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-            InitializeAppSettings();
-            OverlayManager = new OverlayWindowManager(() => _gameChatPollingService);
-            InitializeTrayIcon();
+            try
+            {
+                InitializeAppSettings();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Some startup settings could not be initialized.");
+            }
+
+            try
+            {
+                OverlayManager = new OverlayWindowManager(() => _gameChatPollingService);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Overlay manager initialization failed; the tray may still work.");
+            }
+
+            var trayCreated = false;
+            try
+            {
+                InitializeTrayIcon();
+                trayCreated = true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Could not create the system tray icon.");
+                try { TrayIcon?.Dispose(); } catch { }
+                TrayIcon = null;
+            }
+
+            try
+            {
+                ApplicationNotifications.Initialize(() => EnqueueOnUiThread(ToggleMainWindowVisibility));
+                if (trayCreated)
+                {
+                    // Use the ORIGINAL Windows UI language, not a manually saved app override.
+                    ApplicationNotifications.Show(Localization.GetSystemString("StartupTrayToast"));
+                }
+                else
+                {
+                    ApplicationNotifications.Show(Localization.GetSystemString("StartupTrayUnavailable"));
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Windows notifications are unavailable; application startup continues.");
+            }
+
+            if (!trayCreated)
+            {
+                // Without the tray, a background-only application would become inaccessible.
+                try { InitializeMainWindow(); }
+                catch (Exception ex) { logger.Error(ex, "Cannot open the settings window as a tray fallback."); }
+            }
+
+            // This task catches its own startup failures so the UI thread remains alive.
             _ = StartBackgroundServicesAsync();
+
+            if (Localization.UsedUnsupportedSystemLanguageFallback)
+            {
+                // A real (non-toast) notice works even when Windows notifications are off.
+                // Queue it after startup so the modal message cannot interrupt initialization.
+                EnqueueOnUiThread(ShowUnsupportedSystemLanguageNoticeOnce);
+            }
+        }
+
+        private void ShowUnsupportedSystemLanguageNoticeOnce()
+        {
+            try
+            {
+                var systemLanguage = Localization.OriginalSystemLanguage;
+                var noticeKey = ApplicationConfig.UnsupportedSystemLanguageNoticeKeyPrefix +
+                    (string.IsNullOrWhiteSpace(systemLanguage) ? "unknown" : systemLanguage);
+                // Even a damaged settings store must not suppress the message.
+                try
+                {
+                    if (ApplicationConfig.GetSettings(noticeKey) == "true")
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Could not read the unsupported-language notice setting.");
+                }
+
+                var message = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    Localization.GetStringForLanguage("StartupUnsupportedSystemLanguage", StartupLanguage.English),
+                    string.IsNullOrWhiteSpace(systemLanguage) ? "unknown" : systemLanguage);
+                var result = ShowMessageBox(IntPtr.Zero, message,
+                    Localization.GetStringForLanguage("StartupUnsupportedSystemLanguageTitle", StartupLanguage.English),
+                    0x40);
+                if (result != 0) // Store only after the OS successfully displayed the dialog.
+                {
+                    try { ApplicationConfig.SaveSettings(noticeKey, "true"); }
+                    catch (Exception ex) { logger.Warn(ex, "Could not remember the unsupported-language notice."); }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Could not show the unsupported system-language notice.");
+            }
         }
 
         private void InitializeLogging()
         {
-            logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Info("--------Application started--------");
-            DeleteOldLogs();
+            try
+            {
+                logger.Info("--------Application started--------");
+                DeleteOldLogs();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceWarning($"Logging initialization failed: {ex}");
+            }
         }
 
         private void RegisterGlobalExceptionHandlers()
@@ -110,6 +271,9 @@ namespace WarThunderChatTranslator
                 }
 
                 HandleException(e.Exception);
+                // Recover from managed UI callback failures; AppDomain-level fatal
+                // exceptions can still terminate the process and cannot be "handled" here.
+                e.Handled = true;
             };
         }
 
@@ -136,10 +300,6 @@ namespace WarThunderChatTranslator
 
         private void InitializeAppSettings()
         {
-            // Initialize UI culture before creating localized default values such as
-            // the quick-translation TTS prompt text.
-            Localization.Initialize(ApplicationConfig.GetSettings(ApplicationConfig.ApplicationLanguageKey));
-
             var defaultSettings = new Dictionary<string, string>
             {
                 { ApplicationConfig.NetworkProxyModeKey, "Default" },
@@ -207,20 +367,41 @@ namespace WarThunderChatTranslator
 
             foreach (var setting in defaultSettings)
             {
-                if (ApplicationConfig.GetSettings(setting.Key) == null)
+                try
                 {
-                    ApplicationConfig.SaveSettings(setting.Key, setting.Value);
+                    if (ApplicationConfig.GetSettings(setting.Key) == null)
+                    {
+                        ApplicationConfig.SaveSettings(setting.Key, setting.Value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Could not initialize default setting {0}.", setting.Key);
                 }
             }
 
-            if (ApplicationConfig.GetSettings(QuickTranslationConfig.HotkeysKey) == null)
+            try
             {
-                QuickTranslationConfig.SaveHotkeys(QuickTranslationConfig.DefaultHotkeys);
+                if (ApplicationConfig.GetSettings(QuickTranslationConfig.HotkeysKey) == null)
+                {
+                    QuickTranslationConfig.SaveHotkeys(QuickTranslationConfig.DefaultHotkeys);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Quick translation hotkeys could not be initialized.");
             }
 
-            logger.Info("Initializing translator.");
-            TranslationHelper.init();
-            logger.Info("Translator initialization completed.");
+            try
+            {
+                logger.Info("Initializing translator.");
+                TranslationHelper.init();
+                logger.Info("Translator initialization completed.");
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Translation client initialization failed; other startup features will continue.");
+            }
         }
 
         private void InitializeTrayIcon()
@@ -228,17 +409,7 @@ namespace WarThunderChatTranslator
             var openDashboardCommand = (XamlUICommand)Resources["OpenDashboardCommand"];
             openDashboardCommand.ExecuteRequested += (sender, args) =>
             {
-                EnqueueOnUiThread(async () =>
-                {
-                    try
-                    {
-                        await Windows.System.Launcher.LaunchUriAsync(new Uri("http://localhost:8100"));
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error(ex, "Failed to open the chat dashboard.");
-                    }
-                });
+                EnqueueOnUiThread(() => _ = OpenDashboardAsync());
             };
 
             var openOverlayCommand = (XamlUICommand)Resources["OpenOverlayCommand"];
@@ -251,16 +422,52 @@ namespace WarThunderChatTranslator
             exitApplicationCommand.ExecuteRequested += (sender, args) => EnqueueOnUiThread(() => _ = ExitApplicationAsync());
 
             TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
-            UpdateTrayMenuWidth();
             TrayIcon.ForceCreate();
             Localization.CultureChanged += UpdateTrayMenuWidth;
+            try { UpdateTrayMenuWidth(); }
+            catch (Exception ex) { logger.Warn(ex, "Could not measure the tray menu width."); }
+        }
+
+        private async Task OpenDashboardAsync()
+        {
+            // Never open the default port unless this instance is actually listening on it.
+            var dashboardUri = _localHttpServer?.DashboardUri;
+            if (dashboardUri is null)
+            {
+                logger.Warn("Dashboard is not listening; skipping browser launch.");
+                ApplicationNotifications.Show(Localization.GetSystemString("StartupServiceUnavailable"));
+                return;
+            }
+
+            try
+            {
+                if (!await Windows.System.Launcher.LaunchUriAsync(dashboardUri))
+                {
+                    logger.Warn("Windows refused to open Dashboard URL {0}.", dashboardUri);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Failed to open the chat dashboard at {0}.", dashboardUri);
+            }
         }
 
         private void EnqueueOnUiThread(Action action)
         {
-            if (_dispatcherQueue == null || !_dispatcherQueue.TryEnqueue(() => action()))
+            try
             {
-                logger.Warn("Failed to dispatch the tray command to the main UI thread.");
+                if (_dispatcherQueue == null || !_dispatcherQueue.TryEnqueue(() =>
+                {
+                    try { action(); }
+                    catch (Exception ex) { logger.Error(ex, "Tray UI action failed."); }
+                }))
+                {
+                    logger.Warn("Failed to dispatch the tray command to the main UI thread.");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Cannot dispatch a tray command.");
             }
         }
 
@@ -311,33 +518,47 @@ namespace WarThunderChatTranslator
 
         private void InitializeMainWindow()
         {
-            m_window = new MainWindow();
+            // Especially important as a fallback when the tray cannot be created:
+            // optional settings and visual effects must not prevent the UI from opening.
+            var window = new MainWindow();
+            m_window = window;
+            var theme = "Default";
+            try
+            {
+                theme = ApplicationConfig.GetSettings(ApplicationConfig.ThemeKey) ?? "Default";
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Cannot read the saved window theme.");
+            }
 
-            var theme = ApplicationConfig.GetSettings(ApplicationConfig.ThemeKey) ?? "Default";
-            ElementTheme SettingsTheme = theme switch
+            var settingsTheme = theme switch
             {
                 "Light" => ElementTheme.Light,
                 "Dark" => ElementTheme.Dark,
                 _ => ElementTheme.Default,
             };
 
-            ApplicationConfig.SaveSettings(ApplicationConfig.ThemeKey, theme);
+            try { ApplicationConfig.SaveSettings(ApplicationConfig.ThemeKey, theme); }
+            catch (Exception ex) { logger.Warn(ex, "Cannot save the window theme."); }
+            try { window.SystemBackdrop = new DesktopAcrylicBackdrop(); }
+            catch (Exception ex) { logger.Warn(ex, "The acrylic backdrop is unavailable."); }
+            try { ApplyTheme(settingsTheme); }
+            catch (Exception ex) { logger.Warn(ex, "Cannot apply the saved window theme."); }
+            try { CenterWindow(window); }
+            catch (Exception ex) { logger.Warn(ex, "Cannot center the settings window."); }
 
-            m_window.SystemBackdrop = new DesktopAcrylicBackdrop();
-            ApplyTheme(SettingsTheme);
-
-            CenterWindow(m_window);
-
-            m_window.Closed += (sender, args) =>
+            window.Closed += (sender, args) =>
             {
                 if (HandleClosedEvents)
                 {
                     args.Handled = true;
-                    m_window.Hide();
+                    try { window.Hide(); }
+                    catch (Exception ex) { logger.Warn(ex, "Cannot hide the settings window."); }
                 }
             };
-            m_window.Show();
-            m_window.Activate();
+            window.Show();
+            window.Activate();
         }
 
         public static void ApplyTheme(ElementTheme theme)
@@ -390,6 +611,8 @@ namespace WarThunderChatTranslator
             {
                 logger.Error(ex, "An error occurred while stopping background services.");
             }
+
+            ApplicationNotifications.Shutdown();
 
             try
             {
@@ -450,75 +673,102 @@ namespace WarThunderChatTranslator
 
         private void HandleException(Exception ex)
         {
-            logger.Error(ex, "Unhandled application exception.");
-
-            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-            toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode(ex.Message + ex.StackTrace));
-            var toast = new ToastNotification(toastXml);
-            ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
+            try
+            {
+                logger.Error(ex, "Unhandled application exception.");
+                ApplicationNotifications.Show(Localization.GetSystemString("StartupUnhandledError"));
+            }
+            catch (Exception reportError)
+            {
+                System.Diagnostics.Trace.TraceError($"Exception reporting failed: {reportError}");
+            }
         }
 
         private async Task StartBackgroundServicesAsync()
         {
+            var dashboardStarted = false;
             try
             {
-                var listenOnLan = IsAdmin();
-                if (listenOnLan && !IsPortAllowedInFirewall(8100))
-                {
-                    logger.Info("Port 8100 is not allowed by the firewall. Adding a rule...");
-                    AddFirewallRule(8100, GetFirewallRuleName(8100));
-                }
+                var listenOnLan = false;
+                try { listenOnLan = IsAdmin(); }
+                catch (Exception ex) { logger.Warn(ex, "Cannot check elevation; listening on localhost only."); }
 
                 _gameChatPollingService = new GameChatPollingService();
-                _localHttpServer = new LocalHttpServer(_gameChatPollingService, listenOnLan);
+                try
+                {
+                    _localHttpServer = new LocalHttpServer(_gameChatPollingService, listenOnLan);
+                    await _localHttpServer.StartAsync(_shutdownCts.Token);
+                    dashboardStarted = true;
+                    if (listenOnLan)
+                    {
+                        // Configure only the port Kestrel actually bound, without blocking startup.
+                        _ = ConfigureFirewallAsync(_localHttpServer.Port);
+                    }
+                }
+                catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
+                {
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Failed to start the local Dashboard server on the preferred or fallback port.");
+                    ApplicationNotifications.Show(Localization.GetSystemString("StartupServiceUnavailable"));
+                }
 
-                await _localHttpServer.StartAsync(_shutdownCts.Token);
-
-                _gamePollingTask = _gameChatPollingService.RunAsync(_shutdownCts.Token);
-                _ = ObserveBackgroundTaskAsync(_gamePollingTask, "game chat polling");
-
-                InitializeQuickTranslationServices();
-                OpenConfiguredStartupViews();
+                try
+                {
+                    _gamePollingTask = _gameChatPollingService.RunAsync(_shutdownCts.Token);
+                    _ = ObserveBackgroundTaskAsync(_gamePollingTask, "game chat polling");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Game polling could not be started.");
+                }
             }
             catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
             {
-                // The application is shutting down.
+                return;
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Failed to start the local HTTP server.");
-
-                var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-                toastXml.GetElementsByTagName("text")[0].AppendChild(
-                    toastXml.CreateTextNode("8100端口启动失败，请检查端口占用后再打开应用！"));
-                var toast = new ToastNotification(toastXml);
-                ToastNotificationManager.CreateToastNotifier("WarThunderChatTranslator").Show(toast);
-
-                await ExitApplicationAsync();
+                logger.Error(ex, "Background service setup failed; keeping the tray application alive.");
+                ApplicationNotifications.Show(Localization.GetSystemString("StartupServiceUnavailable"));
             }
+
+            // Voice services and startup views are optional and do not depend on the Dashboard listener.
+            try { InitializeQuickTranslationServices(); }
+            catch (Exception ex) { logger.Error(ex, "Quick translation startup failed."); }
+            try { OpenConfiguredStartupViews(dashboardStarted); }
+            catch (Exception ex) { logger.Error(ex, "Could not open configured startup views."); }
         }
 
+        private async Task ConfigureFirewallAsync(int port)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    if (!IsPortAllowedInFirewall(port))
+                    {
+                        logger.Info("Port {0} is not in the firewall allow list. Adding rule...", port);
+                        AddFirewallRule(port, GetFirewallRuleName(port));
+                    }
+                }, _shutdownCts.Token);
+            }
+            catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested) { }
+            catch (Exception ex) { logger.Warn(ex, "Could not configure the optional LAN firewall rule."); }
+        }
 
-        private void OpenConfiguredStartupViews()
+        private void OpenConfiguredStartupViews(bool dashboardStarted)
         {
             if (ApplicationConfig.GetBooleanSetting(ApplicationConfig.OpenOverlayOnStartupKey))
             {
                 EnqueueOnUiThread(() => OverlayManager?.Show());
             }
 
-            if (ApplicationConfig.GetBooleanSetting(ApplicationConfig.OpenDashboardOnStartupKey))
+            if (dashboardStarted && ApplicationConfig.GetBooleanSetting(ApplicationConfig.OpenDashboardOnStartupKey))
             {
-                EnqueueOnUiThread(async () =>
-                {
-                    try
-                    {
-                        await Windows.System.Launcher.LaunchUriAsync(new Uri("http://localhost:8100"));
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error(ex, "Failed to open the chat dashboard during application startup.");
-                    }
-                });
+                EnqueueOnUiThread(() => _ = OpenDashboardAsync());
             }
         }
 
