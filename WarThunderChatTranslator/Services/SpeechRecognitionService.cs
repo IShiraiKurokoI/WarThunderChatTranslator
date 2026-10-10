@@ -41,6 +41,14 @@ namespace WarThunderChatTranslator.Services
         public const string ModelFileName = "model.int8.onnx";
         public const string TokensFileName = "tokens.txt";
         public const string ModelDisplayName = "SenseVoice zh-en-ja-ko-yue INT8";
+        public const string ModelUpstreamName = "SenseVoiceSmall";
+        public const string ModelAuthor = "FunAudioLLM (Alibaba Group / FunASR)";
+        public const string ModelArtifactMaintainer = "Fangjun Kuang (csukuangfj) / k2-fsa sherpa-onnx";
+        public const string ModelArtifactDate = "2024-07-17";
+        public const string ModelLicenseName = "FunASR Model Open Source License Agreement v1.1";
+        public const string RuntimeDisplayName = "sherpa-onnx";
+        public const string RuntimeVersion = "1.13.8";
+        public const string RuntimeLicenseName = "Apache-2.0";
         public const string ModelSha256 = "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51";
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
 using NLog;
@@ -14,9 +14,9 @@ namespace WarThunderChatTranslator.Services
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static bool _registered;
-        private static Action _onActivated;
+        private static Action<string> _onActivated;
 
-        public static void Initialize(Action onActivated)
+        public static void Initialize(Action<string> onActivated)
         {
             if (_registered)
             {
@@ -39,7 +39,7 @@ namespace WarThunderChatTranslator.Services
             }
         }
 
-        public static void Show(string message)
+        public static void Show(string message, string navigationTarget = null)
         {
             if (!_registered || string.IsNullOrWhiteSpace(message))
             {
@@ -48,8 +48,13 @@ namespace WarThunderChatTranslator.Services
 
             try
             {
-                AppNotificationManager.Default.Show(
-                    new AppNotificationBuilder().AddText(message).BuildNotification());
+                var builder = new AppNotificationBuilder().AddText(message);
+                if (!string.IsNullOrWhiteSpace(navigationTarget))
+                {
+                    builder.AddArgument("navigate", navigationTarget);
+                }
+
+                AppNotificationManager.Default.Show(builder.BuildNotification());
             }
             catch (Exception ex)
             {
@@ -64,7 +69,7 @@ namespace WarThunderChatTranslator.Services
             try
             {
                 // Windows can invoke this callback off the UI thread.
-                _onActivated?.Invoke();
+                _onActivated?.Invoke(args.Argument ?? string.Empty);
             }
             catch (Exception ex)
             {

@@ -53,6 +53,7 @@ namespace WarThunderChatTranslator.Configurations
         public const string PhysicalChatCacheLimitKey = "PhysicalChatCacheLimit";
         public const string OpenOverlayOnStartupKey = "OpenOverlayOnStartup";
         public const string OpenDashboardOnStartupKey = "OpenDashboardOnStartup";
+        public const string LanFirewallRuleDisabledByUserKey = "LanFirewallRuleDisabledByUser";
 
         public const string BattleChatClearModeNone = "None";
         public const string BattleChatClearModeLogical = "Logical";

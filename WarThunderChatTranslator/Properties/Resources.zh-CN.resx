@@ -1111,6 +1111,87 @@ TargetLanguage.ISO6393：{8}</value>
   <data name="OpenDashboardOnStartupDescription" xml:space="preserve">
     <value>应用启动后自动使用默认浏览器打开本地 Dashboard。</value>
   </data>
+  <data name="LanAccessSettings" xml:space="preserve">
+    <value>局域网访问</value>
+  </data>
+  <data name="LanAccessSettingsDescription" xml:space="preserve">
+    <value>只有需要让同一局域网中的手机、平板或其他电脑打开 Dashboard 时才需要设置；如果只在本机使用，则无需配置。</value>
+  </data>
+  <data name="FirewallAccess" xml:space="preserve">
+    <value>Windows 防火墙</value>
+  </data>
+  <data name="FirewallAccessDescription" xml:space="preserve">
+    <value>控制局域网内其他设备是否可以访问 Dashboard。</value>
+  </data>
+  <data name="FirewallStatusChecking" xml:space="preserve">
+    <value>正在检查局域网访问状态…</value>
+  </data>
+  <data name="FirewallStatusAllowed" xml:space="preserve">
+    <value>已允许局域网访问</value>
+  </data>
+  <data name="FirewallStatusAllowedDetailFormat" xml:space="preserve">
+    <value>局域网内其他设备现在可以访问 Dashboard。</value>
+  </data>
+  <data name="FirewallStatusMissing" xml:space="preserve">
+    <value>尚未开启局域网访问</value>
+  </data>
+  <data name="FirewallStatusMissingDetailFormat" xml:space="preserve">
+    <value>如果只在本机使用，无需处理；如需其他设备访问，请点击右侧“允许局域网访问”。</value>
+  </data>
+  <data name="FirewallStatusOutdated" xml:space="preserve">
+    <value>需要重新允许局域网访问</value>
+  </data>
+  <data name="FirewallStatusOutdatedDetailFormat" xml:space="preserve">
+    <value>应用更新后，之前的授权可能已失效。如仍需其他设备访问 Dashboard，请重新允许。</value>
+  </data>
+  <data name="FirewallStatusServiceNotRunning" xml:space="preserve">
+    <value>Dashboard 服务尚未启动</value>
+  </data>
+  <data name="FirewallStatusServiceNotRunningDetail" xml:space="preserve">
+    <value>Dashboard 服务启动后即可设置局域网访问。</value>
+  </data>
+  <data name="FirewallStatusCheckFailed" xml:space="preserve">
+    <value>无法确认局域网访问状态</value>
+  </data>
+  <data name="FirewallStatusCheckFailedDetail" xml:space="preserve">
+    <value>可以稍后重试，或使用右侧按钮重新设置。</value>
+  </data>
+  <data name="FirewallStatusCheckFailedWithDetailFormat" xml:space="preserve">
+    <value>操作未完成：{0}</value>
+  </data>
+  <data name="FirewallAllowButton" xml:space="preserve">
+    <value>允许局域网访问</value>
+  </data>
+  <data name="FirewallRepairButton" xml:space="preserve">
+    <value>重新允许</value>
+  </data>
+  <data name="FirewallUacDialogTitle" xml:space="preserve">
+    <value>允许其他设备访问 Dashboard？</value>
+  </data>
+  <data name="FirewallUacDialogContentFormat" xml:space="preserve">
+    <value>只有需要让局域网内其他设备访问 Dashboard 时才需要此设置；如果只在本机使用，可以取消。&#xA;&#xA;继续后 Windows 会请求管理员确认。确认窗口中可能显示 Windows PowerShell，这是正常的。</value>
+  </data>
+  <data name="FirewallUacContinue" xml:space="preserve">
+    <value>继续</value>
+  </data>
+  <data name="FirewallStatusApplying" xml:space="preserve">
+    <value>正在设置局域网访问…</value>
+  </data>
+  <data name="FirewallStatusApplyingDetail" xml:space="preserve">
+    <value>Windows 可能会请求管理员确认。</value>
+  </data>
+  <data name="FirewallUacCancelled" xml:space="preserve">
+    <value>已取消设置</value>
+  </data>
+  <data name="FirewallUacCancelledDetail" xml:space="preserve">
+    <value>没有进行任何更改。</value>
+  </data>
+  <data name="FirewallRepairFailed" xml:space="preserve">
+    <value>无法开启局域网访问</value>
+  </data>
+  <data name="FirewallRepairFailedDetail" xml:space="preserve">
+    <value>Windows 未能完成设置。</value>
+  </data>
   <data name="NavQuickVoiceTranslation" xml:space="preserve">
     <value>语音翻译</value>
   </data>
@@ -1155,5 +1236,87 @@ TargetLanguage.ISO6393：{8}</value>
   </data>
   <data name="StartupUnsupportedSystemLanguage" xml:space="preserve">
     <value>你的 Windows 系统语言（{0}）暂不受支持，程序已默认使用英文。你可以在“界面设置”中手动选择其他程序语言。</value>
+  </data>
+
+  <data name="QuickTranslationSpeechModelInfoToolTip" xml:space="preserve">
+    <value>模型与许可信息</value>
+  </data>
+  <data name="QuickTranslationSpeechModelInfoTitle" xml:space="preserve">
+    <value>语音识别模型信息</value>
+  </data>
+  <data name="QuickTranslationSpeechModelFileMissing" xml:space="preserve">
+    <value>未找到</value>
+  </data>
+  <data name="QuickTranslationSpeechModelFilePresentFormat" xml:space="preserve">
+    <value>已存在（{0:0.0} MiB）</value>
+  </data>
+  <data name="QuickTranslationSpeechModelInfoBodyFormat" xml:space="preserve">
+    <value>模型：{0}
+模型包：{1}
+文件：{2}
+类型：SenseVoiceSmall 离线语音识别，INT8 ONNX
+语言：普通话、粤语、英语、日语、韩语
+推理：本地离线、16 kHz、自动语言检测、逆文本归一化（ITN）、CPU
+模型文件：{3}
+模型制品日期：{5}
+SHA-256：{6}
+
+原始模型 / 作者组织：{4}
+ONNX 转换 / 模型制品维护者：{11}
+
+模型权重许可：{7}。模型权重许可与本应用许可证、运行时许可证相互独立；使用或再分发时请保留所要求的归属/模型名称，并以当前上游模型许可条款为准。
+运行时：{8} {9}
+运行时许可：{10}。</value>
+  </data>
+  <data name="QuickTranslationSpeechModelOriginalLink" xml:space="preserve">
+    <value>打开 SenseVoice 项目</value>
+  </data>
+  <data name="QuickTranslationSpeechModelCardLink" xml:space="preserve">
+    <value>打开 SenseVoiceSmall 模型卡</value>
+  </data>
+  <data name="QuickTranslationSpeechModelPackageLink" xml:space="preserve">
+    <value>打开转换后的模型仓库</value>
+  </data>
+  <data name="QuickTranslationSpeechModelLicenseLink" xml:space="preserve">
+    <value>打开模型许可信息</value>
+  </data>
+  <data name="QuickTranslationSpeechRuntimeLink" xml:space="preserve">
+    <value>打开 sherpa-onnx 项目</value>
+  </data>
+
+  <data name="FirewallRemoveButton" xml:space="preserve">
+    <value>移除防火墙规则</value>
+  </data>
+
+  <data name="FirewallRemoveDialogTitle" xml:space="preserve">
+    <value>移除局域网访问授权？</value>
+  </data>
+
+  <data name="FirewallRemoveDialogContent" xml:space="preserve">
+    <value>这会移除本应用创建的防火墙授权。本机 Dashboard 仍可使用，但其他设备可能无法继续连接。</value>
+  </data>
+
+  <data name="FirewallRemoveDialogContentWithUac" xml:space="preserve">
+    <value>这会移除本应用创建的防火墙授权。本机 Dashboard 仍可使用，但其他设备可能无法继续连接。&#xA;&#xA;继续后 Windows 会请求管理员确认。</value>
+  </data>
+
+  <data name="FirewallStatusRemoving" xml:space="preserve">
+    <value>正在移除局域网访问授权…</value>
+  </data>
+
+  <data name="FirewallStatusRemovingDetail" xml:space="preserve">
+    <value>Windows 可能会请求管理员确认。</value>
+  </data>
+
+  <data name="FirewallRemoveFailed" xml:space="preserve">
+    <value>无法移除局域网访问授权</value>
+  </data>
+
+  <data name="FirewallRemoveFailedDetail" xml:space="preserve">
+    <value>Windows 未能完成更改。</value>
+  </data>
+
+  <data name="FirewallStartupOutdatedNotification" xml:space="preserve">
+    <value>应用更新后，之前的局域网访问授权可能已失效。如仍需从其他设备访问 Dashboard，请点击此通知重新设置；如果只在本机使用，则无需处理。</value>
   </data>
 </root>

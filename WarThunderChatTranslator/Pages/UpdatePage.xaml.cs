@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -31,17 +31,16 @@ namespace WarThunderChatTranslator.Pages
                 : lastUpdateCheckDate;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            CheckForUpdateAsync();
+            await CheckForUpdateAsync();
         }
 
-        private async void CheckForUpdateAsync()
+        private async Task CheckForUpdateAsync()
         {
-            var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-
-            dispatcherQueue.TryEnqueue(() => Checking.Visibility = Visibility.Visible);
-
+            // This method is entered from the WinUI thread. Keep the Store install flow on
+            // this thread because RequestDownloadAndInstallStorePackageUpdatesAsync shows UI.
+            Checking.Visibility = Visibility.Visible;
 
             try
             {
@@ -49,30 +48,24 @@ namespace WarThunderChatTranslator.Pages
 
                 if (updates.Count > 0)
                 {
-                    dispatcherQueue.TryEnqueue(async () =>
-                    {
-                        await ShowUpdateDialogAsync(updates);
-                    });
+                    await ShowUpdateDialogAsync(updates);
                 }
                 else
                 {
-                    dispatcherQueue.TryEnqueue(() => ShowToast(Localization.GetString("UpdateLatest")));
+                    ShowToast(Localization.GetString("UpdateLatest"));
                 }
 
-                dispatcherQueue.TryEnqueue(() =>
-                {
-                    LastUpdateCheckDate.Text = DateTime.Now.ToString("g");
-                    ApplicationConfig.SaveSettings(ApplicationConfig.LastUpdateCheckDateKey, LastUpdateCheckDate.Text);
-                });
+                LastUpdateCheckDate.Text = DateTime.Now.ToString("g");
+                ApplicationConfig.SaveSettings(ApplicationConfig.LastUpdateCheckDateKey, LastUpdateCheckDate.Text);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Failed to check for application updates.");
-                dispatcherQueue.TryEnqueue(() => ShowToast($"{Localization.GetString("UpdateCheckFailed")}: {ex.Message}"));
+                _logger.Error(ex, "Failed to check for or install application updates.");
+                ShowToast($"{Localization.GetString("UpdateCheckFailed")}: {ex.Message}");
             }
             finally
             {
-                dispatcherQueue.TryEnqueue(() => Checking.Visibility = Visibility.Collapsed);
+                Checking.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -93,7 +86,10 @@ namespace WarThunderChatTranslator.Pages
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                await UpdateHelper.InstallUpdatesAsync(updates);
+                var mainWindow = MainWindow.Instance
+                    ?? throw new InvalidOperationException("The main window is not available for Microsoft Store update UI.");
+                var ownerWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(mainWindow);
+                await UpdateHelper.InstallUpdatesAsync(updates, ownerWindowHandle);
             }
         }
 

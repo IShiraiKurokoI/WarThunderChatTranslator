@@ -26,6 +26,14 @@ To launch the browser automatically when the app starts, enable that option unde
 
 Friendly, enemy, and system messages can have different text colors. See [Appearance and Chat Styles](en-Appearance) for adjustments.
 
+## Open the Dashboard from another device
+
+To open the Dashboard from a phone, tablet, or another computer on the same LAN, first check **Runtime Settings → LAN Access** and the Windows Firewall status. The firewall rule is only needed for cross-device access; it is not required when the Dashboard is used only in the local browser.
+
+After enabling LAN access, connect using this PC's **LAN IPv4 address + the Dashboard's current port**. Do not use `127.0.0.1` or `0.0.0.0` from another device.
+
+See [Runtime & Network](en-Preferences) for firewall status, Microsoft Store update behavior, and rule removal.
+
 ## The page is empty or waiting
 
 The game may not be running, no new chat messages may have arrived, or translation may still be in progress. Confirm there is actual new in-game chat before troubleshooting [Translation Settings](en-Translation).

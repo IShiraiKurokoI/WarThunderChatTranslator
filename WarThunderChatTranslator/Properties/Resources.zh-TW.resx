@@ -1111,6 +1111,87 @@ TargetLanguage.ISO6393：{8}</value>
   <data name="OpenDashboardOnStartupDescription" xml:space="preserve">
     <value>應用啓動後自動使用預設瀏覽器打開本機 Dashboard。</value>
   </data>
+  <data name="LanAccessSettings" xml:space="preserve">
+    <value>區域網路存取</value>
+  </data>
+  <data name="LanAccessSettingsDescription" xml:space="preserve">
+    <value>只有需要讓同一區域網路中的手機、平板或其他電腦開啟 Dashboard 時才需要設定；如果只在本機使用，則不需要設定。</value>
+  </data>
+  <data name="FirewallAccess" xml:space="preserve">
+    <value>Windows 防火牆</value>
+  </data>
+  <data name="FirewallAccessDescription" xml:space="preserve">
+    <value>控制區域網路內其他裝置是否可以存取 Dashboard。</value>
+  </data>
+  <data name="FirewallStatusChecking" xml:space="preserve">
+    <value>正在檢查區域網路存取狀態…</value>
+  </data>
+  <data name="FirewallStatusAllowed" xml:space="preserve">
+    <value>已允許區域網路存取</value>
+  </data>
+  <data name="FirewallStatusAllowedDetailFormat" xml:space="preserve">
+    <value>區域網路內其他裝置現在可以存取 Dashboard。</value>
+  </data>
+  <data name="FirewallStatusMissing" xml:space="preserve">
+    <value>尚未開啟區域網路存取</value>
+  </data>
+  <data name="FirewallStatusMissingDetailFormat" xml:space="preserve">
+    <value>如果只在本機使用，不需要處理；如需其他裝置存取，請點擊右側「允許區域網路存取」。</value>
+  </data>
+  <data name="FirewallStatusOutdated" xml:space="preserve">
+    <value>需要重新允許區域網路存取</value>
+  </data>
+  <data name="FirewallStatusOutdatedDetailFormat" xml:space="preserve">
+    <value>應用程式更新後，先前的授權可能已失效。如仍需其他裝置存取 Dashboard，請重新允許。</value>
+  </data>
+  <data name="FirewallStatusServiceNotRunning" xml:space="preserve">
+    <value>Dashboard 服務尚未啟動</value>
+  </data>
+  <data name="FirewallStatusServiceNotRunningDetail" xml:space="preserve">
+    <value>Dashboard 服務啟動後即可設定區域網路存取。</value>
+  </data>
+  <data name="FirewallStatusCheckFailed" xml:space="preserve">
+    <value>無法確認區域網路存取狀態</value>
+  </data>
+  <data name="FirewallStatusCheckFailedDetail" xml:space="preserve">
+    <value>可以稍後重試，或使用右側按鈕重新設定。</value>
+  </data>
+  <data name="FirewallStatusCheckFailedWithDetailFormat" xml:space="preserve">
+    <value>操作未完成：{0}</value>
+  </data>
+  <data name="FirewallAllowButton" xml:space="preserve">
+    <value>允許區域網路存取</value>
+  </data>
+  <data name="FirewallRepairButton" xml:space="preserve">
+    <value>重新允許</value>
+  </data>
+  <data name="FirewallUacDialogTitle" xml:space="preserve">
+    <value>允許其他裝置存取 Dashboard？</value>
+  </data>
+  <data name="FirewallUacDialogContentFormat" xml:space="preserve">
+    <value>只有需要讓區域網路內其他裝置存取 Dashboard 時才需要此設定；如果只在本機使用，可以取消。&#xA;&#xA;繼續後 Windows 會要求系統管理員確認。確認視窗中可能顯示 Windows PowerShell，這是正常的。</value>
+  </data>
+  <data name="FirewallUacContinue" xml:space="preserve">
+    <value>繼續</value>
+  </data>
+  <data name="FirewallStatusApplying" xml:space="preserve">
+    <value>正在設定區域網路存取…</value>
+  </data>
+  <data name="FirewallStatusApplyingDetail" xml:space="preserve">
+    <value>Windows 可能會要求系統管理員確認。</value>
+  </data>
+  <data name="FirewallUacCancelled" xml:space="preserve">
+    <value>已取消設定</value>
+  </data>
+  <data name="FirewallUacCancelledDetail" xml:space="preserve">
+    <value>沒有進行任何變更。</value>
+  </data>
+  <data name="FirewallRepairFailed" xml:space="preserve">
+    <value>無法開啟區域網路存取</value>
+  </data>
+  <data name="FirewallRepairFailedDetail" xml:space="preserve">
+    <value>Windows 未能完成設定。</value>
+  </data>
   <data name="NavQuickVoiceTranslation" xml:space="preserve">
     <value>語音翻譯</value>
   </data>
@@ -1155,5 +1236,87 @@ TargetLanguage.ISO6393：{8}</value>
   </data>
   <data name="StartupUnsupportedSystemLanguage" xml:space="preserve">
     <value>你的 Windows 系統語言（{0}）目前不受支援，應用程式已預設使用英文。你可以在「介面設定」中手動選擇其他語言。</value>
+  </data>
+
+  <data name="QuickTranslationSpeechModelInfoToolTip" xml:space="preserve">
+    <value>模型與授權資訊</value>
+  </data>
+  <data name="QuickTranslationSpeechModelInfoTitle" xml:space="preserve">
+    <value>語音辨識模型資訊</value>
+  </data>
+  <data name="QuickTranslationSpeechModelFileMissing" xml:space="preserve">
+    <value>未找到</value>
+  </data>
+  <data name="QuickTranslationSpeechModelFilePresentFormat" xml:space="preserve">
+    <value>已存在（{0:0.0} MiB）</value>
+  </data>
+  <data name="QuickTranslationSpeechModelInfoBodyFormat" xml:space="preserve">
+    <value>模型：{0}
+模型套件：{1}
+檔案：{2}
+類型：SenseVoiceSmall 離線語音辨識，INT8 ONNX
+語言：普通話、粵語、英語、日語、韓語
+推理：本機離線、16 kHz、自動語言偵測、逆文字正規化（ITN）、CPU
+模型檔案：{3}
+模型製品日期：{5}
+SHA-256：{6}
+
+原始模型 / 作者組織：{4}
+ONNX 轉換 / 模型製品維護者：{11}
+
+模型權重授權：{7}。模型權重授權與本應用程式授權、執行階段授權彼此獨立；使用或再散佈時請保留要求的歸屬/模型名稱，並以目前上游模型授權條款為準。
+執行階段：{8} {9}
+執行階段授權：{10}。</value>
+  </data>
+  <data name="QuickTranslationSpeechModelOriginalLink" xml:space="preserve">
+    <value>開啟 SenseVoice 專案</value>
+  </data>
+  <data name="QuickTranslationSpeechModelCardLink" xml:space="preserve">
+    <value>開啟 SenseVoiceSmall 模型卡</value>
+  </data>
+  <data name="QuickTranslationSpeechModelPackageLink" xml:space="preserve">
+    <value>開啟轉換後的模型儲存庫</value>
+  </data>
+  <data name="QuickTranslationSpeechModelLicenseLink" xml:space="preserve">
+    <value>開啟模型授權資訊</value>
+  </data>
+  <data name="QuickTranslationSpeechRuntimeLink" xml:space="preserve">
+    <value>開啟 sherpa-onnx 專案</value>
+  </data>
+
+  <data name="FirewallRemoveButton" xml:space="preserve">
+    <value>移除防火牆規則</value>
+  </data>
+
+  <data name="FirewallRemoveDialogTitle" xml:space="preserve">
+    <value>移除區域網路存取授權？</value>
+  </data>
+
+  <data name="FirewallRemoveDialogContent" xml:space="preserve">
+    <value>這會移除本應用程式建立的防火牆授權。本機 Dashboard 仍可使用，但其他裝置可能無法繼續連線。</value>
+  </data>
+
+  <data name="FirewallRemoveDialogContentWithUac" xml:space="preserve">
+    <value>這會移除本應用程式建立的防火牆授權。本機 Dashboard 仍可使用，但其他裝置可能無法繼續連線。&#xA;&#xA;繼續後 Windows 會要求系統管理員確認。</value>
+  </data>
+
+  <data name="FirewallStatusRemoving" xml:space="preserve">
+    <value>正在移除區域網路存取授權…</value>
+  </data>
+
+  <data name="FirewallStatusRemovingDetail" xml:space="preserve">
+    <value>Windows 可能會要求管理員確認。</value>
+  </data>
+
+  <data name="FirewallRemoveFailed" xml:space="preserve">
+    <value>無法移除區域網路存取授權</value>
+  </data>
+
+  <data name="FirewallRemoveFailedDetail" xml:space="preserve">
+    <value>Windows 未能完成變更。</value>
+  </data>
+
+  <data name="FirewallStartupOutdatedNotification" xml:space="preserve">
+    <value>應用程式更新後，先前的區域網路存取授權可能已失效。如仍需從其他裝置存取 Dashboard，請點擊此通知重新設定；如果只在本機使用，則不需要處理。</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -16,13 +16,26 @@
     <PackageReference Include="MSTest.TestFramework" Version="4.4.1" />
   </ItemGroup>
 
+  <!--
+    Keep the test project independent from the WinUI project itself. We link only the
+    production source files exercised by these tests, so GitHub Actions can run the
+    test suite without building or packaging the Windows application.
+  -->
   <ItemGroup>
     <Compile Include="..\WarThunderChatTranslator\Helpers\StartupLanguage.cs" Link="Source\StartupLanguage.cs" />
-    <Compile Include="..\WarThunderChatTranslator\Entities\AiProviderConfig.cs" Link="Source\AiProviderConfig.cs" />
-    <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslationResult.cs" Link="Source\AiTranslationResult.cs" />
-    <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslator.cs" Link="Source\AiTranslator.cs" />
     <Compile Include="..\WarThunderChatTranslator\Helpers\HotkeyGesture.cs" Link="Source\HotkeyGesture.cs" />
     <Compile Include="..\WarThunderChatTranslator\Helpers\TtsCacheKey.cs" Link="Source\TtsCacheKey.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Entities\AiProviderConfig.cs" Link="Source\AiProviderConfig.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Entities\QuickTranslationHotkey.cs" Link="Source\QuickTranslationHotkey.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslationResult.cs" Link="Source\AiTranslationResult.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslator.cs" Link="Source\AiTranslator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\WarThunderChatTranslator\Properties\Resources.resx" Link="TestData\Resources.resx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\WarThunderChatTranslator\Properties\Resources.en-US.resx" Link="TestData\Resources.en-US.resx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\WarThunderChatTranslator\Properties\Resources.zh-CN.resx" Link="TestData\Resources.zh-CN.resx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\WarThunderChatTranslator\Properties\Resources.zh-TW.resx" Link="TestData\Resources.zh-TW.resx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,5 +52,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

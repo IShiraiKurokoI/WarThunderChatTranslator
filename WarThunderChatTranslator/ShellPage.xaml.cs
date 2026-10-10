@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WarThunderChatTranslator.Helpers;
@@ -14,6 +15,7 @@ public sealed partial class ShellPage : Page
     public ShellPage()
     {
         this.InitializeComponent();
+        Instance = this;
         Loaded += ShellPage_Loaded;
         Localization.CultureChanged += UpdateNavigationPaneWidth;
         shellPageService = new ShellPageService();
@@ -57,6 +59,61 @@ public sealed partial class ShellPage : Page
         const double iconAndIndentWidth = 104;
         const double comfortablePadding = 32;
         navigationView.OpenPaneLength = Math.Max(240, Math.Ceiling(widestText + iconAndIndentWidth + comfortablePadding));
+    }
+
+
+    public void NavigateTo(string pageKey)
+    {
+        if (string.IsNullOrWhiteSpace(pageKey))
+        {
+            return;
+        }
+
+        Type pageType;
+        try
+        {
+            pageType = shellPageService.GetPageType(pageKey);
+        }
+        catch (KeyNotFoundException)
+        {
+            return;
+        }
+
+        if (shellFrame.CurrentSourcePageType != pageType)
+        {
+            shellFrame.Navigate(pageType);
+        }
+
+        var item = FindNavigationItem(navigationView.MenuItems, pageKey)
+            ?? FindNavigationItem(navigationView.FooterMenuItems, pageKey);
+        if (item != null)
+        {
+            navigationView.SelectedItem = item;
+        }
+    }
+
+    private static NavigationViewItem FindNavigationItem(System.Collections.Generic.IEnumerable<object> items, string pageKey)
+    {
+        foreach (var itemObject in items)
+        {
+            if (itemObject is not NavigationViewItem item)
+            {
+                continue;
+            }
+
+            if (string.Equals(item.Tag?.ToString(), pageKey, StringComparison.Ordinal))
+            {
+                return item;
+            }
+
+            var child = FindNavigationItem(item.MenuItems, pageKey);
+            if (child != null)
+            {
+                return child;
+            }
+        }
+
+        return null;
     }
 
     private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)

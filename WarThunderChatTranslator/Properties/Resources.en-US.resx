@@ -1111,6 +1111,87 @@ TargetLanguage.ISO6393: {8}</value>
   <data name="OpenDashboardOnStartupDescription" xml:space="preserve">
     <value>Open the local Dashboard in your default browser automatically when the application starts.</value>
   </data>
+  <data name="LanAccessSettings" xml:space="preserve">
+    <value>LAN access</value>
+  </data>
+  <data name="LanAccessSettingsDescription" xml:space="preserve">
+    <value>Enable this only if you want phones, tablets, or other computers on your local network to open the Dashboard. No setup is needed for use on this PC only.</value>
+  </data>
+  <data name="FirewallAccess" xml:space="preserve">
+    <value>Windows Firewall</value>
+  </data>
+  <data name="FirewallAccessDescription" xml:space="preserve">
+    <value>Controls whether other devices on your local network can access the Dashboard.</value>
+  </data>
+  <data name="FirewallStatusChecking" xml:space="preserve">
+    <value>Checking LAN access…</value>
+  </data>
+  <data name="FirewallStatusAllowed" xml:space="preserve">
+    <value>LAN access is enabled</value>
+  </data>
+  <data name="FirewallStatusAllowedDetailFormat" xml:space="preserve">
+    <value>Other devices on your local network can access the Dashboard.</value>
+  </data>
+  <data name="FirewallStatusMissing" xml:space="preserve">
+    <value>LAN access is not enabled</value>
+  </data>
+  <data name="FirewallStatusMissingDetailFormat" xml:space="preserve">
+    <value>No action is needed if you use the Dashboard only on this PC. To use it from another device, select Allow LAN access.</value>
+  </data>
+  <data name="FirewallStatusOutdated" xml:space="preserve">
+    <value>LAN access needs to be allowed again</value>
+  </data>
+  <data name="FirewallStatusOutdatedDetailFormat" xml:space="preserve">
+    <value>An app update may have invalidated the previous permission. Allow LAN access again if you still use the Dashboard from other devices.</value>
+  </data>
+  <data name="FirewallStatusServiceNotRunning" xml:space="preserve">
+    <value>Dashboard service is not running</value>
+  </data>
+  <data name="FirewallStatusServiceNotRunningDetail" xml:space="preserve">
+    <value>LAN access can be configured after the Dashboard service starts.</value>
+  </data>
+  <data name="FirewallStatusCheckFailed" xml:space="preserve">
+    <value>Could not confirm LAN access</value>
+  </data>
+  <data name="FirewallStatusCheckFailedDetail" xml:space="preserve">
+    <value>Try again later, or use the button on the right to set up LAN access again.</value>
+  </data>
+  <data name="FirewallStatusCheckFailedWithDetailFormat" xml:space="preserve">
+    <value>The operation could not be completed. {0}</value>
+  </data>
+  <data name="FirewallAllowButton" xml:space="preserve">
+    <value>Allow LAN access</value>
+  </data>
+  <data name="FirewallRepairButton" xml:space="preserve">
+    <value>Allow again</value>
+  </data>
+  <data name="FirewallUacDialogTitle" xml:space="preserve">
+    <value>Allow other devices to access the Dashboard?</value>
+  </data>
+  <data name="FirewallUacDialogContentFormat" xml:space="preserve">
+    <value>This is only needed if you want other devices on your local network to access the Dashboard. If you use it only on this PC, you can cancel.&#xA;&#xA;Continue and Windows will ask for administrator approval. The confirmation may show Windows PowerShell; this is expected.</value>
+  </data>
+  <data name="FirewallUacContinue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="FirewallStatusApplying" xml:space="preserve">
+    <value>Setting up LAN access…</value>
+  </data>
+  <data name="FirewallStatusApplyingDetail" xml:space="preserve">
+    <value>Windows may ask for administrator approval.</value>
+  </data>
+  <data name="FirewallUacCancelled" xml:space="preserve">
+    <value>Setup cancelled</value>
+  </data>
+  <data name="FirewallUacCancelledDetail" xml:space="preserve">
+    <value>No changes were made.</value>
+  </data>
+  <data name="FirewallRepairFailed" xml:space="preserve">
+    <value>Could not enable LAN access</value>
+  </data>
+  <data name="FirewallRepairFailedDetail" xml:space="preserve">
+    <value>Windows could not complete the setup.</value>
+  </data>
   <data name="NavQuickVoiceTranslation" xml:space="preserve">
     <value>Voice translation</value>
   </data>
@@ -1155,5 +1236,87 @@ TargetLanguage.ISO6393: {8}</value>
   </data>
   <data name="StartupUnsupportedSystemLanguage" xml:space="preserve">
     <value>Your Windows display language ({0}) is not currently supported. English has been selected by default. You can manually choose a different app language in Appearance settings.</value>
+  </data>
+
+  <data name="QuickTranslationSpeechModelInfoToolTip" xml:space="preserve">
+    <value>Model and license information</value>
+  </data>
+  <data name="QuickTranslationSpeechModelInfoTitle" xml:space="preserve">
+    <value>Speech recognition model information</value>
+  </data>
+  <data name="QuickTranslationSpeechModelFileMissing" xml:space="preserve">
+    <value>not found</value>
+  </data>
+  <data name="QuickTranslationSpeechModelFilePresentFormat" xml:space="preserve">
+    <value>present ({0:0.0} MiB)</value>
+  </data>
+  <data name="QuickTranslationSpeechModelInfoBodyFormat" xml:space="preserve">
+    <value>Model: {0}
+Package: {1}
+File: {2}
+Type: SenseVoiceSmall offline ASR, INT8 ONNX
+Languages: Mandarin Chinese, Cantonese, English, Japanese, Korean
+Inference: local/offline, 16 kHz audio, automatic language detection, inverse text normalization, CPU
+Model file: {3}
+Artifact date: {5}
+SHA-256: {6}
+
+Original model / author organization: {4}
+ONNX conversion / artifact maintainer: {11}
+
+Model weights license: {7}. The model weights have terms separate from this application's license and from the runtime license. Preserve required attribution/model naming and follow the current upstream model terms.
+Runtime: {8} {9}
+Runtime license: {10}.</value>
+  </data>
+  <data name="QuickTranslationSpeechModelOriginalLink" xml:space="preserve">
+    <value>Open SenseVoice project</value>
+  </data>
+  <data name="QuickTranslationSpeechModelCardLink" xml:space="preserve">
+    <value>Open SenseVoiceSmall model card</value>
+  </data>
+  <data name="QuickTranslationSpeechModelPackageLink" xml:space="preserve">
+    <value>Open converted model repository</value>
+  </data>
+  <data name="QuickTranslationSpeechModelLicenseLink" xml:space="preserve">
+    <value>Open model license information</value>
+  </data>
+  <data name="QuickTranslationSpeechRuntimeLink" xml:space="preserve">
+    <value>Open sherpa-onnx project</value>
+  </data>
+
+  <data name="FirewallRemoveButton" xml:space="preserve">
+    <value>Remove firewall rule</value>
+  </data>
+
+  <data name="FirewallRemoveDialogTitle" xml:space="preserve">
+    <value>Remove LAN access permission?</value>
+  </data>
+
+  <data name="FirewallRemoveDialogContent" xml:space="preserve">
+    <value>This removes the firewall permission created by the app. The Dashboard will still work on this PC, but other devices may no longer be able to connect.</value>
+  </data>
+
+  <data name="FirewallRemoveDialogContentWithUac" xml:space="preserve">
+    <value>This removes the firewall permission created by the app. The Dashboard will still work on this PC, but other devices may no longer be able to connect.&#xA;&#xA;Continue and Windows will ask for administrator approval.</value>
+  </data>
+
+  <data name="FirewallStatusRemoving" xml:space="preserve">
+    <value>Removing LAN access permission…</value>
+  </data>
+
+  <data name="FirewallStatusRemovingDetail" xml:space="preserve">
+    <value>Windows may ask for administrator approval.</value>
+  </data>
+
+  <data name="FirewallRemoveFailed" xml:space="preserve">
+    <value>Could not remove LAN access permission</value>
+  </data>
+
+  <data name="FirewallRemoveFailedDetail" xml:space="preserve">
+    <value>Windows could not complete the change.</value>
+  </data>
+
+  <data name="FirewallStartupOutdatedNotification" xml:space="preserve">
+    <value>After the app update, the previous LAN access permission may no longer work. If you still use the Dashboard from another device, click this notification to set it up again. If you use it only on this PC, no action is needed.</value>
   </data>
 </root>

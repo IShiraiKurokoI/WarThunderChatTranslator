@@ -117,11 +117,29 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Spacing="4">
-                        <TextBlock
-                            x:Name="SpeechRecognitionStateText"
+                        <StackPanel
                             HorizontalAlignment="Right"
-                            FontWeight="SemiBold"
-                            TextAlignment="Right" />
+                            Orientation="Horizontal"
+                            Spacing="6">
+                            <TextBlock
+                                x:Name="SpeechRecognitionStateText"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                TextAlignment="Right" />
+                            <Button
+                                x:Name="SpeechModelInfoButton"
+                                Width="28"
+                                Height="28"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="SpeechModelInfoButton_Click"
+                                ToolTipService.ToolTip="{helpers:Loc Key=QuickTranslationSpeechModelInfoToolTip}">
+                                <FontIcon
+                                    FontSize="14"
+                                    Glyph="&#xE946;" />
+                            </Button>
+                        </StackPanel>
                         <TextBlock
                             x:Name="SpeechRecognitionStateDetail"
                             HorizontalAlignment="Stretch"

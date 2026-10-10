@@ -18,6 +18,21 @@
 - **快捷语音翻译**：通过全局快捷键录音，本地使用 SenseVoice 做语音识别，再翻译到指定语言并自动复制结果。不同快捷键可以绑定不同目标语言，也能选择录音设备和提示音。
 - **外观与运行设置**：可调整字体、字号、阵营文字颜色、聊天气泡、日间/深夜显示效果、轮询间隔和聊天缓存策略，并支持系统代理或自定义代理。
 
+## 本地语音识别模型与许可
+
+快捷语音翻译使用本地 **SenseVoiceSmall INT8 ONNX** 模型，通过 **sherpa-onnx** 运行，不需要把录音上传到语音识别服务。当前模型制品为 `sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17`，由 `iic/SenseVoiceSmall` 转换而来，支持普通话、粤语、英语、日语和韩语。
+
+- 原始模型 / 项目：SenseVoice / FunAudioLLM（Alibaba Group / FunASR 生态）
+- ONNX 转换与运行时：k2-fsa / sherpa-onnx
+- 模型文件：`model.int8.onnx`（INT8）
+- 推理方式：本地离线、16 kHz、自动语言检测、ITN、CPU
+- **模型权重许可**：以 SenseVoiceSmall 模型卡及其引用的 **FunASR Model Open Source License Agreement** 为准；模型权重许可与本项目许可证、sherpa-onnx 运行时许可证相互独立，使用和再分发时应保留要求的归属及模型名称。
+- **sherpa-onnx 运行时许可**：Apache-2.0。不要因为运行时采用 Apache-2.0，就把 SenseVoiceSmall 模型权重也标记为 Apache-2.0。
+
+详细的模型来源、许可链接、完整性校验与构建说明见 [`Assets/SpeechModels/.../README.md`](WarThunderChatTranslator/Assets/SpeechModels/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17/README.md)。
+
+上游参考：[SenseVoice](https://github.com/QwenAudio/SenseVoice) · [SenseVoiceSmall](https://www.modelscope.cn/models/iic/SenseVoiceSmall) · [sherpa-onnx SenseVoice](https://k2-fsa.github.io/sherpa/onnx/sense-voice/pretrained.html) · [FunASR License](https://github.com/modelscope/FunASR?tab=readme-ov-file#license)
+
 ## 界面预览
 
 <table>

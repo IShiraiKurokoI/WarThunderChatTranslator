@@ -219,7 +219,9 @@ namespace WarThunderChatTranslator.Services
                 throw;
             }
 
-            Logger.Info("Kestrel HTTP server bound to port {0}; dashboard: {1}.", Port, DashboardUri);
+            Logger.Info(
+                "Kestrel HTTP server started. Bound addresses: {0}; local dashboard: {1}.",
+                string.Join(", ", app.Urls), DashboardUri);
         }
 
         private static int GetBoundPort(IEnumerable<string> addresses)

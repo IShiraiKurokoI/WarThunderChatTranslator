@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.IO;
@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 using Application = Microsoft.UI.Xaml.Application;
 using H.NotifyIcon;
 using Microsoft.UI;
-using System.Text;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using System.Runtime.InteropServices;
 using NLog;
 using WarThunderChatTranslator.Helpers;
@@ -157,7 +154,7 @@ namespace WarThunderChatTranslator
 
             try
             {
-                ApplicationNotifications.Initialize(() => EnqueueOnUiThread(ToggleMainWindowVisibility));
+                ApplicationNotifications.Initialize(argument => EnqueueOnUiThread(() => HandleNotificationActivation(argument)));
                 if (trayCreated)
                 {
                     // Use the ORIGINAL Windows UI language, not a manually saved app override.
@@ -500,6 +497,29 @@ namespace WarThunderChatTranslator
             }
         }
 
+        private void HandleNotificationActivation(string argument)
+        {
+            ToggleMainWindowVisibility();
+
+            const string navigatePrefix = "navigate=";
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                return;
+            }
+
+            foreach (var part in argument.Split('&', StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (!part.StartsWith(navigatePrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var pageKey = Uri.UnescapeDataString(part.Substring(navigatePrefix.Length));
+                ShellPage.Instance?.NavigateTo(pageKey);
+                return;
+            }
+        }
+
         private void ToggleMainWindowVisibility()
         {
             if (m_window == null)
@@ -585,11 +605,23 @@ namespace WarThunderChatTranslator
             }
         }
 
-        private static bool IsAdmin()
+        private static bool IsAdmin() => FirewallHelper.IsAdministrator();
+
+        internal int LocalDashboardPort => _localHttpServer?.Port ?? 0;
+
+        internal Task<FirewallRuleStatus> GetFirewallStatusAsync(CancellationToken cancellationToken = default)
         {
-            var identity = WindowsIdentity.GetCurrent();
-            var principal = new WindowsPrincipal(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            return FirewallHelper.CheckAsync(LocalDashboardPort, cancellationToken);
+        }
+
+        internal Task<FirewallOperationResult> RepairFirewallRuleAsync(bool requestElevation, CancellationToken cancellationToken = default)
+        {
+            return FirewallHelper.RepairAsync(LocalDashboardPort, requestElevation, cancellationToken);
+        }
+
+        internal Task<FirewallOperationResult> RemoveFirewallRulesAsync(bool requestElevation, CancellationToken cancellationToken = default)
+        {
+            return FirewallHelper.RemoveAsync(requestElevation, cancellationToken);
         }
 
         public bool HandleClosedEvents { get; set; } = true;
@@ -689,9 +721,13 @@ namespace WarThunderChatTranslator
             var dashboardStarted = false;
             try
             {
-                var listenOnLan = false;
-                try { listenOnLan = IsAdmin(); }
-                catch (Exception ex) { logger.Warn(ex, "Cannot check elevation; listening on localhost only."); }
+                // Listening on a high TCP port does not require elevation. Keep LAN
+                // availability independent from administrator status; elevation is only
+                // needed when we want to create a Windows Firewall allow rule ourselves.
+                const bool listenOnLan = true;
+                var isAdmin = false;
+                try { isAdmin = IsAdmin(); }
+                catch (Exception ex) { logger.Warn(ex, "Cannot check elevation; LAN listener will still start, but the firewall rule will not be changed automatically."); }
 
                 _gameChatPollingService = new GameChatPollingService();
                 try
@@ -699,10 +735,20 @@ namespace WarThunderChatTranslator
                     _localHttpServer = new LocalHttpServer(_gameChatPollingService, listenOnLan);
                     await _localHttpServer.StartAsync(_shutdownCts.Token);
                     dashboardStarted = true;
-                    if (listenOnLan)
+                    var firewallDisabledByUser = ApplicationConfig.GetBooleanSetting(ApplicationConfig.LanFirewallRuleDisabledByUserKey);
+                    if (firewallDisabledByUser)
+                    {
+                        logger.Info("Automatic LAN firewall rule management is disabled because the user explicitly removed the rule.");
+                    }
+                    else if (isAdmin)
                     {
                         // Configure only the port Kestrel actually bound, without blocking startup.
                         _ = ConfigureFirewallAsync(_localHttpServer.Port);
+                    }
+                    else
+                    {
+                        logger.Info("Dashboard is listening on the LAN without elevation; a valid existing Windows Firewall rule remains effective for this standard-user process.");
+                        _ = CheckFirewallRuleForStandardUserAsync(_localHttpServer.Port);
                     }
                 }
                 catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested)
@@ -742,18 +788,56 @@ namespace WarThunderChatTranslator
             catch (Exception ex) { logger.Error(ex, "Could not open configured startup views."); }
         }
 
+        private async Task CheckFirewallRuleForStandardUserAsync(int port)
+        {
+            try
+            {
+                var status = await FirewallHelper.CheckAsync(port, _shutdownCts.Token);
+                switch (status.State)
+                {
+                    case FirewallRuleState.Allowed:
+                        logger.Info("Windows Firewall already has an effective inbound allow rule covering the current executable and TCP port {0}; no repair is required and LAN access can work without running the application as administrator.", port);
+                        break;
+
+                    case FirewallRuleState.Outdated:
+                        logger.Warn("A WarThunderChatTranslator firewall rule exists but does not match the current executable path or TCP port {0}. This commonly occurs after an app update; user action is required to repair it.", port);
+                        ApplicationNotifications.Show(Localization.GetSystemString("FirewallStartupOutdatedNotification"), "RunSettingsPage");
+                        break;
+
+                    case FirewallRuleState.Missing:
+                        logger.Info("No WarThunderChatTranslator firewall rule exists. The standard-user process will not request UAC automatically; the rule can be enabled from Runtime settings.");
+                        break;
+
+                    case FirewallRuleState.CheckFailed:
+                        logger.Warn("Could not verify the Windows Firewall rule: {0}", status.Detail ?? string.Empty);
+                        break;
+                }
+            }
+            catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested) { }
+            catch (Exception ex) { logger.Warn(ex, "Could not check the optional LAN firewall rule for the standard-user process."); }
+        }
+
         private async Task ConfigureFirewallAsync(int port)
         {
             try
             {
-                await Task.Run(() =>
+                var status = await FirewallHelper.CheckAsync(port, _shutdownCts.Token);
+                if (status.State == FirewallRuleState.Allowed)
                 {
-                    if (!IsPortAllowedInFirewall(port))
-                    {
-                        logger.Info("Port {0} is not in the firewall allow list. Adding rule...", port);
-                        AddFirewallRule(port, GetFirewallRuleName(port));
-                    }
-                }, _shutdownCts.Token);
+                    logger.Info("Windows Firewall already has an effective inbound allow rule covering the current executable and TCP port {0}; leaving the existing Windows rule unchanged.", port);
+                    return;
+                }
+
+                logger.Info("Windows Firewall rule state is {0}; repairing it automatically because the application is already elevated.", status.State);
+                var result = await FirewallHelper.RepairAsync(port, requestElevation: false, _shutdownCts.Token);
+                if (result.State == FirewallOperationState.Succeeded)
+                {
+                    logger.Info("Windows Firewall rule was created or repaired for TCP port {0}.", port);
+                }
+                else
+                {
+                    logger.Warn("Windows Firewall rule repair returned {0}: {1}", result.State, result.Detail ?? string.Empty);
+                }
             }
             catch (OperationCanceledException) when (_shutdownCts.IsCancellationRequested) { }
             catch (Exception ex) { logger.Warn(ex, "Could not configure the optional LAN firewall rule."); }
@@ -1027,62 +1111,6 @@ namespace WarThunderChatTranslator
             catch (Exception ex)
             {
                 logger.Error(ex, $"Background task '{taskName}' terminated unexpectedly.");
-            }
-        }
-
-        private static string GetFirewallRuleName(int port)
-        {
-            return $"WarThunderChatTranslator: Allow port {port}";
-        }
-
-        private static string GetLegacyFirewallRuleName(int port)
-        {
-            return $"WarThunderChatTranslator：允许端口 {port}";
-        }
-
-        private bool IsPortAllowedInFirewall(int port)
-        {
-            using var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "netsh",
-                    Arguments = "advfirewall firewall show rule name=all",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    StandardOutputEncoding = Encoding.UTF8
-                }
-            };
-
-            process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-
-            return output.Contains(GetFirewallRuleName(port), StringComparison.Ordinal)
-                || output.Contains(GetLegacyFirewallRuleName(port), StringComparison.Ordinal);
-        }
-
-        private void AddFirewallRule(int port, string ruleName)
-        {
-            var processStartInfo = new ProcessStartInfo
-            {
-                FileName = "netsh",
-                Arguments = $"advfirewall firewall add rule name=\"{ruleName}\" protocol=TCP dir=in localport={port} action=allow description=\"Allows inbound TCP traffic on port {port}.\"",
-                UseShellExecute = true,
-                Verb = "runas",
-                CreateNoWindow = true
-            };
-
-            try
-            {
-                using var process = Process.Start(processStartInfo);
-                process.WaitForExit();
-                logger.Info($"Firewall rule '{ruleName}' was added.");
-            }
-            catch (Exception ex)
-            {
-                logger.Warn(ex, $"Failed to add firewall rule '{ruleName}'.");
             }
         }
 

@@ -1259,6 +1259,107 @@ namespace WarThunderChatTranslator.Pages
             }
         }
 
+        private async void SpeechModelInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            var modelFileStatus = Localization.GetString("QuickTranslationSpeechModelFileMissing");
+            try
+            {
+                if (File.Exists(SpeechRecognitionService.ModelPath))
+                {
+                    var sizeMiB = new FileInfo(SpeechRecognitionService.ModelPath).Length / 1024d / 1024d;
+                    modelFileStatus = string.Format(
+                        CultureInfo.CurrentCulture,
+                        Localization.GetString("QuickTranslationSpeechModelFilePresentFormat"),
+                        sizeMiB);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug(ex, "Could not read local speech model file metadata for the info dialog.");
+            }
+
+            var summary = string.Format(
+                CultureInfo.CurrentCulture,
+                Localization.GetString("QuickTranslationSpeechModelInfoBodyFormat"),
+                SpeechRecognitionService.ModelDisplayName,
+                SpeechRecognitionService.ModelFolderName,
+                SpeechRecognitionService.ModelFileName,
+                modelFileStatus,
+                SpeechRecognitionService.ModelAuthor,
+                SpeechRecognitionService.ModelArtifactDate,
+                SpeechRecognitionService.ModelSha256,
+                SpeechRecognitionService.ModelLicenseName,
+                SpeechRecognitionService.RuntimeDisplayName,
+                SpeechRecognitionService.RuntimeVersion,
+                SpeechRecognitionService.RuntimeLicenseName,
+                SpeechRecognitionService.ModelArtifactMaintainer);
+
+            var content = new StackPanel
+            {
+                Spacing = 4,
+                MaxWidth = 620
+            };
+            content.Children.Add(new TextBlock
+            {
+                Text = summary,
+                TextWrapping = TextWrapping.Wrap,
+                IsTextSelectionEnabled = true
+            });
+
+            var links = new StackPanel
+            {
+                Margin = new Thickness(0, 8, 0, 0),
+                Spacing = 0
+            };
+            links.Children.Add(CreateModelInfoLink(
+                Localization.GetString("QuickTranslationSpeechModelOriginalLink"),
+                "https://github.com/QwenAudio/SenseVoice"));
+            links.Children.Add(CreateModelInfoLink(
+                Localization.GetString("QuickTranslationSpeechModelCardLink"),
+                "https://www.modelscope.cn/models/iic/SenseVoiceSmall"));
+            links.Children.Add(CreateModelInfoLink(
+                Localization.GetString("QuickTranslationSpeechModelPackageLink"),
+                "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17"));
+            links.Children.Add(CreateModelInfoLink(
+                Localization.GetString("QuickTranslationSpeechModelLicenseLink"),
+                "https://github.com/modelscope/FunASR/blob/main/MODEL_LICENSE"));
+            links.Children.Add(CreateModelInfoLink(
+                Localization.GetString("QuickTranslationSpeechRuntimeLink"),
+                "https://github.com/k2-fsa/sherpa-onnx"));
+            content.Children.Add(links);
+
+            var scrollViewer = new ScrollViewer
+            {
+                Content = content,
+                MaxHeight = 520,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollMode = ScrollMode.Enabled,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                HorizontalScrollMode = ScrollMode.Disabled
+            };
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = Localization.GetString("QuickTranslationSpeechModelInfoTitle"),
+                Content = scrollViewer,
+                CloseButtonText = Localization.GetString("QuickTranslationClose")
+            };
+            dialog.Resources["ContentDialogMaxWidth"] = 700d;
+            await dialog.ShowAsync();
+        }
+
+        private static HyperlinkButton CreateModelInfoLink(string text, string uri)
+        {
+            return new HyperlinkButton
+            {
+                Content = text,
+                Padding = new Thickness(0, 4, 0, 4),
+                NavigateUri = new Uri(uri)
+            };
+        }
+
         private static bool TryGetAudioCue(object tag, out QuickTranslationAudioCue cue)
         {
             return Enum.TryParse(tag?.ToString(), ignoreCase: true, out cue);
