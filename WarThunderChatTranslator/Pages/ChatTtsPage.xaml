@@ -73,126 +73,47 @@
                     <labs:SettingsCard
                         MaxWidth="2000"
                         HorizontalContentAlignment="Stretch"
-                        Header="{helpers:Loc Key=ChatTtsSherpaModel}">
+                        Description="{helpers:Loc Key=ChatTtsModelStateDescription}"
+                        Header="{helpers:Loc Key=ChatTtsModelState}">
                         <labs:SettingsCard.HeaderIcon>
-                            <FontIcon Glyph="&#xE8B7;" />
+                            <FontIcon Glyph="&#xE895;" />
                         </labs:SettingsCard.HeaderIcon>
-                        <Grid MaxWidth="620" HorizontalAlignment="Center" RowSpacing="8">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" HorizontalAlignment="Center" ColumnSpacing="16">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="320" />
-                                    <ColumnDefinition Width="168" />
-                                </Grid.ColumnDefinitions>
-
-                                <ComboBox
-                                    x:Name="SherpaModelCombo"
-                                    Grid.Column="0"
-                                    Width="320"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    SelectionChanged="SherpaModelCombo_SelectionChanged" />
-
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Width="168"
-                                    VerticalAlignment="Center"
-                                    Spacing="6">
-                                    <Button
-                                        x:Name="SherpaModelInfoButton"
-                                        Width="32"
-                                        Height="32"
-                                        Padding="0"
-                                        HorizontalAlignment="Right"
-                                        Click="SherpaModelInfoButton_Click"
-                                        ToolTipService.ToolTip="{helpers:Loc Key=ChatTtsModelInfoTitle}">
-                                        <FontIcon FontSize="14" Glyph="&#xE946;" />
-                                    </Button>
-                                    <Button
-                                        x:Name="SherpaDownloadButton"
-                                        Height="32"
-                                        Padding="8,3"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        Click="SherpaDownloadButton_Click">
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <FontIcon FontSize="13" Glyph="&#xE896;" />
-                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsDownloadRecommendedModel}" />
-                                        </StackPanel>
-                                    </Button>
-                                    <Button
-                                        x:Name="SherpaImportButton"
-                                        Height="32"
-                                        Padding="8,3"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        Click="SherpaImportButton_Click">
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <FontIcon FontSize="13" Glyph="&#xE8B5;" />
-                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsImportModel}" />
-                                        </StackPanel>
-                                    </Button>
-                                    <Button
-                                        x:Name="SherpaOpenFolderButton"
-                                        Height="32"
-                                        Padding="8,3"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        Click="SherpaOpenFolderButton_Click">
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <FontIcon FontSize="13" Glyph="&#xE838;" />
-                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsOpenModelFolder}" />
-                                        </StackPanel>
-                                    </Button>
-                                    <Button
-                                        x:Name="SherpaDeleteButton"
-                                        Height="32"
-                                        Padding="8,3"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        Click="SherpaDeleteButton_Click">
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <FontIcon FontSize="13" Glyph="&#xE74D;" />
-                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsDeleteModel}" />
-                                        </StackPanel>
-                                    </Button>
-                                </StackPanel>
-                            </Grid>
-
-                            <StackPanel Grid.Row="1" Width="504" HorizontalAlignment="Center" Spacing="4">
-                                <ProgressBar
-                                    x:Name="SherpaDownloadProgress"
-                                    Maximum="100"
-                                    Minimum="0"
-                                    Visibility="Collapsed" />
+                        <StackPanel
+                            MaxWidth="700"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Spacing="4">
+                            <StackPanel
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Spacing="6">
                                 <TextBlock
-                                    x:Name="SherpaModelStatus"
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    TextAlignment="Center"
-                                    TextWrapping="Wrap" />
+                                    x:Name="SherpaModelStateText"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    TextAlignment="Right" />
+                                <Button
+                                    x:Name="SherpaModelInfoButton"
+                                    Width="28"
+                                    Height="28"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="SherpaModelInfoButton_Click"
+                                    ToolTipService.ToolTip="{helpers:Loc Key=ChatTtsModelInfoToolTip}">
+                                    <FontIcon FontSize="14" Glyph="&#xE946;" />
+                                </Button>
                             </StackPanel>
-                        </Grid>
+                            <TextBlock
+                                x:Name="SherpaModelStateDetail"
+                                HorizontalAlignment="Stretch"
+                                Opacity="0.65"
+                                TextAlignment="Right"
+                                TextTrimming="CharacterEllipsis"
+                                Visibility="Collapsed" />
+                        </StackPanel>
                     </labs:SettingsCard>
 
-                    <InfoBar
-                        x:Name="SherpaModelInfoBar"
-                        Margin="0,8,0,0"
-                        IsClosable="True"
-                        IsOpen="False" />
-
-                    <TeachingTip
-                        x:Name="SherpaModelInfoTip"
-                        Title="{helpers:Loc Key=ChatTtsModelInfoTitle}"
-                        Subtitle="{helpers:Loc Key=ChatTtsModelInfoBody}"
-                        Target="{x:Bind SherpaModelInfoButton}">
-                        <TeachingTip.IconSource>
-                            <FontIconSource Glyph="&#xE946;" />
-                        </TeachingTip.IconSource>
-                    </TeachingTip>
 
                     <labs:SettingsCard
                         MaxWidth="2000"

@@ -147,11 +147,6 @@
                                         Content="QRCoder"
                                         FontSize="18"
                                         NavigateUri="https://github.com/codebude/QRCoder" />
-                                    <HyperlinkButton
-                                        Margin="5"
-                                        Content="SharpCompress"
-                                        FontSize="18"
-                                        NavigateUri="https://github.com/adamhathcock/sharpcompress" />
                                 </StackPanel>
                             </controls:SettingsCard.Description>
                         </controls:SettingsCard>

@@ -1,6 +1,6 @@
-# War Thunder Chat Translator
+﻿# War Thunder Chat Translator
 
-<p align="center"><strong>Guides for the tray, chat translation, Dashboard, overlay, voice shortcuts, and settings</strong></p>
+<p align="center"><strong>Guides for chat translation, Dashboard, overlay, voice features, content filtering, and settings</strong></p>
 
 <p align="center"><img src="images/04-overlay-in-game.jpg" alt="In-game overlay preview" width="820"></p>
 

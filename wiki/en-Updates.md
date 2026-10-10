@@ -1,4 +1,4 @@
-# Updates & About
+﻿# Updates & About
 
 [⌂ Back to English guide](en-Home) · [Previous: Appearance & Language](en-Appearance) · [Next: Troubleshooting](en-Troubleshooting)
 
@@ -17,7 +17,7 @@ Update checks may require an internet connection and Microsoft Store services. I
 
 ## What is on the About page?
 
-Open **About** to find the application version, author information, project links, and open-source acknowledgments. Checking your installed version is helpful before reporting an issue.
+Open **About** to find the application version, author information, project links, open-source libraries, and source information for SenseVoice, Kokoro, and the bundled content-filter dictionary. Checking your installed version is helpful before reporting an issue.
 
 ## Quit or restart correctly
 

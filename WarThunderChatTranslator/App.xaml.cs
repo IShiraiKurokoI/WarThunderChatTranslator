@@ -366,7 +366,6 @@ namespace WarThunderChatTranslator
                 { ChatTtsConfig.ProviderKey, ChatTtsConfig.ProviderWindows },
                 { ChatTtsConfig.WindowsVoiceIdKey, "" },
                 { ChatTtsConfig.SherpaVoiceIdKey, "" },
-                { ChatTtsConfig.SherpaModelIdKey, "" },
                 { ChatTtsConfig.SherpaNumThreadsKey, ChatTtsConfig.DefaultSherpaNumThreads.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { ChatTtsConfig.SpeakingRateKey, ChatTtsConfig.DefaultSpeakingRate.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { ChatTtsConfig.VolumeKey, ChatTtsConfig.DefaultVolume.ToString(System.Globalization.CultureInfo.InvariantCulture) },
@@ -526,13 +525,6 @@ namespace WarThunderChatTranslator
                 {
                     arguments[Uri.UnescapeDataString(pair[0])] = Uri.UnescapeDataString(pair[1]);
                 }
-            }
-
-            if (arguments.TryGetValue("action", out var action)
-                && string.Equals(action, "cancelTtsModelDownload", StringComparison.OrdinalIgnoreCase))
-            {
-                SherpaTtsModelManager.Shared.CancelRecommendedModelDownload();
-                return;
             }
 
             ToggleMainWindowVisibility();

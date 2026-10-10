@@ -1,4 +1,4 @@
-# Browser Dashboard
+﻿# Browser Dashboard
 
 [⌂ Back to English guide](en-Home) · [Previous: AI Models](en-AI) · [Next: In-Game Overlay](en-Overlay)
 
@@ -32,7 +32,11 @@ To open the Dashboard from a phone, tablet, or another computer on the same LAN,
 
 After enabling LAN access, connect using this PC's **LAN IPv4 address + the Dashboard's current port**. Do not use `127.0.0.1` or `0.0.0.0` from another device.
 
-See [Runtime & Network](en-Preferences) for firewall status, Microsoft Store update behavior, and rule removal.
+Runtime Settings automatically prefers the **active interface that currently has traffic and external network access** and generates a QR code for it. A phone or tablet on the same LAN can scan the code to open the Dashboard.
+
+LAN authentication is optional and off by default. When enabled, other devices need a random session token generated for the current app run. **Access from this PC is always exempt**, including when the local LAN address is used instead of localhost.
+
+See [Runtime & Network](en-Preferences) for firewall status, Microsoft Store update behavior, authentication, and rule removal.
 
 ## The page is empty or waiting
 

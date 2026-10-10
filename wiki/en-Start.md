@@ -1,4 +1,4 @@
-# Getting Started
+﻿# Getting Started
 
 [⌂ Back to English guide](en-Home) · [Previous: Back to English guide](en-Home) · [Next: Startup & System Tray](en-Tray)
 
@@ -33,6 +33,8 @@ These choices are independent. For example, you can use the English interface wh
 - **In-game reading:** use the [overlay](en-Overlay), without keeping a browser open.
 - **Second-monitor setup:** open the [Dashboard](en-Dashboard) and move the browser to your other display.
 - **Translate what you say:** configure [voice translation](en-Voice) and paste the result into chat.
+- **Want less screen reading during a match?** Enable [Chat Voice Playback](en-Chat-TTS) with Microsoft system voices or the bundled Kokoro model.
+- **Streaming and want cleaner spoken audio?** Enable only the TTS side of [Content Filtering](en-Content-Filter); the private Dashboard can still show the complete translation.
 - **Open a view automatically:** change the options under [Runtime Settings](en-Preferences).
 
 ## Are my settings saved?

@@ -1,6 +1,6 @@
-# 語音翻譯
+﻿# 語音翻譯
 
-[⌂ 返回繁體中文目錄](zh-Hant-Home) · [上一頁: 遊戲懸浮視窗](zh-Hant-Overlay) · [下一頁: 執行與網路設定](zh-Hant-Preferences)
+[⌂ 返回繁體中文目錄](zh-Hant-Home) · [上一頁: 遊戲懸浮視窗](zh-Hant-Overlay) · [下一頁: 聊天語音播報](zh-Hant-Chat-TTS)
 
 > 設定麥克風、快捷鍵、錄音方式和提示音。
 
@@ -51,4 +51,4 @@
 
 ---
 
-[← 上一頁: 遊戲懸浮視窗](zh-Hant-Overlay) · [返回繁體中文目錄](zh-Hant-Home) · [下一頁: 執行與網路設定 →](zh-Hant-Preferences)
+[← 上一頁: 遊戲懸浮視窗](zh-Hant-Overlay) · [返回繁體中文目錄](zh-Hant-Home) · [下一頁: 聊天語音播報 →](zh-Hant-Chat-TTS)

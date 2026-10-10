@@ -1,6 +1,6 @@
-# 语音翻译
+﻿# 语音翻译
 
-[⌂ 返回简体中文目录](zh-Hans-Home) · [上一页: 游戏悬浮窗](zh-Hans-Overlay) · [下一页: 运行与网络设置](zh-Hans-Preferences)
+[⌂ 返回简体中文目录](zh-Hans-Home) · [上一页: 游戏悬浮窗](zh-Hans-Overlay) · [下一页: 聊天语音播报](zh-Hans-Chat-TTS)
 
 > 设置麦克风、快捷键、录音步骤和提示音。
 
@@ -51,4 +51,4 @@
 
 ---
 
-[← 上一页: 游戏悬浮窗](zh-Hans-Overlay) · [返回简体中文目录](zh-Hans-Home) · [下一页: 运行与网络设置 →](zh-Hans-Preferences)
+[← 上一页: 游戏悬浮窗](zh-Hans-Overlay) · [返回简体中文目录](zh-Hans-Home) · [下一页: 聊天语音播报 →](zh-Hans-Chat-TTS)

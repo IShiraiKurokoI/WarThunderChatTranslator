@@ -14,24 +14,11 @@
 
 - **实时聊天翻译**：持续读取 War Thunder 聊天消息，可显示译文、原文或两者同时显示，并支持来源语言提示。
 - **多种翻译方式**：内置 Microsoft、Google、Yandex；也可以添加自己的 AI 服务，目前支持 OpenAI Responses、OpenAI-compatible Chat Completions 和 Anthropic Messages，并可单独配置模型、接口地址、Temperature 与提示词。
-- **Dashboard 和游戏悬浮窗**：既可以在浏览器 Dashboard 里看，也可以直接把翻译窗口放到游戏画面上；悬浮窗支持显示器、位置、尺寸和透明度设置。
+- **Dashboard 和游戏悬浮窗**：既可以在 Dashboard 里看，也可以直接把翻译窗口放到游戏画面上。
+- **聊天语音播报**：可使用 Windows 本地的 **Microsoft SpeechSynthesizer** 或随应用分发的 **Kokoro v1.1 INT8** 本地模型播报译文；支持音色、语速、音量、消息类型、等待队列与过期策略。
+- **不文明内容过滤**：显示过滤和 TTS 过滤完全独立，可按宽泛/常规/严重等级处理，并支持自定义黑名单、白名单以及导入导出。
 - **快捷语音翻译**：通过全局快捷键录音，本地使用 SenseVoice 做语音识别，再翻译到指定语言并自动复制结果。不同快捷键可以绑定不同目标语言，也能选择录音设备和提示音。
 - **外观与运行设置**：可调整字体、字号、阵营文字颜色、聊天气泡、日间/深夜显示效果、轮询间隔和聊天缓存策略，并支持系统代理或自定义代理。
-
-## 本地语音识别模型与许可
-
-快捷语音翻译使用本地 **SenseVoiceSmall INT8 ONNX** 模型，通过 **sherpa-onnx** 运行，不需要把录音上传到语音识别服务。当前模型制品为 `sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17`，由 `iic/SenseVoiceSmall` 转换而来，支持普通话、粤语、英语、日语和韩语。
-
-- 原始模型 / 项目：SenseVoice / FunAudioLLM（Alibaba Group / FunASR 生态）
-- ONNX 转换与运行时：k2-fsa / sherpa-onnx
-- 模型文件：`model.int8.onnx`（INT8）
-- 推理方式：本地离线、16 kHz、自动语言检测、ITN、CPU
-- **模型权重许可**：以 SenseVoiceSmall 模型卡及其引用的 **FunASR Model Open Source License Agreement** 为准；模型权重许可与本项目许可证、sherpa-onnx 运行时许可证相互独立，使用和再分发时应保留要求的归属及模型名称。
-- **sherpa-onnx 运行时许可**：Apache-2.0。不要因为运行时采用 Apache-2.0，就把 SenseVoiceSmall 模型权重也标记为 Apache-2.0。
-
-详细的模型来源、许可链接、完整性校验与构建说明见 [`Assets/SpeechModels/.../README.md`](WarThunderChatTranslator/Assets/SpeechModels/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17/README.md)。
-
-上游参考：[SenseVoice](https://github.com/QwenAudio/SenseVoice) · [SenseVoiceSmall](https://www.modelscope.cn/models/iic/SenseVoiceSmall) · [sherpa-onnx SenseVoice](https://k2-fsa.github.io/sherpa/onnx/sense-voice/pretrained.html) · [FunASR License](https://github.com/modelscope/FunASR?tab=readme-ov-file#license)
 
 ## 界面预览
 
@@ -82,6 +69,11 @@
 - [ ] 实现界面自定义
 
 ## 更新记录
+
+### v1.1.1.0
+
+- 新增聊天语音播报，可选择 Microsoft SpeechSynthesizer 或内置 Kokoro v1.1 本地模型。
+- 新增显示 / TTS 独立的不文明内容过滤、自定义黑名单与白名单。
 
 ### v1.1.0.0
 

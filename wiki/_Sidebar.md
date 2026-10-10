@@ -1,4 +1,4 @@
-### 📖 War Thunder Chat Translator
+﻿### 📖 War Thunder Chat Translator
 
 [⌂ Wiki Home](Home)
 
@@ -15,6 +15,8 @@
 - [浏览器 Dashboard](zh-Hans-Dashboard)
 - [游戏悬浮窗](zh-Hans-Overlay)
 - [语音翻译](zh-Hans-Voice)
+- [聊天语音播报](zh-Hans-Chat-TTS)
+- [不文明内容过滤](zh-Hans-Content-Filter)
 - [运行与网络设置](zh-Hans-Preferences)
 - [外观与界面语言](zh-Hans-Appearance)
 - [更新与关于](zh-Hans-Updates)
@@ -33,6 +35,8 @@
 - [瀏覽器 Dashboard](zh-Hant-Dashboard)
 - [遊戲懸浮視窗](zh-Hant-Overlay)
 - [語音翻譯](zh-Hant-Voice)
+- [聊天語音播報](zh-Hant-Chat-TTS)
+- [不文明內容過濾](zh-Hant-Content-Filter)
 - [執行與網路設定](zh-Hant-Preferences)
 - [外觀與介面語言](zh-Hant-Appearance)
 - [更新與關於](zh-Hant-Updates)
@@ -51,6 +55,8 @@
 - [Browser Dashboard](en-Dashboard)
 - [In-Game Overlay](en-Overlay)
 - [Voice Translation](en-Voice)
+- [Chat Voice Playback](en-Chat-TTS)
+- [Content Filtering](en-Content-Filter)
 - [Runtime & Network](en-Preferences)
 - [Appearance & Language](en-Appearance)
 - [Updates & About](en-Updates)

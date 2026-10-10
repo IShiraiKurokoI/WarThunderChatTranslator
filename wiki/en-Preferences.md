@@ -1,6 +1,6 @@
-# Runtime & Network
+﻿# Runtime & Network
 
-[⌂ Back to English guide](en-Home) · [Previous: Voice Translation](en-Voice) · [Next: Appearance & Language](en-Appearance)
+[⌂ Back to English guide](en-Home) · [Previous: Content Filtering](en-Content-Filter) · [Next: Appearance & Language](en-Appearance)
 
 > Manage startup behavior, LAN Dashboard access, Windows Firewall rules, polling intervals, and chat cache behavior.
 
@@ -23,7 +23,8 @@ To allow another device on the local network to open the Dashboard:
 1. Open **Runtime Settings → LAN Access**.
 2. Check the **Windows Firewall** card.
 3. Select **Allow LAN Access**. When the app is running without administrator rights, it first explains why elevation is needed and then requests Windows UAC confirmation.
-4. After the rule is configured, connect from the other device using this PC's LAN IPv4 address and the Dashboard's current port.
+4. After the rule is configured, Runtime Settings prefers the active interface with current traffic and external network access, and shows the Dashboard address plus a QR code for quick access from a phone or tablet.
+5. Optionally enable **Access Authentication** for other LAN devices. It is off by default and uses a new random session token each time the app starts. Access from this PC is always exempt.
 
 The app first checks whether Windows Firewall **already allows the current executable to receive the current Dashboard traffic in practice**. If you previously selected Allow access in the native Windows prompt, or an administrator / policy already created a sufficient inbound allow rule, that rule is accepted as-is and the app does not ask you to repair it again. Only when no usable allow rule exists does the app offer to create or repair one.
 
@@ -89,4 +90,4 @@ After changing this setting, return to **Translation Settings → Test Translati
 
 ---
 
-[← Previous: Voice Translation](en-Voice) · [Back to English guide](en-Home) · [Next: Appearance & Language →](en-Appearance)
+[← Previous: Content Filtering](en-Content-Filter) · [Back to English guide](en-Home) · [Next: Appearance & Language →](en-Appearance)

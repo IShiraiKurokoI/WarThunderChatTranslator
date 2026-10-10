@@ -145,7 +145,6 @@
     <PackageReference Include="NAudio.Wasapi" Version="3.1.0" />
     <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
     <PackageReference Include="QRCoder" Version="1.8.0" />
-    <PackageReference Include="SharpCompress" Version="0.50.4" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
@@ -277,4 +276,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+
+  <Target Name="WarnIfBundledKokoroMissing" BeforeTargets="BeforeBuild"
+          Condition="!Exists('Assets\SpeechModels\TTS\kokoro-int8-multi-lang-v1_1\model.int8.onnx')">
+    <Warning Text="Bundled Kokoro TTS model is missing. Add the complete official kokoro-int8-multi-lang-v1_1 model directory before building a distributable package." />
+  </Target>
+
 </Project>

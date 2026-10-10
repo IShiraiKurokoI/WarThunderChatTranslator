@@ -1,110 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -1169,7 +1110,9 @@ TargetLanguage.ISO6393: {8}</value>
     <value>Allow other devices to access the Dashboard?</value>
   </data>
   <data name="FirewallUacDialogContentFormat" xml:space="preserve">
-    <value>This is only needed if you want other devices on your local network to access the Dashboard. If you use it only on this PC, you can cancel.&#xA;&#xA;Continue and Windows will ask for administrator approval. The confirmation may show Windows PowerShell; this is expected.</value>
+    <value>This is only needed if you want other devices on your local network to access the Dashboard. If you use it only on this PC, you can cancel.
+
+Continue and Windows will ask for administrator approval. The confirmation may show Windows PowerShell; this is expected.</value>
   </data>
   <data name="FirewallUacContinue" xml:space="preserve">
     <value>Continue</value>
@@ -1237,7 +1180,6 @@ TargetLanguage.ISO6393: {8}</value>
   <data name="StartupUnsupportedSystemLanguage" xml:space="preserve">
     <value>Your Windows display language ({0}) is not currently supported. English has been selected by default. You can manually choose a different app language in Appearance settings.</value>
   </data>
-
   <data name="QuickTranslationSpeechModelInfoToolTip" xml:space="preserve">
     <value>Model and license information</value>
   </data>
@@ -1283,39 +1225,32 @@ Runtime license: {10}.</value>
   <data name="QuickTranslationSpeechRuntimeLink" xml:space="preserve">
     <value>Open sherpa-onnx project</value>
   </data>
-
   <data name="FirewallRemoveButton" xml:space="preserve">
     <value>Remove firewall rule</value>
   </data>
-
   <data name="FirewallRemoveDialogTitle" xml:space="preserve">
     <value>Remove LAN access permission?</value>
   </data>
-
   <data name="FirewallRemoveDialogContent" xml:space="preserve">
     <value>This removes the firewall permission created by the app. The Dashboard will still work on this PC, but other devices may no longer be able to connect.</value>
   </data>
-
   <data name="FirewallRemoveDialogContentWithUac" xml:space="preserve">
-    <value>This removes the firewall permission created by the app. The Dashboard will still work on this PC, but other devices may no longer be able to connect.&#xA;&#xA;Continue and Windows will ask for administrator approval.</value>
-  </data>
+    <value>This removes the firewall permission created by the app. The Dashboard will still work on this PC, but other devices may no longer be able to connect.
 
+Continue and Windows will ask for administrator approval.</value>
+  </data>
   <data name="FirewallStatusRemoving" xml:space="preserve">
     <value>Removing LAN access permission…</value>
   </data>
-
   <data name="FirewallStatusRemovingDetail" xml:space="preserve">
     <value>Windows may ask for administrator approval.</value>
   </data>
-
   <data name="FirewallRemoveFailed" xml:space="preserve">
     <value>Could not remove LAN access permission</value>
   </data>
-
   <data name="FirewallRemoveFailedDetail" xml:space="preserve">
     <value>Windows could not complete the change.</value>
   </data>
-
   <data name="FirewallStartupOutdatedNotification" xml:space="preserve">
     <value>After the app update, the previous LAN access permission may no longer work. If you still use the Dashboard from another device, click this notification to set it up again. If you use it only on this PC, no action is needed.</value>
   </data>
@@ -1326,7 +1261,7 @@ Runtime license: {10}.</value>
     <value>Chat voice playback</value>
   </data>
   <data name="ChatTtsDescription" xml:space="preserve">
-    <value>Read translated chat aloud with Microsoft SpeechSynthesizer or a local TTS model.</value>
+    <value>Automatically reads translated chat messages aloud. Choose Microsoft SpeechSynthesizer or the bundled local TTS model.</value>
   </data>
   <data name="ChatTtsEnable" xml:space="preserve">
     <value>Enable chat voice playback</value>
@@ -1460,7 +1395,6 @@ Runtime license: {10}.</value>
   <data name="LanDashboardUnavailable" xml:space="preserve">
     <value>No usable LAN IPv4 address is currently available.</value>
   </data>
-
   <data name="NavContentFilter" xml:space="preserve">
     <value>Content Filter</value>
   </data>
@@ -1600,31 +1534,16 @@ Runtime license: {10}.</value>
     <value>Voice source</value>
   </data>
   <data name="ChatTtsProviderDescription" xml:space="preserve">
-    <value>Choose Microsoft system speech or a local TTS model.</value>
+    <value>Choose the Windows system speech engine or the bundled local model.</value>
   </data>
   <data name="ChatTtsProviderWindows" xml:space="preserve">
     <value>Microsoft SpeechSynthesizer</value>
   </data>
   <data name="ChatTtsProviderSherpa" xml:space="preserve">
-    <value>Local model (Sherpa-ONNX / Kokoro)</value>
+    <value>Local model (Kokoro v1.1)</value>
   </data>
   <data name="ChatTtsLocalModelSettings" xml:space="preserve">
-    <value>Local model settings</value>
-  </data>
-  <data name="ChatTtsSherpaModel" xml:space="preserve">
-    <value>Voice model</value>
-  </data>
-  <data name="ChatTtsSherpaModelDescription" xml:space="preserve">
-    <value>Choose an installed local model, or download/import a model.</value>
-  </data>
-  <data name="ChatTtsDownloadRecommendedModel" xml:space="preserve">
-    <value>Download Kokoro v1.1 model</value>
-  </data>
-  <data name="ChatTtsImportModel" xml:space="preserve">
-    <value>Import model</value>
-  </data>
-  <data name="ChatTtsOpenModelFolder" xml:space="preserve">
-    <value>Open model folder</value>
+    <value>Local model</value>
   </data>
   <data name="ChatTtsSherpaThreads" xml:space="preserve">
     <value>Performance usage</value>
@@ -1632,47 +1551,8 @@ Runtime license: {10}.</value>
   <data name="ChatTtsSherpaThreadsDescription" xml:space="preserve">
     <value>Higher values can generate speech faster but use more processor resources. The default is suitable for most users.</value>
   </data>
-  <data name="ChatTtsRecommendedModelSummary" xml:space="preserve">
-    <value>Recommended: Kokoro v1.1 (Sherpa-ONNX, Chinese/English, 103 voices)</value>
-  </data>
-  <data name="ChatTtsRecommendedModelLabel" xml:space="preserve">
-    <value>Kokoro v1.1 · Chinese/English · 103 voices</value>
-  </data>
-  <data name="ChatTtsModelNoneInstalled" xml:space="preserve">
-    <value>No local model is installed. Download Kokoro v1.1 or import a supported model folder.</value>
-  </data>
-  <data name="ChatTtsModelInstalledCount" xml:space="preserve">
-    <value>{0} local model(s) found.</value>
-  </data>
-  <data name="ChatTtsModelDownloading" xml:space="preserve">
-    <value>Downloading Kokoro v1.1 model…</value>
-  </data>
-  <data name="ChatTtsModelDownloadProgress" xml:space="preserve">
-    <value>Downloading model… {0:0.0}%</value>
-  </data>
-  <data name="ChatTtsModelDownloadSuccess" xml:space="preserve">
-    <value>Model installed</value>
-  </data>
-  <data name="ChatTtsModelDownloadFailed" xml:space="preserve">
-    <value>Model download failed</value>
-  </data>
-  <data name="ChatTtsModelImporting" xml:space="preserve">
-    <value>Importing model…</value>
-  </data>
-  <data name="ChatTtsModelImportSuccess" xml:space="preserve">
-    <value>Model imported</value>
-  </data>
-  <data name="ChatTtsModelImportFailed" xml:space="preserve">
-    <value>Model import failed</value>
-  </data>
-  <data name="ChatTtsOpenModelFolderFailed" xml:space="preserve">
-    <value>Could not open the model folder</value>
-  </data>
   <data name="ChatTtsSherpaVoicesLoading" xml:space="preserve">
     <value>Loading available voices…</value>
-  </data>
-  <data name="ChatTtsSherpaVoicesReady" xml:space="preserve">
-    <value>{0} voice(s) available.</value>
   </data>
   <data name="AboutModelsAndData" xml:space="preserve">
     <value>Models and dictionaries</value>
@@ -1681,70 +1561,50 @@ Runtime license: {10}.</value>
     <value>SenseVoiceSmall (local speech recognition)</value>
   </data>
   <data name="AboutKokoroModel" xml:space="preserve">
-    <value>Kokoro (Sherpa-ONNX local TTS model)</value>
+    <value>Kokoro v1.1 INT8 (bundled TTS model · Apache-2.0)</value>
   </data>
   <data name="AboutFilterDictionary" xml:space="preserve">
     <value>LDNOOBW (base content-filter dictionary)</value>
   </data>
   <data name="ChatTtsVoiceRequiresModel" xml:space="preserve">
-    <value>Download or import a model first.</value>
-  </data>
-  <data name="ChatTtsModelInstalling" xml:space="preserve">
-    <value>Download complete. Installing model…</value>
-  </data>
-  <data name="ChatTtsModelDownloadCancelled" xml:space="preserve">
-    <value>Model download cancelled.</value>
-  </data>
-  <data name="ChatTtsDownloadToastTitle" xml:space="preserve">
-    <value>Downloading Kokoro v1.1 model</value>
-  </data>
-  <data name="ChatTtsDownloadToastStatus" xml:space="preserve">
-    <value>Downloading…</value>
-  </data>
-  <data name="ChatTtsDownloadToastInstalling" xml:space="preserve">
-    <value>Installing…</value>
-  </data>
-  <data name="ChatTtsDownloadToastPreparing" xml:space="preserve">
-    <value>Preparing…</value>
-  </data>
-  <data name="ChatTtsDownloadToastCompleted" xml:space="preserve">
-    <value>Kokoro v1.1 model installed.</value>
-  </data>
-  <data name="ChatTtsDownloadToastCancelled" xml:space="preserve">
-    <value>Model download cancelled.</value>
-  </data>
-  <data name="ChatTtsDownloadToastFailed" xml:space="preserve">
-    <value>Model download failed.</value>
-  </data>
-  <data name="ChatTtsDeleteModel" xml:space="preserve">
-    <value>Delete selected model</value>
-  </data>
-  <data name="ChatTtsDeleteModelDialogTitle" xml:space="preserve">
-    <value>Delete this model?</value>
-  </data>
-  <data name="ChatTtsDeleteModelDialogContentFormat" xml:space="preserve">
-    <value>“{0}” will be removed from this computer. This cannot be undone.</value>
-  </data>
-  <data name="ChatTtsDeleteModelSuccess" xml:space="preserve">
-    <value>Model deleted</value>
-  </data>
-  <data name="ChatTtsDeleteModelFailed" xml:space="preserve">
-    <value>Could not delete model</value>
-  </data>
-  <data name="ChatTtsSupportedImportModelSummary" xml:space="preserve">
-    <value>Import support: Sherpa-ONNX Kokoro TTS model folders containing model.onnx or model.int8.onnx, voices.bin, tokens.txt, and espeak-ng-data. Other model frameworks are not currently supported.</value>
-  </data>
-  <data name="ChatTtsUnsupportedImportModel" xml:space="preserve">
-    <value>Only Sherpa-ONNX Kokoro TTS model folders are currently supported. Make sure the folder contains an ONNX model, voices.bin, tokens.txt, and espeak-ng-data.</value>
+    <value>The bundled local model is missing. Reinstall the app to use local speech.</value>
   </data>
   <data name="ChatTtsModelInfoTitle" xml:space="preserve">
-    <value>Local model information</value>
+    <value>Kokoro v1.1 model information</value>
   </data>
-  <data name="ChatTtsModelInfoBody" xml:space="preserve">
-    <value>Choose an installed local model, or download/import one.
-
-Recommended model: Kokoro v1.1 (Sherpa-ONNX, Chinese/English, 103 voices).
-
-Import: currently only Sherpa-ONNX Kokoro TTS model folders are supported. The folder must contain model.onnx or model.int8.onnx, voices.bin, tokens.txt, and espeak-ng-data. Other model frameworks are not currently supported.</value>
+  <data name="ChatTtsModelState" xml:space="preserve">
+    <value>Model status</value>
+  </data>
+  <data name="ChatTtsModelStateDescription" xml:space="preserve">
+    <value>Shows whether the bundled local speech model is ready to use.</value>
+  </data>
+  <data name="ChatTtsModelStateReady" xml:space="preserve">
+    <value>Kokoro v1.1 is ready</value>
+  </data>
+  <data name="ChatTtsModelStateMissing" xml:space="preserve">
+    <value>Kokoro v1.1 model files are missing</value>
+  </data>
+  <data name="ChatTtsModelStateMissingDetail" xml:space="preserve">
+    <value>Reinstall the app with the complete model package.</value>
+  </data>
+  <data name="ChatTtsModelInfoToolTip" xml:space="preserve">
+    <value>Model information</value>
+  </data>
+  <data name="ChatTtsModelInfoBodyFormat" xml:space="preserve">
+    <value>Model: {0}
+Status: {1}
+Model file: {2}
+Languages: Chinese, English
+Voices: 103
+Runtime: {3} {4}
+License: {5}
+Archive SHA-256: {6}
+Documentation: {7}</value>
+  </data>
+  <data name="ChatTtsModelFilePresentFormat" xml:space="preserve">
+    <value>Present ({0:0.0} MiB)</value>
+  </data>
+  <data name="ChatTtsModelFileMissing" xml:space="preserve">
+    <value>Missing</value>
   </data>
 </root>

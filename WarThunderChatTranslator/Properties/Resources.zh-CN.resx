@@ -1,110 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -1169,7 +1110,9 @@ TargetLanguage.ISO6393：{8}</value>
     <value>允许其他设备访问 Dashboard？</value>
   </data>
   <data name="FirewallUacDialogContentFormat" xml:space="preserve">
-    <value>只有需要让局域网内其他设备访问 Dashboard 时才需要此设置；如果只在本机使用，可以取消。&#xA;&#xA;继续后 Windows 会请求管理员确认。确认窗口中可能显示 Windows PowerShell，这是正常的。</value>
+    <value>只有需要让局域网内其他设备访问 Dashboard 时才需要此设置；如果只在本机使用，可以取消。
+
+继续后 Windows 会请求管理员确认。确认窗口中可能显示 Windows PowerShell，这是正常的。</value>
   </data>
   <data name="FirewallUacContinue" xml:space="preserve">
     <value>继续</value>
@@ -1237,7 +1180,6 @@ TargetLanguage.ISO6393：{8}</value>
   <data name="StartupUnsupportedSystemLanguage" xml:space="preserve">
     <value>你的 Windows 系统语言（{0}）暂不受支持，程序已默认使用英文。你可以在“界面设置”中手动选择其他程序语言。</value>
   </data>
-
   <data name="QuickTranslationSpeechModelInfoToolTip" xml:space="preserve">
     <value>模型与许可信息</value>
   </data>
@@ -1283,39 +1225,32 @@ ONNX 转换 / 模型制品维护者：{11}
   <data name="QuickTranslationSpeechRuntimeLink" xml:space="preserve">
     <value>打开 sherpa-onnx 项目</value>
   </data>
-
   <data name="FirewallRemoveButton" xml:space="preserve">
     <value>移除防火墙规则</value>
   </data>
-
   <data name="FirewallRemoveDialogTitle" xml:space="preserve">
     <value>移除局域网访问授权？</value>
   </data>
-
   <data name="FirewallRemoveDialogContent" xml:space="preserve">
     <value>这会移除本应用创建的防火墙授权。本机 Dashboard 仍可使用，但其他设备可能无法继续连接。</value>
   </data>
-
   <data name="FirewallRemoveDialogContentWithUac" xml:space="preserve">
-    <value>这会移除本应用创建的防火墙授权。本机 Dashboard 仍可使用，但其他设备可能无法继续连接。&#xA;&#xA;继续后 Windows 会请求管理员确认。</value>
-  </data>
+    <value>这会移除本应用创建的防火墙授权。本机 Dashboard 仍可使用，但其他设备可能无法继续连接。
 
+继续后 Windows 会请求管理员确认。</value>
+  </data>
   <data name="FirewallStatusRemoving" xml:space="preserve">
     <value>正在移除局域网访问授权…</value>
   </data>
-
   <data name="FirewallStatusRemovingDetail" xml:space="preserve">
     <value>Windows 可能会请求管理员确认。</value>
   </data>
-
   <data name="FirewallRemoveFailed" xml:space="preserve">
     <value>无法移除局域网访问授权</value>
   </data>
-
   <data name="FirewallRemoveFailedDetail" xml:space="preserve">
     <value>Windows 未能完成更改。</value>
   </data>
-
   <data name="FirewallStartupOutdatedNotification" xml:space="preserve">
     <value>应用更新后，之前的局域网访问授权可能已失效。如仍需从其他设备访问 Dashboard，请点击此通知重新设置；如果只在本机使用，则无需处理。</value>
   </data>
@@ -1326,7 +1261,7 @@ ONNX 转换 / 模型制品维护者：{11}
     <value>聊天语音播报</value>
   </data>
   <data name="ChatTtsDescription" xml:space="preserve">
-    <value>把聊天翻译结果自动读出来。可以使用 Microsoft SpeechSynthesizer，也可以使用本地 TTS 模型。</value>
+    <value>自动朗读聊天翻译结果。可使用 Microsoft SpeechSynthesizer，或使用随应用内置的本地语音模型。</value>
   </data>
   <data name="ChatTtsEnable" xml:space="preserve">
     <value>启用聊天语音播报</value>
@@ -1460,7 +1395,6 @@ ONNX 转换 / 模型制品维护者：{11}
   <data name="LanDashboardUnavailable" xml:space="preserve">
     <value>当前未检测到可用的局域网 IPv4 地址。</value>
   </data>
-
   <data name="NavContentFilter" xml:space="preserve">
     <value>不文明词过滤</value>
   </data>
@@ -1600,31 +1534,16 @@ ONNX 转换 / 模型制品维护者：{11}
     <value>声音来源</value>
   </data>
   <data name="ChatTtsProviderDescription" xml:space="preserve">
-    <value>选择 Microsoft 系统语音，或使用本地 TTS 模型。</value>
+    <value>选择 Windows 系统语音，或使用随应用内置的本地模型。</value>
   </data>
   <data name="ChatTtsProviderWindows" xml:space="preserve">
     <value>Microsoft SpeechSynthesizer</value>
   </data>
   <data name="ChatTtsProviderSherpa" xml:space="preserve">
-    <value>本地模型（Sherpa-ONNX / Kokoro）</value>
+    <value>本地模型（Kokoro v1.1）</value>
   </data>
   <data name="ChatTtsLocalModelSettings" xml:space="preserve">
-    <value>本地模型设置</value>
-  </data>
-  <data name="ChatTtsSherpaModel" xml:space="preserve">
-    <value>语音模型</value>
-  </data>
-  <data name="ChatTtsSherpaModelDescription" xml:space="preserve">
-    <value>选择已安装的本地模型，或下载/导入模型。</value>
-  </data>
-  <data name="ChatTtsDownloadRecommendedModel" xml:space="preserve">
-    <value>下载 Kokoro v1.1 模型</value>
-  </data>
-  <data name="ChatTtsImportModel" xml:space="preserve">
-    <value>导入模型</value>
-  </data>
-  <data name="ChatTtsOpenModelFolder" xml:space="preserve">
-    <value>打开模型目录</value>
+    <value>本地模型</value>
   </data>
   <data name="ChatTtsSherpaThreads" xml:space="preserve">
     <value>性能占用</value>
@@ -1632,47 +1551,8 @@ ONNX 转换 / 模型制品维护者：{11}
   <data name="ChatTtsSherpaThreadsDescription" xml:space="preserve">
     <value>数值越高，生成语音通常越快，但会占用更多处理器资源。一般保持默认即可。</value>
   </data>
-  <data name="ChatTtsRecommendedModelSummary" xml:space="preserve">
-    <value>推荐下载：Kokoro v1.1（Sherpa-ONNX，中英双语，103 音色）</value>
-  </data>
-  <data name="ChatTtsRecommendedModelLabel" xml:space="preserve">
-    <value>Kokoro v1.1 · 中英双语 · 103 音色</value>
-  </data>
-  <data name="ChatTtsModelNoneInstalled" xml:space="preserve">
-    <value>还没有本地模型。推荐下载 Kokoro v1.1 模型，或导入受支持的模型文件夹。</value>
-  </data>
-  <data name="ChatTtsModelInstalledCount" xml:space="preserve">
-    <value>已找到 {0} 个本地模型。</value>
-  </data>
-  <data name="ChatTtsModelDownloading" xml:space="preserve">
-    <value>正在下载 Kokoro v1.1 模型…</value>
-  </data>
-  <data name="ChatTtsModelDownloadProgress" xml:space="preserve">
-    <value>正在下载模型… {0:0.0}%</value>
-  </data>
-  <data name="ChatTtsModelDownloadSuccess" xml:space="preserve">
-    <value>模型安装完成</value>
-  </data>
-  <data name="ChatTtsModelDownloadFailed" xml:space="preserve">
-    <value>模型下载失败</value>
-  </data>
-  <data name="ChatTtsModelImporting" xml:space="preserve">
-    <value>正在导入模型…</value>
-  </data>
-  <data name="ChatTtsModelImportSuccess" xml:space="preserve">
-    <value>模型导入完成</value>
-  </data>
-  <data name="ChatTtsModelImportFailed" xml:space="preserve">
-    <value>模型导入失败</value>
-  </data>
-  <data name="ChatTtsOpenModelFolderFailed" xml:space="preserve">
-    <value>无法打开模型目录</value>
-  </data>
   <data name="ChatTtsSherpaVoicesLoading" xml:space="preserve">
     <value>正在读取可用声音…</value>
-  </data>
-  <data name="ChatTtsSherpaVoicesReady" xml:space="preserve">
-    <value>可用声音：{0} 个。</value>
   </data>
   <data name="AboutModelsAndData" xml:space="preserve">
     <value>模型与词库</value>
@@ -1681,70 +1561,50 @@ ONNX 转换 / 模型制品维护者：{11}
     <value>SenseVoiceSmall（本地语音识别）</value>
   </data>
   <data name="AboutKokoroModel" xml:space="preserve">
-    <value>Kokoro（Sherpa-ONNX 本地 TTS 模型）</value>
+    <value>Kokoro v1.1 INT8（内置 TTS 模型 · Apache-2.0）</value>
   </data>
   <data name="AboutFilterDictionary" xml:space="preserve">
     <value>LDNOOBW（不文明词基础词库）</value>
   </data>
   <data name="ChatTtsVoiceRequiresModel" xml:space="preserve">
-    <value>请先下载或导入模型。</value>
-  </data>
-  <data name="ChatTtsModelInstalling" xml:space="preserve">
-    <value>下载完成，正在安装模型…</value>
-  </data>
-  <data name="ChatTtsModelDownloadCancelled" xml:space="preserve">
-    <value>模型下载已取消。</value>
-  </data>
-  <data name="ChatTtsDownloadToastTitle" xml:space="preserve">
-    <value>正在下载 Kokoro v1.1 模型</value>
-  </data>
-  <data name="ChatTtsDownloadToastStatus" xml:space="preserve">
-    <value>正在下载…</value>
-  </data>
-  <data name="ChatTtsDownloadToastInstalling" xml:space="preserve">
-    <value>正在安装…</value>
-  </data>
-  <data name="ChatTtsDownloadToastPreparing" xml:space="preserve">
-    <value>正在准备…</value>
-  </data>
-  <data name="ChatTtsDownloadToastCompleted" xml:space="preserve">
-    <value>Kokoro v1.1 模型已安装完成。</value>
-  </data>
-  <data name="ChatTtsDownloadToastCancelled" xml:space="preserve">
-    <value>模型下载已取消。</value>
-  </data>
-  <data name="ChatTtsDownloadToastFailed" xml:space="preserve">
-    <value>模型下载失败。</value>
-  </data>
-  <data name="ChatTtsDeleteModel" xml:space="preserve">
-    <value>删除选中模型</value>
-  </data>
-  <data name="ChatTtsDeleteModelDialogTitle" xml:space="preserve">
-    <value>删除这个模型？</value>
-  </data>
-  <data name="ChatTtsDeleteModelDialogContentFormat" xml:space="preserve">
-    <value>将从电脑中删除“{0}”。此操作无法撤销。</value>
-  </data>
-  <data name="ChatTtsDeleteModelSuccess" xml:space="preserve">
-    <value>模型已删除</value>
-  </data>
-  <data name="ChatTtsDeleteModelFailed" xml:space="preserve">
-    <value>删除模型失败</value>
-  </data>
-  <data name="ChatTtsSupportedImportModelSummary" xml:space="preserve">
-    <value>导入支持：Sherpa-ONNX 的 Kokoro TTS 模型文件夹；需包含 model.onnx 或 model.int8.onnx、voices.bin、tokens.txt 和 espeak-ng-data。其它框架模型暂不支持。</value>
-  </data>
-  <data name="ChatTtsUnsupportedImportModel" xml:space="preserve">
-    <value>当前仅支持 Sherpa-ONNX 的 Kokoro TTS 模型文件夹。请确认文件夹包含 ONNX 模型、voices.bin、tokens.txt 和 espeak-ng-data。</value>
+    <value>内置本地模型缺失，请重新安装应用后使用本地语音。</value>
   </data>
   <data name="ChatTtsModelInfoTitle" xml:space="preserve">
-    <value>本地模型说明</value>
+    <value>Kokoro v1.1 模型信息</value>
   </data>
-  <data name="ChatTtsModelInfoBody" xml:space="preserve">
-    <value>选择已安装的本地模型，或下载/导入模型。
-
-推荐模型：Kokoro v1.1（Sherpa-ONNX，中英双语，103 音色）。
-
-导入模型：当前仅支持 Sherpa-ONNX 的 Kokoro TTS 模型文件夹，需要包含 model.onnx 或 model.int8.onnx、voices.bin、tokens.txt 和 espeak-ng-data。其它框架模型暂不支持。</value>
+  <data name="ChatTtsModelState" xml:space="preserve">
+    <value>模型状态</value>
+  </data>
+  <data name="ChatTtsModelStateDescription" xml:space="preserve">
+    <value>显示内置本地语音模型当前是否可以正常使用。</value>
+  </data>
+  <data name="ChatTtsModelStateReady" xml:space="preserve">
+    <value>Kokoro v1.1 已就绪</value>
+  </data>
+  <data name="ChatTtsModelStateMissing" xml:space="preserve">
+    <value>Kokoro v1.1 模型文件缺失</value>
+  </data>
+  <data name="ChatTtsModelStateMissingDetail" xml:space="preserve">
+    <value>请重新安装包含完整模型文件的应用。</value>
+  </data>
+  <data name="ChatTtsModelInfoToolTip" xml:space="preserve">
+    <value>查看模型信息</value>
+  </data>
+  <data name="ChatTtsModelInfoBodyFormat" xml:space="preserve">
+    <value>模型：{0}
+状态：{1}
+模型文件：{2}
+语言：中文、英文
+音色：103
+运行库：{3} {4}
+许可证：{5}
+压缩包 SHA-256：{6}
+说明：{7}</value>
+  </data>
+  <data name="ChatTtsModelFilePresentFormat" xml:space="preserve">
+    <value>已安装（{0:0.0} MiB）</value>
+  </data>
+  <data name="ChatTtsModelFileMissing" xml:space="preserve">
+    <value>缺失</value>
   </data>
 </root>

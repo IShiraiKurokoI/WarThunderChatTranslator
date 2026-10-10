@@ -11,7 +11,6 @@ namespace WarThunderChatTranslator.Configurations
         public const string ProviderKey = "ChatTtsProvider";
         public const string WindowsVoiceIdKey = "ChatTtsWindowsVoiceId";
         public const string SherpaVoiceIdKey = "ChatTtsSherpaVoiceId";
-        public const string SherpaModelIdKey = "ChatTtsSherpaModelId";
         public const string SherpaNumThreadsKey = "ChatTtsSherpaNumThreads";
         public const string SpeakingRateKey = "ChatTtsSpeakingRate";
         public const string VolumeKey = "ChatTtsVolume";
@@ -64,8 +63,6 @@ namespace WarThunderChatTranslator.Configurations
             return ApplicationConfig.GetSettings(key) ?? string.Empty;
         }
 
-        public static string GetSherpaModelId() =>
-            ApplicationConfig.GetSettings(SherpaModelIdKey) ?? string.Empty;
 
         public static int GetSherpaNumThreads()
         {

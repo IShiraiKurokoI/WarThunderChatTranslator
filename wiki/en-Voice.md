@@ -1,6 +1,6 @@
-# Voice Translation
+﻿# Voice Translation
 
-[⌂ Back to English guide](en-Home) · [Previous: In-Game Overlay](en-Overlay) · [Next: Runtime & Network](en-Preferences)
+[⌂ Back to English guide](en-Home) · [Previous: In-Game Overlay](en-Overlay) · [Next: Chat Voice Playback](en-Chat-TTS)
 
 > Set up microphone shortcuts, recordings, and feedback sounds.
 
@@ -51,4 +51,4 @@ Recording start, recording end, translation success, and translation failure eac
 
 ---
 
-[← Previous: In-Game Overlay](en-Overlay) · [Back to English guide](en-Home) · [Next: Runtime & Network →](en-Preferences)
+[← Previous: In-Game Overlay](en-Overlay) · [Back to English guide](en-Home) · [Next: Chat Voice Playback →](en-Chat-TTS)
