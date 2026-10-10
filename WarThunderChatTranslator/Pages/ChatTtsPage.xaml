@@ -1,0 +1,397 @@
+﻿<Page
+    x:Class="WarThunderChatTranslator.Pages.ChatTtsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
+    xmlns:labs="using:DevWinUI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
+    mc:Ignorable="d">
+
+    <Grid Padding="20,0,0,0" RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Margin="0,44,0,0"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="{helpers:Loc Key=ChatTtsTitle}" />
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Padding="0,0,20,48" Spacing="0">
+                <TextBlock
+                    Margin="0,0,0,14"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=ChatTtsDescription}"
+                    TextWrapping="Wrap" />
+
+                <InfoBar
+                    x:Name="ChatTtsInfoBar"
+                    Margin="0,0,0,12"
+                    IsClosable="True"
+                    IsOpen="False" />
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ChatTtsEnableDescription}"
+                    Header="{helpers:Loc Key=ChatTtsEnable}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE767;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="ChatTtsEnabled" Toggled="ChatTtsEnabled_Toggled" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ChatTtsProviderDescription}"
+                    Header="{helpers:Loc Key=ChatTtsProvider}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE950;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="ChatTtsProvider"
+                        Width="420"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="ChatTtsProvider_SelectionChanged">
+                        <ComboBoxItem Content="{helpers:Loc Key=ChatTtsProviderWindows}" Tag="Windows" />
+                        <ComboBoxItem Content="{helpers:Loc Key=ChatTtsProviderSherpa}" Tag="SherpaOnnx" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <StackPanel x:Name="SherpaSettingsSection" Visibility="Collapsed">
+                    <TextBlock
+                        Margin="0,24,0,8"
+                        FontSize="20"
+                        Text="{helpers:Loc Key=ChatTtsLocalModelSettings}" />
+
+                    <labs:SettingsCard
+                        MaxWidth="2000"
+                        HorizontalContentAlignment="Stretch"
+                        Header="{helpers:Loc Key=ChatTtsSherpaModel}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE8B7;" />
+                        </labs:SettingsCard.HeaderIcon>
+                        <Grid MaxWidth="620" HorizontalAlignment="Center" RowSpacing="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" HorizontalAlignment="Center" ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="320" />
+                                    <ColumnDefinition Width="168" />
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox
+                                    x:Name="SherpaModelCombo"
+                                    Grid.Column="0"
+                                    Width="320"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    SelectionChanged="SherpaModelCombo_SelectionChanged" />
+
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Width="168"
+                                    VerticalAlignment="Center"
+                                    Spacing="6">
+                                    <Button
+                                        x:Name="SherpaModelInfoButton"
+                                        Width="32"
+                                        Height="32"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        Click="SherpaModelInfoButton_Click"
+                                        ToolTipService.ToolTip="{helpers:Loc Key=ChatTtsModelInfoTitle}">
+                                        <FontIcon FontSize="14" Glyph="&#xE946;" />
+                                    </Button>
+                                    <Button
+                                        x:Name="SherpaDownloadButton"
+                                        Height="32"
+                                        Padding="8,3"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        Click="SherpaDownloadButton_Click">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon FontSize="13" Glyph="&#xE896;" />
+                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsDownloadRecommendedModel}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button
+                                        x:Name="SherpaImportButton"
+                                        Height="32"
+                                        Padding="8,3"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        Click="SherpaImportButton_Click">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon FontSize="13" Glyph="&#xE8B5;" />
+                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsImportModel}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button
+                                        x:Name="SherpaOpenFolderButton"
+                                        Height="32"
+                                        Padding="8,3"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        Click="SherpaOpenFolderButton_Click">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon FontSize="13" Glyph="&#xE838;" />
+                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsOpenModelFolder}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button
+                                        x:Name="SherpaDeleteButton"
+                                        Height="32"
+                                        Padding="8,3"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        Click="SherpaDeleteButton_Click">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon FontSize="13" Glyph="&#xE74D;" />
+                                            <TextBlock FontSize="12" Text="{helpers:Loc Key=ChatTtsDeleteModel}" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Grid.Row="1" Width="504" HorizontalAlignment="Center" Spacing="4">
+                                <ProgressBar
+                                    x:Name="SherpaDownloadProgress"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Visibility="Collapsed" />
+                                <TextBlock
+                                    x:Name="SherpaModelStatus"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </labs:SettingsCard>
+
+                    <InfoBar
+                        x:Name="SherpaModelInfoBar"
+                        Margin="0,8,0,0"
+                        IsClosable="True"
+                        IsOpen="False" />
+
+                    <TeachingTip
+                        x:Name="SherpaModelInfoTip"
+                        Title="{helpers:Loc Key=ChatTtsModelInfoTitle}"
+                        Subtitle="{helpers:Loc Key=ChatTtsModelInfoBody}"
+                        Target="{x:Bind SherpaModelInfoButton}">
+                        <TeachingTip.IconSource>
+                            <FontIconSource Glyph="&#xE946;" />
+                        </TeachingTip.IconSource>
+                    </TeachingTip>
+
+                    <labs:SettingsCard
+                        MaxWidth="2000"
+                        Description="{helpers:Loc Key=ChatTtsSherpaThreadsDescription}"
+                        Header="{helpers:Loc Key=ChatTtsSherpaThreads}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE950;" />
+                        </labs:SettingsCard.HeaderIcon>
+                        <NumberBox
+                            x:Name="SherpaThreads"
+                            Width="420"
+                            HorizontalAlignment="Right"
+                            Maximum="16"
+                            Minimum="1"
+                            SmallChange="1"
+                            SpinButtonPlacementMode="Inline"
+                            ValueChanged="SherpaThreads_ValueChanged" />
+                    </labs:SettingsCard>
+                </StackPanel>
+
+                <labs:SettingsCard
+                    x:Name="ChatTtsVoiceCard"
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ChatTtsVoiceDescription}"
+                    Header="{helpers:Loc Key=ChatTtsVoice}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8D6;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ComboBox
+                        x:Name="ChatTtsVoice"
+                        Width="420"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="ChatTtsVoice_SelectionChanged" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=ChatTtsSpeakingRateDescription}"
+                    Header="{helpers:Loc Key=ChatTtsSpeakingRate}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE916;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <Grid Width="420" HorizontalAlignment="Right" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="60" />
+                        </Grid.ColumnDefinitions>
+                        <Slider
+                            x:Name="ChatTtsSpeakingRate"
+                            Grid.Column="0"
+                            Minimum="0.5"
+                            Maximum="2.0"
+                            StepFrequency="0.1"
+                            ValueChanged="ChatTtsSpeakingRate_ValueChanged" />
+                        <TextBlock
+                            x:Name="ChatTtsSpeakingRateValue"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center" />
+                    </Grid>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=ChatTtsVolumeDescription}"
+                    Header="{helpers:Loc Key=ChatTtsVolume}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE995;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <Grid Width="420" HorizontalAlignment="Right" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="60" />
+                        </Grid.ColumnDefinitions>
+                        <Slider
+                            x:Name="ChatTtsVolume"
+                            Grid.Column="0"
+                            Minimum="0"
+                            Maximum="100"
+                            StepFrequency="1"
+                            ValueChanged="ChatTtsVolume_ValueChanged" />
+                        <TextBlock
+                            x:Name="ChatTtsVolumeValue"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center" />
+                    </Grid>
+                </labs:SettingsCard>
+
+                <TextBlock Margin="0,24,0,8" FontSize="20" Text="{helpers:Loc Key=ChatTtsQueueSettings}" />
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ChatTtsQueueCapacityDescription}"
+                    Header="{helpers:Loc Key=ChatTtsQueueCapacity}">
+                    <labs:SettingsCard.HeaderIcon><FontIcon Glyph="&#xE8EE;" /></labs:SettingsCard.HeaderIcon>
+                    <NumberBox
+                        x:Name="ChatTtsQueueCapacity"
+                        Width="420"
+                        HorizontalAlignment="Right"
+                        Maximum="50"
+                        Minimum="1"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline"
+                        ValueChanged="ChatTtsQueueCapacity_ValueChanged" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ChatTtsExpirationDescription}"
+                    Header="{helpers:Loc Key=ChatTtsExpiration}">
+                    <labs:SettingsCard.HeaderIcon><FontIcon Glyph="&#xE823;" /></labs:SettingsCard.HeaderIcon>
+                    <StackPanel Width="420" HorizontalAlignment="Right" Spacing="8">
+                        <ComboBox
+                            x:Name="ChatTtsExpirationMode"
+                            HorizontalAlignment="Stretch"
+                            SelectionChanged="ChatTtsExpirationMode_SelectionChanged">
+                            <ComboBoxItem Content="{helpers:Loc Key=ChatTtsExpirationNever}" Tag="Never" />
+                            <ComboBoxItem Content="{helpers:Loc Key=ChatTtsExpirationSeconds}" Tag="Seconds" />
+                        </ComboBox>
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <NumberBox
+                                x:Name="ChatTtsExpirationSeconds"
+                                Grid.Column="0"
+                                HorizontalAlignment="Stretch"
+                                Maximum="300"
+                                Minimum="1"
+                                SmallChange="1"
+                                SpinButtonPlacementMode="Inline"
+                                ValueChanged="ChatTtsExpirationSeconds_ValueChanged" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{helpers:Loc Key=ChatTtsSecondsUnit}" />
+                        </Grid>
+                    </StackPanel>
+                </labs:SettingsCard>
+
+                <TextBlock Margin="0,24,0,8" FontSize="20" Text="{helpers:Loc Key=ChatTtsMessageTypes}" />
+                <TextBlock Margin="0,0,0,10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Loc Key=ChatTtsMessageTypesDescription}" TextWrapping="Wrap" />
+
+                <labs:SettingsCard MaxWidth="2000" Description="{helpers:Loc Key=ChatTtsSpeakAllyDescription}" Header="{helpers:Loc Key=ChatTtsSpeakAlly}">
+                    <labs:SettingsCard.HeaderIcon><FontIcon Glyph="&#xE716;" /></labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="ChatTtsSpeakAlly" Toggled="ChatTtsMessageType_Toggled" Tag="Ally" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard MaxWidth="2000" Description="{helpers:Loc Key=ChatTtsSpeakEnemyDescription}" Header="{helpers:Loc Key=ChatTtsSpeakEnemy}">
+                    <labs:SettingsCard.HeaderIcon><FontIcon Glyph="&#xE7BA;" /></labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="ChatTtsSpeakEnemy" Toggled="ChatTtsMessageType_Toggled" Tag="Enemy" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard MaxWidth="2000" Description="{helpers:Loc Key=ChatTtsSpeakSystemDescription}" Header="{helpers:Loc Key=ChatTtsSpeakSystem}">
+                    <labs:SettingsCard.HeaderIcon><FontIcon Glyph="&#xE946;" /></labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="ChatTtsSpeakSystem" Toggled="ChatTtsMessageType_Toggled" Tag="System" />
+                </labs:SettingsCard>
+
+                <TextBlock Margin="0,24,0,8" FontSize="20" Text="{helpers:Loc Key=ChatTtsPreview}" />
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ChatTtsPreviewDescription}"
+                    Header="{helpers:Loc Key=ChatTtsPreview}">
+                    <labs:SettingsCard.HeaderIcon><FontIcon Glyph="&#xE768;" /></labs:SettingsCard.HeaderIcon>
+                    <Grid Width="560" HorizontalAlignment="Right" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            x:Name="ChatTtsPreviewText"
+                            Grid.Column="0"
+                            HorizontalAlignment="Stretch"
+                            PlaceholderText="{helpers:Loc Key=ChatTtsPreviewPlaceholder}" />
+                        <Button
+                            x:Name="ChatTtsPreviewButton"
+                            Grid.Column="1"
+                            Click="ChatTtsPreviewButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE768;" />
+                                <TextBlock Text="{helpers:Loc Key=ChatTtsPreviewButton}" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </labs:SettingsCard>
+
+                <InfoBar
+                    x:Name="ChatTtsPreviewInfoBar"
+                    Margin="0,8,0,0"
+                    IsClosable="True"
+                    IsOpen="False" />
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -29,6 +29,7 @@ namespace WarThunderChatTranslator
         private GameChatPollingService _gameChatPollingService;
         private LocalHttpServer _localHttpServer;
         private SuccessAudioService _successAudioService;
+        private ChatTtsService _chatTtsService;
         private QuickTranslationService _quickTranslationService;
         private GlobalHotkeyService _globalHotkeyService;
         internal OverlayWindowManager OverlayManager { get; private set; }
@@ -322,6 +323,7 @@ namespace WarThunderChatTranslator
                 { ApplicationConfig.PhysicalChatCacheLimitKey, ApplicationConfig.DefaultPhysicalChatCacheLimit.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { ApplicationConfig.OpenOverlayOnStartupKey, "false" },
                 { ApplicationConfig.OpenDashboardOnStartupKey, "false" },
+                { ApplicationConfig.DashboardLanAuthenticationEnabledKey, "false" },
                 { ApplicationConfig.OverlayDisplayModeKey, "translation" },
                 { ApplicationConfig.OverlayShowSourceLanguageKey, "false" },
                 { ApplicationConfig.OverlayOpacityPercentKey, "90" },
@@ -360,6 +362,23 @@ namespace WarThunderChatTranslator
                 { QuickTranslationConfig.TranslationFailureCustomAudioDisplayNameKey, "" },
                 { QuickTranslationConfig.TranslationFailureCustomAudioSourcePathKey, "" },
                 { QuickTranslationConfig.SuccessVolumeKey, "0.8" },
+                { ChatTtsConfig.EnabledKey, "false" },
+                { ChatTtsConfig.ProviderKey, ChatTtsConfig.ProviderWindows },
+                { ChatTtsConfig.WindowsVoiceIdKey, "" },
+                { ChatTtsConfig.SherpaVoiceIdKey, "" },
+                { ChatTtsConfig.SherpaModelIdKey, "" },
+                { ChatTtsConfig.SherpaNumThreadsKey, ChatTtsConfig.DefaultSherpaNumThreads.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ChatTtsConfig.SpeakingRateKey, ChatTtsConfig.DefaultSpeakingRate.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ChatTtsConfig.VolumeKey, ChatTtsConfig.DefaultVolume.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ChatTtsConfig.QueueCapacityKey, ChatTtsConfig.DefaultQueueCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ChatTtsConfig.MaxQueueAgeSecondsKey, ChatTtsConfig.DefaultMaxQueueAgeSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ChatTtsConfig.SpeakAllyKey, "true" },
+                { ChatTtsConfig.SpeakEnemyKey, "false" },
+                { ChatTtsConfig.SpeakSystemKey, "false" },
+                { ContentFilterConfig.MinimumSeverityKey, ContentFilterConfig.DefaultMinimumSeverity.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+                { ContentFilterConfig.FilterDisplayKey, "false" },
+                { ContentFilterConfig.FilterTtsKey, "false" },
+                { ContentFilterConfig.TtsActionKey, ContentFilterConfig.TtsActionRemoveMatchedTerms },
             };
 
             foreach (var setting in defaultSettings)
@@ -499,24 +518,28 @@ namespace WarThunderChatTranslator
 
         private void HandleNotificationActivation(string argument)
         {
-            ToggleMainWindowVisibility();
-
-            const string navigatePrefix = "navigate=";
-            if (string.IsNullOrWhiteSpace(argument))
+            var arguments = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var part in (argument ?? string.Empty).Split('&', StringSplitOptions.RemoveEmptyEntries))
             {
+                var pair = part.Split('=', 2);
+                if (pair.Length == 2)
+                {
+                    arguments[Uri.UnescapeDataString(pair[0])] = Uri.UnescapeDataString(pair[1]);
+                }
+            }
+
+            if (arguments.TryGetValue("action", out var action)
+                && string.Equals(action, "cancelTtsModelDownload", StringComparison.OrdinalIgnoreCase))
+            {
+                SherpaTtsModelManager.Shared.CancelRecommendedModelDownload();
                 return;
             }
 
-            foreach (var part in argument.Split('&', StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (!part.StartsWith(navigatePrefix, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
+            ToggleMainWindowVisibility();
 
-                var pageKey = Uri.UnescapeDataString(part.Substring(navigatePrefix.Length));
+            if (arguments.TryGetValue("navigate", out var pageKey) && !string.IsNullOrWhiteSpace(pageKey))
+            {
                 ShellPage.Instance?.NavigateTo(pageKey);
-                return;
             }
         }
 
@@ -608,6 +631,20 @@ namespace WarThunderChatTranslator
         private static bool IsAdmin() => FirewallHelper.IsAdministrator();
 
         internal int LocalDashboardPort => _localHttpServer?.Port ?? 0;
+
+        internal string DashboardAccessToken => _localHttpServer?.AccessToken ?? string.Empty;
+
+        internal IReadOnlyList<Uri> GetLanDashboardUris(bool includeAuthenticationToken)
+        {
+            return _localHttpServer?.GetLanDashboardUris(includeAuthenticationToken) ?? Array.Empty<Uri>();
+        }
+
+        internal void RegenerateDashboardAccessToken()
+        {
+            _localHttpServer?.RegenerateAccessToken();
+        }
+
+        internal ChatTtsService ChatTtsService => _chatTtsService;
 
         internal Task<FirewallRuleStatus> GetFirewallStatusAsync(CancellationToken cancellationToken = default)
         {
@@ -730,6 +767,9 @@ namespace WarThunderChatTranslator
                 catch (Exception ex) { logger.Warn(ex, "Cannot check elevation; LAN listener will still start, but the firewall rule will not be changed automatically."); }
 
                 _gameChatPollingService = new GameChatPollingService();
+                try { InitializeChatTtsService(); }
+                catch (Exception ex) { logger.Error(ex, "Chat TTS startup failed."); }
+
                 try
                 {
                     _localHttpServer = new LocalHttpServer(_gameChatPollingService, listenOnLan);
@@ -854,6 +894,17 @@ namespace WarThunderChatTranslator
             {
                 EnqueueOnUiThread(() => _ = OpenDashboardAsync());
             }
+        }
+
+        private void InitializeChatTtsService()
+        {
+            if (_gameChatPollingService == null || _chatTtsService != null)
+            {
+                return;
+            }
+
+            _chatTtsService = new ChatTtsService(_gameChatPollingService);
+            logger.Info("Chat TTS service initialized with provider {0}.", _chatTtsService.Provider.Id);
         }
 
         private void InitializeQuickTranslationServices()
@@ -1168,6 +1219,20 @@ namespace WarThunderChatTranslator
                 catch (Exception ex)
                 {
                     logger.Debug(ex, "Quick translation services did not dispose cleanly during shutdown.");
+                }
+            }
+
+            var chatTtsService = _chatTtsService;
+            _chatTtsService = null;
+            if (chatTtsService != null)
+            {
+                try
+                {
+                    await chatTtsService.DisposeAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.Debug(ex, "Chat TTS service did not dispose cleanly during shutdown.");
                 }
             }
 

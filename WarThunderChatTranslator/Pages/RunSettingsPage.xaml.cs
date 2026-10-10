@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Media.Imaging;
+using QRCoder;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WarThunderChatTranslator.Configurations;
@@ -14,6 +20,8 @@ namespace WarThunderChatTranslator.Pages
         private bool _firewallActionInProgress;
         private FirewallRuleState _firewallRuleState = FirewallRuleState.CheckFailed;
         private bool _hasManagedFirewallRules;
+        private bool _updatingLanAccess;
+        private IReadOnlyList<Uri> _lanDashboardUris = Array.Empty<Uri>();
 
         public RunSettingsPage()
         {
@@ -24,6 +32,7 @@ namespace WarThunderChatTranslator.Pages
         {
             LoadSettings();
             _loaded = true;
+            await RefreshLanDashboardAccessAsync();
             await RefreshFirewallStatusAsync();
         }
 
@@ -42,6 +51,164 @@ namespace WarThunderChatTranslator.Pages
             PhysicalChatCacheLimit.Value = ApplicationConfig.GetPhysicalChatCacheLimit();
             OpenOverlayOnStartup.IsOn = ApplicationConfig.GetBooleanSetting(ApplicationConfig.OpenOverlayOnStartupKey);
             OpenDashboardOnStartup.IsOn = ApplicationConfig.GetBooleanSetting(ApplicationConfig.OpenDashboardOnStartupKey);
+            LanAuthenticationEnabled.IsOn = ApplicationConfig.GetBooleanSetting(ApplicationConfig.DashboardLanAuthenticationEnabledKey);
+        }
+
+        private async Task RefreshLanDashboardAccessAsync()
+        {
+            if (_updatingLanAccess)
+            {
+                return;
+            }
+
+            _updatingLanAccess = true;
+            try
+            {
+                if (Application.Current is not App app)
+                {
+                    SetLanDashboardUnavailable();
+                    return;
+                }
+
+                var authenticationEnabled = ApplicationConfig.GetBooleanSetting(ApplicationConfig.DashboardLanAuthenticationEnabledKey);
+                LanTokenPanel.Visibility = authenticationEnabled ? Visibility.Visible : Visibility.Collapsed;
+                LanAccessTokenText.Text = authenticationEnabled ? app.DashboardAccessToken : string.Empty;
+
+                var previousHost = (LanDashboardAddress.SelectedItem as ComboBoxItem)?.Tag is Uri previousUri
+                    ? previousUri.Host
+                    : null;
+                _lanDashboardUris = app.GetLanDashboardUris(authenticationEnabled);
+
+                LanDashboardAddress.Items.Clear();
+                foreach (var uri in _lanDashboardUris)
+                {
+                    LanDashboardAddress.Items.Add(new ComboBoxItem
+                    {
+                        Content = uri.GetLeftPart(UriPartial.Authority),
+                        Tag = uri
+                    });
+                }
+
+                if (_lanDashboardUris.Count == 0)
+                {
+                    SetLanDashboardUnavailable();
+                    return;
+                }
+
+                var selectedIndex = 0;
+                if (!string.IsNullOrWhiteSpace(previousHost))
+                {
+                    for (var index = 0; index < _lanDashboardUris.Count; index++)
+                    {
+                        if (string.Equals(_lanDashboardUris[index].Host, previousHost, StringComparison.OrdinalIgnoreCase))
+                        {
+                            selectedIndex = index;
+                            break;
+                        }
+                    }
+                }
+
+                LanDashboardAddress.SelectedIndex = selectedIndex;
+                await UpdateLanDashboardQrAsync(_lanDashboardUris[selectedIndex]);
+            }
+            finally
+            {
+                _updatingLanAccess = false;
+            }
+        }
+
+        private void SetLanDashboardUnavailable()
+        {
+            LanDashboardUrlText.Text = Localization.GetString("LanDashboardUnavailable");
+            LanQrCodeImage.Source = null;
+            if (LanDashboardAddress.Items.Count == 0)
+            {
+                LanDashboardAddress.PlaceholderText = Localization.GetString("LanDashboardUnavailable");
+            }
+        }
+
+        private async Task UpdateLanDashboardQrAsync(Uri uri)
+        {
+            LanDashboardUrlText.Text = uri.ToString();
+
+            using var qrGenerator = new QRCodeGenerator();
+            using var qrCodeData = qrGenerator.CreateQrCode(uri.ToString(), QRCodeGenerator.ECCLevel.Q);
+            using var qrCode = new PngByteQRCode(qrCodeData);
+            var pngBytes = qrCode.GetGraphic(8, drawQuietZones: true);
+
+            using var stream = new InMemoryRandomAccessStream();
+            using (var writer = new DataWriter(stream))
+            {
+                writer.WriteBytes(pngBytes);
+                await writer.StoreAsync();
+                await writer.FlushAsync();
+                writer.DetachStream();
+            }
+
+            stream.Seek(0);
+            var bitmap = new BitmapImage();
+            await bitmap.SetSourceAsync(stream);
+            LanQrCodeImage.Source = bitmap;
+        }
+
+        private async void LanAuthenticationEnabled_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_loaded || _updatingLanAccess)
+            {
+                return;
+            }
+
+            ApplicationConfig.SaveSettings(
+                ApplicationConfig.DashboardLanAuthenticationEnabledKey,
+                LanAuthenticationEnabled.IsOn.ToString().ToLowerInvariant());
+            await RefreshLanDashboardAccessAsync();
+        }
+
+        private async void LanDashboardAddress_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_updatingLanAccess || LanDashboardAddress.SelectedItem is not ComboBoxItem item || item.Tag is not Uri uri)
+            {
+                return;
+            }
+
+            await UpdateLanDashboardQrAsync(uri);
+        }
+
+        private async void LanAccessRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            await RefreshLanDashboardAccessAsync();
+        }
+
+        private void LanAccessCopyUrl_Click(object sender, RoutedEventArgs e)
+        {
+            CopyTextToClipboard(LanDashboardUrlText.Text);
+        }
+
+        private void LanAccessCopyToken_Click(object sender, RoutedEventArgs e)
+        {
+            CopyTextToClipboard(LanAccessTokenText.Text);
+        }
+
+        private async void LanAccessRegenerateToken_Click(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current is App app)
+            {
+                app.RegenerateDashboardAccessToken();
+                await RefreshLanDashboardAccessAsync();
+            }
+        }
+
+        private static void CopyTextToClipboard(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(text);
+            Clipboard.SetContent(dataPackage);
+            Clipboard.Flush();
         }
 
         private async Task RefreshFirewallStatusAsync()

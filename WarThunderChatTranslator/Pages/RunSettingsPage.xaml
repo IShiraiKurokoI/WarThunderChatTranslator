@@ -65,6 +65,103 @@
                     Text="{helpers:Loc Key=LanAccessSettingsDescription}"
                     TextWrapping="Wrap" />
 
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=LanAuthenticationDescription}"
+                    Header="{helpers:Loc Key=LanAuthentication}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE72E;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <ToggleSwitch
+                        x:Name="LanAuthenticationEnabled"
+                        Toggled="LanAuthenticationEnabled_Toggled" />
+                </labs:SettingsCard>
+
+                <Border
+                    Margin="0,0,0,4"
+                    Padding="16"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <Grid ColumnSpacing="20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="190" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border
+                            Width="180"
+                            Height="180"
+                            Padding="6"
+                            Background="White"
+                            CornerRadius="6">
+                            <Image
+                                x:Name="LanQrCodeImage"
+                                Stretch="Uniform" />
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox
+                                    x:Name="LanDashboardAddress"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    Header="{helpers:Loc Key=LanDashboardAddress}"
+                                    SelectionChanged="LanDashboardAddress_SelectionChanged" />
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="0,24,0,0"
+                                    Click="LanAccessRefresh_Click"
+                                    Content="{helpers:Loc Key=LanAccessRefresh}" />
+                            </Grid>
+
+                            <TextBlock
+                                x:Name="LanDashboardUrlText"
+                                IsTextSelectionEnabled="True"
+                                TextWrapping="Wrap" />
+
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button
+                                    Click="LanAccessCopyUrl_Click"
+                                    Content="{helpers:Loc Key=LanAccessCopyUrl}" />
+                            </StackPanel>
+
+                            <StackPanel
+                                x:Name="LanTokenPanel"
+                                Spacing="6"
+                                Visibility="Collapsed">
+                                <TextBlock
+                                    Margin="0,4,0,0"
+                                    FontWeight="SemiBold"
+                                    Text="{helpers:Loc Key=LanAccessToken}" />
+                                <TextBlock
+                                    x:Name="LanAccessTokenText"
+                                    FontFamily="Consolas"
+                                    IsTextSelectionEnabled="True"
+                                    TextWrapping="Wrap" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button
+                                        Click="LanAccessCopyToken_Click"
+                                        Content="{helpers:Loc Key=LanAccessCopyToken}" />
+                                    <Button
+                                        Click="LanAccessRegenerateToken_Click"
+                                        Content="{helpers:Loc Key=LanAccessRegenerateToken}" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{helpers:Loc Key=LanQrDescription}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
                 <Border
                     x:Name="FirewallRuleCard"
                     Margin="0,0,0,4"

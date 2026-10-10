@@ -17,6 +17,7 @@ namespace WarThunderChatTranslator.Entities
         public string OriginalMessage { get; set; }
         public string TranslatedMessage { get; set; }
         public string SourceLanguageIsoCode { get; set; }
+        public bool TranslationSucceeded { get; set; }
         public string PrettyMessage { get; set; }
     }
 }

@@ -110,6 +110,8 @@
     <None Remove="Pages\AboutPage.xaml" />
     <None Remove="Pages\APIPage.xaml" />
     <None Remove="Pages\AITranslationPage.xaml" />
+    <None Remove="Pages\ChatTtsPage.xaml" />
+    <None Remove="Pages\ContentFilterPage.xaml" />
     <None Remove="Pages\FontPage.xaml" />
     <None Remove="Pages\InteractPage.xaml" />
     <None Remove="Pages\LocationPage.xaml" />
@@ -142,6 +144,8 @@
     <PackageReference Include="NLog" Version="6.2.0" />
     <PackageReference Include="NAudio.Wasapi" Version="3.1.0" />
     <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
+    <PackageReference Include="QRCoder" Version="1.8.0" />
+    <PackageReference Include="SharpCompress" Version="0.50.4" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
@@ -176,6 +180,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\NetworkPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\ChatTtsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\ContentFilterPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\RunSettingsPage.xaml">
@@ -244,6 +254,14 @@
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <None Remove="Assets\ContentFilters\**\*" />
+    <Content Include="Assets\ContentFilters\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Assets\SpeechModels\**\*" />

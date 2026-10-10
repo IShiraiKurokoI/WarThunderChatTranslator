@@ -11,12 +11,17 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using WarThunderChatTranslator.Configurations;
+using WarThunderChatTranslator.Services.ContentFiltering;
 using WarThunderChatTranslator.Helpers;
 
 namespace WarThunderChatTranslator.Services
@@ -34,11 +39,14 @@ namespace WarThunderChatTranslator.Services
 
         private readonly GameChatPollingService _gameChatService;
         private readonly bool _listenOnLan;
+        private string _accessToken = GenerateAccessToken();
         private WebApplication? _webApplication;
         private int _boundPort;
 
         // The port is only published once Kestrel is accepting connections.
         public int Port => Volatile.Read(ref _boundPort);
+
+        public string AccessToken => Volatile.Read(ref _accessToken);
 
         public Uri? DashboardUri
         {
@@ -54,6 +62,36 @@ namespace WarThunderChatTranslator.Services
         {
             _gameChatService = gameChatService;
             _listenOnLan = listenOnLan;
+        }
+
+        public void RegenerateAccessToken()
+        {
+            Volatile.Write(ref _accessToken, GenerateAccessToken());
+            Logger.Info("Dashboard LAN access token was regenerated for the current application session.");
+        }
+
+        public IReadOnlyList<Uri> GetLanDashboardUris(bool includeAuthenticationToken)
+        {
+            var port = Port;
+            if (port <= 0 || !_listenOnLan)
+            {
+                return Array.Empty<Uri>();
+            }
+
+            var token = AccessToken;
+            return GetActiveLanIpv4Addresses()
+                .Select(address =>
+                {
+                    var builder = new UriBuilder(Uri.UriSchemeHttp, address.ToString(), port, "/dashboard");
+                    if (includeAuthenticationToken)
+                    {
+                        // Keep the secret in the URL fragment. Browsers do not send fragments in HTTP requests.
+                        builder.Fragment = "token=" + Uri.EscapeDataString(token);
+                    }
+
+                    return builder.Uri;
+                })
+                .ToArray();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -102,6 +140,26 @@ namespace WarThunderChatTranslator.Services
 
             var app = builder.Build();
 
+            app.Use(async (context, next) =>
+            {
+                if (!RequiresDashboardAuthorization(context))
+                {
+                    await next().ConfigureAwait(false);
+                    return;
+                }
+
+                if (!IsAuthorized(context))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.Headers["WWW-Authenticate"] = "Bearer";
+                    context.Response.Headers.CacheControl = "no-store";
+                    await context.Response.WriteAsync("Unauthorized", context.RequestAborted).ConfigureAwait(false);
+                    return;
+                }
+
+                await next().ConfigureAwait(false);
+            });
+
             app.MapGet("/gamechat", (HttpContext context, int? lastId, long? session, long? display) =>
             {
                 var currentBattleGeneration = _gameChatService.BattleGeneration;
@@ -135,7 +193,8 @@ namespace WarThunderChatTranslator.Services
                         ? _gameChatService.GetCurrentBattleMessagesAfter(lastId.GetValueOrDefault())
                         : _gameChatService.GetCurrentBattleMessages();
 
-                return Results.Json(messages, JsonOptions);
+                var displayMessages = messages.Select(ContentFilterService.Shared.CreateDisplayMessage).ToArray();
+                return Results.Json(displayMessages, JsonOptions);
             });
 
             app.MapGet("/styles.css", (HttpContext context) =>
@@ -222,6 +281,211 @@ namespace WarThunderChatTranslator.Services
             Logger.Info(
                 "Kestrel HTTP server started. Bound addresses: {0}; local dashboard: {1}.",
                 string.Join(", ", app.Urls), DashboardUri);
+        }
+
+        private bool RequiresDashboardAuthorization(HttpContext context)
+        {
+            if (!ApplicationConfig.GetBooleanSetting(ApplicationConfig.DashboardLanAuthenticationEnabledKey))
+            {
+                return false;
+            }
+
+            var remoteAddress = context.Connection.RemoteIpAddress;
+            if (IsLocalClientAddress(remoteAddress))
+            {
+                // Any request originating from this PC is exempt, including access through the PC's own LAN IP.
+                return false;
+            }
+
+            var path = context.Request.Path.Value ?? string.Empty;
+            return string.Equals(path, "/gamechat", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(path, "/api", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("/api/", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsLocalClientAddress(IPAddress? remoteAddress)
+        {
+            if (remoteAddress is null)
+            {
+                return false;
+            }
+
+            var normalizedRemote = remoteAddress.IsIPv4MappedToIPv6
+                ? remoteAddress.MapToIPv4()
+                : remoteAddress;
+
+            if (IPAddress.IsLoopback(normalizedRemote))
+            {
+                return true;
+            }
+
+            try
+            {
+                return NetworkInterface.GetAllNetworkInterfaces()
+                    .Where(adapter => adapter.OperationalStatus == OperationalStatus.Up)
+                    .SelectMany(adapter => adapter.GetIPProperties().UnicastAddresses)
+                    .Select(unicast => unicast.Address.IsIPv4MappedToIPv6
+                        ? unicast.Address.MapToIPv4()
+                        : unicast.Address)
+                    .Any(address => address.Equals(normalizedRemote));
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug(ex, "Could not enumerate local interface addresses while checking Dashboard authorization.");
+                return false;
+            }
+        }
+
+        private bool IsAuthorized(HttpContext context)
+        {
+            var authorization = context.Request.Headers.Authorization.ToString();
+            const string bearerPrefix = "Bearer ";
+            if (!authorization.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            var suppliedToken = authorization[bearerPrefix.Length..].Trim();
+            var expectedToken = AccessToken;
+            if (suppliedToken.Length != expectedToken.Length)
+            {
+                return false;
+            }
+
+            var suppliedBytes = Encoding.UTF8.GetBytes(suppliedToken);
+            var expectedBytes = Encoding.UTF8.GetBytes(expectedToken);
+            return CryptographicOperations.FixedTimeEquals(suppliedBytes, expectedBytes);
+        }
+
+        private static string GenerateAccessToken()
+        {
+            // 24 random bytes = 192 bits. Base64url without padding is exactly 32 characters.
+            var bytes = RandomNumberGenerator.GetBytes(24);
+            return Convert.ToBase64String(bytes)
+                .TrimEnd('=')
+                .Replace('+', '-')
+                .Replace('/', '_');
+        }
+
+        private static IReadOnlyList<IPAddress> GetActiveLanIpv4Addresses()
+        {
+            try
+            {
+                // Prefer the IPv4 address chosen by Windows for the current default route.
+                // A UDP Connect selects a route/local endpoint without sending application data.
+                var preferredOutboundAddress = TryGetPreferredOutboundIpv4Address();
+                var internetAdapterId = TryGetInternetNetworkAdapterId();
+
+                return NetworkInterface.GetAllNetworkInterfaces()
+                    .Where(adapter => adapter.OperationalStatus == OperationalStatus.Up)
+                    .Where(adapter => adapter.NetworkInterfaceType is not NetworkInterfaceType.Loopback and not NetworkInterfaceType.Tunnel)
+                    .SelectMany(adapter => adapter.GetIPProperties().UnicastAddresses
+                        .Where(unicast => unicast.Address.AddressFamily == AddressFamily.InterNetwork)
+                        .Select(unicast => new
+                        {
+                            Address = unicast.Address,
+                            IsInternetAdapter = IsAdapter(adapter, internetAdapterId),
+                            HasGateway = HasIpv4Gateway(adapter),
+                            HasTraffic = HasNetworkTraffic(adapter)
+                        }))
+                    .Where(item => !IPAddress.IsLoopback(item.Address))
+                    .Where(item =>
+                    {
+                        var bytes = item.Address.GetAddressBytes();
+                        return !(bytes[0] == 169 && bytes[1] == 254);
+                    })
+                    .GroupBy(item => item.Address)
+                    .Select(group => group.First())
+                    .OrderByDescending(item => item.IsInternetAdapter)
+                    .ThenByDescending(item => preferredOutboundAddress is not null && item.Address.Equals(preferredOutboundAddress))
+                    .ThenByDescending(item => item.HasGateway && item.HasTraffic)
+                    .ThenByDescending(item => item.HasGateway)
+                    .ThenByDescending(item => item.HasTraffic)
+                    .ThenByDescending(item => IsPrivateIpv4Address(item.Address))
+                    .ThenBy(item => item.Address.ToString(), StringComparer.Ordinal)
+                    .Select(item => item.Address)
+                    .ToArray();
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Could not enumerate LAN IPv4 addresses for Dashboard QR access.");
+                return Array.Empty<IPAddress>();
+            }
+        }
+
+        private static Guid? TryGetInternetNetworkAdapterId()
+        {
+            try
+            {
+                var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+                if (profile?.GetNetworkConnectivityLevel() != Windows.Networking.Connectivity.NetworkConnectivityLevel.InternetAccess)
+                {
+                    return null;
+                }
+
+                return profile.NetworkAdapter?.NetworkAdapterId;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool IsAdapter(NetworkInterface adapter, Guid? expectedId)
+        {
+            return expectedId.HasValue
+                && Guid.TryParse(adapter.Id, out var adapterId)
+                && adapterId == expectedId.Value;
+        }
+
+        private static IPAddress? TryGetPreferredOutboundIpv4Address()
+        {
+            try
+            {
+                using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                socket.Connect(new IPEndPoint(IPAddress.Parse("1.1.1.1"), 53));
+                return (socket.LocalEndPoint as IPEndPoint)?.Address;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool HasIpv4Gateway(NetworkInterface adapter)
+        {
+            try
+            {
+                return adapter.GetIPProperties().GatewayAddresses.Any(gateway =>
+                    gateway.Address.AddressFamily == AddressFamily.InterNetwork
+                    && !gateway.Address.Equals(IPAddress.Any)
+                    && !gateway.Address.Equals(IPAddress.None));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool HasNetworkTraffic(NetworkInterface adapter)
+        {
+            try
+            {
+                var statistics = adapter.GetIPv4Statistics();
+                return statistics.BytesReceived > 0 || statistics.BytesSent > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool IsPrivateIpv4Address(IPAddress address)
+        {
+            var bytes = address.GetAddressBytes();
+            return bytes[0] == 10
+                || bytes[0] == 192 && bytes[1] == 168
+                || bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31;
         }
 
         private static int GetBoundPort(IEnumerable<string> addresses)

@@ -14,6 +14,7 @@ using WarThunderChatTranslator.Configurations;
 using WarThunderChatTranslator.Entities;
 using WarThunderChatTranslator.Helpers;
 using WarThunderChatTranslator.Services;
+using WarThunderChatTranslator.Services.ContentFiltering;
 using Windows.Graphics;
 using Windows.UI;
 
@@ -355,8 +356,10 @@ namespace WarThunderChatTranslator
 
         private static string FormatMessage(ChatMessage message)
         {
-            var original = string.IsNullOrEmpty(message.OriginalMessage) ? message.Msg ?? string.Empty : message.OriginalMessage;
-            var translation = string.IsNullOrEmpty(message.TranslatedMessage) ? original : message.TranslatedMessage;
+            var rawOriginal = string.IsNullOrEmpty(message.OriginalMessage) ? message.Msg ?? string.Empty : message.OriginalMessage;
+            var rawTranslation = string.IsNullOrEmpty(message.TranslatedMessage) ? rawOriginal : message.TranslatedMessage;
+            var original = ContentFilterService.Shared.FilterForDisplay(rawOriginal).FilteredText;
+            var translation = ContentFilterService.Shared.FilterForDisplay(rawTranslation).FilteredText;
             var displayMode = ApplicationConfig.GetSettings(ApplicationConfig.OverlayDisplayModeKey) ?? "translation";
             var content = displayMode switch
             {

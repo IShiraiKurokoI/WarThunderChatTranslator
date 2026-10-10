@@ -1319,4 +1319,432 @@ Runtime license: {10}.</value>
   <data name="FirewallStartupOutdatedNotification" xml:space="preserve">
     <value>After the app update, the previous LAN access permission may no longer work. If you still use the Dashboard from another device, click this notification to set it up again. If you use it only on this PC, no action is needed.</value>
   </data>
+  <data name="NavChatTts" xml:space="preserve">
+    <value>Chat voice playback</value>
+  </data>
+  <data name="ChatTtsTitle" xml:space="preserve">
+    <value>Chat voice playback</value>
+  </data>
+  <data name="ChatTtsDescription" xml:space="preserve">
+    <value>Read translated chat aloud with Microsoft SpeechSynthesizer or a local TTS model.</value>
+  </data>
+  <data name="ChatTtsEnable" xml:space="preserve">
+    <value>Enable chat voice playback</value>
+  </data>
+  <data name="ChatTtsEnableDescription" xml:space="preserve">
+    <value>Automatically read translated chat messages after translation completes.</value>
+  </data>
+  <data name="ChatTtsVoice" xml:space="preserve">
+    <value>Voice</value>
+  </data>
+  <data name="ChatTtsVoiceDescription" xml:space="preserve">
+    <value>Choose the voice used to read translated chat messages.</value>
+  </data>
+  <data name="ChatTtsSpeakingRate" xml:space="preserve">
+    <value>Speaking rate</value>
+  </data>
+  <data name="ChatTtsSpeakingRateDescription" xml:space="preserve">
+    <value>Adjust playback speed from 0.5x to 2.0x.</value>
+  </data>
+  <data name="ChatTtsVolume" xml:space="preserve">
+    <value>Playback volume</value>
+  </data>
+  <data name="ChatTtsVolumeDescription" xml:space="preserve">
+    <value>Set the volume used only for translated chat voice playback.</value>
+  </data>
+  <data name="ChatTtsQueueSettings" xml:space="preserve">
+    <value>Message waiting</value>
+  </data>
+  <data name="ChatTtsQueueCapacity" xml:space="preserve">
+    <value>Maximum waiting messages</value>
+  </data>
+  <data name="ChatTtsQueueCapacityDescription" xml:space="preserve">
+    <value>When messages arrive quickly, keep at most this many waiting to be read. Older messages are skipped first when the limit is reached.</value>
+  </data>
+  <data name="ChatTtsExpiration" xml:space="preserve">
+    <value>When messages wait too long</value>
+  </data>
+  <data name="ChatTtsExpirationDescription" xml:space="preserve">
+    <value>Keep waiting messages indefinitely, or skip them after the selected number of seconds.</value>
+  </data>
+  <data name="ChatTtsExpirationNever" xml:space="preserve">
+    <value>Keep indefinitely</value>
+  </data>
+  <data name="ChatTtsExpirationSeconds" xml:space="preserve">
+    <value>Skip after a set time</value>
+  </data>
+  <data name="ChatTtsSecondsUnit" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="ChatTtsMessageTypes" xml:space="preserve">
+    <value>Message types</value>
+  </data>
+  <data name="ChatTtsMessageTypesDescription" xml:space="preserve">
+    <value>Choose which messages are read aloud.</value>
+  </data>
+  <data name="ChatTtsSpeakAlly" xml:space="preserve">
+    <value>Ally / team messages</value>
+  </data>
+  <data name="ChatTtsSpeakAllyDescription" xml:space="preserve">
+    <value>Read translated messages sent by non-enemy players. Enabled by default.</value>
+  </data>
+  <data name="ChatTtsSpeakEnemy" xml:space="preserve">
+    <value>Enemy messages</value>
+  </data>
+  <data name="ChatTtsSpeakEnemyDescription" xml:space="preserve">
+    <value>Read translated messages marked as enemy chat.</value>
+  </data>
+  <data name="ChatTtsSpeakSystem" xml:space="preserve">
+    <value>System messages</value>
+  </data>
+  <data name="ChatTtsSpeakSystemDescription" xml:space="preserve">
+    <value>Read translated messages that do not have a sender name.</value>
+  </data>
+  <data name="ChatTtsPreview" xml:space="preserve">
+    <value>Voice preview</value>
+  </data>
+  <data name="ChatTtsPreviewDescription" xml:space="preserve">
+    <value>Test the currently selected voice, speed and volume without waiting for an in-game message.</value>
+  </data>
+  <data name="ChatTtsPreviewPlaceholder" xml:space="preserve">
+    <value>Enter preview text</value>
+  </data>
+  <data name="ChatTtsPreviewButton" xml:space="preserve">
+    <value>Play preview</value>
+  </data>
+  <data name="ChatTtsVoiceLoadFailed" xml:space="preserve">
+    <value>Could not load available voices</value>
+  </data>
+  <data name="ChatTtsPreviewDefaultText" xml:space="preserve">
+    <value>Enemy on the capture point.</value>
+  </data>
+  <data name="ChatTtsPreviewUnavailable" xml:space="preserve">
+    <value>Voice playback service is unavailable</value>
+  </data>
+  <data name="ChatTtsPreviewUnavailableDescription" xml:space="preserve">
+    <value>Voice playback is not ready yet. Restart the application and try again.</value>
+  </data>
+  <data name="ChatTtsPreviewSuccess" xml:space="preserve">
+    <value>Preview played</value>
+  </data>
+  <data name="ChatTtsPreviewFailed" xml:space="preserve">
+    <value>Could not play preview</value>
+  </data>
+  <data name="LanAuthentication" xml:space="preserve">
+    <value>Dashboard LAN authentication</value>
+  </data>
+  <data name="LanAuthenticationDescription" xml:space="preserve">
+    <value>Require the current session token for Dashboard data requests from other devices on the LAN. Local access from this PC remains exempt. Disabled by default. This is access control only; HTTP traffic is not encrypted, so use it only on a trusted LAN.</value>
+  </data>
+  <data name="LanDashboardAddress" xml:space="preserve">
+    <value>Mobile access address</value>
+  </data>
+  <data name="LanAccessRefresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="LanAccessCopyUrl" xml:space="preserve">
+    <value>Copy address</value>
+  </data>
+  <data name="LanAccessToken" xml:space="preserve">
+    <value>Current session token</value>
+  </data>
+  <data name="LanAccessCopyToken" xml:space="preserve">
+    <value>Copy token</value>
+  </data>
+  <data name="LanAccessRegenerateToken" xml:space="preserve">
+    <value>Regenerate token</value>
+  </data>
+  <data name="LanQrDescription" xml:space="preserve">
+    <value>Scan the QR code from a phone or tablet on the same local network to open the Dashboard.</value>
+  </data>
+  <data name="LanDashboardUnavailable" xml:space="preserve">
+    <value>No usable LAN IPv4 address is currently available.</value>
+  </data>
+
+  <data name="NavContentFilter" xml:space="preserve">
+    <value>Content Filter</value>
+  </data>
+  <data name="ContentFilterTitle" xml:space="preserve">
+    <value>Content Filter</value>
+  </data>
+  <data name="ContentFilterDescription" xml:space="preserve">
+    <value>Control filtering for on-screen text and voice playback separately. You can keep the full translation visible while filtering only what is spoken.</value>
+  </data>
+  <data name="ContentFilterEnable" xml:space="preserve">
+    <value>Enable content filtering</value>
+  </data>
+  <data name="ContentFilterEnableDescription" xml:space="preserve">
+    <value>Apply the configured content-filter rules to chat output. Original text is still used for translation.</value>
+  </data>
+  <data name="ContentFilterSeverity" xml:space="preserve">
+    <value>Filter range</value>
+  </data>
+  <data name="ContentFilterSeverityDescription" xml:space="preserve">
+    <value>Choose how broadly to filter. Broader filtering catches more terms but can also cause more false positives.</value>
+  </data>
+  <data name="ContentFilterSeveritySevere" xml:space="preserve">
+    <value>Severe content only</value>
+  </data>
+  <data name="ContentFilterSeverityMedium" xml:space="preserve">
+    <value>Common offensive content</value>
+  </data>
+  <data name="ContentFilterSeverityStrict" xml:space="preserve">
+    <value>Strict filtering (broadest)</value>
+  </data>
+  <data name="ContentFilterDisplay" xml:space="preserve">
+    <value>Filter displayed chat</value>
+  </data>
+  <data name="ContentFilterDisplayDescription" xml:space="preserve">
+    <value>When enabled, matched words are shown as **** in the overlay and Dashboard. Voice playback is controlled separately.</value>
+  </data>
+  <data name="ContentFilterTts" xml:space="preserve">
+    <value>Filter voice playback</value>
+  </data>
+  <data name="ContentFilterTtsDescription" xml:space="preserve">
+    <value>When enabled, messages are checked before they are read aloud. This does not change what is shown on screen.</value>
+  </data>
+  <data name="ContentFilterTtsAction" xml:space="preserve">
+    <value>Voice filter action</value>
+  </data>
+  <data name="ContentFilterTtsActionDescription" xml:space="preserve">
+    <value>Choose whether to remove matched words and keep speaking, or skip the whole message.</value>
+  </data>
+  <data name="ContentFilterTtsActionRemove" xml:space="preserve">
+    <value>Remove matched words and speak the rest</value>
+  </data>
+  <data name="ContentFilterTtsActionSkip" xml:space="preserve">
+    <value>Skip the entire message</value>
+  </data>
+  <data name="ContentFilterBuiltInTitle" xml:space="preserve">
+    <value>Built-in filter words</value>
+  </data>
+  <data name="ContentFilterBuiltInSummary" xml:space="preserve">
+    <value>Built-in dictionary: {0} English entries + {1} Chinese entries.</value>
+  </data>
+  <data name="ContentFilterBuiltInNote" xml:space="preserve">
+    <value>The app includes English and Chinese base dictionaries plus extra rules for game chat. False positives are possible; use the allowlist when needed.</value>
+  </data>
+  <data name="ContentFilterSourceLink" xml:space="preserve">
+    <value>View built-in dictionary source</value>
+  </data>
+  <data name="ContentFilterCustomBlocklistTitle" xml:space="preserve">
+    <value>Custom blocklist</value>
+  </data>
+  <data name="ContentFilterCustomBlocklistDescription" xml:space="preserve">
+    <value>Add words or phrases you want to filter. “Auto” is recommended for most entries.</value>
+  </data>
+  <data name="ContentFilterTermPlaceholder" xml:space="preserve">
+    <value>Word or phrase</value>
+  </data>
+  <data name="ContentFilterLevel1" xml:space="preserve">
+    <value>Broad</value>
+  </data>
+  <data name="ContentFilterLevel2" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="ContentFilterLevel3" xml:space="preserve">
+    <value>Severe</value>
+  </data>
+  <data name="ContentFilterMatchAuto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="ContentFilterMatchWord" xml:space="preserve">
+    <value>Whole word</value>
+  </data>
+  <data name="ContentFilterMatchContains" xml:space="preserve">
+    <value>Contains</value>
+  </data>
+  <data name="ContentFilterAdd" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="ContentFilterRemoveSelected" xml:space="preserve">
+    <value>Remove selected</value>
+  </data>
+  <data name="ContentFilterAllowlistTitle" xml:space="preserve">
+    <value>Allowlist</value>
+  </data>
+  <data name="ContentFilterAllowlistDescription" xml:space="preserve">
+    <value>Allowlisted words are never filtered. Use this for player names, vehicle names or other terms that were matched by mistake.</value>
+  </data>
+  <data name="ContentFilterAllowPlaceholder" xml:space="preserve">
+    <value>Allowed word or phrase</value>
+  </data>
+  <data name="ContentFilterImportExportTitle" xml:space="preserve">
+    <value>Import / export</value>
+  </data>
+  <data name="ContentFilterImportExportDescription" xml:space="preserve">
+    <value>Back up or restore your custom blocklist and allowlist. TXT files can also be imported as one blocked term per line.</value>
+  </data>
+  <data name="ContentFilterImport" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ContentFilterExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="ContentFilterInvalidTerm" xml:space="preserve">
+    <value>Enter a word or phrase first.</value>
+  </data>
+  <data name="ContentFilterImportSuccess" xml:space="preserve">
+    <value>Content filter package imported.</value>
+  </data>
+  <data name="ContentFilterImportFailed" xml:space="preserve">
+    <value>Could not import the content filter package.</value>
+  </data>
+  <data name="ContentFilterExportSuccess" xml:space="preserve">
+    <value>Content filter package exported.</value>
+  </data>
+  <data name="ContentFilterExportFailed" xml:space="preserve">
+    <value>Could not export the content filter package.</value>
+  </data>
+  <data name="ChatTtsProvider" xml:space="preserve">
+    <value>Voice source</value>
+  </data>
+  <data name="ChatTtsProviderDescription" xml:space="preserve">
+    <value>Choose Microsoft system speech or a local TTS model.</value>
+  </data>
+  <data name="ChatTtsProviderWindows" xml:space="preserve">
+    <value>Microsoft SpeechSynthesizer</value>
+  </data>
+  <data name="ChatTtsProviderSherpa" xml:space="preserve">
+    <value>Local model (Sherpa-ONNX / Kokoro)</value>
+  </data>
+  <data name="ChatTtsLocalModelSettings" xml:space="preserve">
+    <value>Local model settings</value>
+  </data>
+  <data name="ChatTtsSherpaModel" xml:space="preserve">
+    <value>Voice model</value>
+  </data>
+  <data name="ChatTtsSherpaModelDescription" xml:space="preserve">
+    <value>Choose an installed local model, or download/import a model.</value>
+  </data>
+  <data name="ChatTtsDownloadRecommendedModel" xml:space="preserve">
+    <value>Download Kokoro v1.1 model</value>
+  </data>
+  <data name="ChatTtsImportModel" xml:space="preserve">
+    <value>Import model</value>
+  </data>
+  <data name="ChatTtsOpenModelFolder" xml:space="preserve">
+    <value>Open model folder</value>
+  </data>
+  <data name="ChatTtsSherpaThreads" xml:space="preserve">
+    <value>Performance usage</value>
+  </data>
+  <data name="ChatTtsSherpaThreadsDescription" xml:space="preserve">
+    <value>Higher values can generate speech faster but use more processor resources. The default is suitable for most users.</value>
+  </data>
+  <data name="ChatTtsRecommendedModelSummary" xml:space="preserve">
+    <value>Recommended: Kokoro v1.1 (Sherpa-ONNX, Chinese/English, 103 voices)</value>
+  </data>
+  <data name="ChatTtsRecommendedModelLabel" xml:space="preserve">
+    <value>Kokoro v1.1 · Chinese/English · 103 voices</value>
+  </data>
+  <data name="ChatTtsModelNoneInstalled" xml:space="preserve">
+    <value>No local model is installed. Download Kokoro v1.1 or import a supported model folder.</value>
+  </data>
+  <data name="ChatTtsModelInstalledCount" xml:space="preserve">
+    <value>{0} local model(s) found.</value>
+  </data>
+  <data name="ChatTtsModelDownloading" xml:space="preserve">
+    <value>Downloading Kokoro v1.1 model…</value>
+  </data>
+  <data name="ChatTtsModelDownloadProgress" xml:space="preserve">
+    <value>Downloading model… {0:0.0}%</value>
+  </data>
+  <data name="ChatTtsModelDownloadSuccess" xml:space="preserve">
+    <value>Model installed</value>
+  </data>
+  <data name="ChatTtsModelDownloadFailed" xml:space="preserve">
+    <value>Model download failed</value>
+  </data>
+  <data name="ChatTtsModelImporting" xml:space="preserve">
+    <value>Importing model…</value>
+  </data>
+  <data name="ChatTtsModelImportSuccess" xml:space="preserve">
+    <value>Model imported</value>
+  </data>
+  <data name="ChatTtsModelImportFailed" xml:space="preserve">
+    <value>Model import failed</value>
+  </data>
+  <data name="ChatTtsOpenModelFolderFailed" xml:space="preserve">
+    <value>Could not open the model folder</value>
+  </data>
+  <data name="ChatTtsSherpaVoicesLoading" xml:space="preserve">
+    <value>Loading available voices…</value>
+  </data>
+  <data name="ChatTtsSherpaVoicesReady" xml:space="preserve">
+    <value>{0} voice(s) available.</value>
+  </data>
+  <data name="AboutModelsAndData" xml:space="preserve">
+    <value>Models and dictionaries</value>
+  </data>
+  <data name="AboutSenseVoiceModel" xml:space="preserve">
+    <value>SenseVoiceSmall (local speech recognition)</value>
+  </data>
+  <data name="AboutKokoroModel" xml:space="preserve">
+    <value>Kokoro (Sherpa-ONNX local TTS model)</value>
+  </data>
+  <data name="AboutFilterDictionary" xml:space="preserve">
+    <value>LDNOOBW (base content-filter dictionary)</value>
+  </data>
+  <data name="ChatTtsVoiceRequiresModel" xml:space="preserve">
+    <value>Download or import a model first.</value>
+  </data>
+  <data name="ChatTtsModelInstalling" xml:space="preserve">
+    <value>Download complete. Installing model…</value>
+  </data>
+  <data name="ChatTtsModelDownloadCancelled" xml:space="preserve">
+    <value>Model download cancelled.</value>
+  </data>
+  <data name="ChatTtsDownloadToastTitle" xml:space="preserve">
+    <value>Downloading Kokoro v1.1 model</value>
+  </data>
+  <data name="ChatTtsDownloadToastStatus" xml:space="preserve">
+    <value>Downloading…</value>
+  </data>
+  <data name="ChatTtsDownloadToastInstalling" xml:space="preserve">
+    <value>Installing…</value>
+  </data>
+  <data name="ChatTtsDownloadToastPreparing" xml:space="preserve">
+    <value>Preparing…</value>
+  </data>
+  <data name="ChatTtsDownloadToastCompleted" xml:space="preserve">
+    <value>Kokoro v1.1 model installed.</value>
+  </data>
+  <data name="ChatTtsDownloadToastCancelled" xml:space="preserve">
+    <value>Model download cancelled.</value>
+  </data>
+  <data name="ChatTtsDownloadToastFailed" xml:space="preserve">
+    <value>Model download failed.</value>
+  </data>
+  <data name="ChatTtsDeleteModel" xml:space="preserve">
+    <value>Delete selected model</value>
+  </data>
+  <data name="ChatTtsDeleteModelDialogTitle" xml:space="preserve">
+    <value>Delete this model?</value>
+  </data>
+  <data name="ChatTtsDeleteModelDialogContentFormat" xml:space="preserve">
+    <value>“{0}” will be removed from this computer. This cannot be undone.</value>
+  </data>
+  <data name="ChatTtsDeleteModelSuccess" xml:space="preserve">
+    <value>Model deleted</value>
+  </data>
+  <data name="ChatTtsDeleteModelFailed" xml:space="preserve">
+    <value>Could not delete model</value>
+  </data>
+  <data name="ChatTtsSupportedImportModelSummary" xml:space="preserve">
+    <value>Import support: Sherpa-ONNX Kokoro TTS model folders containing model.onnx or model.int8.onnx, voices.bin, tokens.txt, and espeak-ng-data. Other model frameworks are not currently supported.</value>
+  </data>
+  <data name="ChatTtsUnsupportedImportModel" xml:space="preserve">
+    <value>Only Sherpa-ONNX Kokoro TTS model folders are currently supported. Make sure the folder contains an ONNX model, voices.bin, tokens.txt, and espeak-ng-data.</value>
+  </data>
+  <data name="ChatTtsModelInfoTitle" xml:space="preserve">
+    <value>Local model information</value>
+  </data>
+  <data name="ChatTtsModelInfoBody" xml:space="preserve">
+    <value>Choose an installed local model, or download/import one.
+
+Recommended model: Kokoro v1.1 (Sherpa-ONNX, Chinese/English, 103 voices).
+
+Import: currently only Sherpa-ONNX Kokoro TTS model folders are supported. The folder must contain model.onnx or model.int8.onnx, voices.bin, tokens.txt, and espeak-ng-data. Other model frameworks are not currently supported.</value>
+  </data>
 </root>

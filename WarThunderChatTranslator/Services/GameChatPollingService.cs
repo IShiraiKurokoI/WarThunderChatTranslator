@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using WarThunderChatTranslator.Configurations;
 using WarThunderChatTranslator.Entities;
 using WarThunderChatTranslator.Helpers;
+using WarThunderChatTranslator.Services.ContentFiltering;
 
 namespace WarThunderChatTranslator.Services
 {
@@ -53,6 +54,8 @@ namespace WarThunderChatTranslator.Services
         private bool _gameProcessWasVisible;
         private bool _disposed;
 
+        public event Action<ChatMessage> MessageProcessed;
+
         public GameChatPollingService()
         {
             var handler = new SocketsHttpHandler
@@ -70,6 +73,7 @@ namespace WarThunderChatTranslator.Services
             };
 
             ApplicationConfig.BattleChatClearModeChanged += OnBattleChatClearModeChanged;
+            ContentFilterService.Shared.Changed += OnContentFilterChanged;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -301,6 +305,15 @@ namespace WarThunderChatTranslator.Services
                 _chatMessages[message.Id] = message;
                 _chatMessageGenerations[message.Id] = translationGeneration;
                 _chatMessageOrder.Enqueue(new VisibleChatCacheKey(translationGeneration, message.Id));
+
+                try
+                {
+                    MessageProcessed?.Invoke(message);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn(ex, "A translated-chat subscriber failed. MessageId={0}.", message.Id);
+                }
             }
 
             var maxId = incrementalMessages.Max(message => message.Id);
@@ -441,6 +454,13 @@ namespace WarThunderChatTranslator.Services
             Interlocked.Exchange(ref _lastGameChatId, 0);
         }
 
+
+        private void OnContentFilterChanged()
+        {
+            var displayGeneration = Interlocked.Increment(ref _displayGeneration);
+            Logger.Info($"Content filter settings changed; display generation={displayGeneration}.");
+        }
+
         private void OnBattleChatClearModeChanged(string oldMode, string newMode)
         {
             if (string.Equals(newMode, ApplicationConfig.BattleChatClearModePhysical, StringComparison.Ordinal))
@@ -570,7 +590,8 @@ namespace WarThunderChatTranslator.Services
                     var translationResult = await TranslationHelper.TranslateAsync(message.Msg).ConfigureAwait(false);
                     cachedTranslation = new TranslationCacheEntry(
                         translationResult.Translation,
-                        translationResult.SourceLanguage?.ISO6391 ?? string.Empty);
+                        translationResult.SourceLanguage?.ISO6391 ?? string.Empty,
+                        true);
 
                     if (_translationCache.TryAdd(cacheKey, cachedTranslation))
                     {
@@ -584,12 +605,13 @@ namespace WarThunderChatTranslator.Services
                 catch (Exception ex)
                 {
                     Logger.Warn(ex, $"Failed to translate chat message. ID={message.Id}.");
-                    cachedTranslation = new TranslationCacheEntry("(翻译失败) " + message.Msg, string.Empty);
+                    cachedTranslation = new TranslationCacheEntry("(翻译失败) " + message.Msg, string.Empty, false);
                 }
             }
 
             message.TranslatedMessage = cachedTranslation.Translation;
             message.SourceLanguageIsoCode = cachedTranslation.SourceLanguageIsoCode;
+            message.TranslationSucceeded = cachedTranslation.Success;
             message.PrettyMessage = $"{message.Sender}: {cachedTranslation.Translation}";
         }
 
@@ -776,6 +798,7 @@ namespace WarThunderChatTranslator.Services
 
             _disposed = true;
             ApplicationConfig.BattleChatClearModeChanged -= OnBattleChatClearModeChanged;
+            ContentFilterService.Shared.Changed -= OnContentFilterChanged;
             _gameHttpClient.Dispose();
         }
 
@@ -788,7 +811,7 @@ namespace WarThunderChatTranslator.Services
 
         private readonly record struct VisibleChatCacheKey(long BattleGeneration, int MessageId);
 
-        private readonly record struct TranslationCacheEntry(string Translation, string SourceLanguageIsoCode);
+        private readonly record struct TranslationCacheEntry(string Translation, string SourceLanguageIsoCode, bool Success);
 
         private sealed class MapInfoResponse
         {

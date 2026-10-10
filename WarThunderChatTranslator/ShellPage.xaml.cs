@@ -34,6 +34,7 @@ public sealed partial class ShellPage : Page
             "NavApi",
             "NavAiTranslation",
             "NavQuickVoiceTranslation",
+            "NavChatTts",
             "NavNetwork",
             "NavRunSettings",
             "NavAppearance",

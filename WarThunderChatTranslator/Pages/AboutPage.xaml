@@ -142,6 +142,48 @@
                                         Content="sherpa-onnx"
                                         FontSize="18"
                                         NavigateUri="https://github.com/k2-fsa/sherpa-onnx" />
+                                    <HyperlinkButton
+                                        Margin="5"
+                                        Content="QRCoder"
+                                        FontSize="18"
+                                        NavigateUri="https://github.com/codebude/QRCoder" />
+                                    <HyperlinkButton
+                                        Margin="5"
+                                        Content="SharpCompress"
+                                        FontSize="18"
+                                        NavigateUri="https://github.com/adamhathcock/sharpcompress" />
+                                </StackPanel>
+                            </controls:SettingsCard.Description>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+                <controls:SettingsExpander
+                    MaxWidth="2000"
+                    Margin="0,0,0,20"
+                    Header="{helpers:Loc Key=AboutModelsAndData}">
+                    <controls:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE950;" />
+                    </controls:SettingsExpander.HeaderIcon>
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard MaxWidth="2000">
+                            <controls:SettingsCard.Description>
+                                <StackPanel>
+                                    <HyperlinkButton
+                                        Margin="5"
+                                        Content="{helpers:Loc Key=AboutSenseVoiceModel}"
+                                        FontSize="18"
+                                        NavigateUri="https://github.com/QwenAudio/SenseVoice" />
+                                    <HyperlinkButton
+                                        Margin="5"
+                                        Content="{helpers:Loc Key=AboutKokoroModel}"
+                                        FontSize="18"
+                                        NavigateUri="https://k2-fsa.github.io/sherpa/onnx/tts/all/Chinese-English/kokoro-multi-lang-v1_1.html" />
+                                    <HyperlinkButton
+                                        Margin="5"
+                                        Content="{helpers:Loc Key=AboutFilterDictionary}"
+                                        FontSize="18"
+                                        NavigateUri="https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words" />
                                 </StackPanel>
                             </controls:SettingsCard.Description>
                         </controls:SettingsCard>

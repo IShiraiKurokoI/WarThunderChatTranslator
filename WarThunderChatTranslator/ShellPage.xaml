@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="WarThunderChatTranslator.ShellPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -49,6 +49,24 @@
                     Tag="InteractPage">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="ms-appx:///Assets/Icons/Microphone.svg" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="{helpers:Loc Key=NavChatTts}"
+                    Tag="ChatTtsPage">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="ms-appx:///Assets/Icons/VoicePlayback.svg" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    Margin="0,0,12,0"
+                    Content="{helpers:Loc Key=NavContentFilter}"
+                    Tag="ContentFilterPage">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="ms-appx:///Assets/Icons/ContentFilter.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 

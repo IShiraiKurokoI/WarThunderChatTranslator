@@ -83,6 +83,37 @@
         const AUTO_BORDER_TINT = 0.28;
         const DASHBOARD_STYLE_SYNC_INTERVAL_MS = 1000;
         const DASHBOARD_STYLE_ERROR_LOG_INTERVAL_MS = 10000;
+        const AUTH_TOKEN_SESSION_KEY = 'wtct.dashboard.authToken';
+
+        function initializeDashboardAuthToken() {
+            try {
+                const fragment = window.location.hash.length > 1
+                    ? new URLSearchParams(window.location.hash.slice(1))
+                    : null;
+                const fragmentToken = fragment?.get('token');
+                if (fragmentToken) {
+                    sessionStorage.setItem(AUTH_TOKEN_SESSION_KEY, fragmentToken);
+                    const sanitized = `${window.location.pathname}${window.location.search}`;
+                    window.history.replaceState(null, document.title, sanitized);
+                    return fragmentToken;
+                }
+
+                return sessionStorage.getItem(AUTH_TOKEN_SESSION_KEY) || '';
+            } catch {
+                return '';
+            }
+        }
+
+        const dashboardAuthToken = initializeDashboardAuthToken();
+
+        function dashboardFetch(input, init = {}) {
+            const headers = new Headers(init.headers || {});
+            if (dashboardAuthToken) {
+                headers.set('Authorization', `Bearer ${dashboardAuthToken}`);
+            }
+
+            return fetch(input, { ...init, headers });
+        }
 
         let lastId = 0;
         let battleGeneration = 0;
@@ -182,7 +213,7 @@
 
             dashboardStyleSyncInProgress = true;
             try {
-                const response = await fetch('/api/dashboard-style', {
+                const response = await dashboardFetch('/api/dashboard-style', {
                     cache: 'no-store',
                     headers: { 'Cache-Control': 'no-cache' }
                 });
@@ -236,7 +267,7 @@
         }
 
         async function loadDashboardLocalization() {
-            const response = await fetch('/api/dashboard-ui', { cache: 'no-store' });
+            const response = await dashboardFetch('/api/dashboard-ui', { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -477,7 +508,7 @@
 
             fetchInProgress = true;
             try {
-                const response = await fetch(`/gamechat?lastId=${lastId}&session=${battleGeneration}&display=${displayGeneration}`, { cache: 'no-store' });
+                const response = await dashboardFetch(`/gamechat?lastId=${lastId}&session=${battleGeneration}&display=${displayGeneration}`, { cache: 'no-store' });
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }

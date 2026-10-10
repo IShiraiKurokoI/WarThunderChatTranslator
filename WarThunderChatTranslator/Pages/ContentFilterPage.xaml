@@ -1,0 +1,204 @@
+﻿<Page
+    x:Class="WarThunderChatTranslator.Pages.ContentFilterPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:WarThunderChatTranslator.Helpers"
+    xmlns:labs="using:DevWinUI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
+
+    <Grid Padding="20,0,0,0" RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Margin="0,44,0,0"
+            AutomationProperties.HeadingLevel="1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="{helpers:Loc Key=ContentFilterTitle}" />
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Padding="0,0,20,48" Spacing="0">
+                <TextBlock
+                    Margin="0,0,0,14"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{helpers:Loc Key=ContentFilterDescription}"
+                    TextWrapping="Wrap" />
+
+                <InfoBar
+                    x:Name="ContentFilterInfoBar"
+                    Margin="0,0,0,12"
+                    IsClosable="True"
+                    IsOpen="False" />
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ContentFilterSeverityDescription}"
+                    Header="{helpers:Loc Key=ContentFilterSeverity}">
+                    <ComboBox
+                        x:Name="ContentFilterSeverity"
+                        Width="420"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="ContentFilterSetting_Changed">
+                        <ComboBoxItem Tag="3" Content="{helpers:Loc Key=ContentFilterSeveritySevere}" />
+                        <ComboBoxItem Tag="2" Content="{helpers:Loc Key=ContentFilterSeverityMedium}" />
+                        <ComboBoxItem Tag="1" Content="{helpers:Loc Key=ContentFilterSeverityStrict}" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ContentFilterDisplayDescription}"
+                    Header="{helpers:Loc Key=ContentFilterDisplay}">
+                    <ToggleSwitch x:Name="ContentFilterDisplay" Toggled="ContentFilterSetting_Changed" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ContentFilterTtsDescription}"
+                    Header="{helpers:Loc Key=ContentFilterTts}">
+                    <ToggleSwitch x:Name="ContentFilterTts" Toggled="ContentFilterSetting_Changed" />
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    Description="{helpers:Loc Key=ContentFilterTtsActionDescription}"
+                    Header="{helpers:Loc Key=ContentFilterTtsAction}">
+                    <ComboBox
+                        x:Name="ContentFilterTtsAction"
+                        Width="420"
+                        HorizontalAlignment="Right"
+                        SelectionChanged="ContentFilterSetting_Changed">
+                        <ComboBoxItem Tag="RemoveMatchedTerms" Content="{helpers:Loc Key=ContentFilterTtsActionRemove}" />
+                        <ComboBoxItem Tag="SkipMessage" Content="{helpers:Loc Key=ContentFilterTtsActionSkip}" />
+                    </ComboBox>
+                </labs:SettingsCard>
+
+                <TextBlock Margin="0,26,0,8" Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:Loc Key=ContentFilterBuiltInTitle}" />
+
+                <Border Padding="16" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <StackPanel Spacing="8">
+                        <TextBlock x:Name="BuiltInDictionarySummary" TextWrapping="Wrap" />
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{helpers:Loc Key=ContentFilterBuiltInNote}"
+                            TextWrapping="Wrap" />
+                        <HyperlinkButton
+                            Padding="0"
+                            HorizontalAlignment="Left"
+                            NavigateUri="https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE71B;" />
+                                <TextBlock Text="{helpers:Loc Key=ContentFilterSourceLink}" />
+                            </StackPanel>
+                        </HyperlinkButton>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Margin="0,26,0,8" Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:Loc Key=ContentFilterCustomBlocklistTitle}" />
+
+                <Border Padding="16" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <StackPanel Spacing="10">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{helpers:Loc Key=ContentFilterCustomBlocklistDescription}"
+                            TextWrapping="Wrap" />
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="BlockTermTextBox" Grid.Column="0" PlaceholderText="{helpers:Loc Key=ContentFilterTermPlaceholder}" />
+                            <ComboBox x:Name="BlockSeverityCombo" Grid.Column="1" SelectedIndex="1">
+                                <ComboBoxItem Tag="1" Content="{helpers:Loc Key=ContentFilterLevel1}" />
+                                <ComboBoxItem Tag="2" Content="{helpers:Loc Key=ContentFilterLevel2}" />
+                                <ComboBoxItem Tag="3" Content="{helpers:Loc Key=ContentFilterLevel3}" />
+                            </ComboBox>
+                            <ComboBox x:Name="BlockMatchCombo" Grid.Column="2" SelectedIndex="0">
+                                <ComboBoxItem Tag="Auto" Content="{helpers:Loc Key=ContentFilterMatchAuto}" />
+                                <ComboBoxItem Tag="Word" Content="{helpers:Loc Key=ContentFilterMatchWord}" />
+                                <ComboBoxItem Tag="Contains" Content="{helpers:Loc Key=ContentFilterMatchContains}" />
+                            </ComboBox>
+                            <Button Grid.Column="3" Click="AddBlockTerm_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE710;" />
+                                    <TextBlock Text="{helpers:Loc Key=ContentFilterAdd}" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <ListView x:Name="BlocklistView" MaxHeight="230" SelectionMode="Single" />
+                        <Button HorizontalAlignment="Left" Click="RemoveBlockTerm_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE74D;" />
+                                <TextBlock Text="{helpers:Loc Key=ContentFilterRemoveSelected}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Margin="0,26,0,8" Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:Loc Key=ContentFilterAllowlistTitle}" />
+
+                <Border Padding="16" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <StackPanel Spacing="10">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{helpers:Loc Key=ContentFilterAllowlistDescription}"
+                            TextWrapping="Wrap" />
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="AllowTermTextBox" Grid.Column="0" PlaceholderText="{helpers:Loc Key=ContentFilterAllowPlaceholder}" />
+                            <Button Grid.Column="1" Click="AddAllowTerm_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE710;" />
+                                    <TextBlock Text="{helpers:Loc Key=ContentFilterAdd}" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <ListView x:Name="AllowlistView" MaxHeight="180" SelectionMode="Single" />
+                        <Button HorizontalAlignment="Left" Click="RemoveAllowTerm_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE74D;" />
+                                <TextBlock Text="{helpers:Loc Key=ContentFilterRemoveSelected}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Margin="0,26,0,8" Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:Loc Key=ContentFilterImportExportTitle}" />
+
+                <Border Padding="16" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <StackPanel Spacing="10">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{helpers:Loc Key=ContentFilterImportExportDescription}"
+                            TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+                            <Button Width="160" HorizontalContentAlignment="Center" Click="ImportFilterPackage_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE8B5;" />
+                                    <TextBlock Text="{helpers:Loc Key=ContentFilterImport}" />
+                                </StackPanel>
+                            </Button>
+                            <Button Width="160" HorizontalContentAlignment="Center" Click="ExportFilterPackage_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE898;" />
+                                    <TextBlock Text="{helpers:Loc Key=ContentFilterExport}" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

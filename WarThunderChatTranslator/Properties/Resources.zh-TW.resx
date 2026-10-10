@@ -1319,4 +1319,432 @@ ONNX 轉換 / 模型製品維護者：{11}
   <data name="FirewallStartupOutdatedNotification" xml:space="preserve">
     <value>應用程式更新後，先前的區域網路存取授權可能已失效。如仍需從其他裝置存取 Dashboard，請點擊此通知重新設定；如果只在本機使用，則不需要處理。</value>
   </data>
+  <data name="NavChatTts" xml:space="preserve">
+    <value>聊天語音播報</value>
+  </data>
+  <data name="ChatTtsTitle" xml:space="preserve">
+    <value>聊天語音播報</value>
+  </data>
+  <data name="ChatTtsDescription" xml:space="preserve">
+    <value>把聊天翻譯結果自動讀出來。可以使用 Microsoft SpeechSynthesizer，也可以使用本機 TTS 模型。</value>
+  </data>
+  <data name="ChatTtsEnable" xml:space="preserve">
+    <value>啟用聊天語音播報</value>
+  </data>
+  <data name="ChatTtsEnableDescription" xml:space="preserve">
+    <value>聊天訊息翻譯完成後自動朗讀翻譯結果。</value>
+  </data>
+  <data name="ChatTtsVoice" xml:space="preserve">
+    <value>音色</value>
+  </data>
+  <data name="ChatTtsVoiceDescription" xml:space="preserve">
+    <value>選擇播報聊天翻譯時使用的聲音。</value>
+  </data>
+  <data name="ChatTtsSpeakingRate" xml:space="preserve">
+    <value>語速</value>
+  </data>
+  <data name="ChatTtsSpeakingRateDescription" xml:space="preserve">
+    <value>設定 0.5x 到 2.0x 的播報速度。</value>
+  </data>
+  <data name="ChatTtsVolume" xml:space="preserve">
+    <value>播報音量</value>
+  </data>
+  <data name="ChatTtsVolumeDescription" xml:space="preserve">
+    <value>僅調整聊天翻譯語音播報的音量。</value>
+  </data>
+  <data name="ChatTtsQueueSettings" xml:space="preserve">
+    <value>訊息排隊</value>
+  </data>
+  <data name="ChatTtsQueueCapacity" xml:space="preserve">
+    <value>最多等待幾條</value>
+  </data>
+  <data name="ChatTtsQueueCapacityDescription" xml:space="preserve">
+    <value>當訊息來得太快時，最多保留這麼多條等待播報；超過後會優先跳過較舊的訊息。</value>
+  </data>
+  <data name="ChatTtsExpiration" xml:space="preserve">
+    <value>等待過久時</value>
+  </data>
+  <data name="ChatTtsExpirationDescription" xml:space="preserve">
+    <value>選擇一直保留，或等待超過指定秒數後自動跳過。</value>
+  </data>
+  <data name="ChatTtsExpirationNever" xml:space="preserve">
+    <value>一直保留</value>
+  </data>
+  <data name="ChatTtsExpirationSeconds" xml:space="preserve">
+    <value>超過指定時間後跳過</value>
+  </data>
+  <data name="ChatTtsSecondsUnit" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="ChatTtsMessageTypes" xml:space="preserve">
+    <value>訊息類型</value>
+  </data>
+  <data name="ChatTtsMessageTypesDescription" xml:space="preserve">
+    <value>選擇哪些訊息會被讀出來。</value>
+  </data>
+  <data name="ChatTtsSpeakAlly" xml:space="preserve">
+    <value>己方 / 隊伍訊息</value>
+  </data>
+  <data name="ChatTtsSpeakAllyDescription" xml:space="preserve">
+    <value>播報非敵方玩家傳送的翻譯訊息，預設開啟。</value>
+  </data>
+  <data name="ChatTtsSpeakEnemy" xml:space="preserve">
+    <value>敵方訊息</value>
+  </data>
+  <data name="ChatTtsSpeakEnemyDescription" xml:space="preserve">
+    <value>播報標記為敵方聊天的翻譯訊息。</value>
+  </data>
+  <data name="ChatTtsSpeakSystem" xml:space="preserve">
+    <value>系統訊息</value>
+  </data>
+  <data name="ChatTtsSpeakSystemDescription" xml:space="preserve">
+    <value>播報沒有傳送者名稱的翻譯訊息。</value>
+  </data>
+  <data name="ChatTtsPreview" xml:space="preserve">
+    <value>音色試聽</value>
+  </data>
+  <data name="ChatTtsPreviewDescription" xml:space="preserve">
+    <value>無需等待遊戲內訊息，直接試聽目前音色、語速和音量。</value>
+  </data>
+  <data name="ChatTtsPreviewPlaceholder" xml:space="preserve">
+    <value>輸入試聽文字</value>
+  </data>
+  <data name="ChatTtsPreviewButton" xml:space="preserve">
+    <value>播放試聽</value>
+  </data>
+  <data name="ChatTtsVoiceLoadFailed" xml:space="preserve">
+    <value>無法讀取可用聲音</value>
+  </data>
+  <data name="ChatTtsPreviewDefaultText" xml:space="preserve">
+    <value>佔領點有敵人。</value>
+  </data>
+  <data name="ChatTtsPreviewUnavailable" xml:space="preserve">
+    <value>語音播報服務無法使用</value>
+  </data>
+  <data name="ChatTtsPreviewUnavailableDescription" xml:space="preserve">
+    <value>語音播報暫時尚未準備好，請重新啟動程式後再試。</value>
+  </data>
+  <data name="ChatTtsPreviewSuccess" xml:space="preserve">
+    <value>試聽播放完成</value>
+  </data>
+  <data name="ChatTtsPreviewFailed" xml:space="preserve">
+    <value>無法播放試聽</value>
+  </data>
+  <data name="LanAuthentication" xml:space="preserve">
+    <value>Dashboard 區域網路存取驗證</value>
+  </data>
+  <data name="LanAuthenticationDescription" xml:space="preserve">
+    <value>要求區域網路內其他裝置存取 Dashboard 資料時攜帶本次執行的工作階段權杖。本機存取永遠免驗證。預設關閉。此功能只提供存取控制，HTTP 傳輸本身不加密，請僅在可信任的區域網路中使用。</value>
+  </data>
+  <data name="LanDashboardAddress" xml:space="preserve">
+    <value>行動裝置存取位址</value>
+  </data>
+  <data name="LanAccessRefresh" xml:space="preserve">
+    <value>重新整理</value>
+  </data>
+  <data name="LanAccessCopyUrl" xml:space="preserve">
+    <value>複製位址</value>
+  </data>
+  <data name="LanAccessToken" xml:space="preserve">
+    <value>本次執行工作階段權杖</value>
+  </data>
+  <data name="LanAccessCopyToken" xml:space="preserve">
+    <value>複製權杖</value>
+  </data>
+  <data name="LanAccessRegenerateToken" xml:space="preserve">
+    <value>重新產生權杖</value>
+  </data>
+  <data name="LanQrDescription" xml:space="preserve">
+    <value>手機或平板連線到同一區域網路後掃描 QR Code 即可存取。</value>
+  </data>
+  <data name="LanDashboardUnavailable" xml:space="preserve">
+    <value>目前未偵測到可用的區域網路 IPv4 位址。</value>
+  </data>
+
+  <data name="NavContentFilter" xml:space="preserve">
+    <value>不文明詞過濾</value>
+  </data>
+  <data name="ContentFilterTitle" xml:space="preserve">
+    <value>不文明詞過濾</value>
+  </data>
+  <data name="ContentFilterDescription" xml:space="preserve">
+    <value>可分別控制畫面顯示和語音播報中的不文明內容。關閉顯示過濾時，Dashboard 仍可看到完整翻譯；語音過濾可以單獨開啟。</value>
+  </data>
+  <data name="ContentFilterEnable" xml:space="preserve">
+    <value>啟用不文明詞過濾</value>
+  </data>
+  <data name="ContentFilterEnableDescription" xml:space="preserve">
+    <value>將過濾規則套用到聊天輸出。翻譯仍使用完整原文，不會因過濾影響翻譯品質。</value>
+  </data>
+  <data name="ContentFilterSeverity" xml:space="preserve">
+    <value>過濾範圍</value>
+  </data>
+  <data name="ContentFilterSeverityDescription" xml:space="preserve">
+    <value>選擇要過濾到什麼程度。範圍越廣，過濾越嚴格，也越容易出現誤判。</value>
+  </data>
+  <data name="ContentFilterSeveritySevere" xml:space="preserve">
+    <value>只過濾嚴重內容</value>
+  </data>
+  <data name="ContentFilterSeverityMedium" xml:space="preserve">
+    <value>過濾常見不文明內容</value>
+  </data>
+  <data name="ContentFilterSeverityStrict" xml:space="preserve">
+    <value>嚴格過濾（範圍最廣）</value>
+  </data>
+  <data name="ContentFilterDisplay" xml:space="preserve">
+    <value>過濾顯示文字</value>
+  </data>
+  <data name="ContentFilterDisplayDescription" xml:space="preserve">
+    <value>開啟後，懸浮窗和 Dashboard 中的命中詞會顯示為 ****。不會影響語音播報設定。</value>
+  </data>
+  <data name="ContentFilterTts" xml:space="preserve">
+    <value>過濾語音播報</value>
+  </data>
+  <data name="ContentFilterTtsDescription" xml:space="preserve">
+    <value>開啟後，播報前會檢查不文明內容。不會改變懸浮窗或 Dashboard 的顯示。</value>
+  </data>
+  <data name="ContentFilterTtsAction" xml:space="preserve">
+    <value>語音過濾方式</value>
+  </data>
+  <data name="ContentFilterTtsActionDescription" xml:space="preserve">
+    <value>遇到不文明內容時，選擇繼續播報其餘內容，或整條不播。</value>
+  </data>
+  <data name="ContentFilterTtsActionRemove" xml:space="preserve">
+    <value>刪除命中詞，繼續播報其餘內容</value>
+  </data>
+  <data name="ContentFilterTtsActionSkip" xml:space="preserve">
+    <value>跳過整則訊息</value>
+  </data>
+  <data name="ContentFilterBuiltInTitle" xml:space="preserve">
+    <value>內建過濾詞</value>
+  </data>
+  <data name="ContentFilterBuiltInSummary" xml:space="preserve">
+    <value>內建詞庫：英文 {0} 條 + 中文 {1} 條。</value>
+  </data>
+  <data name="ContentFilterBuiltInNote" xml:space="preserve">
+    <value>程式已內建中英文基礎詞庫，並針對遊戲聊天補充常見規則。詞庫可能存在誤判，可透過白名單放行。</value>
+  </data>
+  <data name="ContentFilterSourceLink" xml:space="preserve">
+    <value>查看內建詞庫來源</value>
+  </data>
+  <data name="ContentFilterCustomBlocklistTitle" xml:space="preserve">
+    <value>自訂黑名單</value>
+  </data>
+  <data name="ContentFilterCustomBlocklistDescription" xml:space="preserve">
+    <value>新增你希望額外過濾的詞語或短語。一般保持「自動判斷」即可。</value>
+  </data>
+  <data name="ContentFilterTermPlaceholder" xml:space="preserve">
+    <value>詞語或短語</value>
+  </data>
+  <data name="ContentFilterLevel1" xml:space="preserve">
+    <value>寬泛</value>
+  </data>
+  <data name="ContentFilterLevel2" xml:space="preserve">
+    <value>一般</value>
+  </data>
+  <data name="ContentFilterLevel3" xml:space="preserve">
+    <value>嚴重</value>
+  </data>
+  <data name="ContentFilterMatchAuto" xml:space="preserve">
+    <value>自動判斷</value>
+  </data>
+  <data name="ContentFilterMatchWord" xml:space="preserve">
+    <value>完整詞語</value>
+  </data>
+  <data name="ContentFilterMatchContains" xml:space="preserve">
+    <value>包含即可</value>
+  </data>
+  <data name="ContentFilterAdd" xml:space="preserve">
+    <value>新增</value>
+  </data>
+  <data name="ContentFilterRemoveSelected" xml:space="preserve">
+    <value>刪除選取項目</value>
+  </data>
+  <data name="ContentFilterAllowlistTitle" xml:space="preserve">
+    <value>白名單</value>
+  </data>
+  <data name="ContentFilterAllowlistDescription" xml:space="preserve">
+    <value>加入白名單的詞語不會被過濾。可用於放行被誤判的玩家名、載具名或常用詞。</value>
+  </data>
+  <data name="ContentFilterAllowPlaceholder" xml:space="preserve">
+    <value>允許的詞語或短語</value>
+  </data>
+  <data name="ContentFilterImportExportTitle" xml:space="preserve">
+    <value>匯入 / 匯出</value>
+  </data>
+  <data name="ContentFilterImportExportDescription" xml:space="preserve">
+    <value>可備份或恢復你的自訂黑名單和白名單。TXT 檔也可以按「一行一個詞」匯入黑名單。</value>
+  </data>
+  <data name="ContentFilterImport" xml:space="preserve">
+    <value>匯入</value>
+  </data>
+  <data name="ContentFilterExport" xml:space="preserve">
+    <value>匯出</value>
+  </data>
+  <data name="ContentFilterInvalidTerm" xml:space="preserve">
+    <value>請先輸入詞語或短語。</value>
+  </data>
+  <data name="ContentFilterImportSuccess" xml:space="preserve">
+    <value>過濾詞包已匯入。</value>
+  </data>
+  <data name="ContentFilterImportFailed" xml:space="preserve">
+    <value>無法匯入過濾詞包。</value>
+  </data>
+  <data name="ContentFilterExportSuccess" xml:space="preserve">
+    <value>過濾詞包已匯出。</value>
+  </data>
+  <data name="ContentFilterExportFailed" xml:space="preserve">
+    <value>無法匯出過濾詞包。</value>
+  </data>
+  <data name="ChatTtsProvider" xml:space="preserve">
+    <value>聲音來源</value>
+  </data>
+  <data name="ChatTtsProviderDescription" xml:space="preserve">
+    <value>選擇 Microsoft 系統語音，或使用本機 TTS 模型。</value>
+  </data>
+  <data name="ChatTtsProviderWindows" xml:space="preserve">
+    <value>Microsoft SpeechSynthesizer</value>
+  </data>
+  <data name="ChatTtsProviderSherpa" xml:space="preserve">
+    <value>本機模型（Sherpa-ONNX / Kokoro）</value>
+  </data>
+  <data name="ChatTtsLocalModelSettings" xml:space="preserve">
+    <value>本機模型設定</value>
+  </data>
+  <data name="ChatTtsSherpaModel" xml:space="preserve">
+    <value>語音模型</value>
+  </data>
+  <data name="ChatTtsSherpaModelDescription" xml:space="preserve">
+    <value>選擇已安裝的本機模型，或下載/匯入模型。</value>
+  </data>
+  <data name="ChatTtsDownloadRecommendedModel" xml:space="preserve">
+    <value>下載 Kokoro v1.1 模型</value>
+  </data>
+  <data name="ChatTtsImportModel" xml:space="preserve">
+    <value>匯入模型</value>
+  </data>
+  <data name="ChatTtsOpenModelFolder" xml:space="preserve">
+    <value>開啟模型目錄</value>
+  </data>
+  <data name="ChatTtsSherpaThreads" xml:space="preserve">
+    <value>效能占用</value>
+  </data>
+  <data name="ChatTtsSherpaThreadsDescription" xml:space="preserve">
+    <value>數值越高，產生語音通常越快，但會占用更多處理器資源。一般保持預設即可。</value>
+  </data>
+  <data name="ChatTtsRecommendedModelSummary" xml:space="preserve">
+    <value>推薦下載：Kokoro v1.1（Sherpa-ONNX，中英雙語，103 音色）</value>
+  </data>
+  <data name="ChatTtsRecommendedModelLabel" xml:space="preserve">
+    <value>Kokoro v1.1 · 中英雙語 · 103 音色</value>
+  </data>
+  <data name="ChatTtsModelNoneInstalled" xml:space="preserve">
+    <value>還沒有本機模型。推薦下載 Kokoro v1.1 模型，或匯入支援的模型資料夾。</value>
+  </data>
+  <data name="ChatTtsModelInstalledCount" xml:space="preserve">
+    <value>已找到 {0} 個本機模型。</value>
+  </data>
+  <data name="ChatTtsModelDownloading" xml:space="preserve">
+    <value>正在下載 Kokoro v1.1 模型…</value>
+  </data>
+  <data name="ChatTtsModelDownloadProgress" xml:space="preserve">
+    <value>正在下載模型… {0:0.0}%</value>
+  </data>
+  <data name="ChatTtsModelDownloadSuccess" xml:space="preserve">
+    <value>模型安裝完成</value>
+  </data>
+  <data name="ChatTtsModelDownloadFailed" xml:space="preserve">
+    <value>模型下載失敗</value>
+  </data>
+  <data name="ChatTtsModelImporting" xml:space="preserve">
+    <value>正在匯入模型…</value>
+  </data>
+  <data name="ChatTtsModelImportSuccess" xml:space="preserve">
+    <value>模型匯入完成</value>
+  </data>
+  <data name="ChatTtsModelImportFailed" xml:space="preserve">
+    <value>模型匯入失敗</value>
+  </data>
+  <data name="ChatTtsOpenModelFolderFailed" xml:space="preserve">
+    <value>無法開啟模型目錄</value>
+  </data>
+  <data name="ChatTtsSherpaVoicesLoading" xml:space="preserve">
+    <value>正在讀取可用聲音…</value>
+  </data>
+  <data name="ChatTtsSherpaVoicesReady" xml:space="preserve">
+    <value>可用聲音：{0} 個。</value>
+  </data>
+  <data name="AboutModelsAndData" xml:space="preserve">
+    <value>模型與詞庫</value>
+  </data>
+  <data name="AboutSenseVoiceModel" xml:space="preserve">
+    <value>SenseVoiceSmall（本機語音辨識）</value>
+  </data>
+  <data name="AboutKokoroModel" xml:space="preserve">
+    <value>Kokoro（Sherpa-ONNX 本機 TTS 模型）</value>
+  </data>
+  <data name="AboutFilterDictionary" xml:space="preserve">
+    <value>LDNOOBW（不文明詞基礎詞庫）</value>
+  </data>
+  <data name="ChatTtsVoiceRequiresModel" xml:space="preserve">
+    <value>請先下載或匯入模型。</value>
+  </data>
+  <data name="ChatTtsModelInstalling" xml:space="preserve">
+    <value>下載完成，正在安裝模型…</value>
+  </data>
+  <data name="ChatTtsModelDownloadCancelled" xml:space="preserve">
+    <value>模型下載已取消。</value>
+  </data>
+  <data name="ChatTtsDownloadToastTitle" xml:space="preserve">
+    <value>正在下載 Kokoro v1.1 模型</value>
+  </data>
+  <data name="ChatTtsDownloadToastStatus" xml:space="preserve">
+    <value>正在下載…</value>
+  </data>
+  <data name="ChatTtsDownloadToastInstalling" xml:space="preserve">
+    <value>正在安裝…</value>
+  </data>
+  <data name="ChatTtsDownloadToastPreparing" xml:space="preserve">
+    <value>正在準備…</value>
+  </data>
+  <data name="ChatTtsDownloadToastCompleted" xml:space="preserve">
+    <value>Kokoro v1.1 模型已安裝完成。</value>
+  </data>
+  <data name="ChatTtsDownloadToastCancelled" xml:space="preserve">
+    <value>模型下載已取消。</value>
+  </data>
+  <data name="ChatTtsDownloadToastFailed" xml:space="preserve">
+    <value>模型下載失敗。</value>
+  </data>
+  <data name="ChatTtsDeleteModel" xml:space="preserve">
+    <value>刪除選中模型</value>
+  </data>
+  <data name="ChatTtsDeleteModelDialogTitle" xml:space="preserve">
+    <value>刪除這個模型？</value>
+  </data>
+  <data name="ChatTtsDeleteModelDialogContentFormat" xml:space="preserve">
+    <value>將從電腦中刪除「{0}」。此操作無法復原。</value>
+  </data>
+  <data name="ChatTtsDeleteModelSuccess" xml:space="preserve">
+    <value>模型已刪除</value>
+  </data>
+  <data name="ChatTtsDeleteModelFailed" xml:space="preserve">
+    <value>刪除模型失敗</value>
+  </data>
+  <data name="ChatTtsSupportedImportModelSummary" xml:space="preserve">
+    <value>匯入支援：Sherpa-ONNX 的 Kokoro TTS 模型資料夾；需包含 model.onnx 或 model.int8.onnx、voices.bin、tokens.txt 和 espeak-ng-data。其他框架模型暫不支援。</value>
+  </data>
+  <data name="ChatTtsUnsupportedImportModel" xml:space="preserve">
+    <value>目前僅支援 Sherpa-ONNX 的 Kokoro TTS 模型資料夾。請確認資料夾包含 ONNX 模型、voices.bin、tokens.txt 和 espeak-ng-data。</value>
+  </data>
+  <data name="ChatTtsModelInfoTitle" xml:space="preserve">
+    <value>本機模型說明</value>
+  </data>
+  <data name="ChatTtsModelInfoBody" xml:space="preserve">
+    <value>選擇已安裝的本機模型，或下載/匯入模型。
+
+推薦模型：Kokoro v1.1（Sherpa-ONNX，中英雙語，103 音色）。
+
+匯入模型：目前僅支援 Sherpa-ONNX 的 Kokoro TTS 模型資料夾，需要包含 model.onnx 或 model.int8.onnx、voices.bin、tokens.txt 和 espeak-ng-data。其他框架模型暫不支援。</value>
+  </data>
 </root>
