@@ -1,6 +1,6 @@
 name: Tests
 
-"on":
+on:
   push:
   pull_request:
   workflow_dispatch:
@@ -16,11 +16,60 @@ jobs:
   tests:
     name: Tests (.NET 10)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
-      - name: Checkout
+      - name: Checkout repository (with Git LFS)
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 1
+
+      - name: Verify Git LFS speech model
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MODEL="WarThunderChatTranslator/Assets/SpeechModels/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17/model.int8.onnx"
+
+          echo "Checking speech model:"
+          echo "$MODEL"
+
+          if [ ! -f "$MODEL" ]; then
+            echo "::error::Speech model file was not found: $MODEL"
+            exit 1
+          fi
+
+          echo
+          echo "Git LFS tracked files:"
+          git lfs ls-files || true
+
+          echo
+          echo "Model file info:"
+          ls -lh "$MODEL"
+
+          SIZE=$(stat -c%s "$MODEL")
+          echo "Model size: $SIZE bytes"
+
+          if grep -aq '^version https://git-lfs.github.com/spec/v1' "$MODEL"; then
+            echo "::error::The speech model is still a Git LFS pointer. The real ONNX model was not downloaded."
+            echo "First lines of the file:"
+            head -n 3 "$MODEL"
+            exit 1
+          fi
+
+          # A real SenseVoice INT8 ONNX model should not be a tiny text/pointer file.
+          if [ "$SIZE" -lt 1048576 ]; then
+            echo "::error::The speech model is unexpectedly small ($SIZE bytes). Git LFS download may have failed."
+            exit 1
+          fi
+
+          echo
+          echo "First 32 bytes (hex):"
+          od -An -tx1 -N32 "$MODEL"
+
+          echo
+          echo "Speech model verification passed."
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
@@ -31,7 +80,8 @@ jobs:
         run: dotnet restore WarThunderChatTranslator.Tests/WarThunderChatTranslator.Tests.csproj
 
       - name: Run tests
-        run: >-
+        run: >
           dotnet test WarThunderChatTranslator.Tests/WarThunderChatTranslator.Tests.csproj
           --configuration Release
           --no-restore
+          --verbosity normal
