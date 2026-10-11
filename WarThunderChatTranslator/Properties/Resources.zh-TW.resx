@@ -1261,7 +1261,7 @@ ONNX 轉換 / 模型製品維護者：{11}
     <value>聊天語音播報</value>
   </data>
   <data name="ChatTtsDescription" xml:space="preserve">
-    <value>自動朗讀聊天翻譯結果。可使用 Microsoft SpeechSynthesizer，或使用隨應用程式內建的本機語音模型。</value>
+    <value>自動播報已翻譯的遊戲聊天訊息。支援 Windows 系統語音（Microsoft SpeechSynthesizer）、內建 Kokoro v1.1 本機模型，或連線到自行啟動的 GPT-SoVITS 服務使用角色語音。</value>
   </data>
   <data name="ChatTtsEnable" xml:space="preserve">
     <value>啟用聊天語音播報</value>
@@ -1534,7 +1534,7 @@ ONNX 轉換 / 模型製品維護者：{11}
     <value>聲音來源</value>
   </data>
   <data name="ChatTtsProviderDescription" xml:space="preserve">
-    <value>選擇 Windows 系統語音，或使用隨應用程式內建的本機模型。</value>
+    <value>選擇 Windows 系統語音、內建 Kokoro v1.1 本機模型，或連線到已啟動的 GPT-SoVITS 服務使用角色語音。</value>
   </data>
   <data name="ChatTtsProviderWindows" xml:space="preserve">
     <value>Microsoft SpeechSynthesizer</value>

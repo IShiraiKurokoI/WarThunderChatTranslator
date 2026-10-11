@@ -6,7 +6,7 @@
 
 ---
 
-![執行設定](images/06-runtime-settings.jpg)
+![執行設定](images/06-runtime-settings.png)
 
 ## 啟動行為
 

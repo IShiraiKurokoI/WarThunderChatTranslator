@@ -6,7 +6,7 @@
 
 ---
 
-![翻譯設定頁面](images/02-translation-settings.jpg)
+![翻譯設定頁面](images/02-translation-settings.png)
 
 ## 選擇聊天翻譯服務
 

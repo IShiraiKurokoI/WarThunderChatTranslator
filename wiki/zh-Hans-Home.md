@@ -2,7 +2,7 @@
 
 > **War Thunder Chat Translator** · 按使用场景查找说明。每个主题都是独立页面，适合边操作边查看。
 
-![War Thunder Chat Translator Dashboard](images/01-dashboard.jpg)
+![War Thunder Chat Translator Dashboard](images/01-dashboard.png)
 
 **从这里开始：** [快速开始 →](zh-Hans-Start)
 
@@ -17,7 +17,7 @@
 | 💬 **[浏览器 Dashboard](zh-Hans-Dashboard)** | 使用浏览器面板阅读游戏聊天与切换显示方式。 |
 | 🎮 **[游戏悬浮窗](zh-Hans-Overlay)** | 显示、隐藏、移动、缩放悬浮窗，以及恢复窗口。 |
 | 🎙️ **[语音翻译](zh-Hans-Voice)** | 设置麦克风、快捷键、录音步骤和提示音。 |
-| 🔊 **[聊天语音播报](zh-Hans-Chat-TTS)** | 使用 Microsoft 系统音色或内置 Kokoro 模型播报聊天译文。 |
+| 🔊 **[聊天语音播报](zh-Hans-Chat-TTS)** | 使用 Microsoft 系统音色、内置 Kokoro 模型或 GPT-SoVITS 角色语音播报聊天译文。 |
 | 🛡️ **[不文明内容过滤](zh-Hans-Content-Filter)** | 分别过滤屏幕显示和 TTS，并管理自定义黑白名单。 |
 | ⚙️ **[运行与网络设置](zh-Hans-Preferences)** | 启动行为、聊天历史、更新频率和代理选项。 |
 | 🎨 **[外观与界面语言](zh-Hans-Appearance)** | 界面语言、明暗主题、聊天字体和悬浮窗布局。 |

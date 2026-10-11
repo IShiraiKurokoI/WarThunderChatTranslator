@@ -6,7 +6,7 @@
 
 ---
 
-![Voice Translation settings](images/05-voice-translation.jpg)
+![Voice Translation settings](images/05-voice-translation.png)
 
 ## Enable voice translation for the first time
 

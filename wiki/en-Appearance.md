@@ -6,7 +6,7 @@
 
 ---
 
-![Chat style settings](images/07-chat-styles.jpg)
+![Chat style settings](images/07-chat-styles.png)
 
 ## Change the app language
 

@@ -6,7 +6,7 @@
 
 ---
 
-![AI 模型管理頁面](images/03-ai-models.jpg)
+![AI 模型管理頁面](images/03-ai-models.png)
 
 ## 新增自己的 AI 翻譯服務
 

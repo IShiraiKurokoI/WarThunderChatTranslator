@@ -53,6 +53,10 @@
     <td width="50%" align="center"><img src="doc/7.png" alt="聊天样式" width="100%"><br><sub>字体、字号和不同消息类型的颜色。</sub></td>
     <td width="50%" align="center"><img src="doc/8.png" alt="悬浮窗布局" width="100%"><br><sub>选择显示器并调整悬浮窗的位置和尺寸。</sub></td>
   </tr>
+  <tr>
+    <td width="50%" align="center"><img src="doc/9.png" alt="聊天语音播报设置" width="100%"><br><sub>设置语音来源、音频输出、音色与消息队列。</sub></td>
+    <td width="50%" align="center"><img src="doc/10.png" alt="不文明内容过滤设置" width="100%"><br><sub>分别控制屏幕显示与语音播报过滤，并管理自定义词库。</sub></td>
+  </tr>
 </table>
 </details>
 

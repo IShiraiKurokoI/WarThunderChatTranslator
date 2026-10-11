@@ -6,7 +6,7 @@
 
 ---
 
-![Dashboard 聊天面板](images/01-dashboard.jpg)
+![Dashboard 聊天面板](images/01-dashboard.png)
 
 ## 从哪里打开？
 

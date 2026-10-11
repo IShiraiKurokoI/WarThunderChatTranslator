@@ -14,7 +14,7 @@
 4. **Run a quick test.** Select **Test Translation**, enter a short phrase, and check that a translation appears.
 5. **Open the game and choose a view.** Start War Thunder. Use **Dashboard** from the tray to read chat in a browser, or **Show/Hide Overlay** to display it over the game.
 
-![Browser chat Dashboard](images/01-dashboard.jpg)
+![Browser chat Dashboard](images/01-dashboard.png)
 
 > 💡 An empty chat view does not necessarily indicate a problem. The app may simply be waiting for new messages from the game.
 

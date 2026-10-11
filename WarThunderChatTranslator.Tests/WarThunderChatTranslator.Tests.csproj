@@ -55,6 +55,8 @@
     <None Include="..\WarThunderChatTranslator\Properties\Resources.en-US.resx" Link="TestData\Resources.en-US.resx" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\WarThunderChatTranslator\Properties\Resources.zh-CN.resx" Link="TestData\Resources.zh-CN.resx" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\WarThunderChatTranslator\Properties\Resources.zh-TW.resx" Link="TestData\Resources.zh-TW.resx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\WarThunderChatTranslator\Pages\ChatTtsPage.xaml" Link="TestData\Pages\ChatTtsPage.xaml" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\WarThunderChatTranslator\Pages\ContentFilterPage.xaml" Link="TestData\Pages\ContentFilterPage.xaml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Both the desktop .resx resources and all nine WinUI .resw locales are verified. -->

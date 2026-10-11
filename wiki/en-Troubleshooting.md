@@ -37,6 +37,18 @@
 | A voice shortcut does not work | Verify the feature is on, or change conflicting shortcuts |
 | No translation follows recording | Stop with **the same shortcut** used to start; also test the translation service |
 
+## Chat voice playback and content filtering
+
+| Problem | Try this |
+| --- | --- |
+| Chat TTS is enabled but no sound plays | Check the selected message types, TTS volume, and **Audio output device**. Use **Preview** and verify that Windows has not muted the selected output. |
+| Audio output device is missing or unavailable | Reconnect the headset/speaker, click **Refresh** by the device selector, and select an available device or **System default**. |
+| Kokoro voices fail to load or the model is missing | Check **Model Status**. Restore the complete app package if bundled files are missing; try the default Kokoro thread count if speech initialization fails. |
+| GPT-SoVITS connection check fails | Start the GPT-SoVITS API service yourself. Verify its API URL and port (default `http://127.0.0.1:9880`), network access, and the **Check** result. |
+| A GPT-SoVITS character cannot be saved or played | Supply a profile name and reference audio path, ensure referenced files are accessible to the API service, select **Use** for the intended character, and test with **Preview**. |
+| A blocked term is not filtered | Make sure the **display** and/or **TTS** filtering switch is enabled for the output being checked. Review the global severity threshold, the term's severity and matching mode, and the allowlist (which takes precedence). |
+| Import does not appear to replace old rules | This is expected: TXT/JSON imports **merge** custom lists. Select and remove unwanted old entries yourself. TXT adds one blocked term per line at severity 2 with Auto matching; JSON can restore both lists. |
+
 ## App language and appearance
 
 - **My unsupported system language uses English:** this is the intended fallback. Pick a language manually under **Appearance → Interface Settings** if preferred.

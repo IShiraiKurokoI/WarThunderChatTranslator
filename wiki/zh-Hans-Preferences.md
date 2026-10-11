@@ -6,7 +6,7 @@
 
 ---
 
-![运行设置](images/06-runtime-settings.jpg)
+![运行设置](images/06-runtime-settings.png)
 
 ## 启动行为
 

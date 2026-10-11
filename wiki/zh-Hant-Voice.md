@@ -6,7 +6,7 @@
 
 ---
 
-![語音翻譯設定](images/05-voice-translation.jpg)
+![語音翻譯設定](images/05-voice-translation.png)
 
 ## 初次啟用
 

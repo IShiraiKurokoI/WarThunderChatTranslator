@@ -6,7 +6,7 @@
 
 ---
 
-![Runtime Settings](images/06-runtime-settings.jpg)
+![Runtime Settings](images/06-runtime-settings.png)
 
 ## Startup behavior
 

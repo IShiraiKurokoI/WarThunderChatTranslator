@@ -6,7 +6,7 @@
 
 ---
 
-![Chat Dashboard](images/01-dashboard.jpg)
+![Chat Dashboard](images/01-dashboard.png)
 
 ## Open the Dashboard
 

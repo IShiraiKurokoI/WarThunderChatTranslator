@@ -105,6 +105,7 @@ namespace WarThunderChatTranslator.Pages
 
         private async Task RefreshTtsOutputDevicesAsync()
         {
+            ChatTtsOutputDeviceInfoBar.IsOpen = false;
             try
             {
                 var devices = await TtsOutputDeviceService.GetAvailableDevicesAsync();
@@ -154,7 +155,7 @@ namespace WarThunderChatTranslator.Pages
             }
             catch (Exception ex)
             {
-                ShowInfo(Localization.GetString("ChatTtsOutputDevicesLoadFailed"),
+                ShowInfo(ChatTtsOutputDeviceInfoBar, Localization.GetString("ChatTtsOutputDevicesLoadFailed"),
                     ex.Message, InfoBarSeverity.Warning);
             }
         }
@@ -180,9 +181,13 @@ namespace WarThunderChatTranslator.Pages
             var providerId = GetSelectedProviderId();
             var isLocal = string.Equals(providerId, ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal);
             var isGptSoVits = string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal);
+            ChatTtsVoiceInfoBar.IsOpen = false;
+            GptSoVitsConnectionInfoBar.IsOpen = false;
+            GptSoVitsProfilesInfoBar.IsOpen = false;
             SherpaSettingsSection.Visibility = isLocal ? Visibility.Visible : Visibility.Collapsed;
             GptSoVitsSettingsSection.Visibility = isGptSoVits ? Visibility.Visible : Visibility.Collapsed;
             ChatTtsVoiceCard.Visibility = isGptSoVits ? Visibility.Collapsed : Visibility.Visible;
+            ChatTtsVoiceInfoBar.Visibility = isGptSoVits ? Visibility.Collapsed : Visibility.Visible;
             if (isLocal)
             {
                 RefreshSherpaModelStatus();
@@ -214,6 +219,10 @@ namespace WarThunderChatTranslator.Pages
 
         private async Task LoadVoicesAsync(string providerId)
         {
+            var voiceInfoBar = string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal)
+                ? GptSoVitsProfilesInfoBar
+                : ChatTtsVoiceInfoBar;
+            voiceInfoBar.IsOpen = false;
             var needsLocalModel = string.Equals(providerId, ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal)
                 && !BundledKokoroTtsModel.IsAvailable;
             var needsGptProfile = string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal)
@@ -298,7 +307,11 @@ namespace WarThunderChatTranslator.Pages
             }
             catch (Exception ex)
             {
-                ShowInfo(Localization.GetString("ChatTtsVoiceLoadFailed"), ex.Message, InfoBarSeverity.Warning);
+                if (string.Equals(GetSelectedProviderId(), providerId, StringComparison.Ordinal))
+                {
+                    ShowInfo(voiceInfoBar, Localization.GetString("ChatTtsVoiceLoadFailed"), ex.Message,
+                        InfoBarSeverity.Warning);
+                }
                 if (string.Equals(providerId, ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal))
                 {
                     RefreshSherpaModelStatus(ex.Message);
@@ -407,6 +420,7 @@ namespace WarThunderChatTranslator.Pages
             {
                 app.ChatTtsService.GptSoVitsProvider.InvalidateWeights();
             }
+            GptSoVitsConnectionInfoBar.IsOpen = false;
             GptSoVitsStatusText.Text = Localization.GetString("ChatTtsGptSoVitsStatusUnchecked");
         }
 
@@ -422,6 +436,7 @@ namespace WarThunderChatTranslator.Pages
                 return;
             }
 
+            GptSoVitsConnectionInfoBar.IsOpen = false;
             GptSoVitsStatusText.Text = Localization.GetString("ChatTtsGptSoVitsStatusChecking");
             GptSoVitsCheckButton.IsEnabled = false;
             IDisposable? ownedProvider = null;
@@ -434,6 +449,7 @@ namespace WarThunderChatTranslator.Pages
                 if (!connected && showFailureInfo)
                 {
                     ShowInfo(
+                        GptSoVitsConnectionInfoBar,
                         Localization.GetString("ChatTtsGptSoVitsConnectionFailed"),
                         Localization.GetString("ChatTtsGptSoVitsConnectionFailedDescription"),
                         InfoBarSeverity.Warning);
@@ -444,7 +460,8 @@ namespace WarThunderChatTranslator.Pages
                 GptSoVitsStatusText.Text = Localization.GetString("ChatTtsGptSoVitsStatusDisconnected");
                 if (showFailureInfo)
                 {
-                    ShowInfo(Localization.GetString("ChatTtsGptSoVitsConnectionFailed"), ex.Message, InfoBarSeverity.Warning);
+                    ShowInfo(GptSoVitsConnectionInfoBar, Localization.GetString("ChatTtsGptSoVitsConnectionFailed"),
+                        ex.Message, InfoBarSeverity.Warning);
                 }
             }
             finally
@@ -1183,18 +1200,15 @@ namespace WarThunderChatTranslator.Pages
 
         private void ShowPreviewInfo(string title, string message, InfoBarSeverity severity)
         {
-            ChatTtsPreviewInfoBar.Title = title;
-            ChatTtsPreviewInfoBar.Message = message;
-            ChatTtsPreviewInfoBar.Severity = severity;
-            ChatTtsPreviewInfoBar.IsOpen = true;
+            ShowInfo(ChatTtsPreviewInfoBar, title, message, severity);
         }
 
-        private void ShowInfo(string title, string message, InfoBarSeverity severity)
+        private static void ShowInfo(InfoBar target, string title, string message, InfoBarSeverity severity)
         {
-            ChatTtsInfoBar.Title = title;
-            ChatTtsInfoBar.Message = message;
-            ChatTtsInfoBar.Severity = severity;
-            ChatTtsInfoBar.IsOpen = true;
+            target.Title = title;
+            target.Message = message;
+            target.Severity = severity;
+            target.IsOpen = true;
         }
     }
 }

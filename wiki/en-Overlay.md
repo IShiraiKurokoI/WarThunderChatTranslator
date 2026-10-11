@@ -6,7 +6,7 @@
 
 ---
 
-![In-game chat overlay](images/04-overlay-in-game.jpg)
+![In-game chat overlay](images/04-overlay-in-game.png)
 
 ## Show, hide, and restore
 
@@ -30,7 +30,7 @@ You can also open the gear menu in the overlay's upper-right corner and choose *
 3. Double-click the move handle to enter resize mode, drag an edge or corner, then double-click the handle again to leave resize mode.
 4. Alternatively, open **Appearance → Overlay**, choose the display, adjust position and size, and select **Apply**.
 
-![Overlay layout settings](images/08-overlay-layout.jpg)
+![Overlay layout settings](images/08-overlay-layout.png)
 
 ## Why can't I click the overlay while playing?
 

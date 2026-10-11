@@ -6,7 +6,7 @@
 
 ---
 
-![AI model management](images/03-ai-models.jpg)
+![AI model management](images/03-ai-models.png)
 
 ## Add your AI translation provider
 

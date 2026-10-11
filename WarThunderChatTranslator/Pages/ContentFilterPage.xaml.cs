@@ -28,6 +28,9 @@ namespace WarThunderChatTranslator.Pages
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             _loaded = false;
+            ContentFilterBlocklistInfoBar.IsOpen = false;
+            ContentFilterAllowlistInfoBar.IsOpen = false;
+            ContentFilterImportExportInfoBar.IsOpen = false;
             LoadSettings();
             RefreshLists();
             BuiltInDictionarySummary.Text = string.Format(
@@ -123,10 +126,12 @@ namespace WarThunderChatTranslator.Pages
             var term = BlockTermTextBox.Text?.Trim();
             if (string.IsNullOrWhiteSpace(term))
             {
-                ShowInfo(Localization.GetString("ContentFilterInvalidTerm"), string.Empty, InfoBarSeverity.Warning);
+                ShowInfo(ContentFilterBlocklistInfoBar, Localization.GetString("ContentFilterInvalidTerm"),
+                    string.Empty, InfoBarSeverity.Warning);
                 return;
             }
 
+            ContentFilterBlocklistInfoBar.IsOpen = false;
             var severity = 2;
             if (BlockSeverityCombo.SelectedItem is ComboBoxItem severityItem)
             {
@@ -166,10 +171,12 @@ namespace WarThunderChatTranslator.Pages
             var term = AllowTermTextBox.Text?.Trim();
             if (string.IsNullOrWhiteSpace(term))
             {
-                ShowInfo(Localization.GetString("ContentFilterInvalidTerm"), string.Empty, InfoBarSeverity.Warning);
+                ShowInfo(ContentFilterAllowlistInfoBar, Localization.GetString("ContentFilterInvalidTerm"),
+                    string.Empty, InfoBarSeverity.Warning);
                 return;
             }
 
+            ContentFilterAllowlistInfoBar.IsOpen = false;
             _filterService.AddAllowTerm(term);
             AllowTermTextBox.Text = string.Empty;
             RefreshLists();
@@ -188,6 +195,7 @@ namespace WarThunderChatTranslator.Pages
 
         private async void ImportFilterPackage_Click(object sender, RoutedEventArgs e)
         {
+            ContentFilterImportExportInfoBar.IsOpen = false;
             try
             {
                 var picker = new FileOpenPicker();
@@ -208,16 +216,19 @@ namespace WarThunderChatTranslator.Pages
                     text,
                     string.Equals(file.FileType, ".txt", StringComparison.OrdinalIgnoreCase));
                 RefreshLists();
-                ShowInfo(Localization.GetString("ContentFilterImportSuccess"), string.Empty, InfoBarSeverity.Success);
+                ShowInfo(ContentFilterImportExportInfoBar, Localization.GetString("ContentFilterImportSuccess"),
+                    string.Empty, InfoBarSeverity.Success);
             }
             catch (Exception ex)
             {
-                ShowInfo(Localization.GetString("ContentFilterImportFailed"), ex.Message, InfoBarSeverity.Error);
+                ShowInfo(ContentFilterImportExportInfoBar, Localization.GetString("ContentFilterImportFailed"),
+                    ex.Message, InfoBarSeverity.Error);
             }
         }
 
         private async void ExportFilterPackage_Click(object sender, RoutedEventArgs e)
         {
+            ContentFilterImportExportInfoBar.IsOpen = false;
             try
             {
                 var picker = new FileSavePicker
@@ -236,11 +247,13 @@ namespace WarThunderChatTranslator.Pages
                 }
 
                 await FileIO.WriteTextAsync(file, _filterService.ExportPackage());
-                ShowInfo(Localization.GetString("ContentFilterExportSuccess"), string.Empty, InfoBarSeverity.Success);
+                ShowInfo(ContentFilterImportExportInfoBar, Localization.GetString("ContentFilterExportSuccess"),
+                    string.Empty, InfoBarSeverity.Success);
             }
             catch (Exception ex)
             {
-                ShowInfo(Localization.GetString("ContentFilterExportFailed"), ex.Message, InfoBarSeverity.Error);
+                ShowInfo(ContentFilterImportExportInfoBar, Localization.GetString("ContentFilterExportFailed"),
+                    ex.Message, InfoBarSeverity.Error);
             }
         }
 
@@ -290,12 +303,12 @@ namespace WarThunderChatTranslator.Pages
             };
         }
 
-        private void ShowInfo(string title, string message, InfoBarSeverity severity)
+        private static void ShowInfo(InfoBar target, string title, string message, InfoBarSeverity severity)
         {
-            ContentFilterInfoBar.Title = title;
-            ContentFilterInfoBar.Message = message;
-            ContentFilterInfoBar.Severity = severity;
-            ContentFilterInfoBar.IsOpen = true;
+            target.Title = title;
+            target.Message = message;
+            target.Severity = severity;
+            target.IsOpen = true;
         }
     }
 }

@@ -6,7 +6,7 @@
 
 ---
 
-![聊天樣式設定](images/07-chat-styles.jpg)
+![聊天樣式設定](images/07-chat-styles.png)
 
 ## 變更應用程式語言
 

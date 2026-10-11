@@ -6,7 +6,7 @@
 
 ---
 
-![Translation Settings](images/02-translation-settings.jpg)
+![Translation Settings](images/02-translation-settings.png)
 
 ## Choose a translation service
 

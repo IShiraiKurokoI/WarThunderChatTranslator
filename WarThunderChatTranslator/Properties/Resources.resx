@@ -1261,7 +1261,7 @@ Continue and Windows will ask for administrator approval.</value>
     <value>Chat voice playback</value>
   </data>
   <data name="ChatTtsDescription" xml:space="preserve">
-    <value>Automatically reads translated chat messages aloud. Choose Microsoft SpeechSynthesizer or the bundled local TTS model.</value>
+    <value>Automatically reads translated game chat aloud. Use Windows voices (Microsoft SpeechSynthesizer), the bundled Kokoro v1.1 local model, or character voices through an already-running GPT-SoVITS service.</value>
   </data>
   <data name="ChatTtsEnable" xml:space="preserve">
     <value>Enable chat voice playback</value>
@@ -1534,7 +1534,7 @@ Continue and Windows will ask for administrator approval.</value>
     <value>Voice source</value>
   </data>
   <data name="ChatTtsProviderDescription" xml:space="preserve">
-    <value>Choose the Windows system speech engine or the bundled local model.</value>
+    <value>Choose Windows system voices, the bundled Kokoro v1.1 model, or character voices via an already-running GPT-SoVITS service.</value>
   </data>
   <data name="ChatTtsProviderWindows" xml:space="preserve">
     <value>Microsoft SpeechSynthesizer</value>

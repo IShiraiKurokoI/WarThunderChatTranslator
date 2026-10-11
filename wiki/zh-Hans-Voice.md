@@ -6,7 +6,7 @@
 
 ---
 
-![语音翻译设置](images/05-voice-translation.jpg)
+![语音翻译设置](images/05-voice-translation.png)
 
 ## 第一次启用
 

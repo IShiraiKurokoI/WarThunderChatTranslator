@@ -44,12 +44,6 @@
                     Text="{helpers:Loc Key=ChatTtsDescription}"
                     TextWrapping="Wrap" />
 
-                <InfoBar
-                    x:Name="ChatTtsInfoBar"
-                    Margin="0,0,0,12"
-                    IsClosable="True"
-                    IsOpen="False" />
-
                 <labs:SettingsCard
                     MaxWidth="2000"
                     Description="{helpers:Loc Key=ChatTtsEnableDescription}"
@@ -105,6 +99,12 @@
                         </Button>
                     </Grid>
                 </labs:SettingsCard>
+
+                <InfoBar
+                    x:Name="ChatTtsOutputDeviceInfoBar"
+                    Margin="0,8,0,12"
+                    IsClosable="True"
+                    IsOpen="False" />
 
                 <StackPanel x:Name="SherpaSettingsSection" Visibility="Collapsed">
                     <TextBlock
@@ -236,6 +236,12 @@
                         </Grid>
                     </labs:SettingsCard>
 
+                    <InfoBar
+                        x:Name="GptSoVitsConnectionInfoBar"
+                        Margin="0,8,0,12"
+                        IsClosable="True"
+                        IsOpen="False" />
+
                     <labs:SettingsCard
                         MaxWidth="2000"
                         Description="{helpers:Loc Key=ChatTtsGptSoVitsProfilesDescription}"
@@ -250,6 +256,12 @@
                             </StackPanel>
                         </Button>
                     </labs:SettingsCard>
+
+                    <InfoBar
+                        x:Name="GptSoVitsProfilesInfoBar"
+                        Margin="0,8,0,12"
+                        IsClosable="True"
+                        IsOpen="False" />
 
                     <Border
                         x:Name="GptSoVitsProfilesEmptyState"
@@ -396,6 +408,12 @@
                         HorizontalAlignment="Right"
                         SelectionChanged="ChatTtsVoice_SelectionChanged" />
                 </labs:SettingsCard>
+
+                <InfoBar
+                    x:Name="ChatTtsVoiceInfoBar"
+                    Margin="0,8,0,12"
+                    IsClosable="True"
+                    IsOpen="False" />
 
                 <labs:SettingsCard
                     MaxWidth="2000"

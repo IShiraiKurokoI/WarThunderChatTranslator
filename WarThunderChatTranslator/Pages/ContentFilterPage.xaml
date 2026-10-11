@@ -30,12 +30,6 @@
                     Text="{helpers:Loc Key=ContentFilterDescription}"
                     TextWrapping="Wrap" />
 
-                <InfoBar
-                    x:Name="ContentFilterInfoBar"
-                    Margin="0,0,0,12"
-                    IsClosable="True"
-                    IsOpen="False" />
-
                 <labs:SettingsCard
                     MaxWidth="2000"
                     Description="{helpers:Loc Key=ContentFilterSeverityDescription}"
@@ -133,6 +127,10 @@
                                 </StackPanel>
                             </Button>
                         </Grid>
+                        <InfoBar
+                            x:Name="ContentFilterBlocklistInfoBar"
+                            IsClosable="True"
+                            IsOpen="False" />
                         <ListView x:Name="BlocklistView" MaxHeight="230" SelectionMode="Single" />
                         <Button HorizontalAlignment="Left" Click="RemoveBlockTerm_Click">
                             <StackPanel Orientation="Horizontal" Spacing="6">
@@ -164,6 +162,10 @@
                                 </StackPanel>
                             </Button>
                         </Grid>
+                        <InfoBar
+                            x:Name="ContentFilterAllowlistInfoBar"
+                            IsClosable="True"
+                            IsOpen="False" />
                         <ListView x:Name="AllowlistView" MaxHeight="180" SelectionMode="Single" />
                         <Button HorizontalAlignment="Left" Click="RemoveAllowTerm_Click">
                             <StackPanel Orientation="Horizontal" Spacing="6">
@@ -196,6 +198,10 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
+                        <InfoBar
+                            x:Name="ContentFilterImportExportInfoBar"
+                            IsClosable="True"
+                            IsOpen="False" />
                     </StackPanel>
                 </Border>
             </StackPanel>
