@@ -6,9 +6,9 @@
 
 ## UI 操作手册（GitHub Wiki）
 
-- **[简体中文 · 分页目录](../../wiki/zh-Hans-Home.md)**
-- **[繁體中文 · 分頁目錄](../../wiki/zh-Hant-Home.md)**
-- **[English · Topic Index](../../wiki/en-Home.md)**
+- **[简体中文 · 分页目录](../../wiki/zh-Hans-Home)**
+- **[繁體中文 · 分頁目錄](../../wiki/zh-Hant-Home)**
+- **[English · Topic Index](../../wiki/en-Home)**
 
 ## 主要功能
 
