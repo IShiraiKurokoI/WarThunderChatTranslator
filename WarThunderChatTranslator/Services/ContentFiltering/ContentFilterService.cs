@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using NLog;
 using System;
@@ -30,8 +30,10 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
         private List<ContentFilterEntry> _userBlocklist = [];
         private List<string> _userAllowlist = [];
         private long _version;
+        private readonly string? _customUserDirectory;
 
-        public static ContentFilterService Shared { get; } = new();
+        private static readonly Lazy<ContentFilterService> SharedInstance = new(() => new ContentFilterService());
+        public static ContentFilterService Shared => SharedInstance.Value;
 
         public event Action? Changed;
 
@@ -62,8 +64,12 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
         public int BuiltInEnglishCount { get; private set; }
         public int BuiltInChineseCount { get; private set; }
 
-        private ContentFilterService()
+        private ContentFilterService() : this(null) { }
+
+        // Optional per-instance dictionary directory for isolated, disk-backed tests.
+        internal ContentFilterService(string? userDirectory)
         {
+            _customUserDirectory = userDirectory;
             ReloadFromDisk(raiseChanged: false);
         }
 
@@ -91,7 +97,7 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
                 return Unchanged(value);
             }
 
-            return _displayCache.GetOrAdd(value, static text => Shared.FilterCore(text, removeForSpeech: false));
+            return _displayCache.GetOrAdd(value, text => FilterCore(text, removeForSpeech: false));
         }
 
         public string? FilterForTts(string? text)
@@ -102,7 +108,7 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
                 return value;
             }
 
-            var result = _speechCache.GetOrAdd(value, static text => Shared.FilterCore(text, removeForSpeech: true));
+            var result = _speechCache.GetOrAdd(value, text => FilterCore(text, removeForSpeech: true));
             if (!result.IsMatch)
             {
                 return value;
@@ -768,8 +774,8 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
             }
         }
 
-        private static string UserBlocklistPath => Path.Combine(UserDirectory, "custom-blocklist.json");
-        private static string UserAllowlistPath => Path.Combine(UserDirectory, "custom-allowlist.json");
+        private string UserBlocklistPath => Path.Combine(_customUserDirectory ?? UserDirectory, "custom-blocklist.json");
+        private string UserAllowlistPath => Path.Combine(_customUserDirectory ?? UserDirectory, "custom-allowlist.json");
 
         private static void TryMigrateLegacyUserDictionaryFiles(string destinationDirectory)
         {
@@ -798,7 +804,7 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
             }
         }
 
-        private static List<ContentFilterEntry> LoadUserBlocklist()
+        private List<ContentFilterEntry> LoadUserBlocklist()
         {
             try
             {
@@ -813,7 +819,7 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
             }
         }
 
-        private static List<string> LoadUserAllowlist()
+        private List<string> LoadUserAllowlist()
         {
             try
             {
@@ -830,6 +836,7 @@ namespace WarThunderChatTranslator.Services.ContentFiltering
 
         private void PersistUserListsLocked()
         {
+            Directory.CreateDirectory(_customUserDirectory ?? UserDirectory);
             File.WriteAllText(UserBlocklistPath, JsonSerializer.Serialize(_userBlocklist, JsonOptions), Encoding.UTF8);
             File.WriteAllText(UserAllowlistPath, JsonSerializer.Serialize(_userAllowlist, JsonOptions), Encoding.UTF8);
         }

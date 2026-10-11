@@ -15,7 +15,7 @@
 - **实时聊天翻译**：持续读取 War Thunder 聊天消息，可显示译文、原文或两者同时显示，并支持来源语言提示。
 - **多种翻译方式**：内置 Microsoft、Google、Yandex；也可以添加自己的 AI 服务，目前支持 OpenAI Responses、OpenAI-compatible Chat Completions 和 Anthropic Messages，并可单独配置模型、接口地址、Temperature 与提示词。
 - **Dashboard 和游戏悬浮窗**：既可以在 Dashboard 里看，也可以直接把翻译窗口放到游戏画面上。
-- **聊天语音播报**：可使用 Windows 本地的 **Microsoft SpeechSynthesizer** 或随应用分发的 **Kokoro v1.1 INT8** 本地模型播报译文；支持音色、语速、音量、消息类型、等待队列与过期策略。
+- **聊天语音播报**：可使用 Windows 本地的 **Microsoft SpeechSynthesizer**、随应用分发的 **Kokoro v1.1 INT8**，或连接本机 **GPT-SoVITS** 使用角色语音播报译文；支持音色、语速、音量、消息类型、等待队列与过期策略。
 - **不文明内容过滤**：显示过滤和 TTS 过滤完全独立，可按宽泛/常规/严重等级处理，并支持自定义黑名单、白名单以及导入导出。
 - **快捷语音翻译**：通过全局快捷键录音，本地使用 SenseVoice 做语音识别，再翻译到指定语言并自动复制结果。不同快捷键可以绑定不同目标语言，也能选择录音设备和提示音。
 - **外观与运行设置**：可调整字体、字号、阵营文字颜色、聊天气泡、日间/深夜显示效果、轮询间隔和聊天缓存策略，并支持系统代理或自定义代理。
@@ -72,7 +72,7 @@
 
 ### v1.1.1.0
 
-- 新增聊天语音播报，可选择 Microsoft SpeechSynthesizer 或内置 Kokoro v1.1 本地模型。
+- 新增聊天语音播报，可选择 Microsoft SpeechSynthesizer、内置 Kokoro v1.1 本地模型，或连接 GPT-SoVITS 使用角色语音。
 - 新增显示 / TTS 独立的不文明内容过滤、自定义黑名单与白名单。
 
 ### v1.1.0.0

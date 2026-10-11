@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:schema id="root">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -1606,5 +1606,143 @@ Documentation: {7}</value>
   </data>
   <data name="ChatTtsModelFileMissing" xml:space="preserve">
     <value>Missing</value>
+  </data>
+  <data name="ChatTtsProviderGptSoVits" xml:space="preserve">
+    <value>GPT-SoVITS character voice</value>
+  </data>
+  <data name="ChatTtsGptSoVitsSettings" xml:space="preserve">
+    <value>GPT-SoVITS character voice</value>
+  </data>
+  <data name="ChatTtsGptSoVitsApi" xml:space="preserve">
+    <value>Service address</value>
+  </data>
+  <data name="ChatTtsGptSoVitsApiDescription" xml:space="preserve">
+    <value>Connect to a GPT-SoVITS service that is already running.</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatus" xml:space="preserve">
+    <value>Service status</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusDescription" xml:space="preserve">
+    <value>Check whether the configured GPT-SoVITS service is reachable.</value>
+  </data>
+  <data name="ChatTtsGptSoVitsCheck" xml:space="preserve">
+    <value>Check</value>
+  </data>
+  <data name="ChatTtsGptSoVitsInfo" xml:space="preserve">
+    <value>About GPT-SoVITS connection</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfiles" xml:space="preserve">
+    <value>Character profiles</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfilesDescription" xml:space="preserve">
+    <value>Add and manage character models, reference audio, and reference text.</value>
+  </data>
+  <data name="ChatTtsGptSoVitsAddProfile" xml:space="preserve">
+    <value>Add character</value>
+  </data>
+  <data name="ChatTtsGptSoVitsEditProfile" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="ChatTtsGptSoVitsDeleteProfile" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ChatTtsGptSoVitsCharacter" xml:space="preserve">
+    <value>Character voice</value>
+  </data>
+  <data name="ChatTtsGptSoVitsCharacterDescription" xml:space="preserve">
+    <value>Choose the character profile used for chat playback.</value>
+  </data>
+  <data name="ChatTtsGptSoVitsVoiceRequiresProfile" xml:space="preserve">
+    <value>Add a character profile first</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusUnchecked" xml:space="preserve">
+    <value>Not checked</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusChecking" xml:space="preserve">
+    <value>Checking…</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusConnected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusDisconnected" xml:space="preserve">
+    <value>Not connected</value>
+  </data>
+  <data name="ChatTtsGptSoVitsConnectionFailed" xml:space="preserve">
+    <value>GPT-SoVITS is not connected</value>
+  </data>
+  <data name="ChatTtsGptSoVitsConnectionFailedDescription" xml:space="preserve">
+    <value>Make sure the GPT-SoVITS API service is running and the service address is correct.</value>
+  </data>
+  <data name="ChatTtsGptSoVitsInfoBody" xml:space="preserve">
+    <value>WarThunderChatTranslator connects to an existing GPT-SoVITS API service and does not install or start GPT-SoVITS itself. Character model paths and reference audio paths are read by that service. Model paths may be left blank to use the models currently loaded by GPT-SoVITS.</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProjectLink" xml:space="preserve">
+    <value>Open GPT-SoVITS project</value>
+  </data>
+  <data name="ChatTtsGptSoVitsApiLink" xml:space="preserve">
+    <value>Open official API documentation</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfileName" xml:space="preserve">
+    <value>Character name</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfileNamePlaceholder" xml:space="preserve">
+    <value>For example: Character A</value>
+  </data>
+  <data name="ChatTtsGptSoVitsGptModel" xml:space="preserve">
+    <value>GPT model</value>
+  </data>
+  <data name="ChatTtsGptSoVitsSovitsModel" xml:space="preserve">
+    <value>SoVITS model</value>
+  </data>
+  <data name="ChatTtsGptSoVitsModelOptional" xml:space="preserve">
+    <value>Optional. Leave blank to use the model already loaded by GPT-SoVITS.</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceAudio" xml:space="preserve">
+    <value>Reference audio</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceAudioPlaceholder" xml:space="preserve">
+    <value>Select or enter a reference audio path</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceText" xml:space="preserve">
+    <value>Reference text</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceTextPlaceholder" xml:space="preserve">
+    <value>Text spoken in the reference audio</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceLanguage" xml:space="preserve">
+    <value>Reference language</value>
+  </data>
+  <data name="ChatTtsGptSoVitsOutputLanguage" xml:space="preserve">
+    <value>Playback text language</value>
+  </data>
+  <data name="ChatTtsGptSoVitsBrowse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ChatTtsGptSoVitsDeleteConfirmTitle" xml:space="preserve">
+    <value>Delete character profile?</value>
+  </data>
+  <data name="ChatTtsGptSoVitsDeleteConfirmDescription" xml:space="preserve">
+    <value>Delete “{0}”? This only removes the profile from WarThunderChatTranslator and does not delete model or audio files.</value>
+  </data>
+  <data name="ChatTtsOutputDevice" xml:space="preserve">
+    <value>Audio output device</value>
+  </data>
+  <data name="ChatTtsOutputDeviceDescription" xml:space="preserve">
+    <value>Use the Windows default output, or choose a speaker, headset, or virtual audio device for chat TTS.</value>
+  </data>
+  <data name="ChatTtsSystemDefaultOutputDevice" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="ChatTtsRefreshOutputDevices" xml:space="preserve">
+    <value>Refresh output devices</value>
+  </data>
+  <data name="ChatTtsSavedOutputDeviceUnavailable" xml:space="preserve">
+    <value>Saved output device (currently unavailable)</value>
+  </data>
+  <data name="ChatTtsOutputDevicesLoadFailed" xml:space="preserve">
+    <value>Could not list audio output devices</value>
+  </data>
+  <data name="ChatTtsOutputDeviceUnavailableError" xml:space="preserve">
+    <value>The selected audio output device is unavailable. Reconnect it, refresh the list, or choose System default.</value>
   </data>
 </root>

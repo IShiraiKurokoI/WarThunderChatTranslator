@@ -85,3 +85,43 @@ jobs:
           --configuration Release
           --no-restore
           --verbosity normal
+
+  mock-tests:
+    name: GPT-SoVITS mock tests (no models)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # Only this additional job skips Git LFS. The original STT/Kokoro job above
+      # retains model downloads and runs every pre-existing test unchanged.
+      - name: Checkout source (without LFS models)
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore test dependencies
+        run: dotnet restore WarThunderChatTranslator.Tests/WarThunderChatTranslator.Tests.csproj
+
+      - name: Run added model-free tests and collect coverage
+        run: >
+          dotnet test WarThunderChatTranslator.Tests/WarThunderChatTranslator.Tests.csproj
+          --configuration Release
+          --no-restore
+          --verbosity normal
+          --filter "TestCategory=ModelFree"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults
+
+      - name: Upload model-free test coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-sovits-mock-coverage
+          path: TestResults/
+          if-no-files-found: ignore

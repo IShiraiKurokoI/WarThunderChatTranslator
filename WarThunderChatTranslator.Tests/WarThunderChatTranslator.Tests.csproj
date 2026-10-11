@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,6 +14,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.4.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.4.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <!--
@@ -25,6 +29,21 @@
     <Compile Include="..\WarThunderChatTranslator\Helpers\StartupLanguage.cs" Link="Source\StartupLanguage.cs" />
     <Compile Include="..\WarThunderChatTranslator\Helpers\HotkeyGesture.cs" Link="Source\HotkeyGesture.cs" />
     <Compile Include="..\WarThunderChatTranslator\Helpers\TtsCacheKey.cs" Link="Source\TtsCacheKey.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Configurations\ApplicationConfig.cs" Link="Source\ApplicationConfig.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Configurations\ChatTtsConfig.cs" Link="Source\ChatTtsConfig.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Configurations\ContentFilterConfig.cs" Link="Source\ContentFilterConfig.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Entities\ChatMessage.cs" Link="Source\ChatMessage.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Entities\GptSoVitsVoiceProfile.cs" Link="Source\GptSoVitsVoiceProfile.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Entities\TtsVoiceInfo.cs" Link="Source\TtsVoiceInfo.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\ITtsProvider.cs" Link="Source\ITtsProvider.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\TtsProviderManager.cs" Link="Source\TtsProviderManager.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\GptSoVitsTtsProvider.cs" Link="Source\GptSoVitsTtsProvider.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\GptSoVitsProfileStore.cs" Link="Source\GptSoVitsProfileStore.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\AiProviderStore.cs" Link="Source\AiProviderStore.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\ChatTtsService.cs" Link="Source\ChatTtsService.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\TtsOutputDeviceService.cs" Link="Source\TtsOutputDeviceService.cs" />
+    <Compile Include="..\WarThunderChatTranslator\Services\ContentFiltering\*.cs" Link="Source\ContentFiltering\%(Filename)%(Extension)" />
+
     <Compile Include="..\WarThunderChatTranslator\Entities\AiProviderConfig.cs" Link="Source\AiProviderConfig.cs" />
     <Compile Include="..\WarThunderChatTranslator\Entities\QuickTranslationHotkey.cs" Link="Source\QuickTranslationHotkey.cs" />
     <Compile Include="..\WarThunderChatTranslator\Translators\AiTranslationResult.cs" Link="Source\AiTranslationResult.cs" />
@@ -36,6 +55,13 @@
     <None Include="..\WarThunderChatTranslator\Properties\Resources.en-US.resx" Link="TestData\Resources.en-US.resx" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\WarThunderChatTranslator\Properties\Resources.zh-CN.resx" Link="TestData\Resources.zh-CN.resx" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\WarThunderChatTranslator\Properties\Resources.zh-TW.resx" Link="TestData\Resources.zh-TW.resx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Both the desktop .resx resources and all nine WinUI .resw locales are verified. -->
+  <ItemGroup>
+    <None Include="..\WarThunderChatTranslator\Strings\**\Resources.resw" Link="TestData\Strings\%(RecursiveDir)Resources.resw" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\WarThunderChatTranslator\Assets\ContentFilters\en.txt" Link="Assets\ContentFilters\en.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\WarThunderChatTranslator\Assets\ContentFilters\zh.txt" Link="Assets\ContentFilters\zh.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

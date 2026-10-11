@@ -11,9 +11,12 @@ namespace WarThunderChatTranslator.Configurations
         public const string ProviderKey = "ChatTtsProvider";
         public const string WindowsVoiceIdKey = "ChatTtsWindowsVoiceId";
         public const string SherpaVoiceIdKey = "ChatTtsSherpaVoiceId";
+        public const string GptSoVitsVoiceIdKey = "ChatTtsGptSoVitsVoiceId";
+        public const string GptSoVitsApiUrlKey = "ChatTtsGptSoVitsApiUrl";
         public const string SherpaNumThreadsKey = "ChatTtsSherpaNumThreads";
         public const string SpeakingRateKey = "ChatTtsSpeakingRate";
         public const string VolumeKey = "ChatTtsVolume";
+        public const string OutputDeviceIdKey = "ChatTtsOutputDeviceId";
         public const string SpeakAllyKey = "ChatTtsSpeakAlly";
         public const string SpeakEnemyKey = "ChatTtsSpeakEnemy";
         public const string SpeakSystemKey = "ChatTtsSpeakSystem";
@@ -22,6 +25,8 @@ namespace WarThunderChatTranslator.Configurations
 
         public const string ProviderWindows = "Windows";
         public const string ProviderSherpaOnnx = "SherpaOnnx";
+        public const string ProviderGptSoVits = "GptSoVits";
+        public const string DefaultGptSoVitsApiUrl = "http://127.0.0.1:9880";
         public const double DefaultSpeakingRate = 1.0;
         public const double DefaultVolume = 0.8;
         public const int DefaultQueueCapacity = 3;
@@ -49,9 +54,15 @@ namespace WarThunderChatTranslator.Configurations
         public static string GetProvider()
         {
             var provider = ApplicationConfig.GetSettings(ProviderKey);
-            return string.Equals(provider, ProviderSherpaOnnx, StringComparison.Ordinal)
-                ? ProviderSherpaOnnx
-                : ProviderWindows;
+            if (string.Equals(provider, ProviderSherpaOnnx, StringComparison.Ordinal))
+            {
+                return ProviderSherpaOnnx;
+            }
+            if (string.Equals(provider, ProviderGptSoVits, StringComparison.Ordinal))
+            {
+                return ProviderGptSoVits;
+            }
+            return ProviderWindows;
         }
 
         public static string GetVoiceId(string? providerId = null)
@@ -59,8 +70,23 @@ namespace WarThunderChatTranslator.Configurations
             providerId ??= GetProvider();
             var key = string.Equals(providerId, ProviderSherpaOnnx, StringComparison.Ordinal)
                 ? SherpaVoiceIdKey
-                : WindowsVoiceIdKey;
+                : string.Equals(providerId, ProviderGptSoVits, StringComparison.Ordinal)
+                    ? GptSoVitsVoiceIdKey
+                    : WindowsVoiceIdKey;
             return ApplicationConfig.GetSettings(key) ?? string.Empty;
+        }
+
+        public static string GetGptSoVitsApiUrl()
+        {
+            var value = ApplicationConfig.GetSettings(GptSoVitsApiUrlKey)?.Trim();
+            if (string.IsNullOrWhiteSpace(value)
+                || !Uri.TryCreate(value, UriKind.Absolute, out var uri)
+                || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            {
+                return DefaultGptSoVitsApiUrl;
+            }
+
+            return value.TrimEnd('/');
         }
 
 
@@ -85,6 +111,10 @@ namespace WarThunderChatTranslator.Configurations
                 ? Math.Clamp(value, 0.5, 2.0)
                 : DefaultSpeakingRate;
         }
+
+        // Empty means to follow the Windows default rendering endpoint.
+        public static string GetOutputDeviceId() =>
+            ApplicationConfig.GetSettings(OutputDeviceIdKey)?.Trim() ?? string.Empty;
 
         public static double GetVolume()
         {

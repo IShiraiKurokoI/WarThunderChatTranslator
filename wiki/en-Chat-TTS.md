@@ -1,4 +1,4 @@
-# Chat Voice Playback
+﻿# Chat Voice Playback
 
 [⌂ Back to English guide](en-Home) · [Previous: Voice Translation](en-Voice) · [Next: Content Filtering](en-Content-Filter)
 
@@ -12,8 +12,11 @@ Choose between:
 
 - **Microsoft SpeechSynthesizer** — uses voices installed in Windows and synthesizes locally with low overhead.
 - **Local model (Kokoro v1.1)** — uses the bundled Kokoro v1.1 INT8 model through sherpa-onnx and offers multiple Chinese and English voices.
+- **GPT-SoVITS character voice** — connects to a GPT-SoVITS API service you already started and lets you save a model/reference-audio profile for each character. The app does not install or start GPT-SoVITS itself.
 
 Kokoro is bundled with the app. There is no in-app model download, import, or delete workflow. If the packaged model is missing, the Model Status card reports it and voice selection is disabled.
+
+For GPT-SoVITS, start its API service first (default `http://127.0.0.1:9880`), then add a character profile. GPT and SoVITS model paths are optional; when left blank, the models already loaded by GPT-SoVITS are used. Reference audio is required.
 
 ## Playback settings
 

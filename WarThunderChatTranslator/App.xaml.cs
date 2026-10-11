@@ -366,6 +366,8 @@ namespace WarThunderChatTranslator
                 { ChatTtsConfig.ProviderKey, ChatTtsConfig.ProviderWindows },
                 { ChatTtsConfig.WindowsVoiceIdKey, "" },
                 { ChatTtsConfig.SherpaVoiceIdKey, "" },
+                { ChatTtsConfig.GptSoVitsVoiceIdKey, "" },
+                { ChatTtsConfig.GptSoVitsApiUrlKey, ChatTtsConfig.DefaultGptSoVitsApiUrl },
                 { ChatTtsConfig.SherpaNumThreadsKey, ChatTtsConfig.DefaultSherpaNumThreads.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { ChatTtsConfig.SpeakingRateKey, ChatTtsConfig.DefaultSpeakingRate.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { ChatTtsConfig.VolumeKey, ChatTtsConfig.DefaultVolume.ToString(System.Globalization.CultureInfo.InvariantCulture) },

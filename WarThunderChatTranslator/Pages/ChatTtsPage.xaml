@@ -11,6 +11,19 @@
     Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <Style x:Key="GptSoVitsActionButtonStyle" TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="10,7" />
+            <Setter Property="Background" Value="{ThemeResource SubtleFillColorSecondaryBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+    </Page.Resources>
+
     <Grid Padding="20,0,0,0" RowSpacing="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -61,7 +74,36 @@
                         SelectionChanged="ChatTtsProvider_SelectionChanged">
                         <ComboBoxItem Content="{helpers:Loc Key=ChatTtsProviderWindows}" Tag="Windows" />
                         <ComboBoxItem Content="{helpers:Loc Key=ChatTtsProviderSherpa}" Tag="SherpaOnnx" />
+                        <ComboBoxItem Content="{helpers:Loc Key=ChatTtsProviderGptSoVits}" Tag="GptSoVits" />
                     </ComboBox>
+                </labs:SettingsCard>
+
+                <labs:SettingsCard
+                    MaxWidth="2000"
+                    HorizontalContentAlignment="Stretch"
+                    Description="{helpers:Loc Key=ChatTtsOutputDeviceDescription}"
+                    Header="{helpers:Loc Key=ChatTtsOutputDevice}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7F5;" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <Grid Width="420" HorizontalAlignment="Right" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox
+                            x:Name="ChatTtsOutputDevice"
+                            Grid.Column="0"
+                            MinWidth="0"
+                            HorizontalAlignment="Stretch"
+                            SelectionChanged="ChatTtsOutputDevice_SelectionChanged" />
+                        <Button
+                            Grid.Column="1"
+                            Click="RefreshTtsOutputDevices_Click"
+                            ToolTipService.ToolTip="{helpers:Loc Key=ChatTtsRefreshOutputDevices}">
+                            <FontIcon Glyph="&#xE72C;" />
+                        </Button>
+                    </Grid>
                 </labs:SettingsCard>
 
                 <StackPanel x:Name="SherpaSettingsSection" Visibility="Collapsed">
@@ -132,6 +174,212 @@
                             SpinButtonPlacementMode="Inline"
                             ValueChanged="SherpaThreads_ValueChanged" />
                     </labs:SettingsCard>
+                </StackPanel>
+
+                <StackPanel x:Name="GptSoVitsSettingsSection" Visibility="Collapsed">
+                    <TextBlock
+                        Margin="0,24,0,8"
+                        FontSize="20"
+                        Text="{helpers:Loc Key=ChatTtsGptSoVitsSettings}" />
+
+                    <labs:SettingsCard
+                        MaxWidth="2000"
+                        Description="{helpers:Loc Key=ChatTtsGptSoVitsApiDescription}"
+                        Header="{helpers:Loc Key=ChatTtsGptSoVitsApi}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE774;" />
+                        </labs:SettingsCard.HeaderIcon>
+                        <TextBox
+                            x:Name="GptSoVitsApiUrl"
+                            Width="420"
+                            HorizontalAlignment="Right"
+                            TextChanged="GptSoVitsApiUrl_TextChanged" />
+                    </labs:SettingsCard>
+
+                    <labs:SettingsCard
+                        MaxWidth="2000"
+                        HorizontalContentAlignment="Stretch"
+                        Description="{helpers:Loc Key=ChatTtsGptSoVitsStatusDescription}"
+                        Header="{helpers:Loc Key=ChatTtsGptSoVitsStatus}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE895;" />
+                        </labs:SettingsCard.HeaderIcon>
+                        <Grid Width="420" HorizontalAlignment="Right">
+                            <StackPanel
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <TextBlock
+                                    x:Name="GptSoVitsStatusText"
+                                    VerticalAlignment="Center"
+                                    FontWeight="SemiBold" />
+                                <Button
+                                    x:Name="GptSoVitsCheckButton"
+                                    Margin="12,0,0,0"
+                                    Click="GptSoVitsCheckButton_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon Glyph="&#xE73E;" />
+                                        <TextBlock Text="{helpers:Loc Key=ChatTtsGptSoVitsCheck}" />
+                                    </StackPanel>
+                                </Button>
+                                <Button
+                                    Width="32"
+                                    Height="32"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="GptSoVitsInfoButton_Click"
+                                    ToolTipService.ToolTip="{helpers:Loc Key=ChatTtsGptSoVitsInfo}">
+                                    <FontIcon FontSize="14" Glyph="&#xE946;" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </labs:SettingsCard>
+
+                    <labs:SettingsCard
+                        MaxWidth="2000"
+                        Description="{helpers:Loc Key=ChatTtsGptSoVitsProfilesDescription}"
+                        Header="{helpers:Loc Key=ChatTtsGptSoVitsProfiles}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE77B;" />
+                        </labs:SettingsCard.HeaderIcon>
+                        <Button Click="GptSoVitsAddProfileButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE710;" />
+                                <TextBlock Text="{helpers:Loc Key=ChatTtsGptSoVitsAddProfile}" />
+                            </StackPanel>
+                        </Button>
+                    </labs:SettingsCard>
+
+                    <Border
+                        x:Name="GptSoVitsProfilesEmptyState"
+                        Margin="0,0,0,12"
+                        Padding="24"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Visibility="Collapsed">
+                        <StackPanel HorizontalAlignment="Center" Spacing="8">
+                            <FontIcon
+                                HorizontalAlignment="Center"
+                                FontSize="32"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Glyph="&#xE77B;" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Text="{helpers:Loc Key=ChatTtsGptSoVitsProfiles}" />
+                            <TextBlock
+                                MaxWidth="640"
+                                HorizontalAlignment="Center"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{helpers:Loc Key=ChatTtsGptSoVitsProfilesDescription}"
+                                TextAlignment="Center"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <ListView
+                        x:Name="GptSoVitsProfilesList"
+                        Margin="0,0,0,12"
+                        SelectionMode="None"
+                        Visibility="Collapsed">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0,0,0,10" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Padding="18,18,10,18"
+                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <Grid ColumnSpacing="20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Spacing="7">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock
+                                                    FontSize="18"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding Name}" />
+                                                <Border
+                                                    Padding="8,2"
+                                                    Background="{ThemeResource AccentFillColorSecondaryBrush}"
+                                                    CornerRadius="10"
+                                                    Visibility="{Binding SelectedVisibility}">
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                                        Text="{helpers:Loc Key=AiSelected}" />
+                                                </Border>
+                                            </StackPanel>
+
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="{Binding ModelLine}"
+                                                TextWrapping="Wrap" />
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Text="{Binding ReferenceLine}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap" />
+                                            <TextBlock
+                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                Text="{Binding PromptLine}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap" />
+                                        </StackPanel>
+
+                                        <StackPanel
+                                            Grid.Column="1"
+                                            MinWidth="104"
+                                            VerticalAlignment="Center"
+                                            Spacing="6">
+                                            <Button
+                                                Style="{StaticResource GptSoVitsActionButtonStyle}"
+                                                Click="SelectGptSoVitsProfile_Click"
+                                                IsEnabled="{Binding CanSelect}"
+                                                Tag="{Binding Id}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon FontSize="16" Glyph="&#xE73E;" />
+                                                    <TextBlock Text="{helpers:Loc Key=AiUse}" />
+                                                </StackPanel>
+                                            </Button>
+                                            <Button
+                                                Style="{StaticResource GptSoVitsActionButtonStyle}"
+                                                Click="EditGptSoVitsProfileListItem_Click"
+                                                Tag="{Binding Id}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon FontSize="16" Glyph="&#xE70F;" />
+                                                    <TextBlock Text="{helpers:Loc Key=AiEdit}" />
+                                                </StackPanel>
+                                            </Button>
+                                            <Button
+                                                Style="{StaticResource GptSoVitsActionButtonStyle}"
+                                                Click="DeleteGptSoVitsProfileListItem_Click"
+                                                Tag="{Binding Id}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon FontSize="16" Glyph="&#xE74D;" />
+                                                    <TextBlock Text="{helpers:Loc Key=AiDelete}" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
 
                 <labs:SettingsCard
@@ -284,7 +532,7 @@
                     Description="{helpers:Loc Key=ChatTtsPreviewDescription}"
                     Header="{helpers:Loc Key=ChatTtsPreview}">
                     <labs:SettingsCard.HeaderIcon><FontIcon Glyph="&#xE768;" /></labs:SettingsCard.HeaderIcon>
-                    <Grid Width="560" HorizontalAlignment="Right" ColumnSpacing="8">
+                    <Grid Width="420" HorizontalAlignment="Right" ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />

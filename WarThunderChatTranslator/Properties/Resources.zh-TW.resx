@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:schema id="root">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -1606,5 +1606,143 @@ ONNX 轉換 / 模型製品維護者：{11}
   </data>
   <data name="ChatTtsModelFileMissing" xml:space="preserve">
     <value>遺失</value>
+  </data>
+  <data name="ChatTtsProviderGptSoVits" xml:space="preserve">
+    <value>GPT-SoVITS 角色語音</value>
+  </data>
+  <data name="ChatTtsGptSoVitsSettings" xml:space="preserve">
+    <value>GPT-SoVITS 角色語音</value>
+  </data>
+  <data name="ChatTtsGptSoVitsApi" xml:space="preserve">
+    <value>服務位址</value>
+  </data>
+  <data name="ChatTtsGptSoVitsApiDescription" xml:space="preserve">
+    <value>連線到已經啟動的 GPT-SoVITS 服務。</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatus" xml:space="preserve">
+    <value>服務狀態</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusDescription" xml:space="preserve">
+    <value>檢查目前設定的 GPT-SoVITS 服務是否可用。</value>
+  </data>
+  <data name="ChatTtsGptSoVitsCheck" xml:space="preserve">
+    <value>檢查</value>
+  </data>
+  <data name="ChatTtsGptSoVitsInfo" xml:space="preserve">
+    <value>GPT-SoVITS 連線說明</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfiles" xml:space="preserve">
+    <value>角色設定</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfilesDescription" xml:space="preserve">
+    <value>新增與管理角色模型、參考音訊與參考文字。</value>
+  </data>
+  <data name="ChatTtsGptSoVitsAddProfile" xml:space="preserve">
+    <value>新增角色</value>
+  </data>
+  <data name="ChatTtsGptSoVitsEditProfile" xml:space="preserve">
+    <value>編輯</value>
+  </data>
+  <data name="ChatTtsGptSoVitsDeleteProfile" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="ChatTtsGptSoVitsCharacter" xml:space="preserve">
+    <value>角色音色</value>
+  </data>
+  <data name="ChatTtsGptSoVitsCharacterDescription" xml:space="preserve">
+    <value>選擇聊天播報使用的角色設定。</value>
+  </data>
+  <data name="ChatTtsGptSoVitsVoiceRequiresProfile" xml:space="preserve">
+    <value>請先新增角色設定</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusUnchecked" xml:space="preserve">
+    <value>尚未檢查</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusChecking" xml:space="preserve">
+    <value>正在檢查…</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusConnected" xml:space="preserve">
+    <value>已連線</value>
+  </data>
+  <data name="ChatTtsGptSoVitsStatusDisconnected" xml:space="preserve">
+    <value>未連線</value>
+  </data>
+  <data name="ChatTtsGptSoVitsConnectionFailed" xml:space="preserve">
+    <value>未連線到 GPT-SoVITS</value>
+  </data>
+  <data name="ChatTtsGptSoVitsConnectionFailedDescription" xml:space="preserve">
+    <value>請確認 GPT-SoVITS API 服務已經啟動，並檢查服務位址是否正確。</value>
+  </data>
+  <data name="ChatTtsGptSoVitsInfoBody" xml:space="preserve">
+    <value>WarThunderChatTranslator 只連線到已經執行的 GPT-SoVITS API 服務，不會安裝或啟動 GPT-SoVITS。角色設定中的模型路徑和參考音訊路徑由 GPT-SoVITS 服務讀取；模型路徑可以留空，此時使用 GPT-SoVITS 目前已載入的模型。</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProjectLink" xml:space="preserve">
+    <value>開啟 GPT-SoVITS 專案</value>
+  </data>
+  <data name="ChatTtsGptSoVitsApiLink" xml:space="preserve">
+    <value>開啟官方 API 說明</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfileName" xml:space="preserve">
+    <value>角色名稱</value>
+  </data>
+  <data name="ChatTtsGptSoVitsProfileNamePlaceholder" xml:space="preserve">
+    <value>例如：角色 A</value>
+  </data>
+  <data name="ChatTtsGptSoVitsGptModel" xml:space="preserve">
+    <value>GPT 模型</value>
+  </data>
+  <data name="ChatTtsGptSoVitsSovitsModel" xml:space="preserve">
+    <value>SoVITS 模型</value>
+  </data>
+  <data name="ChatTtsGptSoVitsModelOptional" xml:space="preserve">
+    <value>可選。留空時使用 GPT-SoVITS 目前已載入的模型。</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceAudio" xml:space="preserve">
+    <value>參考音訊</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceAudioPlaceholder" xml:space="preserve">
+    <value>選擇或填寫參考音訊路徑</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceText" xml:space="preserve">
+    <value>參考文字</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceTextPlaceholder" xml:space="preserve">
+    <value>填寫參考音訊中實際說出的文字</value>
+  </data>
+  <data name="ChatTtsGptSoVitsReferenceLanguage" xml:space="preserve">
+    <value>參考音訊語言</value>
+  </data>
+  <data name="ChatTtsGptSoVitsOutputLanguage" xml:space="preserve">
+    <value>播報文字語言</value>
+  </data>
+  <data name="ChatTtsGptSoVitsBrowse" xml:space="preserve">
+    <value>瀏覽</value>
+  </data>
+  <data name="ChatTtsGptSoVitsDeleteConfirmTitle" xml:space="preserve">
+    <value>刪除角色設定？</value>
+  </data>
+  <data name="ChatTtsGptSoVitsDeleteConfirmDescription" xml:space="preserve">
+    <value>確定刪除「{0}」嗎？只會刪除 WarThunderChatTranslator 中的角色設定，不會刪除模型或音訊檔案。</value>
+  </data>
+  <data name="ChatTtsOutputDevice" xml:space="preserve">
+    <value>音訊輸出裝置</value>
+  </data>
+  <data name="ChatTtsOutputDeviceDescription" xml:space="preserve">
+    <value>使用 Windows 系統預設輸出，或指定喇叭、耳機或虛擬音效卡播報聊天語音。</value>
+  </data>
+  <data name="ChatTtsSystemDefaultOutputDevice" xml:space="preserve">
+    <value>系統預設</value>
+  </data>
+  <data name="ChatTtsRefreshOutputDevices" xml:space="preserve">
+    <value>重新整理輸出裝置</value>
+  </data>
+  <data name="ChatTtsSavedOutputDeviceUnavailable" xml:space="preserve">
+    <value>已儲存的輸出裝置（目前無法使用）</value>
+  </data>
+  <data name="ChatTtsOutputDevicesLoadFailed" xml:space="preserve">
+    <value>無法列出音訊輸出裝置</value>
+  </data>
+  <data name="ChatTtsOutputDeviceUnavailableError" xml:space="preserve">
+    <value>所選音訊輸出裝置無法使用。請重新連接裝置、更新清單，或選擇「系統預設」。</value>
   </data>
 </root>

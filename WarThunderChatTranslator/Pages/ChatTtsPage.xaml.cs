@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ using WarThunderChatTranslator.Entities;
 using WarThunderChatTranslator.Helpers;
 using WarThunderChatTranslator.Services;
 using Windows.Media.SpeechSynthesis;
+using Windows.Storage.Pickers;
 
 namespace WarThunderChatTranslator.Pages
 {
@@ -21,6 +23,17 @@ namespace WarThunderChatTranslator.Pages
         private bool _loaded;
         private bool _updatingUi;
         private TtsVoiceInfo[] _voices = Array.Empty<TtsVoiceInfo>();
+
+        private sealed class GptSoVitsProfileListItem
+        {
+            public string Id { get; init; } = string.Empty;
+            public string Name { get; init; } = string.Empty;
+            public string ModelLine { get; init; } = string.Empty;
+            public string ReferenceLine { get; init; } = string.Empty;
+            public string PromptLine { get; init; } = string.Empty;
+            public bool CanSelect { get; init; }
+            public Visibility SelectedVisibility { get; init; }
+        }
 
         public ChatTtsPage()
         {
@@ -42,6 +55,7 @@ namespace WarThunderChatTranslator.Pages
                 _loaded = true;
             }
 
+            await RefreshTtsOutputDevicesAsync();
             await RefreshProviderUiAsync();
         }
 
@@ -62,6 +76,7 @@ namespace WarThunderChatTranslator.Pages
             ChatTtsSpeakSystem.IsOn = ChatTtsConfig.ShouldSpeakSystem();
             ChatTtsQueueCapacity.Value = ChatTtsConfig.GetQueueCapacity();
             SherpaThreads.Value = ChatTtsConfig.GetSherpaNumThreads();
+            GptSoVitsApiUrl.Text = ChatTtsConfig.GetGptSoVitsApiUrl();
 
             var maxQueueAgeSeconds = ChatTtsConfig.GetMaxQueueAgeSecondsOrZero();
             ChatTtsExpirationSeconds.Value = maxQueueAgeSeconds > 0
@@ -88,14 +103,93 @@ namespace WarThunderChatTranslator.Pages
             ChatTtsProvider.SelectedIndex = 0;
         }
 
+        private async Task RefreshTtsOutputDevicesAsync()
+        {
+            try
+            {
+                var devices = await TtsOutputDeviceService.GetAvailableDevicesAsync();
+                if (!_loaded)
+                {
+                    return;
+                }
+
+                var savedId = ChatTtsConfig.GetOutputDeviceId();
+                _updatingUi = true;
+                try
+                {
+                    ChatTtsOutputDevice.Items.Clear();
+                    ChatTtsOutputDevice.Items.Add(new ComboBoxItem
+                    {
+                        Content = Localization.GetString("ChatTtsSystemDefaultOutputDevice"),
+                        Tag = string.Empty
+                    });
+                    foreach (var device in devices)
+                    {
+                        ChatTtsOutputDevice.Items.Add(new ComboBoxItem
+                        {
+                            Content = device.Name,
+                            Tag = device.Id
+                        });
+                    }
+
+                    var selected = ChatTtsOutputDevice.Items.OfType<ComboBoxItem>()
+                        .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), savedId,
+                            StringComparison.OrdinalIgnoreCase));
+                    if (selected is null && !string.IsNullOrWhiteSpace(savedId))
+                    {
+                        selected = new ComboBoxItem
+                        {
+                            Content = Localization.GetString("ChatTtsSavedOutputDeviceUnavailable"),
+                            Tag = savedId
+                        };
+                        ChatTtsOutputDevice.Items.Add(selected);
+                    }
+
+                    ChatTtsOutputDevice.SelectedItem = selected ?? ChatTtsOutputDevice.Items[0];
+                }
+                finally
+                {
+                    _updatingUi = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowInfo(Localization.GetString("ChatTtsOutputDevicesLoadFailed"),
+                    ex.Message, InfoBarSeverity.Warning);
+            }
+        }
+
+        private async void RefreshTtsOutputDevices_Click(object sender, RoutedEventArgs e)
+        {
+            await RefreshTtsOutputDevicesAsync();
+        }
+
+        private void ChatTtsOutputDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_loaded || _updatingUi || ChatTtsOutputDevice.SelectedItem is not ComboBoxItem item)
+            {
+                return;
+            }
+
+            ApplicationConfig.SaveSettings(ChatTtsConfig.OutputDeviceIdKey,
+                item.Tag?.ToString() ?? string.Empty);
+        }
+
         private async Task RefreshProviderUiAsync()
         {
             var providerId = GetSelectedProviderId();
             var isLocal = string.Equals(providerId, ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal);
+            var isGptSoVits = string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal);
             SherpaSettingsSection.Visibility = isLocal ? Visibility.Visible : Visibility.Collapsed;
+            GptSoVitsSettingsSection.Visibility = isGptSoVits ? Visibility.Visible : Visibility.Collapsed;
+            ChatTtsVoiceCard.Visibility = isGptSoVits ? Visibility.Collapsed : Visibility.Visible;
             if (isLocal)
             {
                 RefreshSherpaModelStatus();
+            }
+            if (isGptSoVits)
+            {
+                await RefreshGptSoVitsStatusAsync();
             }
 
             await LoadVoicesAsync(providerId);
@@ -122,12 +216,22 @@ namespace WarThunderChatTranslator.Pages
         {
             var needsLocalModel = string.Equals(providerId, ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal)
                 && !BundledKokoroTtsModel.IsAvailable;
-            SetVoiceControlAvailability(false, needsLocalModel);
+            var needsGptProfile = string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal)
+                && GptSoVitsProfileStore.Shared.GetProfiles().Count == 0;
+            SetVoiceControlAvailability(false, needsLocalModel, needsGptProfile);
             ChatTtsVoice.Items.Clear();
             _voices = Array.Empty<TtsVoiceInfo>();
 
-            if (needsLocalModel)
+            ChatTtsVoiceCard.Header = string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal)
+                ? Localization.GetString("ChatTtsGptSoVitsCharacter")
+                : Localization.GetString("ChatTtsVoice");
+            ChatTtsVoiceCard.Description = string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal)
+                ? Localization.GetString("ChatTtsGptSoVitsCharacterDescription")
+                : Localization.GetString("ChatTtsVoiceDescription");
+
+            if (needsLocalModel || needsGptProfile)
             {
+                UpdateGptSoVitsProfileButtons();
                 return;
             }
 
@@ -183,7 +287,8 @@ namespace WarThunderChatTranslator.Pages
                 _updatingUi = true;
                 ChatTtsVoice.SelectedIndex = voiceIndex;
                 _updatingUi = false;
-                SetVoiceControlAvailability(_voices.Length > 0, missingLocalModel: false);
+                SetVoiceControlAvailability(_voices.Length > 0, missingLocalModel: false, missingGptProfile: false);
+                UpdateGptSoVitsProfileButtons();
 
                 if (voiceIndex >= 0
                     && !string.Equals(savedVoiceId, _voices[voiceIndex].Id, StringComparison.Ordinal))
@@ -219,6 +324,12 @@ namespace WarThunderChatTranslator.Pages
                 ownedProvider = provider;
                 return provider;
             }
+            if (string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal))
+            {
+                var provider = new GptSoVitsTtsProvider();
+                ownedProvider = provider;
+                return provider;
+            }
 
             var windows = new WindowsTtsProvider();
             ownedProvider = windows;
@@ -227,17 +338,30 @@ namespace WarThunderChatTranslator.Pages
 
         private string GetSelectedProviderId()
         {
-            return ChatTtsProvider.SelectedItem is ComboBoxItem item
-                && string.Equals(item.Tag?.ToString(), ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal)
-                ? ChatTtsConfig.ProviderSherpaOnnx
-                : ChatTtsConfig.ProviderWindows;
+            if (ChatTtsProvider.SelectedItem is not ComboBoxItem item)
+            {
+                return ChatTtsConfig.ProviderWindows;
+            }
+
+            var tag = item.Tag?.ToString();
+            if (string.Equals(tag, ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal))
+            {
+                return ChatTtsConfig.ProviderSherpaOnnx;
+            }
+            if (string.Equals(tag, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal))
+            {
+                return ChatTtsConfig.ProviderGptSoVits;
+            }
+            return ChatTtsConfig.ProviderWindows;
         }
 
         private static void SaveVoiceId(string providerId, string voiceId)
         {
             var key = string.Equals(providerId, ChatTtsConfig.ProviderSherpaOnnx, StringComparison.Ordinal)
                 ? ChatTtsConfig.SherpaVoiceIdKey
-                : ChatTtsConfig.WindowsVoiceIdKey;
+                : string.Equals(providerId, ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal)
+                    ? ChatTtsConfig.GptSoVitsVoiceIdKey
+                    : ChatTtsConfig.WindowsVoiceIdKey;
             ApplicationConfig.SaveSettings(key, voiceId);
         }
 
@@ -267,6 +391,542 @@ namespace WarThunderChatTranslator.Pages
             }
 
             SaveVoiceId(GetSelectedProviderId(), item.Tag?.ToString() ?? string.Empty);
+            UpdateGptSoVitsProfileButtons();
+        }
+
+        private void GptSoVitsApiUrl_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!_loaded || _updatingUi)
+            {
+                return;
+            }
+
+            var value = GptSoVitsApiUrl.Text?.Trim() ?? string.Empty;
+            ApplicationConfig.SaveSettings(ChatTtsConfig.GptSoVitsApiUrlKey, value);
+            if (Application.Current is App app && app.ChatTtsService is not null)
+            {
+                app.ChatTtsService.GptSoVitsProvider.InvalidateWeights();
+            }
+            GptSoVitsStatusText.Text = Localization.GetString("ChatTtsGptSoVitsStatusUnchecked");
+        }
+
+        private async void GptSoVitsCheckButton_Click(object sender, RoutedEventArgs e)
+        {
+            await RefreshGptSoVitsStatusAsync(showFailureInfo: true);
+        }
+
+        private async Task RefreshGptSoVitsStatusAsync(bool showFailureInfo = false)
+        {
+            if (GptSoVitsStatusText is null || GptSoVitsCheckButton is null)
+            {
+                return;
+            }
+
+            GptSoVitsStatusText.Text = Localization.GetString("ChatTtsGptSoVitsStatusChecking");
+            GptSoVitsCheckButton.IsEnabled = false;
+            IDisposable? ownedProvider = null;
+            try
+            {
+                var provider = (GptSoVitsTtsProvider)GetProvider(ChatTtsConfig.ProviderGptSoVits, out ownedProvider);
+                var connected = await provider.TestConnectionAsync();
+                GptSoVitsStatusText.Text = Localization.GetString(
+                    connected ? "ChatTtsGptSoVitsStatusConnected" : "ChatTtsGptSoVitsStatusDisconnected");
+                if (!connected && showFailureInfo)
+                {
+                    ShowInfo(
+                        Localization.GetString("ChatTtsGptSoVitsConnectionFailed"),
+                        Localization.GetString("ChatTtsGptSoVitsConnectionFailedDescription"),
+                        InfoBarSeverity.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                GptSoVitsStatusText.Text = Localization.GetString("ChatTtsGptSoVitsStatusDisconnected");
+                if (showFailureInfo)
+                {
+                    ShowInfo(Localization.GetString("ChatTtsGptSoVitsConnectionFailed"), ex.Message, InfoBarSeverity.Warning);
+                }
+            }
+            finally
+            {
+                ownedProvider?.Dispose();
+                GptSoVitsCheckButton.IsEnabled = true;
+            }
+        }
+
+        private async void GptSoVitsInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            var panel = new StackPanel { Spacing = 8, MaxWidth = 620 };
+            panel.Children.Add(new TextBlock
+            {
+                Text = Localization.GetString("ChatTtsGptSoVitsInfoBody"),
+                TextWrapping = TextWrapping.Wrap
+            });
+            panel.Children.Add(new HyperlinkButton
+            {
+                Content = Localization.GetString("ChatTtsGptSoVitsProjectLink"),
+                Padding = new Thickness(0, 4, 0, 4),
+                NavigateUri = new Uri("https://github.com/RVC-Boss/GPT-SoVITS")
+            });
+            panel.Children.Add(new HyperlinkButton
+            {
+                Content = Localization.GetString("ChatTtsGptSoVitsApiLink"),
+                Padding = new Thickness(0, 4, 0, 4),
+                NavigateUri = new Uri("https://github.com/RVC-Boss/GPT-SoVITS/blob/main/api_v2.py")
+            });
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = "GPT-SoVITS",
+                Content = panel,
+                CloseButtonText = Localization.GetString("QuickTranslationClose")
+            };
+            dialog.Resources["ContentDialogMaxWidth"] = 700d;
+            await dialog.ShowAsync();
+        }
+
+        private async void GptSoVitsAddProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var profile = await ShowGptSoVitsProfileDialogAsync(null);
+            if (profile is null)
+            {
+                return;
+            }
+
+            GptSoVitsProfileStore.Shared.Upsert(profile);
+            InvalidateGptSoVitsWeights();
+            SaveVoiceId(ChatTtsConfig.ProviderGptSoVits, profile.Id);
+            await LoadVoicesAsync(ChatTtsConfig.ProviderGptSoVits);
+        }
+
+        private async void GptSoVitsEditProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedId = GetSelectedGptSoVitsProfileId();
+            var existing = GptSoVitsProfileStore.Shared.GetById(selectedId);
+            if (existing is null)
+            {
+                return;
+            }
+
+            var profile = await ShowGptSoVitsProfileDialogAsync(existing);
+            if (profile is null)
+            {
+                return;
+            }
+
+            GptSoVitsProfileStore.Shared.Upsert(profile);
+            InvalidateGptSoVitsWeights();
+            SaveVoiceId(ChatTtsConfig.ProviderGptSoVits, profile.Id);
+            await LoadVoicesAsync(ChatTtsConfig.ProviderGptSoVits);
+        }
+
+        private async void GptSoVitsDeleteProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedId = GetSelectedGptSoVitsProfileId();
+            var profile = GptSoVitsProfileStore.Shared.GetById(selectedId);
+            if (profile is null)
+            {
+                return;
+            }
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = Localization.GetString("ChatTtsGptSoVitsDeleteConfirmTitle"),
+                Content = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Localization.GetString("ChatTtsGptSoVitsDeleteConfirmDescription"),
+                    profile.Name),
+                PrimaryButtonText = Localization.GetString("AiDelete"),
+                CloseButtonText = Localization.GetString("CommonCancel"),
+                DefaultButton = ContentDialogButton.Close
+            };
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            if (GptSoVitsProfileStore.Shared.Delete(profile.Id))
+            {
+                InvalidateGptSoVitsWeights();
+                ApplicationConfig.SaveSettings(ChatTtsConfig.GptSoVitsVoiceIdKey, string.Empty);
+                await LoadVoicesAsync(ChatTtsConfig.ProviderGptSoVits);
+            }
+        }
+
+        private void UpdateGptSoVitsProfileButtons()
+        {
+            RefreshGptSoVitsProfilesList();
+        }
+
+        private string? GetSelectedGptSoVitsProfileId()
+        {
+            if (!string.Equals(GetSelectedProviderId(), ChatTtsConfig.ProviderGptSoVits, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            if (ChatTtsVoice.SelectedItem is ComboBoxItem item)
+            {
+                return item.Tag?.ToString();
+            }
+
+            var savedId = ChatTtsConfig.GetVoiceId(ChatTtsConfig.ProviderGptSoVits);
+            return string.IsNullOrWhiteSpace(savedId) ? null : savedId;
+        }
+
+        private void RefreshGptSoVitsProfilesList()
+        {
+            if (GptSoVitsProfilesList is null || GptSoVitsProfilesEmptyState is null)
+            {
+                return;
+            }
+
+            var selectedId = ChatTtsConfig.GetVoiceId(ChatTtsConfig.ProviderGptSoVits);
+            var profiles = GptSoVitsProfileStore.Shared
+                .GetProfiles()
+                .Select(profile => new GptSoVitsProfileListItem
+                {
+                    Id = profile.Id,
+                    Name = profile.Name,
+                    ModelLine = $"GPT: {FormatPathForDisplay(profile.GptWeightsPath)}    SoVITS: {FormatPathForDisplay(profile.SoVitsWeightsPath)}",
+                    ReferenceLine = $"{Localization.GetString("ChatTtsGptSoVitsReferenceAudio")}: {FormatPathForDisplay(profile.ReferenceAudioPath)}    {Localization.GetString("ChatTtsGptSoVitsReferenceLanguage")}: {profile.PromptLanguage} → {profile.TextLanguage}",
+                    PromptLine = string.IsNullOrWhiteSpace(profile.PromptText)
+                        ? $"{Localization.GetString("ChatTtsGptSoVitsReferenceText")}: -"
+                        : $"{Localization.GetString("ChatTtsGptSoVitsReferenceText")}: {profile.PromptText}",
+                    CanSelect = !string.Equals(profile.Id, selectedId, StringComparison.Ordinal),
+                    SelectedVisibility = string.Equals(profile.Id, selectedId, StringComparison.Ordinal)
+                        ? Visibility.Visible
+                        : Visibility.Collapsed
+                })
+                .ToList();
+
+            GptSoVitsProfilesList.ItemsSource = profiles;
+            var hasProfiles = profiles.Count > 0;
+            GptSoVitsProfilesEmptyState.Visibility = hasProfiles ? Visibility.Collapsed : Visibility.Visible;
+            GptSoVitsProfilesList.Visibility = hasProfiles ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private static string FormatPathForDisplay(string? path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return "-";
+            }
+
+            try
+            {
+                return Path.GetFileName(path.Trim());
+            }
+            catch
+            {
+                return path.Trim();
+            }
+        }
+
+        private GptSoVitsVoiceProfile? GetProfileFromSender(object sender)
+        {
+            if (sender is not FrameworkElement element)
+            {
+                return null;
+            }
+
+            return GptSoVitsProfileStore.Shared.GetById(element.Tag?.ToString());
+        }
+
+        private void SelectVoiceItem(string voiceId)
+        {
+            if (ChatTtsVoice is null)
+            {
+                return;
+            }
+
+            _updatingUi = true;
+            try
+            {
+                for (var i = 0; i < ChatTtsVoice.Items.Count; i++)
+                {
+                    if (ChatTtsVoice.Items[i] is ComboBoxItem item
+                        && string.Equals(item.Tag?.ToString(), voiceId, StringComparison.Ordinal))
+                    {
+                        ChatTtsVoice.SelectedIndex = i;
+                        return;
+                    }
+                }
+
+                ChatTtsVoice.SelectedIndex = -1;
+            }
+            finally
+            {
+                _updatingUi = false;
+            }
+        }
+
+        private void SelectGptSoVitsProfile_Click(object sender, RoutedEventArgs e)
+        {
+            var profile = GetProfileFromSender(sender);
+            if (profile is null)
+            {
+                return;
+            }
+
+            SaveVoiceId(ChatTtsConfig.ProviderGptSoVits, profile.Id);
+            SelectVoiceItem(profile.Id);
+            RefreshGptSoVitsProfilesList();
+            SetVoiceControlAvailability(true, missingLocalModel: false, missingGptProfile: false);
+        }
+
+        private async void EditGptSoVitsProfileListItem_Click(object sender, RoutedEventArgs e)
+        {
+            var profile = GetProfileFromSender(sender);
+            if (profile is null)
+            {
+                return;
+            }
+
+            var edited = await ShowGptSoVitsProfileDialogAsync(profile);
+            if (edited is null)
+            {
+                return;
+            }
+
+            GptSoVitsProfileStore.Shared.Upsert(edited);
+            InvalidateGptSoVitsWeights();
+            SaveVoiceId(ChatTtsConfig.ProviderGptSoVits, edited.Id);
+            await LoadVoicesAsync(ChatTtsConfig.ProviderGptSoVits);
+        }
+
+        private async void DeleteGptSoVitsProfileListItem_Click(object sender, RoutedEventArgs e)
+        {
+            var profile = GetProfileFromSender(sender);
+            if (profile is null)
+            {
+                return;
+            }
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = Localization.GetString("ChatTtsGptSoVitsDeleteConfirmTitle"),
+                Content = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Localization.GetString("ChatTtsGptSoVitsDeleteConfirmDescription"),
+                    profile.Name),
+                PrimaryButtonText = Localization.GetString("AiDelete"),
+                CloseButtonText = Localization.GetString("CommonCancel"),
+                DefaultButton = ContentDialogButton.Close
+            };
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            if (GptSoVitsProfileStore.Shared.Delete(profile.Id))
+            {
+                InvalidateGptSoVitsWeights();
+                ApplicationConfig.SaveSettings(ChatTtsConfig.GptSoVitsVoiceIdKey, string.Empty);
+                await LoadVoicesAsync(ChatTtsConfig.ProviderGptSoVits);
+            }
+        }
+
+        private void InvalidateGptSoVitsWeights()
+        {
+            if (Application.Current is App app && app.ChatTtsService is not null)
+            {
+                app.ChatTtsService.GptSoVitsProvider.InvalidateWeights();
+            }
+        }
+
+        private async Task<GptSoVitsVoiceProfile?> ShowGptSoVitsProfileDialogAsync(GptSoVitsVoiceProfile? existing)
+        {
+            var profile = existing?.Clone() ?? new GptSoVitsVoiceProfile();
+            var nameBox = new TextBox
+            {
+                Header = Localization.GetString("ChatTtsGptSoVitsProfileName"),
+                Text = profile.Name,
+                PlaceholderText = Localization.GetString("ChatTtsGptSoVitsProfileNamePlaceholder")
+            };
+            var gptPathBox = CreatePathTextBox(
+                Localization.GetString("ChatTtsGptSoVitsGptModel"),
+                profile.GptWeightsPath,
+                Localization.GetString("ChatTtsGptSoVitsModelOptional"));
+            var sovitsPathBox = CreatePathTextBox(
+                Localization.GetString("ChatTtsGptSoVitsSovitsModel"),
+                profile.SoVitsWeightsPath,
+                Localization.GetString("ChatTtsGptSoVitsModelOptional"));
+            var referenceBox = CreatePathTextBox(
+                Localization.GetString("ChatTtsGptSoVitsReferenceAudio"),
+                profile.ReferenceAudioPath,
+                Localization.GetString("ChatTtsGptSoVitsReferenceAudioPlaceholder"));
+            var promptBox = new TextBox
+            {
+                Header = Localization.GetString("ChatTtsGptSoVitsReferenceText"),
+                Text = profile.PromptText,
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                MinHeight = 72,
+                PlaceholderText = Localization.GetString("ChatTtsGptSoVitsReferenceTextPlaceholder")
+            };
+            var promptLanguage = CreateLanguageComboBox(
+                Localization.GetString("ChatTtsGptSoVitsReferenceLanguage"),
+                profile.PromptLanguage,
+                promptLanguagesOnly: true);
+            var textLanguage = CreateLanguageComboBox(
+                Localization.GetString("ChatTtsGptSoVitsOutputLanguage"),
+                profile.TextLanguage,
+                promptLanguagesOnly: false);
+
+            // WinUI's overlay scrollbar occupies the right edge of the ScrollViewer viewport.
+            // Reserve the gutter INSIDE the fixed-width form so file-picker buttons,
+            // textbox clear buttons and language dropdowns never sit under the scrollbar.
+            // Padding (rather than a right margin) also avoids extending the scrolled
+            // content beyond the viewport on smaller dialog sizes.
+            var content = new StackPanel
+            {
+                Spacing = 10,
+                Width = 640,
+                Padding = new Thickness(0, 0, 32, 0)
+            };
+            content.Children.Add(nameBox);
+            content.Children.Add(CreatePickerRow(gptPathBox, new[] { ".ckpt" }));
+            content.Children.Add(CreatePickerRow(sovitsPathBox, new[] { ".pth" }));
+            content.Children.Add(CreatePickerRow(referenceBox, new[] { ".wav", ".mp3", ".flac", ".ogg", ".m4a" }));
+            content.Children.Add(promptBox);
+            content.Children.Add(promptLanguage);
+            content.Children.Add(textLanguage);
+
+            var scrollViewer = new ScrollViewer
+            {
+                Content = content,
+                MaxHeight = 580,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollMode = ScrollMode.Enabled,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                HorizontalScrollMode = ScrollMode.Disabled
+            };
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = existing is null
+                    ? Localization.GetString("ChatTtsGptSoVitsAddProfile")
+                    : Localization.GetString("ChatTtsGptSoVitsEditProfile"),
+                Content = scrollViewer,
+                PrimaryButtonText = Localization.GetString("AiSave"),
+                CloseButtonText = Localization.GetString("CommonCancel"),
+                DefaultButton = ContentDialogButton.Primary
+            };
+            dialog.Resources["ContentDialogMaxWidth"] = 760d;
+
+            void UpdateSaveState()
+            {
+                dialog.IsPrimaryButtonEnabled = !string.IsNullOrWhiteSpace(nameBox.Text)
+                    && !string.IsNullOrWhiteSpace(referenceBox.Text);
+            }
+            nameBox.TextChanged += (_, _) => UpdateSaveState();
+            referenceBox.TextChanged += (_, _) => UpdateSaveState();
+            UpdateSaveState();
+
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return null;
+            }
+
+            profile.Name = nameBox.Text.Trim();
+            profile.GptWeightsPath = gptPathBox.Text.Trim();
+            profile.SoVitsWeightsPath = sovitsPathBox.Text.Trim();
+            profile.ReferenceAudioPath = referenceBox.Text.Trim();
+            profile.PromptText = promptBox.Text.Trim();
+            profile.PromptLanguage = GetSelectedLanguageTag(promptLanguage, "zh");
+            profile.TextLanguage = GetSelectedLanguageTag(textLanguage, "auto");
+            return profile;
+        }
+
+        private static TextBox CreatePathTextBox(string header, string value, string placeholder)
+        {
+            return new TextBox
+            {
+                Header = header,
+                Text = value,
+                PlaceholderText = placeholder,
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+        }
+
+        private Grid CreatePickerRow(TextBox textBox, IReadOnlyList<string> extensions)
+        {
+            var grid = new Grid { ColumnSpacing = 8 };
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            Grid.SetColumn(textBox, 0);
+            grid.Children.Add(textBox);
+
+            var button = new Button
+            {
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            button.Content = new FontIcon { Glyph = "\uE8B7" };
+            button.Click += async (_, _) => await PickProfileFileAsync(textBox, extensions);
+            Grid.SetColumn(button, 1);
+            grid.Children.Add(button);
+            return grid;
+        }
+
+        private static ComboBox CreateLanguageComboBox(string header, string selectedTag, bool promptLanguagesOnly)
+        {
+            var combo = new ComboBox
+            {
+                Header = header,
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+            var items = promptLanguagesOnly
+                ? new (string Label, string Tag)[]
+                {
+                    ("中文", "zh"), ("English", "en"), ("日本語", "ja"), ("한국어", "ko"), ("粤语", "yue")
+                }
+                : new (string Label, string Tag)[]
+                {
+                    ("Auto", "auto"), ("中文", "all_zh"), ("English", "en"), ("日本語", "all_ja"),
+                    ("한국어", "all_ko"), ("粤语", "all_yue"), ("中英混合", "zh"), ("日英混合", "ja"),
+                    ("韩英混合", "ko"), ("粤英混合", "yue"), ("多语种 / 粤语", "auto_yue")
+                };
+            foreach (var (label, tag) in items)
+            {
+                combo.Items.Add(new ComboBoxItem { Content = label, Tag = tag });
+            }
+
+            var index = Array.FindIndex(items, item => string.Equals(item.Tag, selectedTag, StringComparison.Ordinal));
+            combo.SelectedIndex = index >= 0 ? index : 0;
+            return combo;
+        }
+
+        private static string GetSelectedLanguageTag(ComboBox combo, string fallback)
+        {
+            return combo.SelectedItem is ComboBoxItem item && item.Tag is string tag
+                ? tag
+                : fallback;
+        }
+
+        private static async Task PickProfileFileAsync(TextBox target, IReadOnlyList<string> extensions)
+        {
+            var picker = new FileOpenPicker();
+            foreach (var extension in extensions)
+            {
+                picker.FileTypeFilter.Add(extension);
+            }
+            WinRT.Interop.InitializeWithWindow.Initialize(
+                picker,
+                WinRT.Interop.WindowNative.GetWindowHandle(MainWindow.Instance));
+            var file = await picker.PickSingleFileAsync();
+            if (file is not null)
+            {
+                target.Text = file.Path;
+            }
         }
 
         private async void SherpaModelInfoButton_Click(object sender, RoutedEventArgs e)
@@ -370,7 +1030,7 @@ namespace WarThunderChatTranslator.Pages
                 BundledKokoroTtsModel.DocumentationUrl);
         }
 
-        private void SetVoiceControlAvailability(bool enabled, bool missingLocalModel)
+        private void SetVoiceControlAvailability(bool enabled, bool missingLocalModel, bool missingGptProfile = false)
         {
             if (ChatTtsVoiceCard is null || ChatTtsVoice is null)
             {
@@ -382,7 +1042,9 @@ namespace WarThunderChatTranslator.Pages
             ChatTtsVoice.IsEnabled = enabled;
             ChatTtsVoice.PlaceholderText = missingLocalModel
                 ? Localization.GetString("ChatTtsVoiceRequiresModel")
-                : string.Empty;
+                : missingGptProfile
+                    ? Localization.GetString("ChatTtsGptSoVitsVoiceRequiresProfile")
+                    : string.Empty;
             if (ChatTtsPreviewButton is not null)
             {
                 ChatTtsPreviewButton.IsEnabled = enabled;
