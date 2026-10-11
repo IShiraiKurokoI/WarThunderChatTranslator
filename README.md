@@ -6,9 +6,9 @@
 
 ## UI 操作手册（GitHub Wiki）
 
-- **[简体中文 · 分页目录](wiki/zh-Hans-Home.md)**
-- **[繁體中文 · 分頁目錄](wiki/zh-Hant-Home.md)**
-- **[English · Topic Index](wiki/en-Home.md)**
+- **[简体中文 · 分页目录](../../wiki/zh-Hans-Home.md)**
+- **[繁體中文 · 分頁目錄](../../wiki/zh-Hant-Home.md)**
+- **[English · Topic Index](../../wiki/en-Home.md)**
 
 ## 主要功能
 
@@ -74,7 +74,7 @@
 
 ## 更新记录
 
-### v1.1.1.0
+### v1.1.2.0
 
 - 新增聊天语音播报，可选择 Microsoft SpeechSynthesizer、内置 Kokoro v1.1 本地模型，或连接 GPT-SoVITS 使用角色语音。
 - 新增显示 / TTS 独立的不文明内容过滤、自定义黑名单与白名单。
